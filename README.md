@@ -85,3 +85,7 @@ On prend cette fois la totalité de l'image et on veut que le réseau indique po
 |:---:|:---:|
 |Pytorch (torch)|Réalisation et utilisation des réseaux de neurones|
 |rasterio|Lecture des images|
+
+## 3. Réunions
+
+- jeudi réunion zoom
