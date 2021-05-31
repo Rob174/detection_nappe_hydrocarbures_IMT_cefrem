@@ -14,7 +14,7 @@ C'est l'image en format binaire
 
 C'est le header contenant les métadonnées de l'image : 
 (documentation [ici](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
-* map info : origine, orientation, et taille d'un pixel , potentielle;ent
+* map info : origine, orientation, et taille d'un pixel , potentiellement
   - Projection name
   - Reference (tie point) pixel x location (in file coordinates)
   - Reference (tie point) pixel y location (in file coordinates)
@@ -48,19 +48,21 @@ Il y a .... catégories (que l'on nommera classes) possibles
 
 ### 1.2 Classification de patchs d'images
 
-On prend l'image, on la sépare en plus petites zones (que l'on nommera patchs) et on doit indiquer pour chaque zone si une certaine classe est présente. Comme plusieurs classes peuvent être présentent sur un même patch, on pourra par exemple prédire la probabilité que chaque classe soit présente. Ainsi, pour chaque classe on prédira la probabilité que cette classe soit présente ou non. On aura alors un matrice de sortie de la forme :
+On prend l'image, on la sépare en plus petites zones (que l'on nommera patchs) et on doit indiquer pour chaque zone si une certaine classe est présente. Comme plusieurs classes peuvent être présentent sur un même patch, on pourra par exemple prédire la probabilité que chaque classe soit présente. Ainsi, pour chaque classe on prédira la probabilité que cette classe soit présente ou non. On aura alors un vecteur de sortie de la forme :
 
 <!-- $$
 \begin{bmatrix}
-           P_{\in\; classe\;1}(pixel_{1}) & \dots & P_{\in\; classe\;m}(pixel_{1}) \\
-           \vdots &  \vdots & \vdots \\
-           P_{\in\; classe\;1}(pixel_{n}) & \dots & P_{\in\; classe\;m}(pixel_{n})
+           P_{\in\; classe\;1}(image) \\ \vdots \\ P_{\in\; classe\;m}(image)
          \end{bmatrix}
 $$ --> 
 
-<div align="center"><img style="background: transparent;" src="https://render.githubusercontent.com/render/math?math=%5Cbegin%7Bbmatrix%7D%0D%0A%20%20%20%20%20%20%20%20%20%20%20P_%7B%5Cin%5C%3B%20classe%5C%3B1%7D(pixel_%7B1%7D)%20%26%20%5Cdots%20%26%20P_%7B%5Cin%5C%3B%20classe%5C%3Bm%7D(pixel_%7B1%7D)%20%5C%5C%0D%0A%20%20%20%20%20%20%20%20%20%20%20%5Cvdots%20%26%20%20%5Cvdots%20%26%20%5Cvdots%20%5C%5C%0D%0A%20%20%20%20%20%20%20%20%20%20%20P_%7B%5Cin%5C%3B%20classe%5C%3B1%7D(pixel_%7Bn%7D)%20%26%20%5Cdots%20%26%20P_%7B%5Cin%5C%3B%20classe%5C%3Bm%7D(pixel_%7Bn%7D)%0D%0A%20%20%20%20%20%20%20%20%20%5Cend%7Bbmatrix%7D%0D"></div>
+<div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=%5Cbegin%7Bbmatrix%7D%0D%0A%20%20%20%20%20%20%20%20%20%20%20P_%7B%5Cin%5C%3B%20classe%5C%3B1%7D(image)%20%5C%5C%20%5Cvdots%20%5C%5C%20P_%7B%5Cin%5C%3B%20classe%5C%3Bm%7D(image)%0D%0A%20%20%20%20%20%20%20%20%20%5Cend%7Bbmatrix%7D%0D"></div>
+
+Il sera également nécessaire de déterminer comment est-ce que l'on réalisera les patchs. **//TODO**
 
 ### 1.3 Segmentation d'une image 
+
+On prend cette fois la totalité de l'image et on veut que le réseau indique pour chaque pixel à quelle classe il appartient. Pour cela on repartira du réseau **//TOASK**
 
 ## 2. Environnement de développement
 
