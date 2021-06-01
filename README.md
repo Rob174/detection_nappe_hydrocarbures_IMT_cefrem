@@ -16,7 +16,7 @@ It is the header containing the metadata of the image :
 (documentation [here](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
 
 
-#### 1.1.2 Labels
+#### 1.2 Labels
 
 There are 4 000 images manually segmented 
 
@@ -28,7 +28,7 @@ So, it is necessary to determine with python to which category belong which pixe
 
 **#TODO : vérifier que je peux ouvrir les fichiers**
 
-#### 1.1.3 Notes
+#### 1.3 Notes
 
 - The network may have difficulties to distinguish:
     - the 2 types of oil discharge (spill or seep)
@@ -40,8 +40,9 @@ So, it is necessary to determine with python to which category belong which pixe
       - Cut the image into patches (500 px widthpar for instance, not less): ⚠️ be cautious not to cut too many oil discharge features
       - Reduce the resolution: ⚠️ potential problems with the plankton
 
-### 1.2 Objectives
+## 2 Objectives
 
+### 2.1 General objectives
 - Create a segmentation map of the image
 
 There are 3 categories (classes) possible (at the initial state of the project)
@@ -52,7 +53,7 @@ There are 3 categories (classes) possible (at the initial state of the project)
 - Be able to tell the coordinates of each input image and their resolution (for eventual debugging purposes (plankton))
 - TODO later: Keep the mean of the sea part to the same level for each image
 
-### 1.2 Image patches classification
+### 2.2 Image patches classification
 
 We take the image and split it into smaller regions (named patches). The network then has to tell which class is present on this image. As several classes may be on the same patch, we can predict the probability that each class is on the image. Thus, we will have the following output vector :
 
@@ -66,11 +67,11 @@ $$ -->
 
 It will be necessary to determine what method to use to create the patches. **#TODO**
 
-### 1.3 Image segmentation
+### 2.3 Image segmentation
 
 This time, we take the image and we want that the network outputs the category of each pixel. To reach this goal we will start with a premade network, available at [this link] (https://github.com/bonlime/keras-deeplab-v3-plus)
 
-## 2. Development environment
+## 3. Development environment
 
 ### 2.1 Python packages used
 Python 3.7 : mandatory for windows users : allows to use rasterio
@@ -80,7 +81,7 @@ Python 3.7 : mandatory for windows users : allows to use rasterio
 |Pytorch (torch)|Neural network|
 |rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3))|
 
-## 3. Réunions
+## 4. Réunions
 
 - jeudi réunion zoom
 
