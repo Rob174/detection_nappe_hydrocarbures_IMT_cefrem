@@ -30,31 +30,31 @@ So, it is necessary to determine with python to which category belong which pixe
 
 #### 1.1.3 Notes
 
-- Le réseau pourra éventuellement avoir des difficultés pour distinguer :
-    - les 2 types de nappes d'hydrocarbures
-    - des filements de plancton de nappes d'hydrocarbures (la différence de changement d'intensité peut tout de même permettre de distinguer ces 2 types de catégories : :warning: diminution de résolution de l'image)
-    - Il sera possible d'ajouter d'autres catégories en appliquant éventuellement un seuillage aux images (par ex pour le plancton
-- On pourra dans un second temps également utilisé le niveau de confiance de chaque classification de polygone en utilisant la colone `ìndice` du fichier `.dbs`
-- Les images font environ 25 000 px de côté, cela posera peut-être des problème de mémoire (à tester)
-   - Solutions envisageables :
-      - Découper l'image en patchs (500px par ex ok mais pas moins) : ⚠️ à ne pas trop couper de motifs
-      - Dégrader la résolution : ⚠️ + haut
+- The network may have difficulties to distinguish:
+    - the 2 types of oil discharge (spill or seep)
+    - plankton can create strings that look like oil discharge. However, they can be differentiated by their edges: the transition of luminosity on the image between the sea and an oil discharge will be sharper than with the plankton. That is why diminishing the resolution of the image can be a problem
+    - We will eventually add more categories as plankton by thresholding the image.
+- The confidence level for each polygon is also available in the `.dbs` under the `ìndice` column. It can be interesting to integrate it in future models.
+- The "raw" (before any preprocessing of **this** project) images are 25 000 px width. It might become a bottleneck for the training (to be tested)
+   - Potential solutions :
+      - Cut the image into patches (500 px widthpar for instance, not less): ⚠️ be cautious not to cut too many oil discharge features
+      - Reduce the resolution: ⚠️ potential problems with the plankton
 
-### 1.2 Objectifs
+### 1.2 Objectives
 
-- Segmenter l'image, indiquer pour chaque pixel à quel catégorie il appartient
+- Create a segmentation map of the image
 
-Il y a 3 catégories (que l'on nommera classes) possibles (à cet état initial, qui ont été annotées)
-* Type de pétrole 1 : spill pétrole provenant de bâteaux
-* Type de pétrole 2 : seep pétrole naturel 
-* Le reste
+There are 3 categories (classes) possible (at the initial state of the project)
+* Oil discharge type 1: oil spill: caused by boats
+* Oil discharge type 2 : seep: natural discharge
+* The rest
 
-- Ne pas perdre les informations gps et de résolution (la 2e pr debugguer) 
-- Il sera également envisageable de ramener la moyenne des pixels de la mer sur toutes les images à une même valeur
+- Be able to tell the coordinates of each input image and their resolution (for eventual debugging purposes (plankton))
+- TODO later: Keep the mean of the sea part to the same level for each image
 
-### 1.2 Classification de patchs d'images
+### 1.2 Image patches classification
 
-On prend l'image, on la sépare en plus petites zones (que l'on nommera patchs) et on doit indiquer pour chaque zone si une certaine classe est présente. Comme plusieurs classes peuvent être présentent sur un même patch, on pourra par exemple prédire la probabilité que chaque classe soit présente. Ainsi, pour chaque classe on prédira la probabilité que cette classe soit présente ou non. On aura alors un vecteur de sortie de la forme :
+We take the image and split it into smaller regions (named patches). The network then has to tell which class is present on this image. As several classes may be on the same patch, we can predict the probability that each class is on the image. Thus, we will have the following output vector :
 
 <!-- $$
 \begin{bmatrix}
@@ -64,22 +64,21 @@ $$ -->
 
 <div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=%5Cbegin%7Bbmatrix%7D%0D%0A%20%20%20%20%20%20%20%20%20%20%20P_%7B%5Cin%5C%3B%20classe%5C%3B1%7D(patch)%20%5C%5C%20%5Cvdots%20%5C%5C%20P_%7B%5Cin%5C%3B%20classe%5C%3Bm%7D(patch)%0D%0A%20%20%20%20%20%20%20%20%20%5Cend%7Bbmatrix%7D%0D"></div>
 
-Il sera également nécessaire de déterminer comment est-ce que l'on réalisera les patchs. **#TODO**
+It will be necessary to determine what method to use to create the patches. **#TODO**
 
-### 1.3 Segmentation d'une image 
+### 1.3 Image segmentation
 
-On prend cette fois la totalité de l'image et on veut que le réseau indique pour chaque pixel à quelle classe il appartient. Pour cela on repartira du réseau **#TOASK**
+This time, we take the image and we want that the network outputs the category of each pixel. To reach this goal we will start with a premade network, available at [this link] (https://github.com/bonlime/keras-deeplab-v3-plus)
 
-## 2. Environnement de développement
+## 2. Development environment
 
-### 2.1 Packages python utilisés
-
+### 2.1 Python packages used
 Python 3.7 : mandatory for windows users : allows to use rasterio
 
 |Package|Utilisation|
 |:---:|:---:|
-|Pytorch (torch)|Réalisation et utilisation des réseaux de neurones|
-|rasterio and GDAL|Lecture des images (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3))|
+|Pytorch (torch)|Neural network|
+|rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3))|
 
 ## 3. Réunions
 
