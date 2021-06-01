@@ -1,4 +1,17 @@
 # Oil detection with neural networks
+## Sommaire
+
+[1. Data](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#1-data)
+[1.1 Network input data](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#11-network-input-data)
+[1.2 Labels](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#12-labels)
+[1.3 Notes](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#13-notes)
+[2 Objectives](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#2-objectives)
+[2.1 General objectives](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#21-general-objectives)
+[2.2 Image patches classification](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#22-image-patches-classification)
+[2.3 Image segmentation](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#23-image-segmentation)
+[3. Development environment](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#3-development-environment)
+[3.1 Python packages used](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#31-python-packages-used)
+[4. Réunions](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#4-r%C3%A9unions)
 
 ## 1. Data
 
@@ -16,7 +29,7 @@ It is the header containing the metadata of the image :
 (documentation [here](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
 
 
-#### 1.2 Labels
+### 1.2 Labels
 
 There are 4 000 images manually segmented 
 
@@ -28,7 +41,7 @@ So, it is necessary to determine with python to which category belong which pixe
 
 **#TODO : vérifier que je peux ouvrir les fichiers**
 
-#### 1.3 Notes
+### 1.3 Notes
 
 - The network may have difficulties to distinguish:
     - the 2 types of oil discharge (spill or seep)
