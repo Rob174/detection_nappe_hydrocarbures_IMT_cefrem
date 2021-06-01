@@ -93,12 +93,12 @@ On prend cette fois la totalité de l'image et on veut que le réseau indique po
 - mardi 01/06 au CEFREM
 
 Liste de questions : 
-1. Script sample pour ouvrir les rasters
-2. Sample de d'image .hdr pour savoir à quoi correspond chaque label
-3. Confirmation : annotation = polygones qui permettront à terme de déterminer pour chaque pixel de l'image si il apprtient à telle ou telle catégorie
-4. Quels sont les catégories possibles (les 2 types de rejets de pétroles notamment) ?
-5. Quels fichiers contiennent les annotations ?
+1. Script sample pour ouvrir les rasters -> cf stackoverflow
+2. Sample de d'image .hdr pour savoir à quoi correspond chaque label -> ok
+3. Confirmation : annotation = polygones qui permettront à terme de déterminer pour chaque pixel de l'image si il apprtient à telle ou telle catégorie -> ok
+4. Quels sont les catégories possibles (les 2 types de rejets de pétroles notamment) ? -> nappes d'hydrocarbures (seep (naturelles) spill (artificielles)), ou pas
+5. Quels fichiers contiennent les annotations ? -> shp et éventuellement shx mais à voir ce qu'il faut à python
 6. Pistes sur comment les ouvrir ?
-7. Est-ce que 1 zone d'1 image peut avoir plusieurs annotations différentes ?
-8. Parlé de fichiers annotation corrompus : est-ce que c'est bon maintenant et quels fichiers faut-il prendre ?
+7. Est-ce que 1 zone d'1 image peut avoir plusieurs annotations différentes ? -> non
+8. Parlé de fichiers annotation corrompus : est-ce que c'est bon maintenant et quels fichiers faut-il prendre ? -> tt bon ; De l'ordre du To de données 
 9. Confirmation du planning : 1. Classification de patchs ; 2. Segmentation d'images complètes
