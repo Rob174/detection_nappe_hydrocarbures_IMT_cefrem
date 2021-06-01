@@ -1,37 +1,30 @@
-# Détection de nappes d'hydrocarbures à l'aide de réseaux de neurones Detection
+# Oil detection with neural networks
 
-## 1. Etapes du stages
+## 1. Data
 
-### 1.1 Récupération des données
+### 1.1 Network input data
 
-#### 1.1.1 Les images d'entrée du réseau
+The `rasterio` will allow the user to open raster files which consists of 3 files per image : `.hdr`, `.img` and `.bsd` :
 
-On pourra ouvrir le couple fichier `.hdr` et `.img` avec la librairie `rasterio` (voir script démo **#TOASK : script demo)
+- one file `.img`
 
-Les images originales se présentent sous forme d'images raster se présentant sous forme de 2 fichiers : 
+It is the image written in a binary format
 
-- un fichier `.img`
+- one file `.hdr`
 
-C'est l'image en format binaire
-
-- un fichier `.hdr`
-
-C'est le header contenant les métadonnées de l'image : 
-(documentation [ici](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
-* map info : origine, orientation, et taille d'un pixel , potentiellement
-* la matrice indique : la résolution en px vers coordonnées gps, les coordonnées de base....
-* header offset : nombre d'octets représentant le header dans le fichier `.img`
+It is the header containing the metadata of the image :
+(documentation [here](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
 
 
-#### 1.1.2 Les labels
+#### 1.1.2 Labels
 
-Il s'agit de 1 000 images segmentées manuellement
+There are 4 000 images manually segmented 
 
-Pour indiquer quelles zones de l'images appartiennent à quelle catégorie, les chercheurs du CEFREM ont tracer des polygones sur l'image et indiqué à quel catégorie les pixels à l'intérieur de polygone appartiennent. On fourni alors les coordonnées en px et en coordonnées "gps" des points du polygone dans un fichier `.shp` ou `.shx` de qgis (avec QGIS). Les catégories de chaque forme sont stockées dans les fichiers `.dbf`
+To highlight which regions of the image belong to which category, CEFREM members have drawn polygons on the image with qgis and indicated at which category pixels inside them belong. We have access to their vertices with pixel coordinates or gps coordinates with the  `.shp` or `.shx` files. We can find the caategory of each polygon in the  `.dbf` file.
 
-Ces fichiers peuvent être ouverts dans python à l'aide du package ... **#TOASK**
+Ces fichiers peuvent être ouverts dans python à l'aide du package ... **#TODO**
 
-Il est alors nécessaire de déterminer en python quels pixels appartiennent à quelles classes d'après ces polygones. **#TODO**
+So, it is necessary to determine with python to which category belong which pixels thanks to the polygons.
 
 **#TODO : vérifier que je peux ouvrir les fichiers**
 
