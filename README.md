@@ -2,15 +2,25 @@
 ## Sommaire
 
 [1. Data](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#1-data)
+
 [1.1 Network input data](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#11-network-input-data)
+
 [1.2 Labels](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#12-labels)
+
 [1.3 Notes](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#13-notes)
+
 [2 Objectives](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#2-objectives)
+
 [2.1 General objectives](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#21-general-objectives)
+
 [2.2 Image patches classification](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#22-image-patches-classification)
+
 [2.3 Image segmentation](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#23-image-segmentation)
+
 [3. Development environment](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#3-development-environment)
+
 [3.1 Python packages used](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#31-python-packages-used)
+
 [4. Réunions](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#4-r%C3%A9unions)
 
 ## 1. Data
