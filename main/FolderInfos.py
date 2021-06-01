@@ -5,6 +5,7 @@ from platform import system
 
 
 class FolderInfos:
+    input_data_folder = None
     data_folder = None
     base_folder = None
     base_filename = None
@@ -17,13 +18,14 @@ class FolderInfos:
             FolderInfos.separator = "\\"
         while True:
             FolderInfos.id = strftime("%Y-%m-%d_%Hh%Mmin%Ss", localtime())
-            FolderInfos.data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-3] + ["data"+FolderInfos.separator])
+            FolderInfos.data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + ["data_out"+FolderInfos.separator])
+            FolderInfos.input_data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + ["data_in"])
             if subdir != "":
                 FolderInfos.data_folder += subdir +FolderInfos.separator if subdir[-1] != FolderInfos.separator else subdir
             FolderInfos.base_folder = FolderInfos.data_folder + FolderInfos.id + "_"+custom_name+FolderInfos.separator
             FolderInfos.base_filename = FolderInfos.base_folder + FolderInfos.id+"_"+custom_name
             try:
-                os.mkdir(FolderInfos.base_folder)
+                # os.mkdir(FolderInfos.base_folder)
                 break
             except:
                 print("waiting..... folder name already taken")
