@@ -73,7 +73,7 @@ This time, we take the image and we want that the network outputs the category o
 
 ## 3. Development environment
 
-### 2.1 Python packages used
+### 3.1 Python packages used
 Python 3.7 : mandatory for windows users : allows to use rasterio
 
 |Package|Utilisation|
