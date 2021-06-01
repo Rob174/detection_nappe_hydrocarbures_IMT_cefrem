@@ -37,7 +37,7 @@ C'est le header contenant les métadonnées de l'image :
 
 #### 1.1.2 Les labels
 
-Il s'agit de .... images segmentées manuellement
+Il s'agit de 1 000 images segmentées manuellement
 
 Pour indiquer quelles zones de l'images appartiennent à quelle catégorie, les chercheurs du CEFREM ont tracer des polygones sur l'image et indiqué à quel catégorie les pixels à l'intérieur de polygone appartiennent. On fourni alors les coordonnées en px et en coordonnées "gps" des points du polygone dans un fichier ... **#TOASK** (avec QGIS)
 
