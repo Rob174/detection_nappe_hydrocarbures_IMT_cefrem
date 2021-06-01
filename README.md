@@ -19,27 +19,15 @@ C'est l'image en format binaire
 C'est le header contenant les métadonnées de l'image : 
 (documentation [ici](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
 * map info : origine, orientation, et taille d'un pixel , potentiellement
-  - Projection name
-  - Reference (tie point) pixel x location (in file coordinates)
-  - Reference (tie point) pixel y location (in file coordinates)
-  - Pixel easting
-  - Pixel northing
-  - x pixel size
-  - y pixel size
-  - Projection zone (UTM only)
-  - North or South (UTM only)
-  - Datum
-  - Units
-
 * la matrice indique : la résolution en px vers coordonnées gps, les coordonnées de base....
 * header offset : nombre d'octets représentant le header dans le fichier `.img`
-.... **#TOASK**
+
 
 #### 1.1.2 Les labels
 
 Il s'agit de 1 000 images segmentées manuellement
 
-Pour indiquer quelles zones de l'images appartiennent à quelle catégorie, les chercheurs du CEFREM ont tracer des polygones sur l'image et indiqué à quel catégorie les pixels à l'intérieur de polygone appartiennent. On fourni alors les coordonnées en px et en coordonnées "gps" des points du polygone dans un fichier ... **#TOASK** (avec QGIS)
+Pour indiquer quelles zones de l'images appartiennent à quelle catégorie, les chercheurs du CEFREM ont tracer des polygones sur l'image et indiqué à quel catégorie les pixels à l'intérieur de polygone appartiennent. On fourni alors les coordonnées en px et en coordonnées "gps" des points du polygone dans un fichier `.shp` ou `.shx` de qgis (avec QGIS). Les catégories de chaque forme sont stockées dans les fichiers `.dbf`
 
 Ces fichiers peuvent être ouverts dans python à l'aide du package ... **#TOASK**
 
@@ -47,17 +35,29 @@ Il est alors nécessaire de déterminer en python quels pixels appartiennent à 
 
 **#TODO : vérifier que je peux ouvrir les fichiers**
 
+#### 1.1.3 Notes
+
+- Le réseau pourra éventuellement avoir des difficultés pour distinguer :
+    - les 2 types de nappes d'hydrocarbures
+    - des filements de plancton de nappes d'hydrocarbures (la différence de changement d'intensité peut tout de même permettre de distinguer ces 2 types de catégories : :warning: diminution de résolution de l'image)
+    - Il sera possible d'ajouter d'autres catégories en appliquant éventuellement un seuillage aux images (par ex pour le plancton
+- On pourra dans un second temps également utilisé le niveau de confiance de chaque classification de polygone en utilisant la colone `ìndice` du fichier `.dbs`
+- Les images font environ 25 000 px de côté, cela posera peut-être des problème de mémoire (à tester)
+   - Solutions envisageables :
+      - Découper l'image en patchs (500px par ex ok mais pas moins) : ⚠️ à ne pas trop couper de motifs
+      - Dégrader la résolution : ⚠️ + haut
+
 ### 1.2 Objectifs
 
 - Segmenter l'image, indiquer pour chaque pixel à quel catégorie il appartient
 
-Il y a .... catégories (que l'on nommera classes) possibles
-* Type de pétrole 1 : pétrole provenant de bâteaux **#TOASK : nom précis**
-* Type de pétrole 2 : pétrole naturel **#TOASK : nom précis**
-* Bâteaux ? **#TOASK**
+Il y a 3 catégories (que l'on nommera classes) possibles (à cet état initial, qui ont été annotées)
+* Type de pétrole 1 : spill pétrole provenant de bâteaux
+* Type de pétrole 2 : seep pétrole naturel 
 * Le reste
 
-- Faire correspondre chaque zone à des coordonnées "gps" **# TOASK : nom précis des coordonnées**
+- Ne pas perdre les informations gps et de résolution (la 2e pr debugguer) 
+- Il sera également envisageable de ramener la moyenne des pixels de la mer sur toutes les images à une même valeur
 
 ### 1.2 Classification de patchs d'images
 
@@ -101,4 +101,6 @@ Liste de questions :
 6. Pistes sur comment les ouvrir ?
 7. Est-ce que 1 zone d'1 image peut avoir plusieurs annotations différentes ? -> non
 8. Parlé de fichiers annotation corrompus : est-ce que c'est bon maintenant et quels fichiers faut-il prendre ? -> tt bon ; De l'ordre du To de données 
-9. Confirmation du planning : 1. Classification de patchs ; 2. Segmentation d'images complètes
+9. Confirmation du planning : 1. Classification de patchs ; 2. Segmentation d'images complètes -> ok
+
+Question transversale à répondre : quelle est l'utilité de relu et des fonctions d'activation ?
