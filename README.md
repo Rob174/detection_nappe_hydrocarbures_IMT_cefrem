@@ -39,7 +39,7 @@ C'est le header contenant les métadonnées de l'image :
 
 Il s'agit de .... images segmentées manuellement
 
-Pour indiquer quelles zones de l'images appartiennent à quelle catégorie, les chercheurs du CEFREM? ont tracer des polygones sur l'image et indiqué à quel catégorie les pixels à l'intérieur de polygone appartiennent. On fourni alors les coordonnées en px et en coordonnées "gps" des points du polygone dans un fichier ... **#TOASK**
+Pour indiquer quelles zones de l'images appartiennent à quelle catégorie, les chercheurs du CEFREM ont tracer des polygones sur l'image et indiqué à quel catégorie les pixels à l'intérieur de polygone appartiennent. On fourni alors les coordonnées en px et en coordonnées "gps" des points du polygone dans un fichier ... **#TOASK** (avec QGIS)
 
 Ces fichiers peuvent être ouverts dans python à l'aide du package ... **#TOASK**
 
@@ -89,3 +89,16 @@ On prend cette fois la totalité de l'image et on veut que le réseau indique po
 ## 3. Réunions
 
 - jeudi réunion zoom
+
+- mardi 01/06 au CEFREM
+
+Liste de questions : 
+1. Script sample pour ouvrir les rasters
+2. Sample de d'image .hdr pour savoir à quoi correspond chaque label
+3. Confirmation : annotation = polygones qui permettront à terme de déterminer pour chaque pixel de l'image si il apprtient à telle ou telle catégorie
+4. Quels sont les catégories possibles (les 2 types de rejets de pétroles notamment) ?
+5. Quels fichiers contiennent les annotations ?
+6. Pistes sur comment les ouvrir ?
+7. Est-ce que 1 zone d'1 image peut avoir plusieurs annotations différentes ?
+8. Parlé de fichiers annotation corrompus : est-ce que c'est bon maintenant et quels fichiers faut-il prendre ?
+9. Confirmation du planning : 1. Classification de patchs ; 2. Segmentation d'images complètes
