@@ -1,4 +1,4 @@
-# Détection de nappes d'hydrocarbures à l'aide de réseaux de neurones
+# Détection de nappes d'hydrocarbures à l'aide de réseaux de neurones Detection
 
 ## 1. Etapes du stages
 
@@ -81,10 +81,12 @@ On prend cette fois la totalité de l'image et on veut que le réseau indique po
 
 ### 2.1 Packages python utilisés
 
+Python 3.7 : mandatory for windows users : allows to use rasterio
+
 |Package|Utilisation|
 |:---:|:---:|
 |Pytorch (torch)|Réalisation et utilisation des réseaux de neurones|
-|rasterio|Lecture des images|
+|rasterio and GDAL|Lecture des images (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3))|
 
 ## 3. Réunions
 
