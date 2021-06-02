@@ -127,3 +127,18 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/data_test/HC_seeps_20190601_S1A.dbf
+/data_test/HC_seeps_20190601_S1A.shp
+/data_test/HC_seeps_20190601_S1A.shx
+/data_test/HC_seeps_20190601_S1B.dbf
+/data_test/HC_seeps_20190601_S1B.shp
+/data_test/HC_seeps_20190601_S1B.shx
+/data_test/HC_seeps_20190618.dbf
+/data_test/HC_seeps_20190618.shp
+/data_test/HC_seeps_20190618.shx
+/data_test/Sigma0_VV_db_20190601_S1A.hdr
+/data_test/Sigma0_VV_db_20190601_S1A.img
+/data_test/Sigma0_VV_db_20190601_S1B.hdr
+/data_test/Sigma0_VV_db_20190601_S1B.img
+/data_test/Sigma0_VV_db_20190618.hdr
+/data_test/Sigma0_VV_db_20190618.img
