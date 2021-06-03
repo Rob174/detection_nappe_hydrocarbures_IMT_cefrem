@@ -86,7 +86,7 @@ for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].i
             coords = np.dstack(elem.coords.xy).tolist()[0]
             for point in coords: # Extract the point of the polygon
                 px, py = raster.index(point[0], point[1]) # Convert point coordinates from degrees to corresponding px coordinates
-                liste_points_shape.append(tuple([int(px), int(py)]))
+                liste_points_shape.append(tuple([int(py), int(px)]))
         id_shape = shapefile.id[i_shape]
         metadata = list(filter(lambda x: x[0] == id_shape, table))[0]
         label = metadata[4].strip() # strip cut all space, back to line

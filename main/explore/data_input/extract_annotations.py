@@ -63,16 +63,17 @@ for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].i
             coords = np.dstack(elem.coords.xy).tolist()[0]
             for point in coords: # Extract the point of the polygon
                 px, py = raster_object.index(point[0], point[1]) # Convert point coordinates from degrees to corresponding px coordinates
-                liste_points_shape.append(tuple([int(px), int(py)]))
+                liste_points_shape.append(tuple([int(py), int(px)]))
 
         print(liste_points_shape)
         id_shape = shp.id[i_shape]
         metadata = list(filter(lambda x:x[0] == id_shape,table))[0]
         label = metadata[4]
         points_list.append(liste_points_shape) # add the list of points of the current shape to the global list containing points of all shapes
-        draw.polygon(liste_points_shape, fill="wheat") # draw the polygon on the image
+        draw.polygon(liste_points_shape, fill="red") # draw the polygon on the image
     table.close()
     img3 = Image.blend(img, img2, 0.5) # Show it overlayed on the image with a "blending factor" of 50%
-    plt.figure()
+    plt.figure(figsize=(10,10))
     plt.imshow(img3)
-plt.show()
+    plt.savefig(FolderInfos.root_folder + "test_out"+FolderInfos.separator + "raster_annotated"+FolderInfos.separator +name+"_annotated.png")
+# plt.show()

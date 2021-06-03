@@ -6,6 +6,8 @@ class ModelFactory:
         if model_name == "efficientnetv4":
             self.model = EfficientNet.from_pretrained('efficientnet-b0',num_classes=num_classes)
         elif model_name == "deeplabv3":
-            self.model =
+            raise NotImplementedError()
+        else:
+            raise Exception("%s is not supported" % model_name)
     def __call__(self):
         return self.model
