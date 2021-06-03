@@ -145,3 +145,6 @@ Questions
 
 - Identifiant github de Mr Risser pr ajout au repo
 
+- question du découpage en patchs sans coupé les nappes d'hydrocarbures.
+- réalisation de statistiques nécessaire
+- ou tests avec l'ia
