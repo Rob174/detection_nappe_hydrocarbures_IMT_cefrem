@@ -5,7 +5,7 @@ import os
 from main.FolderInfos import FolderInfos
 import re
 from PIL import ImageDraw, Image
-from main.src.data.preprocessing.extract_rasters import get_array_raster_file
+from main.explore.data_input.extract_rasters import get_array_raster_file
 import matplotlib.pyplot as plt
 import numpy as np
 import geopandas as gpd
