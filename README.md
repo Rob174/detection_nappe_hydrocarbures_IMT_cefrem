@@ -104,6 +104,7 @@ Python 3.7 : mandatory for windows users : allows to use rasterio
 |Pytorch (torch)|Neural network|
 |rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3) to install)|
 |geopandas|To read shapefiles (cf [#5](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/5))|
+|dbf|To open the annotation files *.dbf |
 |pillow|To draw the polygon on the image|
 
 ## 4. Réunions
@@ -135,3 +136,11 @@ DONE:
 Questions:
 - est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui --> ok
 - cela me permettra de voir l'organisation des fichiers --> ok
+
+
+- jeudi 03/06 (2)
+
+Questions
+
+- Identifiant github de Mr Risser pr ajout au repo
+
