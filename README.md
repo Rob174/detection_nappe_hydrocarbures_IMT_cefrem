@@ -122,3 +122,14 @@ Liste de questions :
 9. Confirmation du planning : 1. Classification de patchs ; 2. Segmentation d'images complètes -> ok
 
 Question transversale à répondre : quelle est l'utilité de relu et des fonctions d'activation ?
+
+- jeudi 03/06
+
+DONE: 
+- script d'ouverture des raster
+- récupération de la résolution en m/px
+- récupération des annotations et constitution d'une image avec les annotation superposées avec l'image originale
+
+Questions:
+- est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui
+- cela me permettra de voir l'organisation des fichiers
