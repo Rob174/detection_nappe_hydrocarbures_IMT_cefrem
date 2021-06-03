@@ -106,6 +106,7 @@ Python 3.7 : mandatory for windows users : allows to use rasterio
 |geopandas|To read shapefiles (cf [#5](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/5))|
 |dbf|To open the annotation files *.dbf |
 |pillow|To draw the polygon on the image|
+|rich|For better logs|
 
 ## 4. Réunions
 
