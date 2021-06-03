@@ -137,5 +137,10 @@ Questions:
 - est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui --> ok
 - cela me permettra de voir l'organisation des fichiers --> ok
 
+
 - jeudi 03/06 (2)
+
+Questions
+
+- Identifiant github de Mr Risser pr ajout au repo
 
