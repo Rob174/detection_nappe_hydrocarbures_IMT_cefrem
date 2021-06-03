@@ -133,5 +133,5 @@ DONE:
 - récupération des annotations et constitution d'une image avec les annotation superposées avec l'image originale
 
 Questions:
-- est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui
-- cela me permettra de voir l'organisation des fichiers
+- est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui --> ok
+- cela me permettra de voir l'organisation des fichiers --> ok
