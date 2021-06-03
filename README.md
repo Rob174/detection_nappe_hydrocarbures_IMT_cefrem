@@ -142,7 +142,6 @@ Questions:
 - jeudi 03/06 (2)
 
 Questions
-
 - Identifiant github de Mr Risser pr ajout au repo
 
 - question du découpage en patchs sans coupé les nappes d'hydrocarbures.
