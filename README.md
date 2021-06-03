@@ -102,7 +102,9 @@ Python 3.7 : mandatory for windows users : allows to use rasterio
 |Package|Utilisation|
 |:---:|:---:|
 |Pytorch (torch)|Neural network|
-|rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3))|
+|rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3) to install)|
+|geopandas|To read shapefiles (cf [#5](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/5))|
+|pillow|To draw the polygon on the image|
 
 ## 4. Réunions
 
@@ -131,5 +133,5 @@ DONE:
 - récupération des annotations et constitution d'une image avec les annotation superposées avec l'image originale
 
 Questions:
-- est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui
-- cela me permettra de voir l'organisation des fichiers
+- est-ce qu'il serait envisageable que l'on commence le transfert aujourd'hui --> ok
+- cela me permettra de voir l'organisation des fichiers --> ok
