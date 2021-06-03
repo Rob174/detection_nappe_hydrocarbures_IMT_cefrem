@@ -1,3 +1,5 @@
+from typing import List
+
 import rasterio
 from rich.console import Console
 from rich.table import Table
@@ -8,26 +10,18 @@ import re
 import numpy as np
 import time
 
-print("1----------------")
-
-
-def get_array_raster_file(path):
-    with rasterio.open(path) as file_object:
-        dataset = file_object.read(1)
-    return dataset, file_object
-
-
-print("1----------------")
+# Get file names ....
 FolderInfos.init(test_without_data=True)
-files = [FolderInfos.data_test + f for f in os.listdir(FolderInfos.data_test)]
-dico_by_extensions = {}
+files = [FolderInfos.data_test + f for f in os.listdir(FolderInfos.data_test)] # full path of files
+dico_by_extensions = {} # will store all files accessible their extension then name to get the full path
 for sf, f in zip(os.listdir(FolderInfos.data_test), files):
+    # Extract the name, starting from the date of the file without the extension
     name = re.sub("^([A-Za-z0-9_]+[A-Za-z_]{,2})(20[0-9_A-Z]+)(\\.[a-z]+)$", "\\2", sf)
+    # Get the extension of the file
     ext = sf.split(".")[-1]
-    if ext not in dico_by_extensions:
-        dico_by_extensions[ext] = {}
-    dico_by_extensions[ext][name] = f
-print("1----------------")
+    if ext not in dico_by_extensions: # if the extension is not a key of the dictionnary
+        dico_by_extensions[ext] = {} # we create it and create the inner dict which will store all the pairs name, fullpath
+    dico_by_extensions[ext][name] = f # store the pair name, fullpath
 # Measures...
 list_imgs_ids = ["027481_0319CB_0EB7", "016505_01F10F_CE84", "016753_01F88A_4864"]
 dico_times = {k: {"values": [], "shape": None, "mem_size": None} for k in list_imgs_ids}
@@ -35,13 +29,14 @@ for i in range(10):
     print(f"Step {i}")
     for [[name, path], uniq_id] in zip(dico_by_extensions["img"].items(), list_imgs_ids):
         initial_time = time.time_ns()
-        dataset, file_object = get_array_raster_file(path)
-        dico_times[uniq_id]["values"].append(time.time_ns() - initial_time)
+        with rasterio.open(path) as file_object:
+            dataset = file_object.read(1)
+        dico_times[uniq_id]["values"].append(time.time_ns() - initial_time) # save the excution time in ns
         dico_times[uniq_id]["shape"] = dataset.shape
-        dico_times[uniq_id]["mem_size"] = dataset.nbytes
+        dico_times[uniq_id]["mem_size"] = dataset.nbytes# save the number of bytes take by the array representer the raster image
 print("We have the following access time for each image:")
-console = Console(color_system="windows")
-table = Table(show_header=True, header_style="bold magenta")
+console = Console(color_system="windows") # Declare the object console which will manage improved logs
+table = Table(show_header=True, header_style="bold magenta") # Create the table and then add the columns names
 table.add_column("Name")
 table.add_column("Access time (ms)")
 table.add_column("Shape of the image")
@@ -49,17 +44,17 @@ table.add_column("Memory size (MB)")
 for name_img, values in dico_times.items():
     table.add_row(
         f"{name_img} avg time", str(np.mean(values["values"]) * 1e-6), str(values["shape"]),
-        str(values["mem_size"] * 1e-6)
+        str(values["mem_size"] * 1e-6) # Add row with values (str: mandatory) in the same order as their corresponding column
     )
-all_times = [v["values"] for v in dico_times.values()]
+all_times: List[List[float]] = [v["values"] for v in dico_times.values()]
 table.add_row(
     f"Global avg time", str(np.mean(np.concatenate(all_times, axis=0) * 1e-6)), "-"
 )
-console.print(table)
+console.print(table) # show the table
 
 import h5py
 
-images_hdf5 = h5py.File(f"{FolderInfos.input_data_folder}test_tmp_images.hdf5", "w")
+images_hdf5 = h5py.File(f"{FolderInfos.input_data_folder}test_tmp_images.hdf5", "w") # create the hdf5 file
 
 # Measures...
 list_imgs_ids = ["027481_0319CB_0EB7", "016505_01F10F_CE84", "016753_01F88A_4864"]
