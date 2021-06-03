@@ -102,8 +102,8 @@ Python 3.7 : mandatory for windows users : allows to use rasterio
 |Package|Utilisation|
 |:---:|:---:|
 |Pytorch (torch)|Neural network|
-|rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3)) to install|
-|geopandas|To read shapefiles (cf [#5](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/5)) to install|
+|rasterio and GDAL|To read raster files (cf [#3](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/3) to install)|
+|geopandas|To read shapefiles (cf [#5](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/5))|
 |pillow|To draw the polygon on the image|
 
 ## 4. Réunions
