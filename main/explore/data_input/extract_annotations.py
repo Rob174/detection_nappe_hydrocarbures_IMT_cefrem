@@ -74,6 +74,7 @@ for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].i
     table.close()
     img3 = Image.blend(img, img2, 0.5) # Show it overlayed on the image with a "blending factor" of 50%
     plt.figure(figsize=(10,10))
+    plt.title(name)
     plt.imshow(img3)
     plt.savefig(FolderInfos.root_folder + "test_out"+FolderInfos.separator + "raster_annotated"+FolderInfos.separator +name+"_annotated.png")
 # plt.show()
