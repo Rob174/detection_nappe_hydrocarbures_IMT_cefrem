@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import geopandas as gpd
 from shapely import speedups
+import dbf
 
 speedups.disable()
 
@@ -30,7 +31,7 @@ for sf,f in zip(os.listdir(FolderInfos.data_test),files):
 
 
 
-for [[name, pathShp],[_,pathImg]] in zip(dico_by_extensions["shp"].items(),dico_by_extensions["img"].items()):
+for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].items(),dico_by_extensions["img"].items(),dico_by_extensions["dbf"].items()):
     # We loop through raster images and shapefiles
     shp = gpd.read_file(pathShp) # Open the shapefile
     array,raster_object = get_array_raster_file(pathImg) # Get raster file
@@ -44,9 +45,10 @@ for [[name, pathShp],[_,pathImg]] in zip(dico_by_extensions["shp"].items(),dico_
     img2 = img.copy() # Copy as Pillow modifies the input, to be able to make the overlay
     draw = ImageDraw.ImageDraw(img2) # draw the base image
 
-    g = [i for i in shp.geometry]
-    nb = 0
-    for shape in g:
+    ## Open corresponding database storing
+    table = dbf.Table(pathDbf) # Table containing the class and the index of the polygon
+    table.open()
+    for i_shape,shape in enumerate(shp.geometry):
         liste_points_shape: List[Tuple[int,int]] = [] # will contain the list of point of this shape
         elem = shape.boundary # extract the boundary of the object shape (with other properties)
         if elem.geom_type != "LineString":# a group of lines defines the polygon : # https://help.arcgis.com/en/geodatabase/10.0/sdk/arcsde/concepts/geometry/shapes/types.htm
@@ -64,8 +66,12 @@ for [[name, pathShp],[_,pathImg]] in zip(dico_by_extensions["shp"].items(),dico_
                 liste_points_shape.append(tuple([int(px), int(py)]))
 
         print(liste_points_shape)
+        id_shape = shp.id[i_shape]
+        metadata = list(filter(lambda x:x[0] == id_shape,table))[0]
+        label = metadata[4]
         points_list.append(liste_points_shape) # add the list of points of the current shape to the global list containing points of all shapes
         draw.polygon(liste_points_shape, fill="wheat") # draw the polygon on the image
+    table.close()
     img3 = Image.blend(img, img2, 0.5) # Show it overlayed on the image with a "blending factor" of 50%
     plt.figure()
     plt.imshow(img3)
