@@ -31,25 +31,29 @@ The `rasterio` will allow the user to open raster files which consists of 3 file
 
 - one file `.img`
 
-It is the image written in a binary format
+It is the image written in a binary format.
 
 - one file `.hdr`
 
 It is the header containing the metadata of the image :
 (documentation [here](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
 
+Raw images `.tiff` has been preprocessed by the snap software with several modules: **#TODO**
+
+We have(will for the moment) reproduced it as a python pipeline in order to change the preprocessing, remove one step to see the influence on the final precision of the AI.
 
 ### 1.2 Labels
 
 There are 4 000 images manually segmented 
 
-To highlight which regions of the image belong to which category, CEFREM members have drawn polygons on the image with qgis and indicated at which category pixels inside them belong. We have access to their vertices with pixel coordinates or gps coordinates with the  `.shp` or `.shx` files. We can find the caategory of each polygon in the  `.dbf` file.
+To highlight which regions of the image belong to which category, CEFREM members have drawn polygons on the image with qgis and indicated at which category pixels inside them belong. We have access to their vertices with pixel coordinates or gps coordinates with the  `.shp` file. We can find the caategory of each polygon in the  `.dbf` file.
 
-Ces fichiers peuvent être ouverts dans python à l'aide du package ... **#TODO**
+These files can be opened in python with the **geopandas** package
 
 So, it is necessary to determine with python to which category belong which pixels thanks to the polygons.
 
-**#TODO : vérifier que je peux ouvrir les fichiers**
+In the future we may use another shapefile to distinguish the land from the sea.
+It might be possible to annotate the boats by using data from the [marinetraffic website](https://pypi.org/project/Marine-Traffic-API/)
 
 ### 1.3 Notes
 
