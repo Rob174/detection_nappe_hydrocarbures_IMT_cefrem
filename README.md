@@ -63,7 +63,7 @@ or to use AIS data.
 In the future, it will be possible to calculate the wind field of the raster image thanks to snap (cf Radar > SAR Applications > Ocean Applications > Wind Field Estimation)
 It will be possible to apply a speckle operation before in order to smooth the ouput or a moving average. We can also later filter small objects...
 
-We will be able to add land labels thanks to premade maps. We just need to adjust them (put a 2000-5000 meters margin)
+We will be able to add land labels thanks to premade maps. We just need to adjust them (put a 2000-5000 meters margin). It has been done directly in QGIS.
 
 ### 1.3 Notes
 
