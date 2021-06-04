@@ -38,7 +38,11 @@ It is the image written in a binary format.
 It is the header containing the metadata of the image :
 (documentation [here](https://www.l3harrisgeospatial.com/docs/enviheaderfiles.html#:~:text=The%20ENVI%20header%20file%20contains,hdr.))
 
-Raw images `.tiff` has been preprocessed by the snap software with several modules: **#TODO**
+Raw images `.tiff` has been opened with snap (VV (vertical polarisation) channel) preprocessed by the snap software with several modules: 
+
+pipeline used at the beginning of the internship (cf code of the folder to see effectively which preprocessing steps are used):
+![image](https://user-images.githubusercontent.com/42274857/120794873-b0307580-c530-11eb-8961-61f669ba7e76.png)
+
 
 We have(will for the moment) reproduced it as a python pipeline in order to change the preprocessing, remove one step to see the influence on the final precision of the AI.
 
@@ -53,7 +57,13 @@ These files can be opened in python with the **geopandas** package
 So, it is necessary to determine with python to which category belong which pixels thanks to the polygons.
 
 In the future we may use another shapefile to distinguish the land from the sea.
-It might be possible to annotate the boats by using data from the [marinetraffic website](https://pypi.org/project/Marine-Traffic-API/)
+It might be possible to annotate the boats by using data from the [marinetraffic website](https://pypi.org/project/Marine-Traffic-API/). (But there are API quotas....)
+or to use AIS data.
+
+In the future, it will be possible to calculate the wind field of the raster image thanks to snap (cf Radar > SAR Applications > Ocean Applications > Wind Field Estimation)
+It will be possible to apply a speckle operation before in order to smooth the ouput or a moving average. We can also later filter small objects...
+
+We will be able to add land labels thanks to premade maps. We just need to adjust them (put a 2000-5000 meters margin)
 
 ### 1.3 Notes
 
@@ -111,6 +121,11 @@ Python 3.7 : mandatory for windows users : allows to use rasterio
 |dbf|To open the annotation files *.dbf |
 |pillow|To draw the polygon on the image|
 |rich|For better logs|
+
+### 3.2 Other sotwares
+
+- QGIS: to visualize polygons and rasters
+- snap: to preprocess the images
 
 ## 4. Réunions
 
