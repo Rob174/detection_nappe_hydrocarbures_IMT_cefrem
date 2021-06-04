@@ -4,6 +4,19 @@
 
 # {"shp":{"id":fullpath,...}, "img":, {"id":fullpath,...}}
 
+import os
+from main.FolderInfos import FolderInfos
+
+shapefile_path = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+"Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
+dbffile_path = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+"Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
+images_path_folder = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+FolderInfos.separator.join("originals\\Sentinel1\\TraitementSnap".split("\\")) + FolderInfos.separator
+
+dico_by_extensions = {"img":{}}
+
+for folder in os.listdir(images_path_folder):
+    img_file_path = images_path_folder+folder+FolderInfos.separator+"Sigma0_VV_db.img"
+    dico_by_extensions["img"] = img_file_path
+
 # Write the following files:
 
 """
@@ -22,13 +35,12 @@ from typing import Tuple, List
 
 from h5py import File
 import json
-from main.FolderInfos import FolderInfos
 
 FolderInfos.init(test_without_data=True)
 
 ## Create objects hdf5 and container for th images informations
-images_hdf5 = File(f"{FolderInfos.input_data_folder}images.hdf5","w")
-annotations_labels_hdf5 = File(f"{FolderInfos.input_data_folder}annotations_labels.hdf5","w")
+images_hdf5 = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5","w")
+annotations_labels_hdf5 = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5","w")
 images_informations = {}
 
 import geopandas as gpd
@@ -40,8 +52,13 @@ import dbf
 
 speedups.disable() # To avoid errors
 
+## Open the shapefile
+shapefile = gpd.read_file(shapefile_path)
+## Open corresponding database storing
+table = dbf.Table(dbffile_path)  # Table containing the class and the index of the polygon
+table.open()
 ## Loop through images, open them and add their informations to the correspinding objects
-for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].items(),dico_by_extensions["img"].items(),dico_by_extensions["dbf"].items()):
+for [name,pathImg] in dico_by_extensions["img"].items():
     # We loop through raster images and shapefiles
     ## Open the raster
     with rasterio.open(pathImg) as raster: ## (NB: with keyword allows to manage files (properly open and close them)
@@ -66,11 +83,6 @@ for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].i
     segmentation_map = np.zeros(shape=image_array.shape,dtype=np.uint8)
     segmentation_map = Image.fromarray(segmentation_map)
     draw = ImageDraw.ImageDraw(segmentation_map)  # draw the base image
-    ## Open the shapefile
-    shapefile = gpd.read_file(pathShp)
-    ## Open corresponding database storing
-    table = dbf.Table(pathDbf)  # Table containing the class and the index of the polygon
-    table.open()
     for i_shape,shape in enumerate(shapefile.geometry):
         liste_points_shape: List[Tuple[int,int]] = [] # will contain the list of point of this shape
         elem = shape.boundary # extract the boundary of the object shape (with other properties)
@@ -102,5 +114,5 @@ for [[name, pathShp],[_,pathImg],[_,pathDbf]] in zip(dico_by_extensions["shp"].i
     annotations_labels_hdf5.create_dataset(name,shape=segmentation_map.shape,dtype='i',data=segmentation_map)
 
 # Write the image informations to the corresponding file
-with open(f"{FolderInfos.input_data_folder}images_informations.json") as fp: # NB: fp = filepointer
+with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp: # NB: fp = filepointer
     json.dump(images_informations,fp)
