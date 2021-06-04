@@ -4,18 +4,20 @@
 
 # {"shp":{"id":fullpath,...}, "img":, {"id":fullpath,...}}
 
-import os
+import os, re
 from main.FolderInfos import FolderInfos
-
+FolderInfos.init(test_without_data=True)
 shapefile_path = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+"Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
 dbffile_path = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+"Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
-images_path_folder = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+FolderInfos.separator.join("originals\\Sentinel1\\TraitementSnap".split("\\")) + FolderInfos.separator
+images_path_folder = FolderInfos.input_data_folder+"originals"+FolderInfos.separator+FolderInfos.separator.join("Sentinel1\\TraitementSnap".split("\\")) + FolderInfos.separator
 
 dico_by_extensions = {"img":{}}
 
 for folder in os.listdir(images_path_folder):
     img_file_path = images_path_folder+folder+FolderInfos.separator+"Sigma0_VV_db.img"
-    dico_by_extensions["img"] = img_file_path
+    # Extract the name of the file
+    name = re.sub("^([A-Za-z0-9_]+[A-Za-z_]{,2})(20[0-9_A-Z]+)(\\.[a-z]+)$","\\2",img_file_path.split(FolderInfos.separator)[-2])
+    dico_by_extensions["img"][name] = img_file_path
 
 # Write the following files:
 
@@ -58,7 +60,9 @@ shapefile = gpd.read_file(shapefile_path)
 table = dbf.Table(dbffile_path)  # Table containing the class and the index of the polygon
 table.open()
 ## Loop through images, open them and add their informations to the correspinding objects
-for [name,pathImg] in dico_by_extensions["img"].items():
+nb_elems = len(dico_by_extensions["img"])
+for i,[name,pathImg] in enumerate(dico_by_extensions["img"].items()):
+    print(f"Progress {(i+1)/nb_elems}%")
     # We loop through raster images and shapefiles
     ## Open the raster
     with rasterio.open(pathImg) as raster: ## (NB: with keyword allows to manage files (properly open and close them)
@@ -103,16 +107,16 @@ for [name,pathImg] in dico_by_extensions["img"].items():
         metadata = list(filter(lambda x: x[0] == id_shape, table))[0]
         label = metadata[4].strip() # strip cut all space, back to line
         if label == "seep":
-            color  = "# 010101"
+            color  = "#010101"
         elif label == "spill":
-            color  = "# 020202"
+            color  = "#020202"
         else:
-            color = "# 000000"
+            color = "#000000"
         draw.polygon(liste_points_shape, fill=color)
-    table.close()
     segmentation_map = np.array(segmentation_map,dtype=np.uint8)
     annotations_labels_hdf5.create_dataset(name,shape=segmentation_map.shape,dtype='i',data=segmentation_map)
 
 # Write the image informations to the corresponding file
 with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp: # NB: fp = filepointer
     json.dump(images_informations,fp)
+table.close()
