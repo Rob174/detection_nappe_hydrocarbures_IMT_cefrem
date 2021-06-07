@@ -10,6 +10,7 @@ shapefile_path = FolderInfos.input_data_folder +"originals" +FolderInfos.separat
 dbffile_path = FolderInfos.input_data_folder +"originals" +FolderInfos.separator +"Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
 images_path_folder = FolderInfos.input_data_folder +"originals" +FolderInfos.separator +FolderInfos.separator.join \
     ("Sentinel1\\TraitementSnap".split("\\")) + FolderInfos.separator
+shapefile_earth = FolderInfos.input_data_folder+"World map_Bufd.shp"
 
 dico_by_extensions = {"img" :{}}
 dico_infos_img = {}
@@ -47,13 +48,20 @@ from h5py import File
 import json
 
 FolderInfos.init(test_without_data=True)
-
+def get_mode(path):
+    mode = "r+"
+    if os.path.exists(path) is False:
+        mode = "w"
+    return mode
+already_done = None
 ## Create objects hdf5 and container for th images informations
-with File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5" ,"r") as images_hdf5:
-    already_done = images_hdf5.keys()
-
-images_hdf5 = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5" ,"w")
-annotations_labels_hdf5 = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5" ,"w")
+if os.path.exists(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5") is True:
+    with File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5" ,"r") as images_hdf5:
+        already_done = list(images_hdf5.keys())
+path_img = f"{FolderInfos.input_data_folder}images_preprocessed.hdf5"
+mode = get_mode(path_img)
+images_hdf5 = File(path_img ,mode)
+annotations_labels_hdf5 = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5" ,mode)
 images_informations = {}
 
 import geopandas as gpd
@@ -64,6 +72,28 @@ from PIL import Image ,ImageDraw # PIL = pillow
 import dbf
 
 speedups.disable() # To avoid errors
+#
+# # Extract earth land points
+# land_point_list = []
+# shapefile_land = gpd.read_file(shapefile_earth)
+# for shape in shapefile_land.geometry:
+#     liste_points_shape: List[Tuple[int ,int]] = [] # will contain the list of point of this shape
+#     elem = shape.boundary # extract the boundary of the object shape (with other properties)
+#     if elem.geom_type != "LineString"  :# the polygon is defined by a group of lines defines the polygon : https://help.arcgis.com/en/geodatabase/10.0/sdk/arcsde/concepts/geometry/shapes/types.htm
+#         # Utiliser le numéro de vertice pr éviter les croisements
+#         for line in elem: # Loop through lines of the "Multi" - LineString
+#             coords = np.dstack(line.coords.xy).tolist()[0] # get the list of points
+#             for point in coords: # Extract the point of the polygon
+#                 land_point_list.append(tuple([point[0], point[1]]))
+#
+#     else: # the polygon is defined one line which creates a closed shape
+#         coords = np.dstack(elem.coords.xy).tolist()[0]
+#         for point in coords: # Extract the point of the polygon
+#             # Convert point coordinates from degrees to corresponding px coordinates
+#             px, py = raster.index(point[0], point[1])
+#             liste_points_shape.append(tuple([int(py), int(px)]))
+
+
 
 ## Open the shapefile
 shapefile = gpd.read_file(shapefile_path)
@@ -73,8 +103,9 @@ table.open()
 ## Loop through images, open them and add their informations to the correspinding objects
 nb_elems = len(dico_by_extensions["img"])
 for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
-    print(f"Progress {( i +1 ) /nb_elems}%")
-    if name in already_done:
+    print(f"Progress {( i +1 ) /nb_elems*100:.2f}%")
+    if already_done is not None and name in already_done:
+        print(f"{name} has already been done")
         continue # We skip this image
     # We loop through raster images and shapefiles
     ## Open the raster
@@ -82,7 +113,7 @@ for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
         image_array: np.ndarray = raster.read(1) # Get the image array
         # Then, we create a "dataset" to be able to access the data by calling hdf5_object[name]. It is not a real dataset as we commonly think as only one image is in it.
         images_hdf5.create_dataset(name ,shape=image_array.shape ,dtype='f',
-                                   data=image_array)
+                                   data=image_array, compression='gzip', compression_opts=9)
         # Properties computation
         ## Resolution computation
         # From https://gis.stackexchange.com/questions/311063/extract-raster-information-using-python
@@ -97,7 +128,7 @@ for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
         coord_lowerright: Tuple[float ,float] = raster.transform * (raster.width, raster.height)
         images_informations[name] = {"resolution" :(xres ,yres) ,"coord_upperleft" :coord_upperleft
                                      ,"coord_lowerright" :coord_lowerright,
-                                     **dico_infos_img} # **dictionary = dictionnary unpacking: we add the content of the dict to the other dict
+                                     **dico_infos_img[name]} # **dictionary = dictionnary unpacking: we add the content of the dict to the other dict
 
     # Shapefile segmentation map computation
     ## Create empty array with the same shape as the original image
@@ -114,7 +145,7 @@ for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
                 for point in coords: # Extract the point of the polygon
                     px, py = raster.index(point[0], point
                         [1]) # Convert point coordinates from degrees to corresponding px coordinates
-                    liste_points_shape.append(tuple([int(px), int(py)]))
+                    liste_points_shape.append(tuple([int(py), int(px)]))
 
         else: # the polygon is defined one line which creates a closed shape
             coords = np.dstack(elem.coords.xy).tolist()[0]
@@ -132,10 +163,17 @@ for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
         else:
             color = "#000000"
         draw.polygon(liste_points_shape, fill=color)
+        # Extract
     segmentation_map = np.array(segmentation_map ,dtype=np.uint8)
-    annotations_labels_hdf5.create_dataset(name ,shape=segmentation_map.shape ,dtype='i' ,data=segmentation_map)
+    annotations_labels_hdf5.create_dataset(name ,shape=segmentation_map.shape ,dtype='i' ,data=segmentation_map,
+                                           compression='gzip', compression_opts=9)
 
 # Write the image informations to the corresponding file
-with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp: # NB: fp = filepointer
-    json.dump(images_informations ,fp)
+with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json",mode) as fp: # NB: fp = filepointer
+    previous_images_informations = json.load(fp) if mode != "w" else {}
+    previous_images_informations.update(images_informations)
+    fp.seek(0)
+    json.dump(previous_images_informations ,fp,indent=4)
 table.close()
+images_hdf5.close()
+annotations_labels_hdf5.close()
