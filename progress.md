@@ -12,3 +12,4 @@
 ✔️ Object to save data 
 
 ⏲️ Classification dataset with fixed pixel grid
+- ⏲️Order to process patches
