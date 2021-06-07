@@ -18,6 +18,10 @@ class DataGet:
     def __getitem__(self, item: str) -> Tuple[np.ndarray, np.ndarray]:
         return self.images[item], self.annotations_labels[item]
 
+    def close(self):
+        self.images.close()
+        self.annotations_labels.close()
+
     def __len__(self) -> int:
         return min(len(self.images.keys()), len(self.annotations_labels.keys()), len(self.images_infos.keys()))
 
