@@ -4,6 +4,6 @@
 
 Cache transfert in progress
 
-Patch creation algorithm ok
+Patch creation algorithm ~ok
 
 Object to save data ok
