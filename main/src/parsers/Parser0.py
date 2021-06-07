@@ -5,7 +5,7 @@ class Parser0:
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.args = {
-                    '-img_w':['image_width',532,int,"Indique la gpu visible par le script tensorflow"],
+                    '-grid_size':['grid_size',1000,int,"Indique la gpu visible par le script tensorflow"],
 
 
 

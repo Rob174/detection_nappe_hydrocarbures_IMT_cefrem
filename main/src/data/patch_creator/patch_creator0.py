@@ -16,12 +16,23 @@ class Patch_creator0:
         self.coords = [] # For logs: to show the square on the original image
         self.test = test
         self.images_informations_preprocessed: dict = images_informations_preprocessed
+        self.attr_resolution_used = {"x":{}, "y":{}}
 
     def num_available_patches(self,image: np.ndarray ) -> int:
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
 
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int) -> List[np.ndarray]:
-        num_lines_patches = int(image.shape[0] / self.attr_grid_size_px)
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> np.ndarray:
+        if count_reso is True:
+            radius_earth_meters = 6371e3
+            reso_x = self.images_informations_preprocessed[image_name]["resolution"][0] * np.pi/180. * radius_earth_meters
+            reso_y = self.images_informations_preprocessed[image_name]["resolution"][1] * np.pi/180. * radius_earth_meters
+            if reso_x not in self.attr_resolution_used["x"].keys():
+                self.attr_resolution_used["x"][reso_x] = 0
+            if reso_x not in self.attr_resolution_used["y"].keys():
+                self.attr_resolution_used["y"][reso_y] = 0
+            self.attr_resolution_used["x"][reso_x] += 1
+            self.attr_resolution_used["y"][reso_y] += 1
+
         num_cols_patches = int(image.shape[1] / self.attr_grid_size_px)
         id_col = (patch_id) % num_cols_patches
         id_line = patch_id // num_cols_patches

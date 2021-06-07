@@ -35,3 +35,8 @@ class FolderInfos:
             except:
                 print("waiting..... folder name already taken")
                 time.sleep(4)
+    @staticmethod
+    def open_mode_suggestion(path):
+        if os.path.exists(path) is True:
+            return "r+"
+        return "w"
