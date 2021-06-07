@@ -1,10 +1,14 @@
 # Progress
 
-- 07-06-2021
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress
 
-Cache transfert in progress
+## 07-06-2021
 
-Patch creation algorithm ok
-- tests in progress
+⏲️ Cache transfert
 
-Object to save data ok
+✔️Patch creation algorithm 
+- ✔️ tests
+
+✔️ Object to save data 
+
+⏲️ Classification dataset with fixed pixel grid
