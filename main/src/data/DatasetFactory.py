@@ -1,4 +1,4 @@
-from main.src.data.segmentation.DataSentinel1Segmentation import DataGet
+from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 
 
 class DatasetFactory:
@@ -8,7 +8,7 @@ class DatasetFactory:
                 self.dataset = # TODO
         elif usage_type == "segmentation":
             if dataset_name == "sentinel1":
-                self.dataset = DataGet()
+                self.dataset = DataSentinel1Segmentation()
         else:
             raise Exception(f"{usage_type} not supported")
     def __call__(self):
