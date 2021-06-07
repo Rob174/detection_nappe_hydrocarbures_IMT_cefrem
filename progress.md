@@ -13,3 +13,4 @@
 
 ⏲️ Classification dataset with fixed pixel grid
 - ✔️Order to process patches
+- ✔️DatasetFactory 
