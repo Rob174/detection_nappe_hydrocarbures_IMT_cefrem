@@ -42,7 +42,7 @@ class DatasetFactory:
             json.dump({"resolutionX":reso_x_stats,"resolutionY":reso_y_stats},fp)
 
 if __name__ == "__main__":
-    FolderInfos.init(test_without_data=True)
+    FolderInfos.init(test_without_data=False)
     dataset_factory = DatasetFactory(dataset_name="sentinel1",usage_type="classification",patch_creator="fixed_px",patch_padding="no",grid_size=1000,input_size=256)
     length = len(dataset_factory)
     print(f"{length} items in this dataset")
@@ -50,4 +50,4 @@ if __name__ == "__main__":
         input,output=dataset_factory[id]
         if id % int(length*0.1) == 0:
             print(f"{id/length*100:.2f} done")
-    print(dataset_factory.attr_dataset.attrend_resolutionX_stats,dataset_factory.attr_dataset.attrend_resolutionY_stats)
+    end = 0

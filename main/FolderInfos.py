@@ -32,7 +32,8 @@ class FolderInfos:
                 if test_without_data is False:
                     os.mkdir(FolderInfos.base_folder)
                 break
-            except:
+            except Exception as e:
+                print(e)
                 print("waiting..... folder name already taken")
                 time.sleep(4)
     @staticmethod
