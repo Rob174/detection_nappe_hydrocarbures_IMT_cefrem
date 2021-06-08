@@ -25,3 +25,4 @@
 
 - auto backup of the parameters thanks to the attr_ prefix
 - main script using the objects
+- get the position of the image/patch
