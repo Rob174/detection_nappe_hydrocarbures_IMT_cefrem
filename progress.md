@@ -19,7 +19,7 @@
 - ✔️ Reduce patch size 
 - ✔️ support resolution information backup
 - 🔨 Create Dataloader object
-- 
+- ✔️ Support for Resnet18, VGG16 (EfficientNetv4)
 
 ## TODO
 
