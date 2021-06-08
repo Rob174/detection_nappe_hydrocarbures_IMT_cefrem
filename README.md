@@ -167,3 +167,9 @@ Abordé
 - question du découpage en patchs sans coupé les nappes d'hydrocarbures.
 - réalisation de statistiques nécessaire
 - ou tests avec l'ia
+
+- mardi 08/06:
+
+Questions
+- Taille de grille ok ? 
+- Grille avec padding nécessaire ?
