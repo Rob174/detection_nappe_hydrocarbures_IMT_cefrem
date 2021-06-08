@@ -173,3 +173,4 @@ Abordé
 Questions
 - Taille de grille ok ? 
 - Grille avec padding nécessaire ?
+- Avis solution de visualisation des résultats ?
