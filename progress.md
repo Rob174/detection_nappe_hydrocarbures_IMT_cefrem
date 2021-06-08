@@ -23,7 +23,8 @@
 - ⏲️ Resolution statistics with patch size of 1000 px and output size of 255
 - ⏲️ Resolution statistics with patch size of 500 px and output size of 255
 - ⏲️ warp affine transformation before making the grid
-
+  - ⏲️ add transformation matrix to the cache informations
+  - ⏳ apply the transformation
 ## TODO
 
 - auto backup of the parameters thanks to the attr_ prefix
