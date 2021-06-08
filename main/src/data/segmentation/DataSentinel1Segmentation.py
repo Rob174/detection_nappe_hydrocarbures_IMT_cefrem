@@ -7,13 +7,14 @@ from h5py import File
 
 from main.FolderInfos import FolderInfos
 import main.src.data.resizer as resizer
+import copy
 
 
 class DataSentinel1Segmentation:
     def __init__(self,limit_num_images=None,input_size=None):
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp:
-            self.images_infos = json.load(fp)
+            self.images_infos = copy.deepcopy(json.load(fp))
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
         with open(f"{FolderInfos.input_data_folder}class_mappings.json") as fp:
@@ -33,7 +34,7 @@ class DataSentinel1Segmentation:
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
 
     def save_resolution(self,item:str,img:np.ndarray):
-        resolution = self.images_infos[item]["resolution"]
+        resolution = [v for v in self.images_infos[item]["resolution"]]
         scale_factor = self.attr_resizer.attr_out_size_w / img.shape[1]
         resolution[0] *= scale_factor
         resolution[1] *= scale_factor

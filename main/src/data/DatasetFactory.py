@@ -7,6 +7,8 @@ from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Se
 import matplotlib.pyplot as plt
 import numpy as np
 import json
+# import plotly.express as px
+import pandas as pd
 
 
 class DatasetFactory:
@@ -38,8 +40,23 @@ class DatasetFactory:
     def save_stats(self):
         reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
         reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
+        print(f"Stat reolution saved at {FolderInfos.base_folder}stats_resoXY.json")
         with open(FolderInfos.base_folder+"stats_resoXY.json", "w") as fp:
             json.dump({"resolutionX":reso_x_stats,"resolutionY":reso_y_stats},fp)
+    @staticmethod
+    def process_resolution_stats(resolution_dict):
+        df = pd.DataFrame({
+            "ResolutionX":list(resolution_dict["resolutionX"].keys()),
+            "ResolutionY":list(resolution_dict["resolutionY"].keys()),
+            "NumberX":list(resolution_dict["resolutionX"].values()),
+            "NumberY":list(resolution_dict["resolutionY"].values())
+        })
+        # fig = px.bar(df, x='ResolutionX', y='NumberX')
+        # fig.write_html(FolderInfos.base_folder+"barplot_resolutionx.html")
+        # plt.clf()
+        # fig = px.bar(df, x='ResolutionY', y='NumberY')
+        # fig.write_html(FolderInfos.base_folder+"barplot_resolutionY.html")
+
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=False)
@@ -50,4 +67,5 @@ if __name__ == "__main__":
         input,output=dataset_factory[id]
         if id % int(length*0.1) == 0:
             print(f"{id/length*100:.2f} done")
+    dataset_factory.save_stats()
     end = 0
