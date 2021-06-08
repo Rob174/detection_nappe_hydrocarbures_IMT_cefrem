@@ -7,11 +7,11 @@ import main.src.data.segmentation.DataSentinel1Segmentation as data
 
 
 class Resizer:
-    def __init__(self,out_size_w=None,interpolation=None):
+    def __init__(self,out_size_w,interpolation=None):
         self.attr_out_size_w = out_size_w
         self.attr_interpolation = interpolation
     def __call__(self,array) -> np.ndarray:
-        if self.attr_out_size_w is None:
+        if self.attr_out_size_w == array.shape[1]:
             return array
         # resize: warning: cv2.resize(array,(width !!,height !!)) in this order
         array = np.array(array,dtype=np.float64)

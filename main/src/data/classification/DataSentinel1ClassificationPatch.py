@@ -12,7 +12,7 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
         self.attr_patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
-        super(DataSentinel1ClassificationPatch, self).__init__(limit_num_images)
+        super(DataSentinel1ClassificationPatch, self).__init__(limit_num_images,input_size=input_size)
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
