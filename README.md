@@ -146,7 +146,7 @@ Liste de questions :
 
 Question transversale à répondre : quelle est l'utilité de relu et des fonctions d'activation ?
 
-- jeudi 03/06
+### jeudi 03/06
 
 DONE: 
 - script d'ouverture des raster
@@ -158,7 +158,7 @@ Questions:
 - cela me permettra de voir l'organisation des fichiers --> ok
 
 
-- jeudi 03/06 (2)
+### jeudi 03/06 (2)
 
 Questions
 - Identifiant github de Mr Risser pr ajout au repo
@@ -168,9 +168,13 @@ Abordé
 - réalisation de statistiques nécessaire
 - ou tests avec l'ia
 
-- mardi 08/06:
+
+
+### mardi 08/06:
 
 Questions
-- Taille de grille ok ? [#11](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/11)
-- Grille avec padding nécessaire ?
-- Avis solution de visualisation des résultats ?
+- Taille de grille ok ? [#11](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/11) cf issue
+- Avis solution de visualisation des résultats ? notebook + simple: pas trop compliquer
+
+
+Prochain rdv: mardi 08/06 14h
