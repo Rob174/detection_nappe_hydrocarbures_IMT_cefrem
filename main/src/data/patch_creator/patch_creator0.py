@@ -5,9 +5,10 @@ import numpy as np
 
 from main.FolderInfos import FolderInfos
 from main.test.test_images import Test_images
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class Patch_creator0:
+class Patch_creator0(BaseClass):
     def __init__(self, grid_size_px, images_informations_preprocessed, test=False):
         self.attr_description = "Create a grid by taking a square of a constant pixel size."+\
                                 " It does not consider the resolution of each image."+\
@@ -16,7 +17,7 @@ class Patch_creator0:
         self.coords = [] # For logs: to show the square on the original image
         self.test = test
         self.images_informations_preprocessed: dict = images_informations_preprocessed
-        self.attr_resolution_used = {"x":{}, "y":{}}
+        self.resolution_used = {"x":{}, "y":{}}
 
     def num_available_patches(self,image: np.ndarray ) -> int:
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
@@ -26,12 +27,12 @@ class Patch_creator0:
             radius_earth_meters = 6371e3
             reso_x = self.images_informations_preprocessed[image_name]["resolution"][0] * np.pi/180. * radius_earth_meters
             reso_y = self.images_informations_preprocessed[image_name]["resolution"][1] * np.pi/180. * radius_earth_meters
-            if reso_x not in self.attr_resolution_used["x"].keys():
-                self.attr_resolution_used["x"][reso_x] = 0
-            if reso_x not in self.attr_resolution_used["y"].keys():
-                self.attr_resolution_used["y"][reso_y] = 0
-            self.attr_resolution_used["x"][reso_x] += 1
-            self.attr_resolution_used["y"][reso_y] += 1
+            if reso_x not in self.resolution_used["x"].keys():
+                self.resolution_used["x"][reso_x] = 0
+            if reso_x not in self.resolution_used["y"].keys():
+                self.resolution_used["y"][reso_y] = 0
+            self.resolution_used["x"][reso_x] += 1
+            self.resolution_used["y"][reso_y] += 1
 
         num_cols_patches = int(image.shape[1] / self.attr_grid_size_px)
         id_col = (patch_id) % num_cols_patches

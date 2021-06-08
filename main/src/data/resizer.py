@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 
 from main.FolderInfos import FolderInfos
 import main.src.data.segmentation.DataSentinel1Segmentation as data
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class Resizer:
+class Resizer(BaseClass):
     def __init__(self,out_size_w,interpolation=None):
         self.attr_out_size_w = out_size_w
         self.attr_interpolation = interpolation

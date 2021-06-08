@@ -3,9 +3,10 @@ import inspect
 
 from main.FolderInfos import FolderInfos
 from torch.utils.tensorboard import SummaryWriter
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class Markdown_saver:
+class Markdown_saver(BaseClass):
     def __init__(self, number_imgs_used: int, class_mappings: dict,
                  grid_size: int,
                  loss: str, metrics: list, optimizer: dict, model_name: str,

@@ -1,6 +1,7 @@
 import argparse
+from main.src.param_savers.BaseClass import BaseClass
 
-class Parser0:
+class Parser0(BaseClass):
     """Desiged for """
     def __init__(self):
         self.parser = argparse.ArgumentParser()

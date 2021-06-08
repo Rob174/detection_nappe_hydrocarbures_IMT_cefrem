@@ -2,9 +2,10 @@ from main.FolderInfos import FolderInfos
 from main.src.params_saver.markdown_saver import Markdown_saver
 import inspect
 import json
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class JSON_saver:
+class JSON_saver(BaseClass):
     def __init__(self,markdown_saver: Markdown_saver):
         members = inspect.getmembers(markdown_saver) # Get attributes and methods of the class
         attributes = list(filter(lambda x: inspect.ismethod(x[1]) is False and x[0][:5] == "attr_", members))

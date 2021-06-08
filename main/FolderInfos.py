@@ -2,9 +2,10 @@ import time
 from time import strftime, gmtime, localtime
 import os
 from platform import system
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class FolderInfos:
+class FolderInfos(BaseClass):
     input_data_folder = None
     data_folder = None
     base_folder = None
