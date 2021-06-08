@@ -4,6 +4,9 @@ from main.FolderInfos import FolderInfos
 from main.src.data.classification.DataSentinel1ClassificationPatch import DataSentinel1ClassificationPatch
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
+import matplotlib.pyplot as plt
+import numpy as np
+import json
 
 
 class DatasetFactory:
@@ -32,6 +35,11 @@ class DatasetFactory:
         return input,output
     def __len__(self):
         return self.attr_dataset.__len__()
+    def save_stats(self):
+        reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
+        reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
+        with open(FolderInfos.base_folder+"stats_resoXY.json", "w") as fp:
+            json.dump({"resolutionX":reso_x_stats,"resolutionY":reso_y_stats},fp)
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
@@ -42,4 +50,4 @@ if __name__ == "__main__":
         input,output=dataset_factory[id]
         if id % int(length*0.1) == 0:
             print(f"{id/length*100:.2f} done")
-    print(dataset_factory.attr_dataset.attrend_resolution_stats)
+    print(dataset_factory.attr_dataset.attrend_resolutionX_stats,dataset_factory.attr_dataset.attrend_resolutionY_stats)

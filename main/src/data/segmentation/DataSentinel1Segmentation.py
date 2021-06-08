@@ -28,20 +28,21 @@ class DataSentinel1Segmentation:
         item = self.get_all_items()[id]
         img = self.images[item]
         if item in self.img_not_seen:
-            resolution = self.images_infos[item]["resolution"]
-            scale_factor = self.attr_resizer.attr_out_size_w / img.shape[1]
-            resolution[0] *= scale_factor
-            resolution[1] *= scale_factor
-            if resolution[0] not in self.attrend_resolutionX_stats.keys():
-                self.attrend_resolutionX_stats[resolution[0]] = 0
-            self.attrend_resolutionX_stats[resolution[0]] += 1
-            if resolution[1] not in self.attrend_resolutionY_stats.keys():
-                self.attrend_resolutionY_stats[resolution[1]] = 0
-            self.attrend_resolutionY_stats[resolution[1]] += 1
+            self.save_resolution(item,img)
         self.current_name = item
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
 
-
+    def save_resolution(self,item:str,img:np.ndarray):
+        resolution = self.images_infos[item]["resolution"]
+        scale_factor = self.attr_resizer.attr_out_size_w / img.shape[1]
+        resolution[0] *= scale_factor
+        resolution[1] *= scale_factor
+        if resolution[0] not in self.attrend_resolutionX_stats.keys():
+            self.attrend_resolutionX_stats[resolution[0]] = 0
+        self.attrend_resolutionX_stats[resolution[0]] += 1
+        if resolution[1] not in self.attrend_resolutionY_stats.keys():
+            self.attrend_resolutionY_stats[resolution[1]] = 0
+        self.attrend_resolutionY_stats[resolution[1]] += 1
     @lru_cache(maxsize=1)
     def get_all_items(self):
         if self.attr_limit_num_images is not None:
