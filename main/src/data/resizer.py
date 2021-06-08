@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 from main.FolderInfos import FolderInfos
 import main.src.data.segmentation.DataSentinel1Segmentation as data
-from PIL import Image
 
 
 class Resizer:
@@ -14,11 +13,11 @@ class Resizer:
     def __call__(self,array) -> np.ndarray:
         if self.attr_out_size_w is None:
             return array
-        img = Image.fromarray(((array-np.min(array))/(np.max(array)-np.min(array))*255).astype(np.uint8))
-        # resize: warning: .resize((width !!,height !!)) in this order
-        img = img.resize((self.attr_out_size_w, int(self.attr_out_size_w / array.shape[1] * array.shape[0])),
-                             resample=self.attr_interpolation)
-        return np.array(img,dtype=np.float32)
+        # resize: warning: cv2.resize(array,(width !!,height !!)) in this order
+        array = np.array(array,dtype=np.float64)
+        array = cv2.resize(src=array, dsize=(self.attr_out_size_w, int(self.attr_out_size_w / array.shape[1] * array.shape[0])),
+                           interpolation=self.attr_interpolation)
+        return np.array(array,dtype=np.float32)
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
@@ -30,8 +29,28 @@ if __name__ == "__main__":
     plt.title("Original image")
     plt.imshow(img,cmap="gray")
     plt.savefig(folder+f"{dataset.current_name}_original.png")
+    plt.figure()
+    plt.title("Resized 256 px image with no interpolation")
+    plt.imshow(Resizer(out_size_w=256)(img),cmap="gray",vmin=np.min(img),vmax=np.max(img))
+    plt.savefig(folder + f"{dataset.current_name}_resized_no_interp.png")
     plt.clf()
     plt.figure()
     plt.title("Resized 256 px image with nearest neigbours interpolation")
-    plt.imshow(Resizer(out_size_w=256,interpolation=Image.NEAREST)(img),cmap="gray")
-    plt.savefig(folder + f"{dataset.current_name}_resized_nearest_pillow.png")
+    plt.imshow(Resizer(out_size_w=256,interpolation=cv2.INTER_NEAREST)(img),cmap="gray",vmin=np.min(img),vmax=np.max(img))
+    plt.savefig(folder + f"{dataset.current_name}_resized_nearest.png")
+    plt.clf()
+    plt.figure()
+    plt.title("Resized 256 px image with LANCZOS4 interpolation")
+    plt.imshow(Resizer(out_size_w=256,interpolation=cv2.INTER_LANCZOS4)(img),cmap="gray",vmin=np.min(img),vmax=np.max(img))
+    plt.savefig(folder + f"{dataset.current_name}_resized_lanczos4.png")
+    plt.clf()
+    plt.figure()
+    plt.title("Resized 256 px image with LINEAR interpolation")
+    plt.imshow(Resizer(out_size_w=256,interpolation=cv2.INTER_LINEAR)(img),cmap="gray",vmin=np.min(img),vmax=np.max(img))
+    plt.savefig(folder + f"{dataset.current_name}_resized_linear.png")
+    plt.clf()
+    plt.figure()
+    plt.title("Resized 256 px image with CUBIC interpolation")
+    plt.imshow(Resizer(out_size_w=256,interpolation=cv2.INTER_CUBIC)(img),cmap="gray",vmin=np.min(img),vmax=np.max(img))
+    plt.savefig(folder + f"{dataset.current_name}_resized_cubic.png")
+    plt.clf()

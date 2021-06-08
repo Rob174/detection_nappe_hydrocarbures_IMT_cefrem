@@ -4,10 +4,9 @@ from typing import Tuple
 
 import numpy as np
 from h5py import File
-from torch.utils.data import DataLoader
 
 from main.FolderInfos import FolderInfos
-from main.src.data.resizer import Resizer
+import main.src.data.resizer as resizer
 
 
 class DataSentinel1Segmentation:
@@ -19,10 +18,23 @@ class DataSentinel1Segmentation:
         self.attr_limit_num_images = limit_num_images
         with open(f"{FolderInfos.input_data_folder}class_mappings.json") as fp:
             self.class_mappings = json.load(fp)
-        self.attr_resizer = Resizer(out_size_w=input_size)
+        self.attr_resizer = resizer.Resizer(out_size_w=input_size)
+
+        self.attrend_resolutionX_stats = {}
+        self.attrend_resolutionY_stats = {}
+        self.img_not_seen = self.get_all_items()
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         item = self.get_all_items()[id]
+
+        if item in self.img_not_seen:
+            resolution = self.images_infos[item]["resolution"]
+            if resolution[0] not in self.attrend_resolutionX_stats.keys():
+                self.attrend_resolutionX_stats[resolution[0]] = 0
+            self.attrend_resolutionX_stats[resolution[0]] += 1
+            if resolution[1] not in self.attrend_resolutionY_stats.keys():
+                self.attrend_resolutionY_stats[resolution[1]] = 0
+            self.attrend_resolutionY_stats[resolution[1]] += 1
         self.current_name = item
         return self.attr_resizer(self.images[item]), self.attr_resizer(self.annotations_labels[item])
 

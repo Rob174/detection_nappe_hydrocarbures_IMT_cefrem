@@ -9,10 +9,10 @@ from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Se
 
 class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0,input_size: int = None,limit_num_images: int=None):
-        super(DataSentinel1ClassificationPatch, self).__init__(limit_num_images)
         self.attr_patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
+        super(DataSentinel1ClassificationPatch, self).__init__(limit_num_images)
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
@@ -27,6 +27,14 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         [item,patch_id] = self.get_all_items()[id]
+        if (item,patch_id) in self.img_not_seen:
+            resolution = self.images_infos[item]["resolution"]
+            if resolution[0] not in self.attrend_resolutionX_stats.keys():
+                self.attrend_resolutionX_stats[resolution[0]] = 0
+            self.attrend_resolutionX_stats[resolution[0]] += 1
+            if resolution[1] not in self.attrend_resolutionY_stats.keys():
+                self.attrend_resolutionY_stats[resolution[1]] = 0
+            self.attrend_resolutionY_stats[resolution[1]] += 1
         img = self.images[item]
         annotations = self.annotations_labels[item]
         img_patches = self.attr_patch_creator(img, item, patch_id=patch_id)

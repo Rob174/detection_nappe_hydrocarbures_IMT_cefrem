@@ -29,8 +29,7 @@ class DatasetFactory:
             raise NotImplementedError()
     def __getitem__(self, id: int):
         input,output = self.attr_dataset.__getitem__(id)
-        input = self.re
-        return
+        return input,output
     def __len__(self):
         return self.attr_dataset.__len__()
 
@@ -39,4 +38,4 @@ if __name__ == "__main__":
     dataset_factory = DatasetFactory(dataset_name="sentinel1",usage_type="classification",patch_creator="fixed_px",patch_padding="no",grid_size=1000)
     for id in range(len(dataset_factory)):
         input,output=dataset_factory[id]
-        print(id,input.shape,output.shape)
+    print(dataset_factory.attr_dataset.attrend_resolution_stats)
