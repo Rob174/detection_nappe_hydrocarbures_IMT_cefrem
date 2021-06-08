@@ -167,3 +167,10 @@ Abordé
 - question du découpage en patchs sans coupé les nappes d'hydrocarbures.
 - réalisation de statistiques nécessaire
 - ou tests avec l'ia
+
+- mardi 08/06:
+
+Questions
+- Taille de grille ok ? [#11](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/11)
+- Grille avec padding nécessaire ?
+- Avis solution de visualisation des résultats ?
