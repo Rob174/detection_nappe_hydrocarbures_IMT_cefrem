@@ -16,4 +16,5 @@
 - ✔️DatasetFactory 
 
 ## 08-06-2021
-- ⏲️ Reduce patch size and support resolution information backup
+- ✔️ Reduce patch size 
+- ⏲️ support resolution information backup
