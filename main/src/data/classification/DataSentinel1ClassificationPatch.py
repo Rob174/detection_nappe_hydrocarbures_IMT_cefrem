@@ -28,8 +28,12 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
         img = self.images[item]
         annotations = self.annotations_labels[item]
         img_patches = self.patch_creator(img,item,patch_id=patch_id)
-        annotations_patches = self.patch_creator(annotations, item,patch_id=patch_id)
-        return img_patches,annotations_patches
+        annotations_patch = self.patch_creator(annotations, item,patch_id=patch_id)
+        values = np.unique(annotations_patch)
+        vector_output = np.zeros((len(self.class_mappings,)))
+        for i in values:
+            vector_output[i] = 1.
+        return img_patches,vector_output
 
     def __len__(self) -> int:
         return len(self.get_all_items())

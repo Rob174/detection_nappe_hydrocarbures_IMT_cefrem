@@ -16,6 +16,8 @@ class DataSentinel1Segmentation:
             self.images_infos = json.load(fp)
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.limit_num_images = limit_num_images
+        with open(f"{FolderInfos.input_data_folder}class_mappings.json") as fp:
+            self.class_mappings = json.load(fp)
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         item = self.get_all_items()[id]

@@ -6,6 +6,9 @@ class Parser0:
         self.parser = argparse.ArgumentParser()
         self.args = {
                     '-grid_size':['grid_size',1000,int,"Indique la gpu visible par le script tensorflow"],
+                    '-type_pred':['type_prediction',"classification",str,"Indique la gpu visible par le script tensorflow"],
+                    '-patch_t':['patch_type',"fixed_px",str,"Indique la gpu visible par le script tensorflow"],
+                    '-patch_pad': ['patch_padding', "no", str, "Indique la gpu visible par le script tensorflow"],
 
 
 
