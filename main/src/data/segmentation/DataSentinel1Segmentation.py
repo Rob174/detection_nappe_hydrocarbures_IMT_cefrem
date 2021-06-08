@@ -26,9 +26,12 @@ class DataSentinel1Segmentation:
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         item = self.get_all_items()[id]
-
+        img = self.images[item]
         if item in self.img_not_seen:
             resolution = self.images_infos[item]["resolution"]
+            scale_factor = self.attr_resizer.attr_out_size_w / img.shape[1]
+            resolution[0] *= scale_factor
+            resolution[1] *= scale_factor
             if resolution[0] not in self.attrend_resolutionX_stats.keys():
                 self.attrend_resolutionX_stats[resolution[0]] = 0
             self.attrend_resolutionX_stats[resolution[0]] += 1
@@ -36,7 +39,7 @@ class DataSentinel1Segmentation:
                 self.attrend_resolutionY_stats[resolution[1]] = 0
             self.attrend_resolutionY_stats[resolution[1]] += 1
         self.current_name = item
-        return self.attr_resizer(self.images[item]), self.attr_resizer(self.annotations_labels[item])
+        return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
 
 
     @lru_cache(maxsize=1)

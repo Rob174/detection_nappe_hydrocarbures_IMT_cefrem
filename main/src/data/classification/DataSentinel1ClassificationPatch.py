@@ -27,15 +27,18 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         [item,patch_id] = self.get_all_items()[id]
+        img = self.images[item]
         if (item,patch_id) in self.img_not_seen:
             resolution = self.images_infos[item]["resolution"]
+            scale_factor = self.attr_resizer.attr_out_size_w / img.shape[1]
+            resolution[0] *= scale_factor
+            resolution[1] *= scale_factor
             if resolution[0] not in self.attrend_resolutionX_stats.keys():
                 self.attrend_resolutionX_stats[resolution[0]] = 0
             self.attrend_resolutionX_stats[resolution[0]] += 1
             if resolution[1] not in self.attrend_resolutionY_stats.keys():
                 self.attrend_resolutionY_stats[resolution[1]] = 0
             self.attrend_resolutionY_stats[resolution[1]] += 1
-        img = self.images[item]
         annotations = self.annotations_labels[item]
         img_patches = self.attr_patch_creator(img, item, patch_id=patch_id)
         annotations_patch = self.attr_patch_creator(annotations, item, patch_id=patch_id)
