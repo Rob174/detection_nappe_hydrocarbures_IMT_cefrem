@@ -171,6 +171,6 @@ Abordé
 - mardi 08/06:
 
 Questions
-- Taille de grille ok ? 
+- Taille de grille ok ? [#11](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/11)
 - Grille avec padding nécessaire ?
 - Avis solution de visualisation des résultats ?
