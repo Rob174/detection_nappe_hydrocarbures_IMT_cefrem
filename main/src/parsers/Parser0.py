@@ -6,6 +6,7 @@ class Parser0:
         self.parser = argparse.ArgumentParser()
         self.args = {
                     '-grid_size':['grid_size',1000,int,"Indique la gpu visible par le script tensorflow"],
+                    '-in_size':['input_size',256,int,"Indique la gpu visible par le script tensorflow"],
                     '-type_pred':['type_prediction',"classification",str,"Indique la gpu visible par le script tensorflow"],
                     '-patch_t':['patch_type',"fixed_px",str,"Indique la gpu visible par le script tensorflow"],
                     '-patch_pad': ['patch_padding', "no", str, "Indique la gpu visible par le script tensorflow"],
@@ -20,7 +21,7 @@ class Parser0:
 
 
 
-                    '-tailleMini':['taille_mini_obj_px',10,int,"Indique la taille minimale des objets que doit détecter le réseau (après redimensionnement)"],
+
                     '-nbEpochs':['nb_epochs',1,int,"Indique le nb de passage du dataset"],
                     '-augm':['augmentation',"f",str,"Indique le nb de passage du dataset"]}
 

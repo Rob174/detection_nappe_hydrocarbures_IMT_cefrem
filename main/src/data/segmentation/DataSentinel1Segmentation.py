@@ -7,27 +7,30 @@ from h5py import File
 from torch.utils.data import DataLoader
 
 from main.FolderInfos import FolderInfos
+from main.src.data.resizer import Resizer
 
 
 class DataSentinel1Segmentation:
-    def __init__(self,limit_num_images=None):
+    def __init__(self,limit_num_images=None,input_size=None):
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp:
             self.images_infos = json.load(fp)
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
-        self.limit_num_images = limit_num_images
+        self.attr_limit_num_images = limit_num_images
         with open(f"{FolderInfos.input_data_folder}class_mappings.json") as fp:
             self.class_mappings = json.load(fp)
+        self.attr_resizer = Resizer(out_size_w=input_size)
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         item = self.get_all_items()[id]
-        return self.images[item], self.annotations_labels[item]
+        self.current_name = item
+        return self.attr_resizer(self.images[item]), self.attr_resizer(self.annotations_labels[item])
 
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
-        if self.limit_num_images is not None:
-            return list(self.images.keys())[:self.limit_num_images]
+        if self.attr_limit_num_images is not None:
+            return list(self.images.keys())[:self.attr_limit_num_images]
         return list(self.images.keys())
 
     def close(self):
