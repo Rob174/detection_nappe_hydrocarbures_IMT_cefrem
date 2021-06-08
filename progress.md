@@ -14,3 +14,6 @@
 ⏲️ Classification dataset with fixed pixel grid
 - ✔️Order to process patches
 - ✔️DatasetFactory 
+
+## 08-06-2021
+- ⏲️ Reduce patch size and support resolution information backup
