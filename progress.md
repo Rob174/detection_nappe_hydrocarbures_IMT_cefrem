@@ -17,4 +17,6 @@
 
 ## 08-06-2021
 - ✔️ Reduce patch size 
-- ⏲️ support resolution information backup
+- ✔️ support resolution information backup
+- 🔨 Create Dataloader object
+- 
