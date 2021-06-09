@@ -27,7 +27,7 @@
 ## 09-06-2021
 
 - ⏲️ warp affine transformation before making the grid
-  - ⏲️ add transformation matrix to the cache informations
+  - ✔️ add transformation matrix to the cache informations
   - ⏳ apply the transformation
 - ⏲️ Main script
   - ✔️ trainable
