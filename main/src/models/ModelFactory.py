@@ -11,7 +11,7 @@ class ModelFactory(BaseClass):
         elif model_name == "resnet18":
             self.model = PretrainedModel(original_model=models.resnet18(pretrained=True),
                                          original_num_classes=1000,
-                                         num_classes=num_classes)
+                                         num_classes=num_classes,out_activation="sigmoid")
         elif model_name == "vgg16":
             self.model = PretrainedModel(original_model=models.vgg16(pretrained=True),
                                          original_num_classes=1000,

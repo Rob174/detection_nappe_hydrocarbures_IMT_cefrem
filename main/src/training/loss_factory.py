@@ -8,7 +8,7 @@ class LossFactory:
         if usage_type == "classification":
             if preference is None or preference == "crossentropy":
                 self.attr_loss = "crossentropy"
-                self.loss = lambda pred,target:(-(pred+1e-7).log() * target).sum(dim=1).mean()
+                self.loss = lambda pred,target:torch.mean(torch.sum(-torch.log(pred+1e-7) * target,dim=1))
             elif preference == "mse":
                 self.loss = torch.nn.MSELoss()
             else:

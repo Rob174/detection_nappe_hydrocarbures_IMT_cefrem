@@ -16,7 +16,7 @@ from main.src.param_savers.saver0 import Saver0
 
 from torch.utils.data import random_split, DataLoader
 import torch
-from rich.progress import Progress, TextColumn, BarColumn, DownloadColumn, TimeElapsedColumn
+from rich.progress import Progress, TextColumn, BarColumn, DownloadColumn, TimeElapsedColumn, TimeRemainingColumn
 
 if __name__ == "__main__":
     FolderInfos.init()
@@ -53,20 +53,25 @@ if __name__ == "__main__":
     optimizer_pytorch = optimizer()
     criterion_pytorch = criterion()
 
-    total_num_iterations = arguments.num_epochs * len(dataset_tr)
+    tr_length = len(dataset_tr)
+    total_num_iterations = arguments.num_epochs * tr_length
     progress = Progress(
         TextColumn("{task.fields[name]}", justify="right"),
         BarColumn(bar_width=None),
         "[progress.percentage]{task.percentage:>3.1f}%",
         "•",
+        TextColumn("[bold blue]status: {task.fields[status]}", justify="right"),
+        "•",
         TextColumn("[bold blue]last_loss: {task.fields[loss]:.4f}", justify="right"),
         "•",
-        TimeElapsedColumn()
+        TimeElapsedColumn(),
+        "•",
+        TimeRemainingColumn()
     )
     print("start")
     with progress:
-        epoch_progress = progress.add_task("epochs", name="[red]Epochs", loss=0., total=arguments.num_epochs)
-        iterations_progress = progress.add_task("iterations", name="[bold blue]Total iterations", loss=0.,
+        epoch_progress = progress.add_task("epochs", name="[red]Epochs", loss=0., total=arguments.num_epochs,status=0)
+        iterations_progress = progress.add_task("iterations", name="[bold blue]Total iterations", loss=0.,status=0,
                                                 total=total_num_iterations)
         for epoch in range(arguments.num_epochs):
             # print("epoch")
@@ -81,11 +86,12 @@ if __name__ == "__main__":
                 loss = criterion_pytorch(prediction, output)
                 loss.backward()
                 optimizer_pytorch.step()
-                running_loss += loss.item()
+                current_loss = loss.item()
+                running_loss += current_loss
                 if i % arguments.eval_step == 0:
                     # Make a validation step
                     pass
-                progress.update(iterations_progress, advance=1, loss=running_loss)
-            progress.update(epoch_progress, advance=1, loss=running_loss)
+                progress.update(iterations_progress, advance=1, loss=current_loss,status=i)
+            progress.update(epoch_progress, advance=1, loss=current_loss,status=epoch)
 
     print("end")
