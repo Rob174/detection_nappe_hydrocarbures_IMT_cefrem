@@ -5,7 +5,6 @@ import os
 import re
 import matplotlib.pyplot as plt
 import numpy as np
-from osgeo import gdal
 
 
 def get_array_raster_file(path):

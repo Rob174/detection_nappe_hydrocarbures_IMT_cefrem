@@ -38,7 +38,10 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
         vector_output = np.zeros((len(self.class_mappings,)))
         for i in values:
             vector_output[i] = 1.
-        return self.attr_resizer(img_patch),vector_output
+        input = self.attr_resizer(img_patch)
+        input = np.stack((input,input,input),axis=0)
+        output = vector_output
+        return input,output
 
     def __len__(self) -> int:
         return len(self.get_all_items())

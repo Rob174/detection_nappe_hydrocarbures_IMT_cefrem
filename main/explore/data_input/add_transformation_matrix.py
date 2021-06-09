@@ -42,7 +42,6 @@ The value 3 correspond respectively (in this order) to oil seep, oil spill and o
 
 All data will be accessible by calling object[image_id]
 """
-from typing import Tuple, List
 
 from h5py import File
 import json

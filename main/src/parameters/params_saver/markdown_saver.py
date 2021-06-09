@@ -1,5 +1,4 @@
 import subprocess
-import inspect
 
 from main.FolderInfos import FolderInfos
 from torch.utils.tensorboard import SummaryWriter

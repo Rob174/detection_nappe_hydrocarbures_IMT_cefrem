@@ -1,11 +1,8 @@
-import json
-
 from main.FolderInfos import FolderInfos
 from main.src.data.classification.DataSentinel1ClassificationPatch import DataSentinel1ClassificationPatch
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import matplotlib.pyplot as plt
-import numpy as np
 import json
 import plotly.express as px
 import pandas as pd
@@ -13,17 +10,13 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DatasetFactory(BaseClass):
-    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px",
-                 patch_padding="no", grid_size=1000, input_size=1000):
+    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000):
         if patch_creator == "fixed_px":
-            if patch_padding == "no":
-                path = f"{FolderInfos.input_data_folder}images_informations_preprocessed.json"
-                with open(path, "r") as fp:
-                    dico_infos = json.load(fp)
-                self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
-                                                         images_informations_preprocessed=dico_infos)
-            else:
-                raise NotImplementedError(f"{patch_padding} is not implemented")
+            path = f"{FolderInfos.input_data_folder}images_informations_preprocessed.json"
+            with open(path, "r") as fp:
+                dico_infos = json.load(fp)
+            self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
+                                                     images_informations_preprocessed=dico_infos)
         else:
             raise NotImplementedError(f"{patch_creator} is not implemented")
 
@@ -59,10 +52,10 @@ class DatasetFactory(BaseClass):
             "NumberY": list(resolution_dict["resolutionY"].values())
         })
         fig = px.bar(df, x='ResolutionX', y='NumberX',title=f"For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width")
-        fig.write_html(FolderInfos.base_folder + "barplot_resolutionX.html")
+        fig.write_html(FolderInfos.base_filename + "barplot_resolutionX.html")
         plt.clf()
         fig = px.bar(df, x='ResolutionY', y='NumberY',title=f"For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width")
-        fig.write_html(FolderInfos.base_folder + "barplot_resolutionY.html")
+        fig.write_html(FolderInfos.base_filename + "barplot_resolutionY.html")
 
 
 if __name__ == "__main__":

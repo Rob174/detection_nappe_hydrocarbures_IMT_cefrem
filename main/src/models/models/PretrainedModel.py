@@ -7,7 +7,7 @@ class PretrainedModel(nn.Module,BaseClass):
     """
     def __init__(self,original_model,original_num_classes=1000,num_classes=3):
         super(PretrainedModel, self).__init__()
-        self.net = original_model.classifier
+        self.net = original_model
         self.layer1 = nn.Linear(original_num_classes, num_classes) # convert from the original_num_classes classes from the original model pretrained on a dataset to num_classes classes
         for p in self.net.parameters():
             p.requires_grad = False # Freeze all weights of the original model

@@ -1,8 +1,5 @@
 from typing import Tuple, List
 
-import rasterio
-
-import sys
 import os
 from main.FolderInfos import FolderInfos
 import re

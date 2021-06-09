@@ -6,19 +6,27 @@ class Parser0(BaseClass):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.args = {
-                    '-grid_size':['grid_size',1000,int,"Indique la gpu visible par le script tensorflow"],
-                    '-in_size':['input_size',256,int,"Indique la gpu visible par le script tensorflow"],
-                    '-type_pred':['type_prediction',"classification",str,"Indique la gpu visible par le script tensorflow"],
-                    '-patch_t':['patch_type',"fixed_px",str,"Indique la gpu visible par le script tensorflow"],
-                    '-patch_pad': ['patch_padding', "no", str, "Indique la gpu visible par le script tensorflow"],
-
-
-
+                    # Dataset
+                    '-dataset':['dataset',"sentinel1",str,"Indicate the source dataset used to constitue datasets {sentinel1}"],
+                    '-usage_type':['usage_type',"classification",str,"Indicate the source dataset used to constitue datasets {segmentation, classification}"],
+                    '-patch':['patch',"fixed_px",str,"Indicate the type of patch to create {fixed_px}"],
+                    '-grid_size':['grid_size',1000,int,"Indicate the grid size applied on the original image"],
+                    '-in_size':['input_size',256,int,"Indicate the output size of the image obtained by resizing it after patches creation"],
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
-                    '-lr':['lr',1e-3,float,"Indique la gpu visible par le script tensorflow"],
-                    '-eps':['epsilon',1e-7,float,"Indique la gpu visible par le script tensorflow"],
+                    # Model
+                    '-model':['model',"resnet18",str,"To choose the network architecture used {"],
+                    '-classes':['classes',"other_seep_spill",str,"Indicate the class used for training separated by an underscore"],
+
+                    # Training
+                    '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
+                    '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],
+                    '-loss':['loss_preference',None,str,"Loss prefered for training"],
+
+                    '-lr':['lr',1e-3,float,"Learning rate of the optimizer"],
+                    '-eps':['eps',1e-7,float,"Epsilon of the optimizer if it is Adam"],
                     '-opti':['optimizer',"adam",str,"Optimisateur"],
-                    '-nbImg':['nb_images',1080,int,"Indique le nb d'imgs passées en entrainement avant l'arrêt"],
+
+                    '-nbImg':['nb_images',1080,int,"Limit the number of images of the training dataset"],
 
 
 
