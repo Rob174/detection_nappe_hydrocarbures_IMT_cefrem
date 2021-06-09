@@ -30,6 +30,10 @@
   - ⏲️ add transformation matrix to the cache informations
   - ⏳ apply the transformation
 - ⏲️ Main script
+  - ✔️ trainable
+  - ✔️ progressbar training
+  - ⏲️ validation
+  - ⏲️ save results
 
 
 ## TODO
