@@ -30,7 +30,7 @@
   - ✔️ add transformation matrix to the cache informations
   - ⏳ apply the transformation
 - ⏲️ Main script
-  - ✔️ trainable
+  - ✔️ resnet trainable
   - ✔️ progressbar training
   - ⏲️ validation
   - ⏲️ save results
