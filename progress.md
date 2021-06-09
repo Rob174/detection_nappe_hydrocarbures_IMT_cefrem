@@ -4,21 +4,21 @@
 
 ## 07-06-2021
 
-⏲️ Cache transfert
+✔️ Cache transfert
 
 ✔️Patch creation algorithm 
 - ✔️ tests
 
 ✔️ Object to save data 
 
-⏲️ Classification dataset with fixed pixel grid
+✔️ Classification dataset with fixed pixel grid
 - ✔️Order to process patches
 - ✔️DatasetFactory 
 
 ## 08-06-2021
 - ✔️ Reduce patch size 
 - ✔️ support resolution information backup
-- 🔨 Create Dataloader object
+- ✔️ Create Dataloader object
 - ✔️ Support for Resnet18, VGG16 (EfficientNetv4)
 - ✔️ Resolution statistics with patch size of 1000 px and output size of 255
 - ✔️ Resolution statistics with patch size of 500 px and output size of 255
