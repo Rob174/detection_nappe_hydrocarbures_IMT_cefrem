@@ -33,13 +33,15 @@ class Patch_creator0(BaseClass):
             self.resolution_used["x"][reso_x] += 1
             self.resolution_used["y"][reso_y] += 1
 
-        num_cols_patches = int(image.shape[1] / self.attr_grid_size_px)
+        pos_x,pos_y = self.get_position_patch(patch_id,image.shape)
+        if self.test is True:
+            self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
+        return image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px]
+    def get_position_patch(self,patch_id: int, input_shape):
+        num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
         id_col = (patch_id) % num_cols_patches
         id_line = patch_id // num_cols_patches
-        if self.test is True:
-            self.coords.append([(self.attr_grid_size_px * id_col,self.attr_grid_size_px * id_line),(self.attr_grid_size_px * (id_col+1),self.attr_grid_size_px * (id_line+1))])
-        return image[self.attr_grid_size_px * id_line:self.attr_grid_size_px * (id_line+1),
-               self.attr_grid_size_px * id_col:self.attr_grid_size_px * (id_col+1)]
+        return self.attr_grid_size_px * id_line,self.attr_grid_size_px * id_col
 if __name__ == "__main__":
 
     FolderInfos.init(test_without_data=True)

@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple
+from typing import Tuple, List
 import numpy as np
 
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
@@ -34,14 +34,26 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
 
         if (item,patch_id) in self.img_not_seen:
             self.save_resolution(item,img_patch)
-        values = np.unique(annotations_patch)
-        vector_output = np.zeros((len(self.class_mappings,)))
-        for i in values:
-            vector_output[i] = 1.
         input = self.attr_resizer(img_patch)
         input = np.stack((input,input,input),axis=0)
-        output = vector_output
-        return input,output
+        return input,self.make_classification_label(annotations_patch)
+    def make_classification_label(self,annotations_patch):
+        values = np.unique(annotations_patch)
+        output = np.zeros((len(self.class_mappings)))
+        for i in values:
+            output[i] = 1.
+        return output
+
+    def all_patches_of_image(self,name: str) -> List[List[np.ndarray]]:
+        img = self.images[name]
+        annotations = self.annotations_labels[name]
+        liste_patches = []
+        for id in range(self.patch_creator.num_available_patches(img)):
+            img_patch = self.patch_creator(img, name, patch_id=id)
+            annotations_patch = self.patch_creator(annotations, name, patch_id=id)
+            liste_patches.append([img_patch,self.make_classification_label(annotations_patch)])
+        return liste_patches
+
 
     def __len__(self) -> int:
         return len(self.get_all_items())

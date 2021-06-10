@@ -64,8 +64,7 @@ class DatasetFactory(BaseClass):
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px",
-                                     patch_padding="no", grid_size=1000, input_size=256)
+    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px",grid_size=1000, input_size=256)
     length = len(dataset_factory)
     print(f"{length} items in this dataset")
     for id in range(length):
