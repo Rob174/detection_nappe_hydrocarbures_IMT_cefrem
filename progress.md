@@ -26,18 +26,16 @@
 
 ## 09-06-2021
 
-- ⏲️ warp affine transformation before making the grid
+- ❎ warp affine transformation before making the grid
   - ✔️ add transformation matrix to the cache informations
-  - ⏲️ apply the transformation
-- ⏲️ Main script
+  - ✔️ apply the transformation
+- ✔️ Main script
   - ✔️ resnet trainable
   - ✔️ progressbar training
-  - ⏲️ validation
-  - ⏲️ save results
+  - ✔️ validation
+  - ✔️ save results
 
 
 ## TODO
 
-- auto backup of the parameters thanks to the attr_ prefix
-- main script using the objects
 - get the position of the image/patch
