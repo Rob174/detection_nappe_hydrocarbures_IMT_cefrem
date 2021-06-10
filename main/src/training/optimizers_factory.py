@@ -1,7 +1,10 @@
 
 import torch.optim as optim
 
-class OptimizersFactory:
+from main.src.param_savers.BaseClass import BaseClass
+
+
+class OptimizersFactory(BaseClass):
     def __init__(self,model,name="adam",**params):
         self.attr_name = name
         if name == "adam":

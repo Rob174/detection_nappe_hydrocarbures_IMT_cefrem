@@ -54,7 +54,7 @@ if __name__ == "__main__":
         dico_infos = json.load(fp)
 
     images_test = Test_images() # Get the object allowing to wuickly get the test images
-    array = images_test.get_rasters(selector=0) # get the first test image
+    array,_ = images_test.get_rasters(selector=0) # get the first test image
     plt.figure() # Create new separated figure
     plt.imshow(array,cmap="gray") #
     plt.savefig(folder+f"{images_test.current_name}_original.png")

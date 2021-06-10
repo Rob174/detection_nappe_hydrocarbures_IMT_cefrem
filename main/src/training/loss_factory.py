@@ -1,6 +1,9 @@
 import torch
 
-class LossFactory:
+from main.src.param_savers.BaseClass import BaseClass
+
+
+class LossFactory(BaseClass):
     def __init__(self, usage_type, preference=None):
         if preference is not None:
             preference = preference.lower()

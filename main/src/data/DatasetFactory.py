@@ -1,6 +1,7 @@
 from main.FolderInfos import FolderInfos
 from main.src.data.classification.DataSentinel1ClassificationPatch import DataSentinel1ClassificationPatch
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
+from main.src.data.patch_creator.patch_creator1 import Patch_creator1
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import matplotlib.pyplot as plt
 import json
@@ -11,11 +12,13 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class DatasetFactory(BaseClass):
     def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000):
+        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
+            dico_infos = json.load(fp)
         if patch_creator == "fixed_px":
-            path = f"{FolderInfos.input_data_folder}images_informations_preprocessed.json"
-            with open(path, "r") as fp:
-                dico_infos = json.load(fp)
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
+                                                     images_informations_preprocessed=dico_infos)
+        elif patch_creator == "straight_fixed_px":
+            self.attr_patch_creator = Patch_creator1(grid_size_px=grid_size,
                                                      images_informations_preprocessed=dico_infos)
         else:
             raise NotImplementedError(f"{patch_creator} is not implemented")
