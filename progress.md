@@ -39,6 +39,7 @@
 
 - ✔️ First training
 - ✔️ Coloration map
+- ✔️ Vizualization system
 - Confusion matrix
 ## TODO
 
