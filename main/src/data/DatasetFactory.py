@@ -31,6 +31,7 @@ class DatasetFactory(BaseClass):
                 self.attr_dataset = DataSentinel1Segmentation()
         else:
             raise NotImplementedError()
+        self.attr_length_dataset = len(self.attr_dataset)
 
     def __getitem__(self, id: int):
         input, output = self.attr_dataset.__getitem__(id)

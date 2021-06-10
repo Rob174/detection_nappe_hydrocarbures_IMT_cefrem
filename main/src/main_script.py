@@ -1,6 +1,7 @@
 import json
 import sys
 
+from main.src.training.metrics_factory import MetricsFactory
 
 path_root_project = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_inria_cefrem"
 sys.path.append(path_root_project)
@@ -52,8 +53,10 @@ if __name__ == "__main__":
     criterion = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference)
     optimizer = OptimizersFactory(model, name=arguments.optimizer,
                                   lr=arguments.lr, eps=arguments.eps)
+    metrics = MetricsFactory("accuracy_classification-0.25","accuracy_classification-0.1","mae")
     dico_save_parameters["loss"] = saver(criterion)
     dico_save_parameters["optimizer"] = saver(optimizer)
+    dico_save_parameters["metrics"] = saver(metrics)
     optimizer_pytorch = optimizer()
     criterion_pytorch = criterion()
     with open(FolderInfos.base_filename+"parameters.json","w") as fp:
@@ -74,8 +77,9 @@ if __name__ == "__main__":
         "•",
         TimeRemainingColumn()
     )
-    print("start")
     dico_save_parameters["training"] = {"tr_loss":[],"valid_loss":[]}
+    dico_save_parameters["training"]["num_batches_tr"] = len(dataset_tr)
+    print("start")
     with progress:
         epoch_progress = progress.add_task("epochs", name="[red]Epochs", loss=0., total=arguments.num_epochs,status=0)
         iterations_progress = progress.add_task("iterations", name="[bold blue]Total iterations", loss=0.,status=0,
@@ -95,9 +99,14 @@ if __name__ == "__main__":
                 loss.backward()
                 optimizer_pytorch.step()
                 current_loss = loss.item()
+
                 dico_save_parameters["training"]["tr_loss"].append(current_loss)
                 dico_save_parameters["training"]["last_it"] = i
                 dico_save_parameters["training"]["last_epoch"] = epoch
+
+                metrics(prediction,output,"tr")
+                dico_save_parameters["metrics"] = saver(metrics)
+
                 if i % arguments.eval_step == 0:
                     try:
                         input,output = next(dataset_valid_iter)
@@ -111,6 +120,8 @@ if __name__ == "__main__":
                     current_loss = loss.item()
                     dico_save_parameters["training"]["valid_loss"].append(current_loss)
                     dico_save_parameters["data"]["dataset"] = saver(dataset)
+                    metrics(prediction,output,"valid")
+                    dico_save_parameters["metrics"] = saver(metrics)
                     with open(FolderInfos.base_filename+"parameters.json","r+") as fp:
                         json.dump(dico_save_parameters,fp,indent=4)
 
