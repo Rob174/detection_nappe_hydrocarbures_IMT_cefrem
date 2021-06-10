@@ -35,7 +35,11 @@
   - ✔️ validation
   - ✔️ save results
 
+## 10-06-2021
 
+- ⏲️ First training
+- Coloration map
+- Confusion matrix
 ## TODO
 
 - get the position of the image/patch
