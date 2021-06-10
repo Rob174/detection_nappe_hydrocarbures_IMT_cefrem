@@ -15,6 +15,7 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
+import numpy as np
 
 from torch.utils.data import random_split, DataLoader
 import torch
@@ -33,6 +34,7 @@ if __name__ == "__main__":
     dico_save_parameters["data"]["dataset"] = saver(dataset)
     dico_save_parameters["data"]["prct_tr"] = 0.7
     dico_save_parameters["data"]["batch_size"] = arguments.batch_size
+    dico_save_parameters["data"]["eval_step"] = arguments.eval_step
     length_full_dataset = len(dataset)
     tr_length = int(length_full_dataset * dico_save_parameters["data"]["prct_tr"])
     valid_length = length_full_dataset - tr_length
@@ -124,6 +126,8 @@ if __name__ == "__main__":
                     dico_save_parameters["metrics"] = saver(metrics)
                     with open(FolderInfos.base_filename+"parameters.json","r+") as fp:
                         json.dump(dico_save_parameters,fp,indent=4)
+                    if loss < np.mean(dico_save_parameters["training"]["valid_loss"]):
+                        torch.save(model.state_dict(),f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
 
 
