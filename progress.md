@@ -37,8 +37,8 @@
 
 ## 10-06-2021
 
-- ⏲️ First training
-- Coloration map
+- ✔️ First training
+- ✔️ Coloration map
 - Confusion matrix
 ## TODO
 
