@@ -38,7 +38,7 @@
 ## 10-06-2021
 
 - ✔️ First training
-- ✔️ Coloration map
+- 🔨 Coloration map
 - ✔️ Vizualization system
 
 ## 11-06-2021
