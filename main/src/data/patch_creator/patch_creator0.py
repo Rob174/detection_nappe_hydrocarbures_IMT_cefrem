@@ -19,7 +19,13 @@ class Patch_creator0(BaseClass):
         self.resolution_used = {"x":{}, "y":{}}
 
     def num_available_patches(self,image: np.ndarray ) -> int:
-        return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
+        num_lignes = int(image.shape[0] / self.attr_grid_size_px)
+        if (num_lignes+1) * self.attr_grid_size_px >= image.shape[0]:
+            num_lignes -= 1
+        num_cols = int(image.shape[1] / self.attr_grid_size_px)
+        if (num_cols+1) * self.attr_grid_size_px >= image.shape[1]:
+            num_lignes -= 1
+        return num_lignes * num_cols
 
     def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> np.ndarray:
         if count_reso is True:
@@ -36,11 +42,19 @@ class Patch_creator0(BaseClass):
         pos_x,pos_y = self.get_position_patch(patch_id,image.shape)
         if self.test is True:
             self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
-        return image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px]
+        patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px]
+        if patch.shape[0] != self.attr_grid_size_px or patch.shape[1] != self.attr_grid_size_px:
+            raise Exception(f"Wrong patch with shape {patch.shape} with id {id}")
+        return patch
     def get_position_patch(self,patch_id: int, input_shape):
         num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
-        id_col = (patch_id) % num_cols_patches
-        id_line = patch_id // num_cols_patches
+        if num_cols_patches * self.attr_grid_size_px >= input_shape[1]:
+            num_cols_patches -= 1
+        try:
+            id_col = (patch_id) % num_cols_patches
+            id_line = patch_id // num_cols_patches
+        except:
+            raise Exception()
         return self.attr_grid_size_px * id_line,self.attr_grid_size_px * id_col
 if __name__ == "__main__":
 

@@ -20,5 +20,7 @@ class ModelFactory(BaseClass):
             raise NotImplementedError()
         else:
             raise Exception("%s is not supported" % model_name)
+        self.attr_model_name = model_name
+        self.attr_num_classes = num_classes
     def __call__(self):
         return self.model

@@ -87,6 +87,9 @@ if __name__ == "__main__":
         iterations_progress = progress.add_task("iterations", name="[bold blue]Total iterations", loss=0.,status=0,
                                                 total=total_num_iterations)
         dataset_valid_iter = iter(dataset_valid)
+        device = torch.device("cuda")
+        model.to(device)
+
         for epoch in range(arguments.num_epochs):
             # print("epoch")
 
@@ -96,8 +99,8 @@ if __name__ == "__main__":
                 optimizer_pytorch.zero_grad()
 
                 # forward + backward + optimize
-                prediction = model(input)
-                loss = criterion_pytorch(prediction, output)
+                prediction = model(input.to(device))
+                loss = criterion_pytorch(prediction.to(device), output.to(device))
                 loss.backward()
                 optimizer_pytorch.step()
                 current_loss = loss.item()
@@ -106,7 +109,7 @@ if __name__ == "__main__":
                 dico_save_parameters["training"]["last_it"] = i
                 dico_save_parameters["training"]["last_epoch"] = epoch
 
-                metrics(prediction,output,"tr")
+                metrics(prediction.cpu(),output.cpu(),"tr")
                 dico_save_parameters["metrics"] = saver(metrics)
 
                 if i % arguments.eval_step == 0:
@@ -117,16 +120,16 @@ if __name__ == "__main__":
                         # reinitialize data loader
                         dataset_valid_iter = iter(dataset_valid)
                         input,output = next(dataset_valid_iter)
-                    prediction = model(input)
-                    loss = criterion_pytorch(prediction, output)
+                    prediction = model(input.to(device))
+                    loss = criterion_pytorch(prediction.to(device), output.to(device))
                     current_loss = loss.item()
                     dico_save_parameters["training"]["valid_loss"].append(current_loss)
                     dico_save_parameters["data"]["dataset"] = saver(dataset)
-                    metrics(prediction,output,"valid")
+                    metrics(prediction.cpu(),output.cpu(),"valid")
                     dico_save_parameters["metrics"] = saver(metrics)
                     with open(FolderInfos.base_filename+"parameters.json","r+") as fp:
                         json.dump(dico_save_parameters,fp,indent=4)
-                    if loss < np.mean(dico_save_parameters["training"]["valid_loss"]):
+                    if loss < np.mean(dico_save_parameters["training"]["valid_loss"]) and i % 5 == 0:
                         torch.save(model.state_dict(),f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
 
