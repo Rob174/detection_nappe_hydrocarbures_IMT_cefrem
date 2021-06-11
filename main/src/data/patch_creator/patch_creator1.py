@@ -12,13 +12,14 @@ class Patch_creator1(Patch_creator0):
     def transform_back(self, image: np.ndarray, name: str) -> np.ndarray:
         # doc https://docs.opencv.org/master/da/d6e/tutorial_py_geometric_transformations.html
         transformation_matrix = np.array(self.images_informations_preprocessed[name]["transform"])
-        print(transformation_matrix)
-        factor= 1e2
-        scaling_up = np.array([[factor,0,0],[0,factor,0],[0,0,1]])
-        print(transformation_matrix)
+        extreme_point = (np.array([*image.shape[:2],2])-1)
+        extreme_point_transform = transformation_matrix.dot(extreme_point)
+        factorx = image.shape[0]/extreme_point_transform[0]
+        factory = image.shape[1]/extreme_point_transform[1]
+        biggest_factor = min(factorx,factory)
+        scaling_up = np.array([[biggest_factor,0,0],[0,biggest_factor,0],[0,0,1]])
         transformation_matrix = scaling_up.dot(transformation_matrix)[:-1,:]
-        print(transformation_matrix)
-        array = cv2.warpAffine(image, transformation_matrix, (*image.shape,)[::-1],)
+        array = cv2.warpAffine(image, transformation_matrix,dsize=image.shape)
         return np.array(array)
 
     def __call__(self, image: np.ndarray, image_name: str, patch_id: int, count_reso=False) -> np.ndarray:
@@ -37,11 +38,7 @@ if __name__ == "__main__":
     folder = FolderInfos.data_test+"outputs"+FolderInfos.separator+"Patch_creator1"+FolderInfos.separator
     if os.path.exists(folder) is False:
         os.mkdir(folder)
-    with open(FolderInfos.data_test+"images_informations_preprocessed.json") as fp: # Load informations about the files
-        dico_infos = json.load(fp)
-
-    images_test = Test_images() # Get the object allowing to wuickly get the test images
-    array,transform = images_test.get_rasters(selector=0) # get the first test image
+    dataset_factory = dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px",grid_size=1000, input_size=256) # get the first test image
     plt.figure() # Create new separated figure
     plt.imshow(array,cmap="gray") #
     plt.savefig(folder+f"{images_test.current_name}_original.png")
@@ -54,20 +51,20 @@ if __name__ == "__main__":
         img_transf = patch_creator.transform_back(array[:-1,:].astype(np.float32),name=images_test.current_name)
         plt.imshow(img_transf-np.min(img_transf),cmap="gray") #
         plt.savefig(folder+f"{images_test.current_name}_original_transformed_{grid_size}.png")
-        for id in range(0,3):#patch_creator.num_available_patches(array)):
-            patch = patch_creator(array, images_test.current_name, id) # create the patches specifying additional informations for the statistics
-            plt.clf()
-            plt.figure()
-            plt.title(f"Patch of {grid_size} px length on {images_test.current_name}")
-            plt.imshow(patch,cmap="gray",vmin=np.min(array),vmax=np.max(array))
-            plt.savefig(folder+f"{images_test.current_name}_patch{id}_size-{grid_size}.png")
+        # for id in range(0,3):#patch_creator.num_available_patches(array)):
+        #     patch = patch_creator(array, images_test.current_name, id) # create the patches specifying additional informations for the statistics
+        #     plt.clf()
+        #     plt.figure()
+        #     plt.title(f"Patch of {grid_size} px length on {images_test.current_name}")
+        #     plt.imshow(patch,cmap="gray",vmin=np.min(array),vmax=np.max(array))
+        #     plt.savefig(folder+f"{images_test.current_name}_patch{id}_size-{grid_size}.png")
 
         plt.clf() # Clear previous figures
         plt.figure() # Create new separated figure
         # Convert the raster array to a 0-255 array
-        image_rgb_uint8 = np.stack((array,)*3,axis=-1)
-        image_rgb_uint8 = (image_rgb_uint8 - np.min(image_rgb_uint8)) / (np.max(image_rgb_uint8) - np.min(image_rgb_uint8))*255 # Normalisation
+        image_rgb_uint8 = (array - np.min(array)) / (np.max(array) - np.min(array))*255 # Normalisation
         image_rgb_uint8 = image_rgb_uint8.astype(np.uint8)# Convert to uint8 array
+        image_rgb_uint8 = np.stack((image_rgb_uint8,)*3,axis=-1)
         image_cpy = Image.fromarray(image_rgb_uint8) # Convert to pillow object
         image_cpy1 = Image.fromarray(np.copy(image_rgb_uint8)) # Prepare the image to draw on
         draw = ImageDraw.ImageDraw(image_cpy)
