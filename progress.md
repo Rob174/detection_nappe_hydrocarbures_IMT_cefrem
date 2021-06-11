@@ -39,7 +39,15 @@
 
 - ✔️ First training
 - ✔️ Coloration map
+- ✔️ Vizualization system
+
+## 11-06-2021
+- :email: Mail inverse_transform matrix
+- save model
+- show result on rgb map
 - Confusion matrix
+
+
 ## TODO
 
 - get the position of the image/patch
