@@ -11,7 +11,13 @@ class Patch_creator1(Patch_creator0):
 
     def transform_back(self, image: np.ndarray, name: str) -> np.ndarray:
         # doc https://docs.opencv.org/master/da/d6e/tutorial_py_geometric_transformations.html
-        transformation_matrix = np.array(self.images_informations_preprocessed[name]["transform"])[:-1,:]
+        transformation_matrix = np.array(self.images_informations_preprocessed[name]["transform"])
+        print(transformation_matrix)
+        factor= 1e2
+        scaling_up = np.array([[factor,0,0],[0,factor,0],[0,0,1]])
+        print(transformation_matrix)
+        transformation_matrix = scaling_up.dot(transformation_matrix)[:-1,:]
+        print(transformation_matrix)
         array = cv2.warpAffine(image, transformation_matrix, (*image.shape,)[::-1],)
         return np.array(array)
 
