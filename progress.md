@@ -52,3 +52,4 @@
 ## TODO
 
 - get the position of the image/patch
+- statistics about dimensions of annotations
