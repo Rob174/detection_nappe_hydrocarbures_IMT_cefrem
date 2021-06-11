@@ -43,7 +43,8 @@
 
 ## 11-06-2021
 - :email: Mail inverse_transform matrix
-- save model
+- ✔️ Interactive plot
+- ✔️ save model
 - show result on rgb map
 - Confusion matrix
 
