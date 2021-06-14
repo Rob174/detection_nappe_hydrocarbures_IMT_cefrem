@@ -26,7 +26,7 @@
 
 ## 09-06-2021
 
-- ❎ warp affine transformation before making the grid
+- :triangular_flag_on_post: warp affine transformation before making the grid
   - ✔️ add transformation matrix to the cache informations
   - ✔️ apply the transformation
 - ✔️ Main script
@@ -49,9 +49,10 @@
 - Confusion matrix
 
 ## 14-06-2021
-- experimentations with the transform matrix
+- :triangular_flag_on_post: experimentations with the transform matrix
    --> does not allow to properly rotate the image : just a translation and a flip + scaling in this matrix
-- RGB overlay debugging
+- ⏲️ RGB overlay debugging
+- ✔️ Tests to determine the method to extract seeps and spills length statistics
 
 ## TODO
 
