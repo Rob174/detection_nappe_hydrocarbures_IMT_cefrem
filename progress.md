@@ -1,6 +1,6 @@
 # Progress
 
-✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem
 
 ## 07-06-2021
 
@@ -26,7 +26,7 @@
 
 ## 09-06-2021
 
-- ❎ warp affine transformation before making the grid
+- :triangular_flag_on_post: warp affine transformation before making the grid
   - ✔️ add transformation matrix to the cache informations
   - ✔️ apply the transformation
 - ✔️ Main script
@@ -48,8 +48,15 @@
 - show result on rgb map
 - Confusion matrix
 
+## 14-06-2021
+- :triangular_flag_on_post: experimentations with the transform matrix
+   --> does not allow to properly rotate the image : just a translation and a flip + scaling in this matrix
+- ⏳ RGB overlay debugging
+- ✔️ Tests to determine the method to extract seeps and spills length statistics
+- ⏳ Extract seeps and spills length statistics
+- Filter trainings by parameters
 
 ## TODO
 
 - get the position of the image/patch
-- statistics about dimensions of annotations
+- Confusion matrix
