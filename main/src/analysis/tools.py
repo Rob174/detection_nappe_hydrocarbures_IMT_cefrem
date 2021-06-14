@@ -22,12 +22,13 @@ class RGB_Overlay_Patch:
                                           [0,1/resize_factor,0],
                                           [0,0,1]])
         new_shape = list(map(lambda x:int(transformation_matrix.dot(np.array([x,0,1]))[0]),original_img.shape)) + [3]
-        overlay_true = np.zeros(new_shape,dtype=np.float32)
-        overlay_pred = np.zeros(new_shape,dtype=np.float32)
+        overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32)
+        overlay_pred = np.zeros((*original_img.shape,3),dtype=np.float32)
         normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
-
-        for id,[input,output] in enumerate(self.dataset.attr_dataset.make_patches_of_image(name_img)):
-
+        patches = self.dataset.attr_dataset.make_patches_of_image(name_img)
+        print(f"nb patches: {len(patches)}")
+        for id,[input,output] in enumerate(patches):
+            print(f"Id processed {id}")
             input_adapted = np.stack((input,input,input),axis=0)
             input_adapted = input_adapted.reshape((1,*input_adapted.shape))
             prediction = model(input) if device is None else model(torch.tensor(input_adapted).to(device)).cpu()
@@ -35,8 +36,8 @@ class RGB_Overlay_Patch:
             if len(output) > 3:
                 raise Exception(f"{len(output)} classes : Too much : cannot use this vizualization technic")
             input = normalize(input)
-            resized_grid_size = int(transformation_matrix.dot(np.array([self.dataset.attr_patch_creator.attr_grid_size_px,0,1]))[0])
-            input = cv2.resize(input,dsize=(resized_grid_size,resized_grid_size), interpolation=cv2.INTER_CUBIC)
+            resized_grid_size = 1000#int(transformation_matrix.dot(np.array([self.dataset.attr_patch_creator.attr_grid_size_px,0,1]))[0])
+            # input = cv2.resize(input,dsize=(resized_grid_size,resized_grid_size), interpolation=cv2.INTER_CUBIC)
             input = np.stack((input,)*3,axis=-1) # convert in rgb
             color_true = np.ones((resized_grid_size,resized_grid_size,3))
             color_pred = np.ones((resized_grid_size,resized_grid_size,3))
@@ -48,16 +49,17 @@ class RGB_Overlay_Patch:
                 color_pred[:,:,i] *= c
 
             coordx1_not_resize = pos_x
-            coordx1 = int(transformation_matrix.dot(np.array([coordx1_not_resize,0,1]))[0])
+            # coordx1 = int(transformation_matrix.dot(np.array([coordx1_not_resize,0,1]))[0])
             coordx2_not_resize = coordx1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
-            coordx2 = int(transformation_matrix.dot(np.array([coordx2_not_resize,0,1]))[0])
+            # coordx2 = int(transformation_matrix.dot(np.array([coordx2_not_resize,0,1]))[0])
             coordy1_not_resize = pos_y
-            coordy1 = int(transformation_matrix.dot(np.array([0,coordy1_not_resize,1]))[1])
+            # coordy1 = int(transformation_matrix.dot(np.array([0,coordy1_not_resize,1]))[1])
             coordy2_not_resize = coordy1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
-            coordy2 = int(transformation_matrix.dot(np.array([0,coordy2_not_resize,1]))[1])
-            print(coordx1,coordy1)
-            overlay_true[coordx1:coordx2,coordy1:coordy2,:] = input * (1-blending_factor) + color_true * blending_factor
-            overlay_pred[coordx1:coordx2,coordy1:coordy2,:] = input * (1-blending_factor) + color_pred * blending_factor
+            # coordy2 = int(transformation_matrix.dot(np.array([0,coordy2_not_resize,1]))[1])
+            print(coordx1_not_resize,coordy1_not_resize,overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:].shape
+                  )
+            overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_true * blending_factor
+            overlay_pred[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_pred * blending_factor
         return overlay_true,overlay_pred
 
 if __name__ == "__main__":

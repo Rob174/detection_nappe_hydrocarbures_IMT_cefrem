@@ -51,7 +51,6 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
         liste_patches = []
         num_patches = self.patch_creator.num_available_patches(last_image)
         for id in range(num_patches):
-            print(psutil.virtual_memory())
             liste_patches.append([self.patch_creator(last_image, name, patch_id=id, keep=True)])
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
