@@ -48,6 +48,10 @@
 - show result on rgb map
 - Confusion matrix
 
+## 14-06-2021
+- experimentations with the transform matrix
+   --> does not allow to properly rotate the image : just a translation and a flip + scaling in this matrix
+- RGB overlay debugging
 
 ## TODO
 
