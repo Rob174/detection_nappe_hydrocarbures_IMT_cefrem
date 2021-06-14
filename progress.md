@@ -53,6 +53,7 @@
    --> does not allow to properly rotate the image : just a translation and a flip + scaling in this matrix
 - ⏲️ RGB overlay debugging
 - ✔️ Tests to determine the method to extract seeps and spills length statistics
+- ⏲️ Extract seeps and spills length statistics
 
 ## TODO
 
