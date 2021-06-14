@@ -20,11 +20,7 @@ class Patch_creator0(BaseClass):
 
     def num_available_patches(self,image: np.ndarray ) -> int:
         num_lignes = int(image.shape[0] / self.attr_grid_size_px)
-        if (num_lignes+1) * self.attr_grid_size_px >= image.shape[0]:
-            num_lignes -= 1
         num_cols = int(image.shape[1] / self.attr_grid_size_px)
-        if (num_cols+1) * self.attr_grid_size_px >= image.shape[1]:
-            num_lignes -= 1
         return num_lignes * num_cols
 
     def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False, *args, **kargs) -> np.ndarray:
