@@ -27,7 +27,7 @@ class Patch_creator0(BaseClass):
             num_lignes -= 1
         return num_lignes * num_cols
 
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> np.ndarray:
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False, *args, **kargs) -> np.ndarray:
         if count_reso is True:
             radius_earth_meters = 6371e3
             reso_x = self.images_informations_preprocessed[image_name]["resolution"][0] * np.pi/180. * radius_earth_meters
@@ -78,13 +78,13 @@ if __name__ == "__main__":
     from PIL import Image, ImageDraw
     for grid_size in [500,1000,1500]: # For different grid size we will test creating patches
         patch_creator = Patch_creator0(grid_size_px=grid_size,test=True,images_informations_preprocessed=dico_infos) # Create the path generator object
-        for id in range(0,patch_creator.num_available_patches(array)):
-            patch = patch_creator(array, images_test.current_name, id) # create the patches specifying additional informations for the statistics
-            plt.clf()
-            plt.figure()
-            plt.title(f"Patch of {grid_size} px length on {images_test.current_name}")
-            plt.imshow(patch,cmap="gray",vmin=np.min(array),vmax=np.max(array))
-            plt.savefig(folder+f"{images_test.current_name}_patch{id}_size-{grid_size}.png")
+        # for id in range(0,patch_creator.num_available_patches(array)):
+        #     patch = patch_creator(array, images_test.current_name, id) # create the patches specifying additional informations for the statistics
+        #     plt.clf()
+        #     plt.figure()
+        #     plt.title(f"Patch of {grid_size} px length on {images_test.current_name}")
+        #     plt.imshow(patch,cmap="gray",vmin=np.min(array),vmax=np.max(array))
+        #     plt.savefig(folder+f"{images_test.current_name}_patch{id}_size-{grid_size}.png")
 
         plt.clf() # Clear previous figures
         plt.figure() # Create new separated figure

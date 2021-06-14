@@ -1,4 +1,5 @@
 import json
+import subprocess
 import sys
 
 from main.src.training.metrics_factory import MetricsFactory
@@ -31,6 +32,8 @@ if __name__ == "__main__":
                              patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size)
+    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+    dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
     dico_save_parameters["data"]["prct_tr"] = 0.7
     dico_save_parameters["data"]["batch_size"] = arguments.batch_size

@@ -26,7 +26,7 @@ class RGB_Overlay_Patch:
         overlay_pred = np.zeros(new_shape,dtype=np.float32)
         normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
 
-        for id,[input,output] in enumerate(self.dataset.attr_dataset.all_patches_of_image(name_img)):
+        for id,[input,output] in enumerate(self.dataset.attr_dataset.make_patches_of_image(name_img)):
 
             input_adapted = np.stack((input,input,input),axis=0)
             input_adapted = input_adapted.reshape((1,*input_adapted.shape))
@@ -55,8 +55,7 @@ class RGB_Overlay_Patch:
             coordy1 = int(transformation_matrix.dot(np.array([0,coordy1_not_resize,1]))[1])
             coordy2_not_resize = coordy1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
             coordy2 = int(transformation_matrix.dot(np.array([0,coordy2_not_resize,1]))[1])
-            print(overlay_true[coordx1:coordx2, coordy1:coordy2, :].shape, overlay_true.shape, input.shape,
-                  self.dataset.attr_patch_creator.attr_grid_size_px)
+            print(coordx1,coordy1)
             overlay_true[coordx1:coordx2,coordy1:coordy2,:] = input * (1-blending_factor) + color_true * blending_factor
             overlay_pred[coordx1:coordx2,coordy1:coordy2,:] = input * (1-blending_factor) + color_pred * blending_factor
         return overlay_true,overlay_pred
@@ -83,4 +82,10 @@ if __name__ == "__main__":
     model.to(device)
     model.load_state_dict(torch.load(f"{folder}{choice_folder}_model_epoch-{epoch}_it-{iteration}.pt"))
     array_overlay = rgb_overlay(name_img="027481_0319CB_0EB7", model=model, blending_factor=0.5, device=device)
+
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(10,10))
+    plt.imshow(array_overlay[0])
+    plt.figure(figsize=(10,10))
+    plt.imshow(array_overlay[1])
     print(array_overlay)

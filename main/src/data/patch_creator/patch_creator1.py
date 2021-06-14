@@ -9,24 +9,33 @@ import functools
 class Patch_creator1(Patch_creator0):
     def __init__(self, grid_size_px, images_informations_preprocessed, test=False):
         super(Patch_creator1, self).__init__(grid_size_px, images_informations_preprocessed, test)
+        self.last_name = None
 
-    # @functools.lru_cache(maxsize=1)
     def transform_back(self, image: np.ndarray, name: str) -> np.ndarray:
+        if self.last_name is not None and name == self.last_name:
+            return self.last_image
         # doc https://docs.opencv.org/master/da/d6e/tutorial_py_geometric_transformations.html
         transformation_matrix = np.array(self.images_informations_preprocessed[name]["transform"],dtype=np.float32)
+        # transformation_matrix[:2,-1] = 0
+        transformation_matrix[:2,:2] /= transformation_matrix[0,0]
         extreme_point = (np.array([*image.shape[:2],2])-1)
         extreme_point_transform = transformation_matrix.dot(extreme_point)
-        factorx = image.shape[0]/extreme_point_transform[0]
-        factory = image.shape[1]/extreme_point_transform[1]
-        biggest_factor = min(factorx,factory)
+        # factorx = image.shape[0]/extreme_point_transform[0]
+        # factory = image.shape[1]/extreme_point_transform[1]
+        biggest_factor = 1#min(factorx,factory)
         scaling_up = np.array([[biggest_factor,0,0],[0,biggest_factor,0],[0,0,1]])
         transformation_matrix = scaling_up.dot(transformation_matrix)[:-1,:]
-        array = cv2.warpAffine(image, transformation_matrix,dsize=image.shape)
-        return array
 
-    def __call__(self, image: np.ndarray, image_name: str, patch_id: int, count_reso: bool = False) -> np.ndarray:
-        self.last_image = self.transform_back(image,image_name)
-        return super(Patch_creator1, self).__call__(self.last_image, image_name, patch_id, count_reso)
+        array = cv2.warpAffine(image, transformation_matrix,dsize=image.shape[::-1])
+        self.last_name = name
+        self.last_image = array
+        return self.last_image
+
+    def __call__(self, image: np.ndarray, image_name: str, patch_id: int, count_reso: bool = False, keep=False) -> np.ndarray:
+        image = self.transform_back(image,image_name)
+        if keep is True:
+            self.last_image_backup = image
+        return super(Patch_creator1, self).__call__(image, image_name, patch_id, count_reso)
 
 if __name__ == "__main__":
     import matplotlib
@@ -43,6 +52,7 @@ if __name__ == "__main__":
 
 
     from PIL import Image, ImageDraw
+    normalize = lambda  x:(x-np.min(x))/(np.max(x)-np.min(x))
     for grid_size in [500,1000,1500]:
         dataset_factory = DatasetFactory(dataset_name="sentinel1",
                                                            usage_type="classification",
@@ -54,12 +64,12 @@ if __name__ == "__main__":
         del patches
         array = dataset_factory.attr_patch_creator.last_image
         plt.figure()  # Create new separated figure
-        plt.imshow(array-np.min(array), cmap="gray",vmin=0,vmax=np.max(array))  #
+        plt.imshow(normalize(np.array(dataset_factory.attr_dataset.images[name_img])), cmap="gray")  #
         plt.savefig(folder + f"{name_img}_original.png")
         dico_infos = dataset_factory.attr_dataset.images_infos[name_img]
         plt.clf()
         plt.figure() # Create new separated figure
-        plt.imshow(array-np.min(array),cmap="gray",vmin=0,vmax=np.max(array)) #
+        plt.imshow(normalize(array),cmap="gray") #
         plt.savefig(folder+f"{name_img}_original_transformed_{grid_size}.png")
 
         plt.clf() # Clear previous figures
