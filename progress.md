@@ -51,9 +51,9 @@
 ## 14-06-2021
 - :triangular_flag_on_post: experimentations with the transform matrix
    --> does not allow to properly rotate the image : just a translation and a flip + scaling in this matrix
-- ⏳ RGB overlay debugging
+- ✔️ RGB overlay debugging
 - ✔️ Tests to determine the method to extract seeps and spills length statistics
-- ⏳ Extract seeps and spills length statistics
+- ✔️ Extract seeps and spills length statistics
 - Filter trainings by parameters
 
 ## TODO
