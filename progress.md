@@ -1,6 +1,6 @@
 # Progress
 
-✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug
 
 ## 07-06-2021
 
@@ -59,7 +59,13 @@
 - ✔️ Write RGB overlay
 - ✔️ Training Crossentropy
 - ✔️ Training MSE
-- Filter trainings by parameters
+- 🚩🐛 Filter trainings by parameters 
+- ⏲️ Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
+   - ⏲️ correct the extract raster to hdf5 file (for reproduction purpose only)
+   - make a correction script (to remake the annotation file)
+
+
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug
 
 ## TODO
 
@@ -67,7 +73,7 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
 
 - 5️⃣ get the position of the image/patch
 - 9️⃣ Confusion matrix
-- 1️⃣ Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
+- 1️⃣⏲️ Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
 - 4️⃣ Classify only by telling if there is something or not on the image
 - 4️⃣ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 - 3️⃣ Add a legend to the rgb overlay
