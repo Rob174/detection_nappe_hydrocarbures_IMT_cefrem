@@ -65,3 +65,9 @@
 
 - get the position of the image/patch
 - Confusion matrix
+- Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
+- Classify only by telling if there is something or not on the image
+- Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
+- Add a legend to the rgb overlay
+- Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
+- Rotation augmentation
