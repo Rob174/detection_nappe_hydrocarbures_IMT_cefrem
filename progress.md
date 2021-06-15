@@ -56,7 +56,7 @@
 - ✔️ Extract seeps and spills length statistics
 
 ## 15-06-2021
-- Write RGB overlay
+- ✔️ Write RGB overlay
 - Filter trainings by parameters
 
 ## TODO
