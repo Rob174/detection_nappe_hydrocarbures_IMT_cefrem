@@ -9,9 +9,12 @@ class LossFactory(BaseClass):
             preference = preference.lower()
         self.attr_loss = preference
         if usage_type == "classification":
-            if preference is None or preference == "crossentropy":
-                self.attr_loss = "crossentropy"
+            if preference is None or preference == "multiclassnonexlusivcrossentropy":
+                self.attr_loss = "multiclassnonexlusivcrossentropy"
                 self.loss = lambda pred,target:torch.mean(torch.sum(-torch.log(pred+1e-7) * target,dim=1))
+            elif preference == "binarycrossentropy":
+                self.attr_loss = "binarycrossentropy"
+                self.loss = torch.nn.CrossEntropyLoss()
             elif preference == "mse":
                 self.attr_loss = "mse"
                 self.loss = torch.nn.MSELoss()
