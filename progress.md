@@ -57,6 +57,8 @@
 
 ## 15-06-2021
 - ✔️ Write RGB overlay
+- ✔️ Training Crossentropy
+- ✔️ Training MSE
 - Filter trainings by parameters
 
 ## TODO
