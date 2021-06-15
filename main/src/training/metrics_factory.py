@@ -21,4 +21,4 @@ class MetricsFactory(BaseClass):
         prediction = prediction.detach().numpy()
         true_value = true_value.detach().numpy()
         for name,function in zip(self.attr_list_metrics.keys(),self.functions_metrics):
-            self.attr_list_metrics[name][dataset_type+"_values"].append(function(prediction,true_value))
+            self.attr_list_metrics[name][dataset_type+"_values"].append(float(function(prediction,true_value)))

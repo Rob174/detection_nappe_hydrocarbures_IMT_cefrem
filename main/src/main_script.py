@@ -32,7 +32,7 @@ if __name__ == "__main__":
                              patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size)
-    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8")
     dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
     dico_save_parameters["data"]["prct_tr"] = 0.7
@@ -108,7 +108,7 @@ if __name__ == "__main__":
                 optimizer_pytorch.step()
                 current_loss = loss.item()
 
-                dico_save_parameters["training"]["tr_loss"].append(current_loss)
+                dico_save_parameters["training"]["tr_loss"].append(float(current_loss))
                 dico_save_parameters["training"]["last_it"] = i
                 dico_save_parameters["training"]["last_epoch"] = epoch
 
@@ -126,7 +126,7 @@ if __name__ == "__main__":
                     prediction = model(input.to(device))
                     loss = criterion_pytorch(prediction.to(device), output.to(device))
                     current_loss = loss.item()
-                    dico_save_parameters["training"]["valid_loss"].append(current_loss)
+                    dico_save_parameters["training"]["valid_loss"].append(float(current_loss))
                     dico_save_parameters["data"]["dataset"] = saver(dataset)
                     metrics(prediction.cpu(),output.cpu(),"valid")
                     dico_save_parameters["metrics"] = saver(metrics)

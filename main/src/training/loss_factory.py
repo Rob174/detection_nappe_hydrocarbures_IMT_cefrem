@@ -13,6 +13,7 @@ class LossFactory(BaseClass):
                 self.attr_loss = "crossentropy"
                 self.loss = lambda pred,target:torch.mean(torch.sum(-torch.log(pred+1e-7) * target,dim=1))
             elif preference == "mse":
+                self.attr_loss = "mse"
                 self.loss = torch.nn.MSELoss()
             else:
                 raise NotImplementedError(f"{preference} has not been implemented")
