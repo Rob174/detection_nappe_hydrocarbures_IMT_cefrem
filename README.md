@@ -177,4 +177,8 @@ Questions
 - Avis solution de visualisation des résultats ? notebook + simple: pas trop compliquer
 
 
-Prochain rdv: mardi 08/06 14h
+### mardi 08/06 14h:
+
+- erreur de calibration ? [#22](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/issues/22)
+- confirmation: algorithme pour vérifier la validité à appliquer sur le shapefile global ?
+- formule categorical crossentropy (cf LossFactory)
