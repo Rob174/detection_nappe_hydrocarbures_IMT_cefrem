@@ -54,6 +54,11 @@
 - ✔️ RGB overlay debugging
 - ✔️ Tests to determine the method to extract seeps and spills length statistics
 - ✔️ Extract seeps and spills length statistics
+
+## 15-06-2021
+- ✔️ Write RGB overlay
+- ✔️ Training Crossentropy
+- ✔️ Training MSE
 - Filter trainings by parameters
 
 ## TODO
