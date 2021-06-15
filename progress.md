@@ -71,3 +71,4 @@
 - Add a legend to the rgb overlay
 - Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
 - Rotation augmentation
+- Simplify the analysis backend code 
