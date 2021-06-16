@@ -1,15 +1,15 @@
 {
   "metadata": {
     "grid_size_px": {
-      "access":"lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_grid_size_px\"]",
+      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_grid_size_px\"]",
       "default": "1000"
     },
     "limit_num_images": {
-      "access":"lambda dico:dico[\"data\"][\"dataset\"][\"attr_dataset\"][\"attr_limit_num_images\"]",
+      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_dataset\"][\"attr_limit_num_images\"]",
       "default": "None"
     },
     "resizer_size": {
-      "access":"lambda dico:dico[\"data\"][\"dataset\"][\"attr_dataset\"][\"attr_resizer\"][\"attr_out_size_w\"]",
+      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_dataset\"][\"attr_resizer\"][\"attr_out_size_w\"]",
       "default": "256"
     },
     "length_dataset": {
@@ -17,36 +17,48 @@
       "default": "-1"
     },
     "prct_tr": {
-      "access":"lambda dico:dico[\"data\"][\"prct_tr\"]",
+      "access": "lambda dico:dico[\"data\"][\"prct_tr\"]",
       "default": "0.7"
     },
     "batch_size": {
-      "access":"lambda dico:dico[\"data\"][\"batch_size\"]",
+      "access": "lambda dico:dico[\"data\"][\"batch_size\"]",
       "default": "10"
     },
     "eval_step": {
-      "access":"lambda dico:dico[\"data\"][\"eval_step\"]",
+      "access": "lambda dico:dico[\"data\"][\"eval_step\"]",
       "default": "5"
     },
     "model_name": {
-      "access":"lambda dico:dico[\"model\"][\"attr_model_name\"]",
+      "access": "lambda dico:dico[\"model\"][\"attr_model_name\"]",
       "default": "\"resnet18\""
     },
     "num_classes": {
-      "access":"lambda dico:dico[\"model\"][\"attr_num_classes\"]",
+      "access": "lambda dico:dico[\"model\"][\"attr_num_classes\"]",
       "default": "3"
     },
     "loss": {
-      "access":"lambda dico:dico[\"loss\"][\"attr_loss\"]",
+      "access": "lambda dico:dico[\"loss\"][\"attr_loss\"]",
       "default": "\"crossentropy\""
     },
     "optimizer_name": {
-      "access":"lambda dico:dico[\"optimizer\"][\"attr_name\"]",
+      "access": "lambda dico:dico[\"optimizer\"][\"attr_name\"]",
       "default": "\"adam\""
     },
-    "optimizer_params": {
-      "access":"lambda dico:dico[\"optimizer\"][\"attr_params\"]",
-      "default": "{}"
+    "optimizer_lr": {
+      "access": "lambda dico:dico[\"optimizer\"][\"attr_params\"][\"lr\"]",
+      "default": "1e-3"
+    },
+    "optimizer_eps": {
+      "access": "lambda dico:dico[\"optimizer\"][\"attr_params\"][\"eps\"]",
+      "default": "1e-3"
+    },
+    "patch_exclusion_policy": {
+      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_exclusion_policy\"]",
+      "default": "\"marginmorethan_1000\""
+    },
+    "num_patches_rejected":{
+      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_num_rejected\"]",
+      "default": "0"
     }
   },
   "metrics": {

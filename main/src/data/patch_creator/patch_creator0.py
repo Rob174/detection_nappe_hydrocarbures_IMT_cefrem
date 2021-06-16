@@ -19,7 +19,7 @@ class Patch_creator0(BaseClass):
         self.resolution_used = {"x":{}, "y":{}}
         self.attr_exclusion_policy = exclusion_policy
         self.reject = False
-        self.num_rejected = 0
+        self.attr_num_rejected = 0
 
     def num_available_patches(self,image: np.ndarray ) -> int:
         num_lignes = int(image.shape[0] / self.attr_grid_size_px)

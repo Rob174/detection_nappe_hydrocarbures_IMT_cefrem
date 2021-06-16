@@ -43,7 +43,6 @@ class RGB_Overlay_Patch:
             progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
             for id,[input,output,filter] in enumerate(patches):
                 if filter is True:
-                    print("skipping")
                     continue
                 input_adapted = np.stack((input,input,input),axis=0)
                 input_adapted = input_adapted.reshape((1,*input_adapted.shape))
