@@ -32,7 +32,7 @@ if __name__ == "__main__":
                              patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size)
-    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8")
+    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
     dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
     dico_save_parameters["data"]["prct_tr"] = 0.7
@@ -97,6 +97,9 @@ if __name__ == "__main__":
             # print("epoch")
 
             for i, [input, output] in enumerate(dataset_tr):
+                # TODO : add patch filtering here ; pb if no patches
+                if dataset.attr_patch_creator.reject is True:
+                    continue
                 # print("step")
                 # zero the parameter gradients
                 optimizer_pytorch.zero_grad()

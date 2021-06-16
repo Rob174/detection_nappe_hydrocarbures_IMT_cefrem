@@ -40,7 +40,10 @@ class RGB_Overlay_Patch:
         )
         with progress:
             progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
-            for id,[input,output] in enumerate(patches):
+            for id,[input,output,filter] in enumerate(patches):
+                if filter is True:
+                    print("skipping")
+                    continue
                 input_adapted = np.stack((input,input,input),axis=0)
                 input_adapted = input_adapted.reshape((1,*input_adapted.shape))
                 prediction = model(input) if device is None else model(torch.tensor(input_adapted).to(device)).cpu()

@@ -49,13 +49,17 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
     def make_patches_of_image(self, name: str):
         last_image = np.array(self.images[name], dtype=np.float32)
         liste_patches = []
+        liste_filter = []
         num_patches = self.patch_creator.num_available_patches(last_image)
         for id in range(num_patches):
             liste_patches.append([self.patch_creator(last_image, name, patch_id=id, keep=True)])
+            liste_filter.append(self.patch_creator.reject)
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
             patch = self.patch_creator(annotations, name, patch_id=id)
             liste_patches[id].append(self.make_classification_label(patch))
+        for id in range(num_patches):
+            liste_patches[id].append(liste_filter[id])
         return liste_patches
 
     def __len__(self) -> int:

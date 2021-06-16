@@ -8,7 +8,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class Patch_creator0(BaseClass):
-    def __init__(self, grid_size_px, images_informations_preprocessed, test=False):
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
         self.attr_description = "Create a grid by taking a square of a constant pixel size."+\
                                 " It does not consider the resolution of each image."+\
                                 " It rejects a patch if it is not fully included in the original image"
@@ -17,6 +17,9 @@ class Patch_creator0(BaseClass):
         self.test = test
         self.images_informations_preprocessed: dict = images_informations_preprocessed
         self.resolution_used = {"x":{}, "y":{}}
+        self.attr_exclusion_policy = exclusion_policy
+        self.reject = False
+        self.num_rejected = 0
 
     def num_available_patches(self,image: np.ndarray ) -> int:
         num_lignes = int(image.shape[0] / self.attr_grid_size_px)
@@ -41,6 +44,14 @@ class Patch_creator0(BaseClass):
         patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px]
         if patch.shape[0] != self.attr_grid_size_px or patch.shape[1] != self.attr_grid_size_px:
             raise Exception(f"Wrong patch with shape {patch.shape} with id {id}")
+        corner_value = 0
+        nb_val_out = len(patch[patch == corner_value])
+        print(nb_val_out)
+        if nb_val_out > int(self.attr_exclusion_policy.split("_")[1]):
+            self.reject = True
+            self.num_rejected += 1
+        else:
+            self.reject = False
         return patch
     def get_position_patch(self,patch_id: int, input_shape):
         num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)

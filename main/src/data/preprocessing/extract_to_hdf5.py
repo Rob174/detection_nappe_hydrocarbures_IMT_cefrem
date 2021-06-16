@@ -136,6 +136,15 @@ for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
     segmentation_map = Image.fromarray(segmentation_map)
     draw = ImageDraw.ImageDraw(segmentation_map)  # draw the base image
     for i_shape ,shape in enumerate(shapefile.geometry):
+        id_shape = shapefile.id[i_shape]
+        metadata = list(filter(lambda x: x[0] == id_shape, table))[0]
+        id_img = re.sub(
+            "^(([0-9A-Za-z]+_){4})(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(([0-9A-Za-z]+_[0-9A-Za-z]+_[0-9A-Za-z]+))_([^\\.]+)\\.data$",
+            "\\1,\\3,\\4,\\5,\\7",
+            metadata[8].strip()  # extract the name of the image corresponding
+        ).split(",")[3]
+        if name != id_img:
+            continue
         liste_points_shape: List[Tuple[int ,int]] = [] # will contain the list of point of this shape
         elem = shape.boundary # extract the boundary of the object shape (with other properties)
         if elem.geom_type != "LineString"  :# the polygon is defined by a group of lines defines the polygon : https://help.arcgis.com/en/geodatabase/10.0/sdk/arcsde/concepts/geometry/shapes/types.htm
@@ -153,8 +162,6 @@ for i ,[name ,pathImg] in enumerate(dico_by_extensions["img"].items()):
                 # Convert point coordinates from degrees to corresponding px coordinates
                 px, py = raster.index(point[0], point[1])
                 liste_points_shape.append(tuple([int(py), int(px)]))
-        id_shape = shapefile.id[i_shape]
-        metadata = list(filter(lambda x: x[0] == id_shape, table))[0]
         label = metadata[4].strip() # strip cut all space, back to line
         if label == "seep":# Change color and so the value put in the array to create the label
             color  = "#010101"
