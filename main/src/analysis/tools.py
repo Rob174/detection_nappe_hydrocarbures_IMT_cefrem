@@ -18,6 +18,7 @@ class RGB_Overlay_Patch:
     def __init__(self,dataset_name="sentinel1",usage_type="classification",patch_creator="fixed_px",grid_size=1000,input_size=256):
         FolderInfos.init(test_without_data=False)
         self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,grid_size=grid_size , input_size=input_size)
+
     def __call__(self,name_img,model,blending_factor=0.5,device=None,resize_factor=4):
         original_img = self.dataset.attr_dataset.images[name_img]
         transformation_matrix = np.array([[1/resize_factor,0,0],
