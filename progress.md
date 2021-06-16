@@ -60,9 +60,9 @@
 - ✔️ Training Crossentropy
 - ✔️ Training MSE
 - 🚩🐛 Filter trainings by parameters 
-- ⏳ Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
+- ✔️ Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
    - ✔️ correct the extract raster to hdf5 file (for reproduction purpose only)
-   - ⏳ make a correction script (to remake the annotation file)
+   - ✔️ make a correction script (to remake the annotation file)
 
 ## 16-06-2021
 - ✔️ Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
