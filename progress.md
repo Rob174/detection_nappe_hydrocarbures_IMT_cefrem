@@ -65,8 +65,8 @@
    - ⏳ make a correction script (to remake the annotation file)
 
 ## 16-06-2021
-- ⏲️ Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
-
+- ✔️ Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
+- ⏲️ Add a legend to the rgb overlay
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug
 
@@ -80,6 +80,5 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
 - 4️⃣ Classify only by telling if there is something or not on the image
 - 4️⃣ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 - 3️⃣ Add a legend to the rgb overlay
-- 2️⃣ ⏲️ Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
 - 6️⃣ Rotation augmentation
 - 3️⃣ Simplify the analysis backend code with pandas
