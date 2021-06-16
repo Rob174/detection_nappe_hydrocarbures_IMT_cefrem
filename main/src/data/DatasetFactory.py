@@ -10,12 +10,13 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DatasetFactory(BaseClass):
-    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000):
+    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000"):
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
         if patch_creator == "fixed_px":
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
-                                                     images_informations_preprocessed=dico_infos)
+                                                     images_informations_preprocessed=dico_infos,
+                                                     exclusion_policy=exclusion_policy)
         else:
             raise NotImplementedError(f"{patch_creator} is not implemented")
 

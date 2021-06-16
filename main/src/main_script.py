@@ -31,7 +31,8 @@ if __name__ == "__main__":
                              usage_type=arguments.usage_type,
                              patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
-                             input_size=arguments.input_size)
+                             input_size=arguments.input_size,
+                             exclusion_policy=arguments.patch_exclude_policy)
     dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
     dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
