@@ -21,12 +21,14 @@ import numpy as np
 from torch.utils.data import random_split, DataLoader
 import torch
 from rich.progress import Progress, TextColumn, BarColumn, DownloadColumn, TimeElapsedColumn, TimeRemainingColumn
+from git import Repo
 
 if __name__ == "__main__":
     FolderInfos.init()
     dico_save_parameters = {"data": {}, "model": {}}
     arguments = Parser0()()
     saver = Saver0("")
+    repo = Repo(FolderInfos.root_folder,search_parent_directories=True)
     dataset = DatasetFactory(dataset_name=arguments.dataset,
                              usage_type=arguments.usage_type,
                              patch_creator=arguments.patch,
@@ -34,7 +36,16 @@ if __name__ == "__main__":
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
                              classes_to_use=arguments.classes)
-    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
+    dico_save_parameters["commit"] = sha = repo.head.object.hexsha
+    for x in repo.index.diff("HEAD"):
+        # Just print
+        print(x)
+
+        # Or for each entry you can find out information about it, e.g.
+        print(x.new_file)
+        print(x.b_path)
+    raise Exception()
+    raise Exception()
     dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
     dico_save_parameters["data"]["prct_tr"] = 0.7
