@@ -8,10 +8,14 @@ import json
 import plotly.express as px
 import pandas as pd
 from main.src.param_savers.BaseClass import BaseClass
+import torch
+import random
 
 
-class DatasetFactory(BaseClass):
-    def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills"):
+class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
+    def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px",
+                 grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills"):
+        self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
         if patch_creator == "fixed_px":
@@ -34,18 +38,21 @@ class DatasetFactory(BaseClass):
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
 
-    def __getitem__(self, id: int):
+    def _getitem(self, id: int):
         input, output = self.attr_dataset.__getitem__(id)
         return input, output
 
     def __len__(self):
         return self.attr_dataset.__len__()
     def __iter__(self):
-        return self.generator()
+        return iter(self.generator())
     def generator(self):
-        for id in range(self.__len__()):
+        ids = list(range(self.__len__()))
+        random.shuffle(ids)
+        for id in ids:
             input,output = self.__getitem__(id)
             if self.attr_patch_creator.reject is True:
+                print("skiping ",id)
                 continue
             else:
                 yield input,output

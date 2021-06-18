@@ -32,6 +32,7 @@ class DataSentinel1Segmentation(BaseClass):
         self.attrend_resolutionX_stats = {}
         self.attrend_resolutionY_stats = {}
         self.img_not_seen = self.get_all_items()
+        self.attr_global_name = "dataset"
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         item = self.get_all_items()[id]

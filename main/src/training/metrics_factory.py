@@ -17,6 +17,7 @@ class MetricsFactory(BaseClass):
                 self.functions_metrics.append(lambda pred,true:np.mean(np.mean(np.abs(pred-true),axis=1)))
             else:
                 raise NotImplementedError(f"{metric} has not been implemented")
+        self.attr_global_name = "metrics"
     def __call__(self, prediction,true_value,dataset_type):
         prediction = prediction.detach().numpy()
         true_value = true_value.detach().numpy()

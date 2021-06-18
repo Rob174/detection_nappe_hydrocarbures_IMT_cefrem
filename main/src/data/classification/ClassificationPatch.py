@@ -16,6 +16,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
+        self.attr_global_name = "dataset"
 
     @lru_cache(maxsize=1)
     def get_all_items(self):

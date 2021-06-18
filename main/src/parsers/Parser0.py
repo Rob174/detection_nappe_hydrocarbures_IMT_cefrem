@@ -4,6 +4,8 @@ from main.src.param_savers.BaseClass import BaseClass
 class Parser0(BaseClass):
     """Desiged for """
     def __init__(self):
+        self.attr_global_name = "parser"
+        self.attr_name = self.__class__.__name__
         self.parser = argparse.ArgumentParser()
         self.args = {
 

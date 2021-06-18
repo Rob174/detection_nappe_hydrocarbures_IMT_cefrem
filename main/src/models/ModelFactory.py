@@ -6,6 +6,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class ModelFactory(BaseClass):
     def __init__(self,model_name,num_classes=2):
+        self.attr_global_name = "model"
         if model_name == "efficientnetv4":
             self.model = EfficientNet.from_pretrained('efficientnet-b0',num_classes=num_classes)
         elif model_name == "resnet18":

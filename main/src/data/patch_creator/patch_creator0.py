@@ -20,6 +20,7 @@ class Patch_creator0(BaseClass):
         self.attr_exclusion_policy = exclusion_policy
         self.reject = False
         self.attr_num_rejected = 0
+        self.attr_global_name = "patch_creator"
 
     def num_available_patches(self,image: np.ndarray ) -> int:
         num_lignes = int(image.shape[0] / self.attr_grid_size_px)

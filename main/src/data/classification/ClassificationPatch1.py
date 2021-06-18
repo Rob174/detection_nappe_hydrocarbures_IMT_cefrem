@@ -14,6 +14,7 @@ class ClassificationPatch1(ClassificationPatch):
         for i,name in enumerate(classes_to_use.split(",")):
             tmp_mapping[self.attr_class_mapping[name],Way.ORIGINAL_WAY] = name,i
         self.attr_class_mapping = tmp_mapping
+        self.attr_global_name = "dataset"
 
     def make_classification_label(self, annotations_patch):
         annotation = super(ClassificationPatch1, self).make_classification_label(annotations_patch)

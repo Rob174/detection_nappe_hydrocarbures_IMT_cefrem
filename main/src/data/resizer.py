@@ -11,6 +11,7 @@ class Resizer(BaseClass):
     def __init__(self,out_size_w,interpolation=None):
         self.attr_out_size_w = out_size_w
         self.attr_interpolation = interpolation
+        self.attr_global_name = "resizer"
     def __call__(self,array) -> np.ndarray:
         if self.attr_out_size_w == array.shape[1]:
             return array

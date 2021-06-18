@@ -25,5 +25,6 @@ class LossFactory(BaseClass):
             raise NotImplementedError()
         else:
             raise NotImplementedError(f"{usage_type} has not been implemented")
+        self.attr_global_name = "loss"
     def __call__(self):
         return self.loss

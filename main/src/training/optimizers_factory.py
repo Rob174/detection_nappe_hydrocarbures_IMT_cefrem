@@ -15,5 +15,6 @@ class OptimizersFactory(BaseClass):
             self.optimizer = optim.SGD(model.parameters(),lr=params["lr"])
         else:
             raise NotImplementedError(f"{name} has not been implemented")
+        self.attr_global_name = "optimizer"
     def __call__(self):
         return self.optimizer
