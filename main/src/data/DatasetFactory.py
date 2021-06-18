@@ -38,24 +38,12 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
 
-    def _getitem(self, id: int):
+    def __getitem__(self, id: int):
         input, output = self.attr_dataset.__getitem__(id)
         return input, output
 
     def __len__(self):
         return self.attr_dataset.__len__()
-    def __iter__(self):
-        return iter(self.generator())
-    def generator(self):
-        ids = list(range(self.__len__()))
-        random.shuffle(ids)
-        for id in ids:
-            input,output = self.__getitem__(id)
-            if self.attr_patch_creator.reject is True:
-                print("skiping ",id)
-                continue
-            else:
-                yield input,output
     def save_stats(self):
         reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
         reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
