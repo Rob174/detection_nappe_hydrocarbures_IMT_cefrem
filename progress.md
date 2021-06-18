@@ -67,7 +67,10 @@
 ## 16-06-2021
 - ✔️ Exclude all patches with a margin (select the margin value (uniq, float) and if more than x pixel with this value --> exclude)
 - 〰️ Add a legend to the rgb overlay (improve the link between annotations and channels)
-- ⏲️ Simplify the analysis backend code with pandas
+- ✔️ Simplify the analysis backend code with pandas
+
+## 18-06-2021
+- ✔️ allow interactie buttons
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
