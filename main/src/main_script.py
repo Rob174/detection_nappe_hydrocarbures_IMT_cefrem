@@ -41,9 +41,6 @@ if __name__ == "__main__":
     if arguments.no_security != "true" and len(changes):
         changes_str = "\n".join(list(map(lambda x:'\t- '+x,changes)))
         input(f"There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?")
-    print(changes)
-    raise Exception()
-    raise Exception()
     dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
     dico_save_parameters["data"]["prct_tr"] = 0.7
