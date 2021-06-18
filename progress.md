@@ -84,4 +84,3 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
 - 4️⃣ Classify only by telling if there is something or not on the image
 - 4️⃣ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 - 6️⃣ Rotation augmentation
-- 3️⃣ Simplify the analysis backend code with pandas
