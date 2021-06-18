@@ -9,7 +9,7 @@ class TwoWayDict(BaseClass):
     def __init__(self,attr_dico_one_way,additionnal_infos_attached=None):
         self.attr_global_name = "two_way_dict"
         if additionnal_infos_attached is None:
-            self.attr_attr_dico_one_way = attr_dico_one_way
+            self.attr_dico_one_way = attr_dico_one_way
             self.dico_other_way = {v:k for k,v in attr_dico_one_way.items()}
         else:
             self.attr_dico_one_way = {k:(v,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
