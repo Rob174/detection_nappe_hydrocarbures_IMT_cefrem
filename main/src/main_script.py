@@ -106,6 +106,7 @@ if __name__ == "__main__":
 
             for i, [input, output] in enumerate(dataset_tr):
                 if dataset.attr_patch_creator.reject is True:
+                    progress.update(iterations_progress, advance=1, loss=current_loss,status=i)
                     continue
                 # print("step")
                 # zero the parameter gradients
