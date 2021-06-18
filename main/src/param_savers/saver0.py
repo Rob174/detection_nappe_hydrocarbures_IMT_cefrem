@@ -15,7 +15,7 @@ class Saver0:
             dico_params = {}
             for attr,val in object.__dict__.items():
                 if attr[:4] == "attr":
-                    dico_params[attr] = self.__call__(val)
+                    dico_params[attr] = self.recursive_dict(val)
         return dico_params
     def __call__(self, object):
         if isinstance(object,BaseClass) is False:
