@@ -8,6 +8,8 @@ from h5py import File
 from main.FolderInfos import FolderInfos
 import main.src.data.resizer as resizer
 import copy
+
+from main.src.data.TwoWayDict import TwoWayDict
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -18,8 +20,12 @@ class DataSentinel1Segmentation(BaseClass):
             self.images_infos = copy.deepcopy(json.load(fp))
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
-        with open(f"{FolderInfos.input_data_folder}class_mappings.json") as fp:
-            self.class_mappings = json.load(fp)
+        self.attr_class_mapping = TwoWayDict(
+            {  # Formatted in the following way: src_index in cache, name, the position encode destination index
+                0: "other",
+                1: "spill",
+                2: "seep",
+            })
         self.attr_resizer = resizer.Resizer(out_size_w=input_size)
 
         self.attrend_resolutionX_stats = {}

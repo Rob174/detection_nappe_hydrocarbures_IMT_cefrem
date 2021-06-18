@@ -15,11 +15,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
         self.attr_name = self.__class__.__name__
-        self.attr_class_mapping = TwoWayDict({  # Formatted in the following way: src_index in cache, name, the position encode destination index
-          0:"other",
-          1:"spill",
-          2:"seep",
-        })
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
 
     @lru_cache(maxsize=1)
