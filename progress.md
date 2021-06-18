@@ -71,7 +71,9 @@
 
 ## 18-06-2021
 - ✔️ allow interactive buttons
-- ⏲️ update possibilities
+- ✔️ update possibilities
+- ⏲️ Classify only by telling if there is something or not on the image
+- ⏲️ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
