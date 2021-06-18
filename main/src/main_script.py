@@ -32,7 +32,8 @@ if __name__ == "__main__":
                              patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
-                             exclusion_policy=arguments.patch_exclude_policy)
+                             exclusion_policy=arguments.patch_exclude_policy,
+                             classes_to_use=arguments.classes)
     dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
     dico_save_parameters["date"] = FolderInfos.id
     dico_save_parameters["data"]["dataset"] = saver(dataset)
@@ -53,7 +54,7 @@ if __name__ == "__main__":
                                num_workers=0,  # num workers loading data into ram
                                prefetch_factor=2)  # there will be a total of 2 * num_workers samples prefetched across all workers
 
-    model = ModelFactory(model_name=arguments.model, num_classes=len(arguments.classes.split("_")))
+    model = ModelFactory(model_name=arguments.model, num_classes=len(arguments.classes.split(",")))
     dico_save_parameters["model"] = saver(model)
     model = model()
     criterion = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference)

@@ -3,17 +3,24 @@ from typing import Tuple, List
 import numpy as np
 import psutil
 
+from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 
 
-class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
+class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None):
         self.patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
-        super(DataSentinel1ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
+        self.attr_name = self.__class__.__name__
+        self.attr_class_mapping = TwoWayDict({  # Formatted in the following way: src_index in cache, name, the position encode destination index
+          0:"other",
+          1:"spill",
+          2:"seep",
+        })
+        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
@@ -41,9 +48,10 @@ class DataSentinel1ClassificationPatch(DataSentinel1Segmentation):
 
     def make_classification_label(self, annotations_patch):
         values = np.unique(annotations_patch)
-        output = np.zeros((len(self.class_mappings)),dtype=np.float32)
-        for i in values:
-            output[int(i)] = 1.
+        output = np.zeros((len(self.attr_class_mapping),),dtype=np.float32)
+        for value in values:
+            if value in self.attr_class_mapping.keys(Way.ORIGINAL_WAY):
+                output[value] = 1.
         return output
 
     def make_patches_of_image(self, name: str):

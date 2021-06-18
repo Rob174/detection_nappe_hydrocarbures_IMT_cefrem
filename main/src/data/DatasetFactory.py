@@ -1,5 +1,6 @@
 from main.FolderInfos import FolderInfos
-from main.src.data.classification.DataSentinel1ClassificationPatch import DataSentinel1ClassificationPatch
+from main.src.data.classification.ClassificationPatch import ClassificationPatch
+from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import matplotlib.pyplot as plt
@@ -10,7 +11,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DatasetFactory(BaseClass):
-    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000"):
+    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills"):
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
         if patch_creator == "fixed_px":
@@ -21,8 +22,11 @@ class DatasetFactory(BaseClass):
             raise NotImplementedError(f"{patch_creator} is not implemented")
 
         if usage_type == "classification":
-            if dataset_name == "sentinel1":
-                self.attr_dataset = DataSentinel1ClassificationPatch(self.attr_patch_creator, input_size=input_size)
+            if dataset_name == "classificationpatch":
+                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size)
+            elif dataset_name == "classificationpatch1":
+                self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use)
+
         elif usage_type == "segmentation":
             if dataset_name == "sentinel1":
                 self.attr_dataset = DataSentinel1Segmentation()

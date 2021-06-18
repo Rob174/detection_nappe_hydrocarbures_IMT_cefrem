@@ -16,7 +16,7 @@ class Parser0(BaseClass):
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
-                    '-classes':['classes',"other_seep_spill",str,"Indicate the class used for training separated by an underscore"],
+                    '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by an underscore"],
 
                     # Training
                     '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
