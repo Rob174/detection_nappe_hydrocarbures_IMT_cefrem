@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
 
     model = ModelFactory(model_name=arguments.model, num_classes=len(arguments.classes.split(",")))
-    dico_save_parameters["model"] = saver(model)
+    saver(model)
     model = model()
     criterion = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference)
     optimizer = OptimizersFactory(model, name=arguments.optimizer,
