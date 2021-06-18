@@ -31,7 +31,7 @@ class Trainer0(BaseClass):
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
         valid_length = length_full_dataset - self.tr_length
-        self.attr_prefetch_factor = 20
+        self.attr_prefetch_factor = 2
         [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
                                                    generator=torch.Generator().manual_seed(42))
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
