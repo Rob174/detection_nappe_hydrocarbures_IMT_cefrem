@@ -40,7 +40,16 @@ class DatasetFactory(BaseClass):
 
     def __len__(self):
         return self.attr_dataset.__len__()
-
+    def __iter__(self):
+        return self.generator()
+    def generator(self):
+        for id in range(self.__len__()):
+            input,output = self.__getitem__(id)
+            if self.attr_patch_creator.reject is True:
+                print("skipping ",id)
+                continue
+            else:
+                yield input,output
     def save_stats(self):
         reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
         reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
