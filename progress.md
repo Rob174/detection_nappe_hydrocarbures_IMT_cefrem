@@ -70,7 +70,8 @@
 - ✔️ Simplify the analysis backend code with pandas
 
 ## 18-06-2021
-- ✔️ allow interactie buttons
+- ✔️ allow interactive buttons
+- ⏲️ update possibilities
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
