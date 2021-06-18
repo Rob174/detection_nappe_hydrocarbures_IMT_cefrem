@@ -15,6 +15,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class DataSentinel1Segmentation(BaseClass):
     def __init__(self,limit_num_images=None,input_size=None):
+        self.attr_name = self.__class__.__name__
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp:
             self.images_infos = copy.deepcopy(json.load(fp))

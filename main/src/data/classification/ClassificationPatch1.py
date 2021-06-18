@@ -7,9 +7,9 @@ class ClassificationPatch1(ClassificationPatch):
     """Provides data to classify data according to """
 
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,classes_to_use="spill,seep"):
+        self.attr_name = self.__class__.__name__
         super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images)
         tmp_mapping = TwoWayDict({})
-        self.attr_name = self.__class__.__name__
         self.attr_classes_to_use = classes_to_use
         for i,name in enumerate(classes_to_use.split(",")):
             tmp_mapping[self.attr_class_mapping[name],Way.ORIGINAL_WAY] = name,i

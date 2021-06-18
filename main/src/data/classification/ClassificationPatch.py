@@ -3,7 +3,7 @@ from typing import Tuple, List
 import numpy as np
 import psutil
 
-from main.src.data.TwoWayDict import TwoWayDict, Way
+from main.src.data.TwoWayDict import  Way
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
@@ -11,10 +11,10 @@ from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Se
 
 class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None):
+        self.attr_name = self.__class__.__name__
         self.patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
-        self.attr_name = self.__class__.__name__
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
 
     @lru_cache(maxsize=1)
