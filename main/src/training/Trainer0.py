@@ -37,7 +37,7 @@ class Trainer0(BaseClass):
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
                                 # shuffle the dataset at the beginning of each epoch
                                 num_workers=1,  # num workers loading data into ram
-                                prefetchT_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
+                                prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.dataset_valid = DataLoader(dataset_valid, batch_size=1, shuffle=True,
                                    # shuffle the dataset at the beginning of each epoch
                                    num_workers=1,  # num workers loading data into ram
