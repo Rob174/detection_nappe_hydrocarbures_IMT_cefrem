@@ -1,4 +1,5 @@
 import json
+from typing import Tuple
 
 import numpy as np
 
@@ -18,7 +19,7 @@ class Patch_creator0(BaseClass):
         self.images_informations_preprocessed: dict = images_informations_preprocessed
         self.resolution_used = {"x":{}, "y":{}}
         self.attr_exclusion_policy = exclusion_policy
-        self.reject = False
+        self.reject = {}
         self.attr_num_rejected = 0
         self.attr_global_name = "patch_creator"
 
@@ -27,7 +28,7 @@ class Patch_creator0(BaseClass):
         num_cols = int(image.shape[1] / self.attr_grid_size_px)
         return num_lignes * num_cols
 
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False, *args, **kargs) -> np.ndarray:
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False, *args, **kargs) -> Tuple[np.ndarray,bool]:
         if count_reso is True:
             radius_earth_meters = 6371e3
             reso_x = self.images_informations_preprocessed[image_name]["resolution"][0] * np.pi/180. * radius_earth_meters
@@ -48,11 +49,11 @@ class Patch_creator0(BaseClass):
         corner_value = 0
         nb_val_out = len(patch[patch == corner_value])
         if nb_val_out > int(self.attr_exclusion_policy.split("_")[1]):
-            self.reject = True
             self.attr_num_rejected += 1
+            reject = True
         else:
-            self.reject = False
-        return patch
+            reject = False
+        return patch, reject
     def get_position_patch(self,patch_id: int, input_shape):
         num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
         if num_cols_patches * self.attr_grid_size_px >= input_shape[1]:

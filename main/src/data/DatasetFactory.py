@@ -39,8 +39,8 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         self.attr_length_dataset = len(self.attr_dataset)
 
     def __getitem__(self, id: int):
-        input, output = self.attr_dataset.__getitem__(id)
-        return input, output
+        input, output, reject = self.attr_dataset.__getitem__(id)
+        return input, output, reject
 
     def __len__(self):
         return self.attr_dataset.__len__()

@@ -17,6 +17,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_resizer = Resizer(out_size_w=input_size)
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
         self.attr_global_name = "dataset"
+        self.reject = False
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
@@ -29,18 +30,18 @@ class ClassificationPatch(DataSentinel1Segmentation):
             return list_items[:self.attr_limit_num_images]
         return list_items
 
-    def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
+    def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray,bool]:
         [item, patch_id] = self.get_all_items()[id]
         img = self.images[item]
         annotations = self.annotations_labels[item]
-        img_patch = self.patch_creator(img, item, patch_id=patch_id)
-        annotations_patch = self.patch_creator(annotations, item, patch_id=patch_id)
+        img_patch,reject = self.patch_creator(img, item, patch_id=patch_id)
+        annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id)
 
         if (item, patch_id) in self.img_not_seen:
             self.save_resolution(item, img_patch)
         input = self.attr_resizer(img_patch)
         input = np.stack((input, input, input), axis=0)
-        return input, self.make_classification_label(annotations_patch)
+        return input, self.make_classification_label(annotations_patch), reject
 
     def make_classification_label(self, annotations_patch):
         values = np.unique(annotations_patch)

@@ -66,8 +66,8 @@ class Trainer0(BaseClass):
             "•",
             TimeRemainingColumn()
         )
-    def add_to_batch_tr(self,input,output):
-        if self.dataset.attr_patch_creator.reject is True:
+    def add_to_batch_tr(self,input,output,reject):
+        if reject is True:
             return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
@@ -77,8 +77,8 @@ class Trainer0(BaseClass):
             return full_batch
         else:
             return None
-    def add_to_batch_valid(self,input,output):
-        if self.dataset.attr_patch_creator.reject is True:
+    def add_to_batch_valid(self,input,output,reject):
+        if reject is True:
             return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
@@ -102,8 +102,8 @@ class Trainer0(BaseClass):
             for epoch in range(self.attr_num_epochs):
                 # print("epoch")
 
-                for i, [input, output] in enumerate(self.dataset_tr):
-                    opt_tr_batch = self.add_to_batch_tr(input,output)
+                for i, [input, output,reject] in enumerate(self.dataset_tr):
+                    opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         # zero the parameter gradients
                         self.optimizer.zero_grad()
@@ -123,13 +123,13 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics).save()
 
                     try:
-                        input, output = next(dataset_valid_iter)
+                        input, output,reject = next(dataset_valid_iter)
                     except StopIteration:
                         # StopIteration is thrown if dataset ends
                         # reinitialize data loader
                         dataset_valid_iter = iter(self.dataset_valid)
-                        input, output = next(dataset_valid_iter)
-                    opt_valid_batch = self.add_to_batch_valid(input,output)
+                        input, output,reject = next(dataset_valid_iter)
+                    opt_valid_batch = self.add_to_batch_valid(input,output,reject)
                     if opt_valid_batch is not None:
                         prediction = self.model(input.to(device))
                         loss = self.loss(prediction.to(device), output.to(device))
