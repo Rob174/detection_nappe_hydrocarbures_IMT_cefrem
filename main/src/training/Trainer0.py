@@ -97,7 +97,7 @@ class Trainer0(BaseClass):
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.model.to(device)
-
+            current_loss = -1
             for epoch in range(self.attr_num_epochs):
                 # print("epoch")
 
