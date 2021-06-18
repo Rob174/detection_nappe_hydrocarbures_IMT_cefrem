@@ -46,7 +46,6 @@ class DatasetFactory(BaseClass):
         for id in range(self.__len__()):
             input,output = self.__getitem__(id)
             if self.attr_patch_creator.reject is True:
-                print("skipping ",id)
                 continue
             else:
                 yield input,output
