@@ -46,10 +46,9 @@ class Patch_creator0(BaseClass):
             raise Exception(f"Wrong patch with shape {patch.shape} with id {id}")
         corner_value = 0
         nb_val_out = len(patch[patch == corner_value])
-        print(nb_val_out)
         if nb_val_out > int(self.attr_exclusion_policy.split("_")[1]):
             self.reject = True
-            self.num_rejected += 1
+            self.attr_num_rejected += 1
         else:
             self.reject = False
         return patch

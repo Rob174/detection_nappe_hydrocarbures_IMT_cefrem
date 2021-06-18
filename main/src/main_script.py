@@ -99,7 +99,6 @@ if __name__ == "__main__":
             # print("epoch")
 
             for i, [input, output] in enumerate(dataset_tr):
-                # TODO : add patch filtering here ; pb if no patches
                 if dataset.attr_patch_creator.reject is True:
                     continue
                 # print("step")

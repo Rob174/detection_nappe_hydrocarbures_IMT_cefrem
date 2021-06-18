@@ -11,7 +11,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DatasetFactory(BaseClass):
-    def __init__(self, dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills"):
+    def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px", grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills"):
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
         if patch_creator == "fixed_px":
