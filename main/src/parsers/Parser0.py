@@ -6,6 +6,9 @@ class Parser0(BaseClass):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.args = {
+
+                    '-no_security': ['no_security', "false", str,
+                                 "Indicate if you want to check if all python files have been commited before launching the training process {true to disable the security}"],
                     # Dataset
                     '-dataset':['dataset',"classificationpatch1",str,"Indicate the dataset used to constitue datasets {classificationpatch}"],
                     '-usage_type':['usage_type',"classification",str,"Indicate the source dataset used to constitue datasets {segmentation, classification}"],
@@ -17,7 +20,6 @@ class Parser0(BaseClass):
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by an underscore"],
-
                     # Training
                     '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
                     '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],

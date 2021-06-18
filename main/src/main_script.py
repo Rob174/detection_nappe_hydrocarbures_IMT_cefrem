@@ -36,14 +36,11 @@ if __name__ == "__main__":
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
                              classes_to_use=arguments.classes)
-    dico_save_parameters["commit"] = sha = repo.head.object.hexsha
-    for x in repo.index.diff("HEAD"):
-        # Just print
-        print(x)
-
-        # Or for each entry you can find out information about it, e.g.
-        print(x.new_file)
-        print(x.b_path)
+    dico_save_parameters["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
+    changes = subprocess.check_output(['git', 'diff', '--name-only',"--","*.py"]).decode("ascii").split("\n")
+    if arguments.no_security != "true" and len(changes):
+        input(f"There are {len(changes)} uncommitted python files. Are you sure you want to continue ?")
+    print(changes)
     raise Exception()
     raise Exception()
     dico_save_parameters["date"] = FolderInfos.id
