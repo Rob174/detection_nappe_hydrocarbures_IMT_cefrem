@@ -98,6 +98,7 @@ class Trainer0(BaseClass):
             device = torch.device("cuda")
             self.model.to(device)
             current_loss = -1
+            import time
             for epoch in range(self.attr_num_epochs):
                 # print("epoch")
 
