@@ -36,11 +36,11 @@ class Trainer0(BaseClass):
                                                    generator=torch.Generator().manual_seed(42))
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
                                 # shuffle the dataset at the beginning of each epoch
-                                num_workers=1,  # num workers loading data into ram
+                                num_workers=0,  # num workers loading data into ram
                                 prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.dataset_valid = DataLoader(dataset_valid, batch_size=1, shuffle=True,
                                    # shuffle the dataset at the beginning of each epoch
-                                   num_workers=1,  # num workers loading data into ram
+                                   num_workers=0,  # num workers loading data into ram
                                    prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.model = model
 
