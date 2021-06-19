@@ -11,7 +11,8 @@ class MetricsFactory(BaseClass):
             if re.match("^accuracy_classification-[0-9]\\.[0-9]+$",metric):
                 self.attr_list_metrics[metric] = {"description":"Indicate the mean number of times accross batches where one probability of one image is equal to another with a margin of error of precision","tr_values":[],"valid_values":[]}
                 precision = float(re.sub("^accuracy_classification-([0-9]\\.[0-9]+)$","\\1",metric))
-                self.functions_metrics.append(lambda pred,true:np.mean(np.sum((np.abs(pred-true) < precision).astype(np.float),axis=1)))
+                # in average what purcentage of value are less than .25 near the reference
+                self.functions_metrics.append(lambda pred,true:np.mean(np.mean((np.abs(pred-true) < precision).astype(np.float),axis=1)))
             elif re.match("^mae$",metric):
                 self.attr_list_metrics[metric] = {"description":"Indicate the mean mean absolute error accross batches","tr_values":[],"valid_values":[]}
                 self.functions_metrics.append(lambda pred,true:np.mean(np.mean(np.abs(pred-true),axis=1)))
