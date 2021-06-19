@@ -116,7 +116,7 @@ class Trainer0(BaseClass):
                         self.optimizer.step()
                         current_loss = loss.item()
 
-                        self.tr_loss.append(float(current_loss))
+                        self.attr_tr_loss.append(float(current_loss))
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
 
@@ -135,12 +135,12 @@ class Trainer0(BaseClass):
                         prediction = self.model(input.to(device))
                         loss = self.loss(prediction.to(device), output.to(device))
                         current_loss = loss.item()
-                        self.valid_loss.append(float(current_loss))
+                        self.attr_valid_loss.append(float(current_loss))
                         self.saver(self.dataset)
                         self.metrics(prediction.cpu(), output.cpu(), "valid")
                         self.saver(self.metrics)
                         self.saver(self).save()
-                        if loss < np.mean(self.valid_loss) and i % 10 == 0:
+                        if loss < np.mean(self.attr_valid_loss) and i % 10 == 0:
                             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
