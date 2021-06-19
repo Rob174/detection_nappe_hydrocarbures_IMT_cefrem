@@ -76,7 +76,7 @@
 - bug fixes
 - reflexion about optimization possibilities [#25](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/25)
 
-Working version : dd43dc4e8fd941a7738dc0a238647b0923182c8b
+Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/commit/dd43dc4e8fd941a7738dc0a238647b0923182c8b)
 
 - ⏲️ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 
