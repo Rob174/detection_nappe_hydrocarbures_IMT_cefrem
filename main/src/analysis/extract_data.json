@@ -1,19 +1,19 @@
 {
   "metadata": {
     "grid_size_px": {
-      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_grid_size_px\"]",
+      "access": "lambda dico:dico[\"data\"][\"attr_patch_creator\"][\"attr_grid_size_px\"]",
       "default": "1000"
     },
     "limit_num_images": {
-      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_dataset\"][\"attr_limit_num_images\"]",
+      "access": "lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_limit_num_images\"]",
       "default": "None"
     },
     "resizer_size": {
-      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_dataset\"][\"attr_resizer\"][\"attr_out_size_w\"]",
+      "access": "lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_resizer\"][\"attr_out_size_w\"]",
       "default": "256"
     },
     "length_dataset": {
-      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_length_dataset\"]}",
+      "access": "lambda dico:dico[\"data\"][\"attr_length_dataset\"]}",
       "default": "-1"
     },
     "prct_tr": {

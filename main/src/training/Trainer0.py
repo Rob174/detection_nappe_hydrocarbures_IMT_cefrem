@@ -52,6 +52,7 @@ class Trainer0(BaseClass):
         self.valid_batches = [[],[]]
         self.progress_bar_creation()
         self.attr_global_name = "trainer"
+        self.saver(self).save()
     def progress_bar_creation(self):
         self.progress = Progress(
             TextColumn("{task.fields[name]}", justify="right"),
@@ -137,8 +138,9 @@ class Trainer0(BaseClass):
                         self.valid_loss.append(float(current_loss))
                         self.saver(self.dataset)
                         self.metrics(prediction.cpu(), output.cpu(), "valid")
-                        self.saver(self.metrics).save()
-                        if loss < np.mean(self.valid_loss) and i % 100 == 0:
+                        self.saver(self.metrics)
+                        self.saver(self).save()
+                        if loss < np.mean(self.valid_loss) and i % 10 == 0:
                             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
