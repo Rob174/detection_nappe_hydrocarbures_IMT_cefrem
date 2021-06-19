@@ -121,7 +121,7 @@ class Trainer0(BaseClass):
                         self.attr_last_epoch = epoch
 
                         self.metrics(prediction.cpu(), output.cpu(), "tr")
-                        self.saver(self.metrics).save()
+                        self.saver(self.metrics)
 
                     try:
                         input, output,reject = next(dataset_valid_iter)
@@ -140,6 +140,7 @@ class Trainer0(BaseClass):
                         self.metrics(prediction.cpu(), output.cpu(), "valid")
                         self.saver(self.metrics)
                         self.saver(self).save()
+
                         if loss < np.mean(self.attr_valid_loss) and i % 10 == 0:
                             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
