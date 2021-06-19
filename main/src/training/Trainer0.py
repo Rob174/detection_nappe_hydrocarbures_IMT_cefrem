@@ -44,8 +44,8 @@ class Trainer0(BaseClass):
                                    prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.model = model
 
-        self.tr_loss = []
-        self.valid_loss = []
+        self.attr_tr_loss = []
+        self.attr_valid_loss = []
         self.attr_last_iter = -1
         self.attr_last_epoch = -1
         self.tr_batches = [[],[]]

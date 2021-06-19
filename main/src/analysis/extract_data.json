@@ -17,16 +17,16 @@
       "default": "-1"
     },
     "prct_tr": {
-      "access": "lambda dico:dico[\"data\"][\"prct_tr\"]",
+      "access": "lambda dico:dico[\"trainer\"][\"attr_tr_size\"]",
       "default": "0.7"
     },
-    "batch_size": {
-      "access": "lambda dico:dico[\"data\"][\"batch_size\"]",
+    "tr_batch_size": {
+      "access": "lambda dico:dico[\"trainer\"][\"attr_tr_batch_size\"]",
       "default": "10"
     },
-    "eval_step": {
-      "access": "lambda dico:dico[\"data\"][\"eval_step\"]",
-      "default": "5"
+    "valid_batch_size": {
+      "access": "lambda dico:dico[\"trainer\"][\"attr_valid_batch_size\"]",
+      "default": "10"
     },
     "model_name": {
       "access": "lambda dico:dico[\"model\"][\"attr_model_name\"]",
@@ -53,11 +53,11 @@
       "default": "1e-3"
     },
     "patch_exclusion_policy": {
-      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_exclusion_policy\"]",
+      "access": "lambda dico:dico[\"data\"][\"attr_patch_creator\"][\"attr_exclusion_policy\"]",
       "default": "\"marginmorethan_1000\""
     },
     "num_patches_rejected":{
-      "access": "lambda dico:dico[\"data\"][\"dataset\"][\"attr_patch_creator\"][\"attr_num_rejected\"]",
+      "access": "lambda dico:dico[\"data\"][\"attr_patch_creator\"][\"attr_num_rejected\"]",
       "default": "0"
     }
   },
