@@ -65,6 +65,6 @@
     "accuracy_classification-0.25": "lambda dico:dico[\"metrics\"][\"attr_list_metrics\"][\"accuracy_classification-0.25\"]",
     "accuracy_classification-0.1": "lambda dico:dico[\"metrics\"][\"attr_list_metrics\"][\"accuracy_classification-0.1\"]",
     "mae": "lambda dico:dico[\"metrics\"][\"attr_list_metrics\"][\"mae\"]",
-    "loss": "lambda dico:dico[\"training\"]"
+    "loss": "lambda dico:dico[\"trainer\"]"
   }
 }
