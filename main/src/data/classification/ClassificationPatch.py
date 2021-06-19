@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple, List
+from typing import Tuple, List, Union
 import numpy as np
 import psutil
 
@@ -25,12 +25,12 @@ class ClassificationPatch(DataSentinel1Segmentation):
         for img_name in list(self.images.keys()):
             img = self.images[img_name]
             num_ids = self.patch_creator.num_available_patches(img)
-            list_items.extend([(img_name, i) for i in range(num_ids)])
+            list_items.extend([[img_name, i] for i in range(num_ids)])
         if self.attr_limit_num_images is not None:
             return list_items[:self.attr_limit_num_images]
         return list_items
 
-    def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray,bool]:
+    def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]:
         [item, patch_id] = self.get_all_items()[id]
         img = self.images[item]
         annotations = self.annotations_labels[item]
