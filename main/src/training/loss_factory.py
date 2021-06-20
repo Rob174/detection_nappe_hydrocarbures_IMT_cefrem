@@ -14,7 +14,7 @@ class LossFactory(BaseClass):
                 self.loss = lambda pred,target:torch.mean(torch.sum(-torch.log(pred+1e-7) * target,dim=1))
             elif preference == "binarycrossentropy":
                 self.attr_loss = "binarycrossentropy"
-                self.loss = torch.nn.BCELoss()
+                self.loss = lambda pred,target:torch.nn.BCELoss()
             elif preference == "mse":
                 self.attr_loss = "mse"
                 self.loss = torch.nn.MSELoss()

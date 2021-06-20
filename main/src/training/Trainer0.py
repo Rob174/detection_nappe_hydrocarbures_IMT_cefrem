@@ -111,7 +111,7 @@ class Trainer0(BaseClass):
 
                         # forward + backward + optimize
                         prediction = self.model(input.to(device))
-                        loss = self.loss(prediction.to(device), output.to(device))
+                        loss = self.loss(prediction.float().to(device), output.float().to(device))
                         loss.backward()
                         self.optimizer.step()
                         current_loss = loss.item()
@@ -133,7 +133,7 @@ class Trainer0(BaseClass):
                     opt_valid_batch = self.add_to_batch_valid(input,output,reject)
                     if opt_valid_batch is not None:
                         prediction = self.model(input.to(device))
-                        loss = self.loss(prediction.to(device), output.to(device))
+                        loss = self.loss(prediction.float().to(device), output.float().to(device))
                         current_loss = loss.item()
                         self.attr_valid_loss.append(float(current_loss))
                         self.saver(self.dataset)
