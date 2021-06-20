@@ -25,7 +25,7 @@ class Parser0(BaseClass):
                     # Training
                     '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
                     '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],
-                    '-loss':['loss_preference',None,str,"Loss prefered for training"],
+                    '-loss':['loss_preference',"binarycrossentropy",str,"Loss prefered for training"],
 
                     '-lr':['lr',1e-3,float,"Learning rate of the optimizer"],
                     '-eps':['eps',1e-7,float,"Epsilon of the optimizer if it is Adam"],
