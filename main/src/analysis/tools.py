@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import torch
 import rich
+import matplotlib.pyplot as plt
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from main.FolderInfos import FolderInfos
@@ -15,16 +16,16 @@ def moving_mean(x,window):
     return new_values
 
 class RGB_Overlay_Patch:
-    def __init__(self,dataset_name="sentinel1",usage_type="classification",patch_creator="fixed_px",grid_size=1000,input_size=256):
+    def __init__(self,dataset_name="classificationpatch",usage_type="classification",patch_creator="fixed_px",grid_size=1000,input_size=256,classes_to_use="other,seep,spill"):
         FolderInfos.init(test_without_data=False)
-        self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,grid_size=grid_size , input_size=input_size)
+        self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,
+                                      grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None,resize_factor=4):
         original_img = self.dataset.attr_dataset.images[name_img]
         transformation_matrix = np.array([[1/resize_factor,0,0],
                                           [0,1/resize_factor,0],
                                           [0,0,1]])
-        new_shape = list(map(lambda x:int(transformation_matrix.dot(np.array([x,0,1]))[0]),original_img.shape)) + [3]
         overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32)
         overlay_pred = np.zeros((*original_img.shape,3),dtype=np.float32)
         normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
@@ -42,7 +43,7 @@ class RGB_Overlay_Patch:
         with progress:
             progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
             for id,[input,output,filter] in enumerate(patches):
-                if filter is True:
+                if filter is False:
                     continue
                 input_adapted = np.stack((input,input,input),axis=0)
                 input_adapted = input_adapted.reshape((1,*input_adapted.shape))
@@ -75,34 +76,41 @@ class RGB_Overlay_Patch:
                 overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_true * blending_factor
                 overlay_pred[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_pred * blending_factor
                 progress.update(progression, advance=1)
-        return overlay_true,overlay_pred
+        return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
+    choice_folder1 = '2021-06-19_04h32min09s_'
     from main.src.models.ModelFactory import ModelFactory
     import json
+
     FolderInfos.init(test_without_data=True)
-    choice_folder = "2021-06-11_12h30min51s_"
-    folder = FolderInfos.data_folder + choice_folder + FolderInfos.separator
-    with open(folder + choice_folder + "parameters.json", "r") as fp:
+    folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
+    with open(folder + choice_folder1 + "parameters.json", "r") as fp:
         dico = json.load(fp)
 
-    rgb_overlay = RGB_Overlay_Patch(usage_type="classification", patch_creator="fixed_px",
-                                    grid_size=dico["data"]["dataset"]["attr_patch_creator"]["attr_grid_size_px"],
-                                    input_size=dico["data"]["dataset"]["attr_dataset"]["attr_resizer"][
-                                        "attr_out_size_w"])
+    rgb_overlay = RGB_Overlay_Patch(dataset_name="classificationpatch1", usage_type="classification",
+                                    patch_creator="fixed_px",
+                                    grid_size=dico["data"]["attr_patch_creator"]["attr_grid_size_px"],
+                                    input_size=dico["data"]["attr_dataset"]["attr_resizer"][
+                                        "attr_out_size_w"],
+                                    classes_to_use=dico["data"]["attr_dataset"]["attr_classes_to_use"]
+                                    )
     epoch = 0
-    iteration = 6080
+    iteration = 60835
     import torch
+
+    name = "027481_0319CB_0EB7"
 
     device = torch.device("cuda")
     model = ModelFactory(model_name=dico["model"]["attr_model_name"], num_classes=dico["model"]["attr_num_classes"])()
     model.to(device)
-    model.load_state_dict(torch.load(f"{folder}{choice_folder}_model_epoch-{epoch}_it-{iteration}.pt"))
-    array_overlay = rgb_overlay(name_img="027481_0319CB_0EB7", model=model, blending_factor=0.5, device=device)
+    model.load_state_dict(torch.load(f"{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt"))
+    array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device)
 
     import matplotlib.pyplot as plt
     plt.figure(figsize=(10,10))
     plt.imshow(array_overlay[0])
     plt.figure(figsize=(10,10))
     plt.imshow(array_overlay[1])
+    plt.show()
     print(array_overlay)

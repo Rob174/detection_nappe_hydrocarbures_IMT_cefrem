@@ -6,7 +6,7 @@ import numpy as np
 from main.FolderInfos import FolderInfos
 from main.test.test_images import Test_images
 from main.src.param_savers.BaseClass import BaseClass
-
+import matplotlib.pyplot as plt
 
 class Patch_creator0(BaseClass):
     def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
