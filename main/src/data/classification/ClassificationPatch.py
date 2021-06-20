@@ -45,7 +45,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     def make_classification_label(self, annotations_patch):
         values = np.unique(annotations_patch)
-        output = np.zeros((len(self.attr_class_mapping),),dtype=np.float32)
+        output = np.zeros((len(self.attr_original_class_mapping),),dtype=np.float32)
         for value in values:
             value = int(value)
             if value in self.attr_class_mapping.keys(Way.ORIGINAL_WAY):

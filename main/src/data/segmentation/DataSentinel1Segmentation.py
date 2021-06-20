@@ -27,6 +27,7 @@ class DataSentinel1Segmentation(BaseClass):
                 1: "spill",
                 2: "seep",
             })
+        self.attr_original_class_mapping = {k:v for k,v in self.attr_class_mapping.items()}
         self.attr_resizer = resizer.Resizer(out_size_w=input_size)
 
         self.attrend_resolutionX_stats = {}
