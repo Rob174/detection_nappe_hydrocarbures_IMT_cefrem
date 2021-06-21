@@ -40,9 +40,11 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
         if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
             self.save_resolution(item, img_patch) #
-        input = self.attr_resizer(img_patch) # ~ 2 or 3 ms
+        init = time.time_ns()
+        print(f"time: {(time.time_ns()-init)*1e-9:.3e}")
+        input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
-        classif = self.make_classification_label(annotations_patch) # ~ 10 ms
+        classif = self.make_classification_label(annotations_patch) # ~ 2 ms
 
         return input, classif, reject
 

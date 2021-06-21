@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from main.FolderInfos import FolderInfos
 import main.src.data.segmentation.DataSentinel1Segmentation as data
 from main.src.param_savers.BaseClass import BaseClass
-
+# import time
 
 class Resizer(BaseClass):
     def __init__(self,out_size_w,interpolation=None):
@@ -16,10 +16,9 @@ class Resizer(BaseClass):
         if self.attr_out_size_w == array.shape[1]:
             return array
         # resize: warning: cv2.resize(array,(width !!,height !!)) in this order
-        array = np.array(array,dtype=np.float64)
         array = cv2.resize(src=array, dsize=(self.attr_out_size_w, int(self.attr_out_size_w / array.shape[1] * array.shape[0])),
-                           interpolation=self.attr_interpolation)
-        return np.array(array,dtype=np.float32)
+                           interpolation=self.attr_interpolation) # btwn 1 and 2 ms
+        return array
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
