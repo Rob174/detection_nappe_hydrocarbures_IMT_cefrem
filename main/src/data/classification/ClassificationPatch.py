@@ -50,8 +50,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             self.save_resolution(item, img_patch) #
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
-        classif = self.make_classification_label(annotations_patch) # ~ 2 ms
-        balance_reject = self.attr_balance.filter(classif)
+        classif,balance_reject = self.make_classification_label(annotations_patch) # ~ 2 ms
         reject = reject and balance_reject
         return input, classif, reject
 
@@ -61,7 +60,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
             value = int(value)
             if value in annotations_patch:
                 output[value] = 1.
-        return output
+        balance_reject = self.attr_balance.filter(output)
+        return output,balance_reject
 
     def make_patches_of_image(self, name: str):
         last_image = np.copy(np.array(self.images[name], dtype=np.float32))

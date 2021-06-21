@@ -17,10 +17,10 @@ class ClassificationPatch1(ClassificationPatch):
         self.attr_global_name = "dataset"
 
     def make_classification_label(self, annotations_patch):
-        annotation = super(ClassificationPatch1, self).make_classification_label(annotations_patch)
+        annotation,reject = super(ClassificationPatch1, self).make_classification_label(annotations_patch)
         # of shape (val_0-1_class_other,val_0-1_class_1,val_0-1_class_2...)
         annotation_modified = np.zeros((len(self.attr_class_mapping.keys(),)))
         # {index_src_0:(class0,index_dest0),index_src_1:(class1,index_dest1),....}
         for src_index,(_,dest_index) in self.attr_class_mapping.items(Way.ORIGINAL_WAY):
              annotation_modified[dest_index] = annotation[src_index]
-        return annotation_modified
+        return annotation_modified,reject
