@@ -25,7 +25,7 @@ class ClassificationPatch2(ClassificationPatch):
         annotation = super(ClassificationPatch2, self).make_classification_label(annotations_patch)
         # of shape (val_0-1_class_other,val_0-1_class_1,val_0-1_class_2...)
         annotation_modified = np.zeros((1,))
-        src_indexes = list(map(int,"|".split(self.attr_class_mapping.keys(Way.ORIGINAL_WAY)[0])))
+        src_indexes = list(map(int,self.attr_class_mapping.keys(Way.ORIGINAL_WAY)[0].split("|")))
         for src_index in src_indexes:
             annotation_modified = max(annotation_modified[0],annotation[src_index])
         return annotation_modified
