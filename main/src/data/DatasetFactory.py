@@ -1,6 +1,7 @@
 from main.FolderInfos import FolderInfos
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
+from main.src.data.classification.ClassificationPatch2 import ClassificationPatch2
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import matplotlib.pyplot as plt
@@ -30,6 +31,8 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size)
             elif dataset_name == "classificationpatch1":
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use)
+            elif dataset_name == "classificationpatch2":
+                self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use)
 
         elif usage_type == "segmentation":
             if dataset_name == "sentinel1":
