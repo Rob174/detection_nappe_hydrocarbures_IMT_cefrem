@@ -12,7 +12,7 @@ class Parser0(BaseClass):
                     '-no_security': ['no_security', "false", str,
                                  "Indicate if you want to check if all python files have been commited before launching the training process {true to disable the security}"],
                     # Dataset
-                    '-dataset':['dataset',"classificationpatch2",str,"Indicate the dataset used to constitue datasets {classificationpatch}"],
+                    '-dataset':['dataset',"classificationpatch1",str,"Indicate the dataset used to constitue datasets {classificationpatch}"],
                     '-usage_type':['usage_type',"classification",str,"Indicate the source dataset used to constitue datasets {segmentation, classification}"],
                     '-patch':['patch',"fixed_px",str,"Indicate the type of patch to create {fixed_px}"],
                     '-patchExclPol': ['patch_exclude_policy', "marginmorethan_1000", str, "Indicates the policy to exclude patches (especially patches containing margins)"],
