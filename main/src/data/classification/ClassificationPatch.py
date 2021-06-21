@@ -7,6 +7,7 @@ from main.src.data.TwoWayDict import  Way
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
+import time
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
@@ -31,24 +32,25 @@ class ClassificationPatch(DataSentinel1Segmentation):
         return list_items
 
     def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]:
-        [item, patch_id] = self.get_all_items()[id]
-        img = self.images[item]
-        annotations = self.annotations_labels[item]
-        img_patch,reject = self.patch_creator(img, item, patch_id=patch_id)
-        annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id)
+        [item, patch_id] = self.get_all_items()[id] # 0 ns
+        img = self.images[item] # 37.4ms
+        annotations = self.annotations_labels[item] # 37.4ms
+        img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # ~ 20 ms
+        annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # ~ 20 ms
 
-        if (item, patch_id) in self.img_not_seen:
-            self.save_resolution(item, img_patch)
-        input = self.attr_resizer(img_patch)
-        input = np.stack((input, input, input), axis=0)
-        return input, self.make_classification_label(annotations_patch), reject
+        if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
+            self.save_resolution(item, img_patch) #
+        input = self.attr_resizer(img_patch) # ~ 2 or 3 ms
+        input = np.stack((input, input, input), axis=0) # 0 ns most of the time
+        classif = self.make_classification_label(annotations_patch) # ~ 10 ms
+
+        return input, classif, reject
 
     def make_classification_label(self, annotations_patch):
-        values = np.unique(annotations_patch)
-        output = np.zeros((len(self.attr_original_class_mapping),),dtype=np.float32)
-        for value in values:
+        output = np.zeros((len(self.attr_original_class_mapping),),dtype=np.float32) # 0 ns
+        for value in self.attr_class_mapping.keys(Way.ORIGINAL_WAY): # btwn 1 and 2 ms
             value = int(value)
-            if value in self.attr_class_mapping.keys(Way.ORIGINAL_WAY):
+            if value in annotations_patch:
                 output[value] = 1.
         return output
 
