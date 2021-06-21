@@ -83,7 +83,8 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 ## 21-06-06
 - ✔️dashboard bug fixes
 - ✔️ training on 2 classes or 1 class
-- ⏲️ profiling methods
+- ✔️ profiling methods
+- balance the dataset
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
