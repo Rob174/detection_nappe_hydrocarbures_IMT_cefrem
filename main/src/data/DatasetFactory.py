@@ -10,7 +10,7 @@ import plotly.express as px
 import pandas as pd
 from main.src.param_savers.BaseClass import BaseClass
 import torch
-import random
+import time
 
 
 class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     length = len(dataset_factory)
     print(f"{length} items in this dataset")
     for id in range(length):
-        input, output = dataset_factory[id]
+        input, output, reject = dataset_factory[id]
         if id % int(length * 0.1) == 0:
             print(f"{id / length * 100:.2f} done")
     dataset_factory.save_stats()

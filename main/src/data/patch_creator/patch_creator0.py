@@ -6,7 +6,7 @@ import numpy as np
 from main.FolderInfos import FolderInfos
 from main.test.test_images import Test_images
 from main.src.param_savers.BaseClass import BaseClass
-import matplotlib.pyplot as plt
+import time
 
 class Patch_creator0(BaseClass):
     def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
@@ -28,7 +28,7 @@ class Patch_creator0(BaseClass):
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
 
     def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False, *args, **kargs) -> Tuple[np.ndarray,bool]:
-        if count_reso is True:
+        if count_reso is True: # skiping these lines: 0 ns
             radius_earth_meters = 6371e3
             reso_x = self.images_informations_preprocessed[image_name]["resolution"][0] * np.pi/180. * radius_earth_meters
             reso_y = self.images_informations_preprocessed[image_name]["resolution"][1] * np.pi/180. * radius_earth_meters
@@ -39,13 +39,13 @@ class Patch_creator0(BaseClass):
             self.attr_resolution_used["x"][reso_x] += 1
             self.attr_resolution_used["y"][reso_y] += 1
 
-        pos_x,pos_y = self.get_position_patch(patch_id,image.shape)
-        if self.test is True:
+        pos_x,pos_y = self.get_position_patch(patch_id,image.shape) # ~ 0 ns
+        if self.test is True: # skipping: 0 ns
             self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
-        patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px]
+        patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
         # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
         # with x the threshold provided in the attr_exclusion_policy after the "_"
-        if len(patch[patch == 0]) > int(self.attr_exclusion_policy.split("_")[1]):
+        if len(patch[patch == 0]) > int(self.attr_exclusion_policy.split("_")[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
         return patch, False
@@ -82,13 +82,6 @@ if __name__ == "__main__":
     from PIL import Image, ImageDraw
     for grid_size in [500,1000,1500]: # For different grid size we will test creating patches
         patch_creator = Patch_creator0(grid_size_px=grid_size,test=True,images_informations_preprocessed=dico_infos) # Create the path generator object
-        # for id in range(0,patch_creator.num_available_patches(array)):
-        #     patch = patch_creator(array, images_test.current_name, id) # create the patches specifying additional informations for the statistics
-        #     plt.clf()
-        #     plt.figure()
-        #     plt.title(f"Patch of {grid_size} px length on {images_test.current_name}")
-        #     plt.imshow(patch,cmap="gray",vmin=np.min(array),vmax=np.max(array))
-        #     plt.savefig(folder+f"{images_test.current_name}_patch{id}_size-{grid_size}.png")
 
         plt.clf() # Clear previous figures
         plt.figure() # Create new separated figure

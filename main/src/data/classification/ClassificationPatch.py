@@ -31,17 +31,15 @@ class ClassificationPatch(DataSentinel1Segmentation):
             return list_items[:self.attr_limit_num_images]
         return list_items
 
-    def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]:
+    def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         [item, patch_id] = self.get_all_items()[id] # 0 ns
-        img = self.images[item] # 37.4ms
-        annotations = self.annotations_labels[item] # 37.4ms
-        img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # ~ 20 ms
-        annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # ~ 20 ms
-
+        img = self.images[item] # 1ms but 0 most of the time
+        annotations = self.annotations_labels[item] # 1ms but 0 most of the time
+         # two lines: btwn 21 and 54 ms
+        img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
+        annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
         if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
             self.save_resolution(item, img_patch) #
-        init = time.time_ns()
-        print(f"time: {(time.time_ns()-init)*1e-9:.3e}")
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
         classif = self.make_classification_label(annotations_patch) # ~ 2 ms

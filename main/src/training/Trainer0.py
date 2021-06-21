@@ -104,6 +104,7 @@ class Trainer0(BaseClass):
                 # print("epoch")
 
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
+
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         # zero the parameter gradients
