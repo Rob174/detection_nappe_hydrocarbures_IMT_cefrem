@@ -45,8 +45,8 @@ if __name__ == "__main__":
     saver["date"] = FolderInfos.id
     saver(dataset)
 
-
-    model = ModelFactory(model_name=arguments.model, num_classes=len(arguments.classes.split(",")))
+    num_classes = len(arguments.classes.split(",")) if dataset.attr_dataset.__class__.__name__ != "ClassificationPatch2" else 1
+    model = ModelFactory(model_name=arguments.model, num_classes=num_classes)
     saver(model)
     model = model()
     criterion = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference)
