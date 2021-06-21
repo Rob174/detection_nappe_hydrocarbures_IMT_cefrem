@@ -31,5 +31,5 @@ class BalanceClasses1(BaseClass):
             reject = False
             for k in self.attr_number_of_classes:
                 self.attr_number_accepted[k] += int(classification_label[k])
-                self.attr_prct_accepted[k] = self.attr_number_accepted[k] / self.attr_number_of_classes[k]
+                self.attr_prct_accepted[k] = self.attr_number_accepted[k] / self.attr_number_of_classes[k] if self.attr_number_of_classes[k] != 0 else 0
         return reject
