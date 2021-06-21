@@ -46,7 +46,7 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         return input, output, reject
 
     def __len__(self):
-        return 30#self.attr_dataset.__len__()
+        return self.attr_dataset.__len__()
     def save_stats(self):
         reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
         reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
