@@ -27,5 +27,5 @@ class ClassificationPatch2(ClassificationPatch):
         annotation_modified = np.zeros((1,))
         src_indexes = list(map(int,self.attr_class_mapping.keys(Way.ORIGINAL_WAY)[0].split("|")))
         for src_index in src_indexes:
-            annotation_modified = max(annotation_modified[0],annotation[src_index])
+            annotation_modified[0] = max(annotation_modified[0],annotation[src_index])
         return annotation_modified
