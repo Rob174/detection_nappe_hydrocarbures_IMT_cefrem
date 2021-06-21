@@ -4,6 +4,8 @@ import numpy as np
 import psutil
 
 from main.src.data.TwoWayDict import  Way
+from main.src.data.balance_classes.balance_classes import BalanceClasses1
+from main.src.data.balance_classes.no_balance import NoBalance
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
@@ -11,7 +13,7 @@ import time
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None):
+    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None, balance="nobalance",margin=None):
         self.attr_name = self.__class__.__name__
         self.patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
@@ -19,6 +21,12 @@ class ClassificationPatch(DataSentinel1Segmentation):
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
         self.attr_global_name = "dataset"
         self.reject = False
+        if balance == "nobalance":
+            self.attr_balance = NoBalance()
+        elif balance == "balanceclasses1":
+            self.attr_balance = BalanceClasses1(classes_indexes=self.attr_class_mapping.keys(Way.ORIGINAL_WAY),
+                                                margin=margin)
+
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
@@ -43,7 +51,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
         classif = self.make_classification_label(annotations_patch) # ~ 2 ms
-
+        balance_reject = self.attr_balance.filter(classif)
+        reject = reject and balance_reject
         return input, classif, reject
 
     def make_classification_label(self, annotations_patch):
