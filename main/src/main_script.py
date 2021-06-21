@@ -41,7 +41,9 @@ if __name__ == "__main__":
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
-                             classes_to_use=arguments.classes)
+                             classes_to_use=arguments.classes,
+                             balance=arguments.balance,
+                             margin=arguments.balance_margin)
     saver["date"] = FolderInfos.id
     saver(dataset)
 

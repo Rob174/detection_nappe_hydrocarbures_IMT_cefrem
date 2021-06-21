@@ -6,9 +6,9 @@ import numpy as np
 class ClassificationPatch1(ClassificationPatch):
     """Provides data to classify data according to """
 
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,classes_to_use="spill,seep"):
+    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,classes_to_use="spill,seep", balance="nobalance",margin=None):
         self.attr_name = self.__class__.__name__
-        super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images)
+        super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin)
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
         for i,name in enumerate(classes_to_use.split(",")):

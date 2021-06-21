@@ -15,7 +15,8 @@ import time
 
 class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
     def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px",
-                 grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills"):
+                 grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills",
+                 balance="nobalance",margin=None):
         self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
@@ -28,11 +29,11 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
 
         if usage_type == "classification":
             if dataset_name == "classificationpatch":
-                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size)
+                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,balance=balance,margin=margin)
             elif dataset_name == "classificationpatch1":
-                self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use)
+                self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use,balance=balance,margin=margin)
             elif dataset_name == "classificationpatch2":
-                self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use)
+                self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use,balance=balance,margin=margin)
 
         elif usage_type == "segmentation":
             if dataset_name == "sentinel1":

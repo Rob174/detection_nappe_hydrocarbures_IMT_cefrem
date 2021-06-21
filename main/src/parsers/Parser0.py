@@ -19,6 +19,8 @@ class Parser0(BaseClass):
                     '-grid_size':['grid_size',1000,int,"Indicate the grid size applied on the original image"],
                     '-in_size':['input_size',256,int,"Indicate the output size of the image obtained by resizing it after patches creation"],
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
+                    '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
+                    '-balance_mg':['balance_margin',10,int,"Indicate the margin of supplementary image for one class"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"seep,spill",str,"Indicate the class used for training separated by an underscore"],
