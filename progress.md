@@ -78,7 +78,12 @@
 
 Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/commit/dd43dc4e8fd941a7738dc0a238647b0923182c8b)
 
-- ⏲️ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
+- ✔️ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
+
+## 21-06-06
+- ✔️dashboard bug fixes
+- ✔️ training on 2 classes or 1 class
+- ⏲️ profiling methods
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
@@ -88,6 +93,4 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
 
 - 5️⃣ get the position of the image/patch
 - 9️⃣ Confusion matrix
-- 4️⃣ Classify only by telling if there is something or not on the image
-- 4️⃣ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 - 6️⃣ Rotation augmentation
