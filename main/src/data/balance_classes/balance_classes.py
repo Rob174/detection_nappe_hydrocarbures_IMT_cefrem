@@ -27,7 +27,7 @@ class BalanceClasses1(BaseClass):
             tmp_if_accepted_dico[k] += int(classification_label[k])
         reject = True
         num_classes = tmp_if_accepted_dico.values()
-        if max(num_classes)-min(num_classes) >= self.attr_margin:
+        if max(num_classes)-min(num_classes) <= self.attr_margin:
             reject = False
             for k in self.attr_number_of_classes:
                 self.attr_number_accepted[k] += int(classification_label[k])
