@@ -59,7 +59,7 @@
 - ✔️ Write RGB overlay
 - ✔️ Training Crossentropy
 - ✔️ Training MSE
-- 🚩🐛 Filter trainings by parameters 
+- ✔️ Filter trainings by parameters 
 - ✔️ Redo the compressed file annotations to take into account the time codes of the annotations and avoid overlappings
    - ✔️ correct the extract raster to hdf5 file (for reproduction purpose only)
    - ✔️ make a correction script (to remake the annotation file)
