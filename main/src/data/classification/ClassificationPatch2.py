@@ -6,7 +6,7 @@ import numpy as np
 
 class ClassificationPatch2(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,classes_to_use="spill,seep"):
-        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,classes_to_use)
+        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
