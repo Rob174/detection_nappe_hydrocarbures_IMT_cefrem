@@ -62,7 +62,11 @@
     },
     "classes_to_use": {
       "access":"lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_classes_to_use\"]",
-      "default": "other,seep,spill"
+      "default": "\"other,seep,spill\""
+    },
+    "balance": {
+      "access": "lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_balance\"][\"attr_name\"]",
+      "default": "\"NoBalance\""
     }
   },
   "metrics": {
