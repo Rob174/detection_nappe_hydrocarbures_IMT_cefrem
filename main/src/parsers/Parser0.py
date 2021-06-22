@@ -34,6 +34,7 @@ class Parser0(BaseClass):
                     '-opti':['optimizer',"adam",str,"Optimisateur"],
 
                     '-nbImg':['nb_images',1080,int,"Limit the number of images of the training dataset"],
+                    '-debug':['debug',"false",str,"Indicate if we want to save reference and predictions for each iteration"],
 
 
 

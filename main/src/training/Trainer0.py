@@ -17,7 +17,11 @@ class Trainer0(BaseClass):
                  loss,
                  metrics,
                  saver,
-                 eval_step):
+                 eval_step,debug="false"):
+        if debug == "true":
+            self.attr_tr_vals_true = []
+            self.attr_tr_vals_pred = []
+            self.attr_debug = debug
         self.attr_tr_batch_size = batch_size
         self.attr_tr_size = tr_prct
         self.attr_num_epochs = num_epochs
@@ -120,8 +124,12 @@ class Trainer0(BaseClass):
                         self.attr_tr_loss.append(float(current_loss))
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
-
-                        self.metrics(prediction.cpu(), output.cpu(), "tr")
+                        prediction = prediction.cpu()
+                        output = output.cpu()
+                        if self.attr_debug == "true":
+                            self.attr_tr_vals_true.append(output)
+                            self.attr_tr_vals_pred.append(prediction)
+                        self.metrics(prediction, output, "tr")
                         self.saver(self.metrics)
 
                     try:
