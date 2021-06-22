@@ -111,6 +111,7 @@ class Trainer0(BaseClass):
 
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
+                        input,output = opt_tr_batch
                         # zero the parameter gradients
                         self.optimizer.zero_grad()
 
@@ -141,6 +142,7 @@ class Trainer0(BaseClass):
                         input, output,reject = next(dataset_valid_iter)
                     opt_valid_batch = self.add_to_batch_valid(input,output,reject)
                     if opt_valid_batch is not None:
+                        input,output = opt_valid_batch
                         prediction = self.model(input.to(device))
                         loss = self.loss(prediction.float().to(device), output.float().to(device))
                         current_loss = loss.item()
