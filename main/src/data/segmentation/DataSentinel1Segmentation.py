@@ -15,56 +15,73 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class DataSentinel1Segmentation(BaseClass):
     def __init__(self,limit_num_images=None,input_size=None):
+        """Class giving access and managing the original dataset stored in the hdf5 and json files
+
+        Args:
+            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+            input_size: the size of the image provided as input to the model ⚠️
+        """
         self.attr_name = self.__class__.__name__
+        # Opening the cache
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp:
             self.images_infos = copy.deepcopy(json.load(fp))
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
-        self.attr_class_mapping = TwoWayDict(
+        self.attr_class_mapping = TwoWayDict( # a twoway dict allowing to store pairs of hashable objects:
             {  # Formatted in the following way: src_index in cache, name, the position encode destination index
                 0: "other",
                 1: "spill",
                 2: "seep",
             })
+        #concretely we can ask:
+        # - self.attr_class_mapping[0] -> returns "other" as a normal dict
+        # - self.attr_class_mapping["other"] -> returns 0 with this new type of object
         self.attr_original_class_mapping = {k:v for k,v in self.attr_class_mapping.items()}
-        self.attr_resizer = resizer.Resizer(out_size_w=input_size)
+        self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
-        self.attrend_resolutionX_stats = {}
-        self.attrend_resolutionY_stats = {}
-        self.img_not_seen = self.get_all_items()
         self.attr_global_name = "dataset"
 
     def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
+        """Magic python method to get the item of global id asked
+
+        Args:
+            id: int, global id of the sample
+
+        Returns:
+            - image, np.ndarray 2d image resized to the size specified in constructor
+            - annotation, np.ndarray 2d annotation resized to the size specified in constructor
+        """
+        # Get the image uniq id corresponding to this global id
         item = self.get_all_items()[id]
         img = self.images[item]
-        if item in self.img_not_seen:
-            self.save_resolution(item,img)
-        self.current_name = item
+        self.current_name = item # for tests if we need access to the last image processed
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
-
-    def save_resolution(self,item:str,img:np.ndarray):
-        resolution = [v for v in self.images_infos[item]["resolution"]]
-        scale_factor = self.attr_resizer.attr_out_size_w / img.shape[1]
-        resolution[0] *= scale_factor
-        resolution[1] *= scale_factor
-        if resolution[0] not in self.attrend_resolutionX_stats.keys():
-            self.attrend_resolutionX_stats[resolution[0]] = 0
-        self.attrend_resolutionX_stats[resolution[0]] += 1
-        if resolution[1] not in self.attrend_resolutionY_stats.keys():
-            self.attrend_resolutionY_stats[resolution[1]] = 0
-        self.attrend_resolutionY_stats[resolution[1]] += 1
     @lru_cache(maxsize=1)
     def get_all_items(self):
+        """List available original images available in the dataset (hdf5 file)
+        the :lru_cache(maxsize=1) allow to compute it only one time and store the result in a cache
+
+        Allow to limit the number of original image used in the dataset
+
+        Returns: list of str: [img_uniq_id0,...]
+
+        """
         if self.attr_limit_num_images is not None:
             return list(self.images.keys())[:self.attr_limit_num_images]
         return list(self.images.keys())
 
     def close(self):
+        """
+        Close hdf5 objects properly (not mandatory for read from what i have seen)
+        Returns:
+
+        """
         self.images.close()
         self.annotations_labels.close()
 
     def __len__(self) -> int:
+        """Magic method called when we make len(obj)"""
         return len(self.get_all_items())
 
 # Usage: https://pytorch.org/tutorials/beginner/basics/data_tutorial.html https://pytorch.org/docs/stable/data.html

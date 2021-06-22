@@ -7,13 +7,15 @@ class ClassificationPatch1(ClassificationPatch):
 
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use="spill,seep", balance="nobalance",margin=None):
-        """
-        Create and manage patches adding the possibility to use less classes than originally provided
-        @param patch_creator: the object of PatchCreator0 class managing patches
-        @param input_size: the size of the image provided as input to the model ⚠️
-        @param limit_num_images: limit the number of image in the dataset per epoch (before filtering)
-        @param balance: str enum {nobalance,balance} indicating the class used to balance images
-        @param margin: opt int, argument for the BalanceClass1 class
+        """Create and manage patches adding the possibility to use less classes than originally provided
+
+        Args:
+            patch_creator: the object of PatchCreator0 class managing patches
+            input_size: the size of the image provided as input to the model ⚠️
+            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+            classes_to_use: indicates the classes to use in the final classification label
+            balance: str enum {nobalance,balance} indicating the class used to balance images
+            margin: opt int, argument for the BalanceClass1 class
         """
         self.attr_name = self.__class__.__name__
         super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin)
@@ -26,11 +28,15 @@ class ClassificationPatch1(ClassificationPatch):
         self.attr_global_name = "dataset"
 
     def make_classification_label(self, annotations_patch):
-        """
-        Creates the classification label based on the annotation patch image
+        """Creates the classification label based on the annotation patch image
+
         Indicates if we need to reject the patch due to overrepresented class
-        @param annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-        @return: the classification label
+
+        Args:
+            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
+
+        Returns: the classification label
+
         """
         # call the parent method to get classification with parent method make_classification_label
         annotation,reject = super(ClassificationPatch1, self).make_classification_label(annotations_patch)

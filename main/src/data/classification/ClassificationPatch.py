@@ -17,14 +17,15 @@ from rasterio.transform import Affine,rowcol
 class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance="nobalance",margin=None):
-        """
-        Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
+        """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
         filteer them.
-        @param patch_creator: the object of PatchCreator0 class managing patches
-        @param input_size: the size of the image provided as input to the model ⚠️
-        @param limit_num_images: limit the number of image in the dataset per epoch (before filtering)
-        @param balance: str enum {nobalance,balance} indicating the class used to balance images
-        @param margin: opt int, argument for the BalanceClass1 class
+
+        Args:
+            patch_creator: the object of PatchCreator0 class managing patches
+            input_size: the size of the image provided as input to the model ⚠️
+            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+            balance: str enum {nobalance,balance} indicating the class used to balance images
+            margin: opt int, argument for the BalanceClass1 class
         """
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.patch_creator = patch_creator
@@ -42,11 +43,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     @lru_cache(maxsize=1)
     def get_all_items(self):
-        """
-        List available original images available in the dataset (hdf5 file)
-        the @lru_cache(maxsize=1) allow to compute it only one time and store the result in a cache
+        """List available original images available in the dataset (hdf5 file)
+        the :lru_cache(maxsize=1) allow to compute it only one time and store the result in a cache
+
         Allow to limit the number of original image used in the dataset
-        @return: list of list of str,int: [[img_uniq_id,id_patch],...]
+
+        Returns: list of list of str,int: [[img_uniq_id,id_patch],...]
+
         """
         list_items = []
         for img_name in list(self.images.keys()):
@@ -57,11 +60,14 @@ class ClassificationPatch(DataSentinel1Segmentation):
             return list_items[:self.attr_limit_num_images]
         return list_items
     def get_geographic_coords_of_patch(self,name_src_img,patch_id):
-        """
-        Get the coordinates of the upper left pixel of the patch specified
-        @param name_src_img: str, uniq id of the source image
-        @param patch_id: int, id of the patch to get coordinates
-        @return: tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
+        """Get the coordinates of the upper left pixel of the patch specified
+
+        Args:
+            name_src_img: str, uniq id of the source image
+            patch_id: int, id of the patch to get coordinates
+
+        Returns:
+            tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
         """
         img = self.images[name_src_img] # read image from the hdf5 file
         transform_array = self.images_infos[name_src_img]["transform"] # get the corresponding transformation array
@@ -75,13 +81,17 @@ class ClassificationPatch(DataSentinel1Segmentation):
         return rowcol(transform,posx,posy)
 
     def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
-        """
-        Magic method of python called by the object[id] syntax.
+        """Magic method of python called by the object[id] syntax.
+
         get the patch of global int id id
-        @param id: int, global ⚠️ id of the patch
-        @return: tuple: input:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
-                        classif: np.ndarray (shape (num_classes,), classification patch
-                        reject:  bool, indicate if we need to reject this sample
+
+        Args:
+            id: int, global ⚠️ id of the patch
+
+        Returns:
+            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+                   classif: np.ndarray (shape (num_classes,), classification patch ;
+                   reject:  bool, indicate if we need to reject this sample ;
         """
         # get the src image id (item: str) and the patch_id (int)
         [item, patch_id] = self.get_all_items()[id] # 0 ns
@@ -109,11 +119,15 @@ class ClassificationPatch(DataSentinel1Segmentation):
         return input, classif, reject
 
     def make_classification_label(self, annotations_patch):
-        """
-        Creates the classification label based on the annotation patch image
+        """Creates the classification label based on the annotation patch image
+
         Indicates if we need to reject the patch due to overrepresented class
-        @param annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-        @return: the classification label
+
+        Args:
+            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
+
+        Returns: the classification label
+
         """
 
         output = np.zeros((len(self.attr_original_class_mapping),),dtype=np.float32) # 0 ns
@@ -128,13 +142,17 @@ class ClassificationPatch(DataSentinel1Segmentation):
         return output,balance_reject
 
     def make_patches_of_image(self, name: str):
-        """
-        Creates and returns all patches of an image
-        @param name: uniq str id of the image
-        @return: list of list of:
-                    - patch: np.ndarray
-                    - classif: np.ndarray classification label as returned by make_classification_label
-                    - reject: bool reject only based on margins
+        """Creates and returns all patches of an image
+
+        Args:
+            name: uniq str id of the image
+
+        Returns:
+            list of list of:
+
+            - patch: np.ndarray
+            - classif: np.ndarray classification label as returned by make_classification_label
+            - reject: bool reject only based on margins
         """
         last_image = np.copy(np.array(self.images[name], dtype=np.float32))
         liste_patches = []

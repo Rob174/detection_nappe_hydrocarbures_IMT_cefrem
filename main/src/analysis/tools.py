@@ -18,13 +18,16 @@ class RGB_Overlay_Patch:
                                       grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None):
-        """
-        In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
-        @param name_img: id / name of the image as shown in images_informations_preprocessed.json (better to vizualize but the "official" keys are in the images_preprocessed.hdf5 file)
-        @param model: a created model with pretrained weights already loaded ⚠️
-        @param blending_factor: the percentage (∈ [0.,1.]) of importance given to the color
-        @param device: a pytorch device (gpu)
-        @return: tuple, with  overlay_true,overlay_pred,original_img as np arrays
+        """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
+
+        Args:
+            name_img: id / name of the image as shown in images_informations_preprocessed.json (better to vizualize but the "official" keys are in the images_preprocessed.hdf5 file)
+            model: a created model with pretrained weights already loaded ⚠️
+            blending_factor: the percentage (∈ [0.,1.]) of importance given to the color
+            device: a pytorch device (gpu)
+
+        Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
+
         """
         original_img = self.dataset.attr_dataset.images[name_img] # radar image input (1 channel only)
         overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32) # prepare the overlays with 3 channels for colors

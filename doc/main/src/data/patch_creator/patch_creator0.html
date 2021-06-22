@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>main.src.data.patch_creator.patch_creator0 API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>main.src.data.patch_creator.patch_creator0</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import json
+from typing import Tuple
+
+import numpy as np
+
+from main.FolderInfos import FolderInfos
+from main.test.test_images import Test_images
+from main.src.param_savers.BaseClass import BaseClass
+import time
+
+class Patch_creator0(BaseClass):
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
+        &#34;&#34;&#34;Class creating and managing patches
+
+        Args:
+            grid_size_px: size of the patch extracted from the original image
+            images_informations_preprocessed: dict from the json file containing images dataset informations
+            test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+            exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+                - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+        &#34;&#34;&#34;
+        self.attr_description = &#34;Create a grid by taking a square of a constant pixel size.&#34;+\
+                                &#34; It does not consider the resolution of each image.&#34;+\
+                                &#34; It rejects a patch if it is not fully included in the original image&#34;
+        self.attr_grid_size_px = grid_size_px
+        self.coords = [] # For logs: to show the square on the original image
+        self.test = test
+        self.images_informations_preprocessed: dict = images_informations_preprocessed
+        self.attr_resolution_used = {&#34;x&#34;:{}, &#34;y&#34;:{}} # dict of dict to count the number of uniq resolution seen
+        self.attr_exclusion_policy = exclusion_policy
+        self.reject = {}
+        self.attr_num_rejected = 0
+        self.attr_name = self.__class__.__name__
+        self.attr_global_name = &#34;patch_creator&#34;
+
+    def num_available_patches(self,image: np.ndarray ) -&gt; int:
+        &#34;&#34;&#34;
+
+        Args:
+            image: original image of the hdf5 file
+
+        Returns: number of patches possible without cutting any of them
+
+        &#34;&#34;&#34;
+        return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
+
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
+        &#34;&#34;&#34;Creates the patch with provided data and indicate if it is rejected
+
+        Magic method __call__ &#34;called&#34; when we &#34;evaluate&#34; the object:
+
+        obj = MyClass(....); returnValue = obj(...) &lt;- this call the __call__ magic method
+
+        Args:
+            image: np.ndarray, source image from the hdf5 file
+            image_name: str, uniq id of the image in the hdf5 cache
+            patch_id: int, id of the patch
+            count_reso: bool, indicate if we need to compute statistics on input image resolutions
+
+        Returns:
+            tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
+
+        &#34;&#34;&#34;
+        # computing resolution statistics taking a model where the earth is a sphere
+        if count_reso is True: # skiping these lines: 0 ns
+            radius_earth_meters = 6371e3
+            reso_x = self.images_informations_preprocessed[image_name][&#34;resolution&#34;][0] * np.pi/180. * radius_earth_meters
+            reso_y = self.images_informations_preprocessed[image_name][&#34;resolution&#34;][1] * np.pi/180. * radius_earth_meters
+            if reso_x not in self.attr_resolution_used[&#34;x&#34;].keys():
+                self.attr_resolution_used[&#34;x&#34;][reso_x] = 0
+            if reso_x not in self.attr_resolution_used[&#34;y&#34;].keys():
+                self.attr_resolution_used[&#34;y&#34;][reso_y] = 0
+            self.attr_resolution_used[&#34;x&#34;][reso_x] += 1
+            self.attr_resolution_used[&#34;y&#34;][reso_y] += 1
+
+        pos_x,pos_y = self.get_position_patch(patch_id,image.shape) # ~ 0 ns
+        # Save the coordinates (in px on the image from the hdf5) of the patch if we need them (especially during tests)
+        if self.test is True: # skipping: 0 ns
+            self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
+        # extract the patch
+        patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
+        # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
+        # with x the threshold provided in the attr_exclusion_policy after the &#34;_&#34;
+        if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+            self.attr_num_rejected += 1
+            return patch, True
+        return patch, False
+    def get_position_patch(self,patch_id: int, input_shape):
+        &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
+
+        Args:
+            patch_id: int,
+            input_shape: tuple with at least two values
+
+        Returns:
+            tuple of ints: xpos,ypos
+        &#34;&#34;&#34;
+        num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
+        if num_cols_patches * self.attr_grid_size_px &gt;= input_shape[1]:
+            num_cols_patches -= 1
+        try:
+            id_col = (patch_id) % num_cols_patches
+            id_line = patch_id // num_cols_patches
+        except:
+            raise Exception()
+        return self.attr_grid_size_px * id_line,self.attr_grid_size_px * id_col
+if __name__ == &#34;__main__&#34;:
+    
+
+    FolderInfos.init(test_without_data=True)
+
+    import matplotlib.pyplot as plt
+    import os
+
+    folder = FolderInfos.data_test+&#34;outputs&#34;+FolderInfos.separator+&#34;Patch_creator&#34;+FolderInfos.separator
+    if os.path.exists(folder) is False:
+        os.mkdir(folder)
+    with open(FolderInfos.data_test+&#34;images_informations_preprocessed.json&#34;) as fp: # Load informations about the files
+        dico_infos = json.load(fp)
+
+    images_test = Test_images() # Get the object allowing to wuickly get the test images
+    array,_ = images_test.get_rasters(selector=0) # get the first test image
+    plt.figure() # Create new separated figure
+    plt.imshow(array,cmap=&#34;gray&#34;) #
+    plt.savefig(folder+f&#34;{images_test.current_name}_original.png&#34;)
+
+    from PIL import Image, ImageDraw
+    for grid_size in [500,1000,1500]: # For different grid size we will test creating patches
+        patch_creator = Patch_creator0(grid_size_px=grid_size,test=True,images_informations_preprocessed=dico_infos) # Create the path generator object
+
+        plt.clf() # Clear previous figures
+        plt.figure() # Create new separated figure
+        # Convert the raster array to a 0-255 array
+        image_rgb_uint8 = np.stack((array,)*3,axis=-1)
+        image_rgb_uint8 = (image_rgb_uint8 - np.min(image_rgb_uint8)) / (np.max(image_rgb_uint8) - np.min(image_rgb_uint8))*255 # Normalisation
+        image_rgb_uint8 = image_rgb_uint8.astype(np.uint8)# Convert to uint8 array
+        image_cpy = Image.fromarray(image_rgb_uint8) # Convert to pillow object
+        image_cpy1 = Image.fromarray(np.copy(image_rgb_uint8)) # Prepare the image to draw on
+        draw = ImageDraw.ImageDraw(image_cpy)
+        for coords in patch_creator.coords:
+            draw.rectangle(coords, width=30, outline=&#34;red&#34;)  # Draw the patches
+        plt.clf()  # Clear previous figures
+        plt.figure()  # Create new separated figure
+        image_annotated = Image.blend(image_cpy, image_cpy1, 0.5)  # Mix the original image with the annotated one
+        plt.imshow(image_annotated)  # Show it
+        plt.title(f&#34;Patches of {grid_size} px length on {images_test.current_name}&#34;)
+        plt.savefig(
+            folder + f&#34;{images_test.current_name}_with_patches_size-{grid_size}.png&#34;)  # Save the current figure to file</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0"><code class="flex name class">
+<span>class <span class="ident">Patch_creator0</span></span>
+<span>(</span><span>grid_size_px, images_informations_preprocessed, test=False, exclusion_policy='marginmorethan_1000')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class creating and managing patches</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>grid_size_px</code></strong></dt>
+<dd>size of the patch extracted from the original image</dd>
+<dt><strong><code>images_informations_preprocessed</code></strong></dt>
+<dd>dict from the json file containing images dataset informations</dd>
+<dt><strong><code>test</code></strong></dt>
+<dd>bool, indicate if we need to keep track of the coordinates (in px) of the patch computed</dd>
+<dt><strong><code>exclusion_policy</code></strong></dt>
+<dd>str, policy used to exclude patches based on their apearence. Currently supported
+- marginmorethan_..int.. : exclude a patch if it contains more than &hellip; pixels having the margin value (= 0 exactly)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Patch_creator0(BaseClass):
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
+        &#34;&#34;&#34;Class creating and managing patches
+
+        Args:
+            grid_size_px: size of the patch extracted from the original image
+            images_informations_preprocessed: dict from the json file containing images dataset informations
+            test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+            exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+                - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+        &#34;&#34;&#34;
+        self.attr_description = &#34;Create a grid by taking a square of a constant pixel size.&#34;+\
+                                &#34; It does not consider the resolution of each image.&#34;+\
+                                &#34; It rejects a patch if it is not fully included in the original image&#34;
+        self.attr_grid_size_px = grid_size_px
+        self.coords = [] # For logs: to show the square on the original image
+        self.test = test
+        self.images_informations_preprocessed: dict = images_informations_preprocessed
+        self.attr_resolution_used = {&#34;x&#34;:{}, &#34;y&#34;:{}} # dict of dict to count the number of uniq resolution seen
+        self.attr_exclusion_policy = exclusion_policy
+        self.reject = {}
+        self.attr_num_rejected = 0
+        self.attr_name = self.__class__.__name__
+        self.attr_global_name = &#34;patch_creator&#34;
+
+    def num_available_patches(self,image: np.ndarray ) -&gt; int:
+        &#34;&#34;&#34;
+
+        Args:
+            image: original image of the hdf5 file
+
+        Returns: number of patches possible without cutting any of them
+
+        &#34;&#34;&#34;
+        return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
+
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
+        &#34;&#34;&#34;Creates the patch with provided data and indicate if it is rejected
+
+        Magic method __call__ &#34;called&#34; when we &#34;evaluate&#34; the object:
+
+        obj = MyClass(....); returnValue = obj(...) &lt;- this call the __call__ magic method
+
+        Args:
+            image: np.ndarray, source image from the hdf5 file
+            image_name: str, uniq id of the image in the hdf5 cache
+            patch_id: int, id of the patch
+            count_reso: bool, indicate if we need to compute statistics on input image resolutions
+
+        Returns:
+            tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
+
+        &#34;&#34;&#34;
+        # computing resolution statistics taking a model where the earth is a sphere
+        if count_reso is True: # skiping these lines: 0 ns
+            radius_earth_meters = 6371e3
+            reso_x = self.images_informations_preprocessed[image_name][&#34;resolution&#34;][0] * np.pi/180. * radius_earth_meters
+            reso_y = self.images_informations_preprocessed[image_name][&#34;resolution&#34;][1] * np.pi/180. * radius_earth_meters
+            if reso_x not in self.attr_resolution_used[&#34;x&#34;].keys():
+                self.attr_resolution_used[&#34;x&#34;][reso_x] = 0
+            if reso_x not in self.attr_resolution_used[&#34;y&#34;].keys():
+                self.attr_resolution_used[&#34;y&#34;][reso_y] = 0
+            self.attr_resolution_used[&#34;x&#34;][reso_x] += 1
+            self.attr_resolution_used[&#34;y&#34;][reso_y] += 1
+
+        pos_x,pos_y = self.get_position_patch(patch_id,image.shape) # ~ 0 ns
+        # Save the coordinates (in px on the image from the hdf5) of the patch if we need them (especially during tests)
+        if self.test is True: # skipping: 0 ns
+            self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
+        # extract the patch
+        patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
+        # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
+        # with x the threshold provided in the attr_exclusion_policy after the &#34;_&#34;
+        if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+            self.attr_num_rejected += 1
+            return patch, True
+        return patch, False
+    def get_position_patch(self,patch_id: int, input_shape):
+        &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
+
+        Args:
+            patch_id: int,
+            input_shape: tuple with at least two values
+
+        Returns:
+            tuple of ints: xpos,ypos
+        &#34;&#34;&#34;
+        num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
+        if num_cols_patches * self.attr_grid_size_px &gt;= input_shape[1]:
+            num_cols_patches -= 1
+        try:
+            id_col = (patch_id) % num_cols_patches
+            id_line = patch_id // num_cols_patches
+        except:
+            raise Exception()
+        return self.attr_grid_size_px * id_line,self.attr_grid_size_px * id_col</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="main.src.param_savers.BaseClass.BaseClass" href="../../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch"><code class="name flex">
+<span>def <span class="ident">get_position_patch</span></span>(<span>self, patch_id: int, input_shape)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute the position of the patch with respect to the parameters</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>patch_id</code></strong></dt>
+<dd>int,</dd>
+<dt><strong><code>input_shape</code></strong></dt>
+<dd>tuple with at least two values</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code> of <code>ints</code></dt>
+<dd>xpos,ypos</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_position_patch(self,patch_id: int, input_shape):
+    &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
+
+    Args:
+        patch_id: int,
+        input_shape: tuple with at least two values
+
+    Returns:
+        tuple of ints: xpos,ypos
+    &#34;&#34;&#34;
+    num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
+    if num_cols_patches * self.attr_grid_size_px &gt;= input_shape[1]:
+        num_cols_patches -= 1
+    try:
+        id_col = (patch_id) % num_cols_patches
+        id_line = patch_id // num_cols_patches
+    except:
+        raise Exception()
+    return self.attr_grid_size_px * id_line,self.attr_grid_size_px * id_col</code></pre>
+</details>
+</dd>
+<dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches"><code class="name flex">
+<span>def <span class="ident">num_available_patches</span></span>(<span>self, image: numpy.ndarray) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>image</code></strong></dt>
+<dd>original image of the hdf5 file</dd>
+</dl>
+<p>Returns: number of patches possible without cutting any of them</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def num_available_patches(self,image: np.ndarray ) -&gt; int:
+    &#34;&#34;&#34;
+
+    Args:
+        image: original image of the hdf5 file
+
+    Returns: number of patches possible without cutting any of them
+
+    &#34;&#34;&#34;
+    return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="main.src.data.patch_creator" href="index.html">main.src.data.patch_creator</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch">get_position_patch</a></code></li>
+<li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches">num_available_patches</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

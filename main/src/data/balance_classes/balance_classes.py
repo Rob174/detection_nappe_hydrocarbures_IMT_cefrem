@@ -3,10 +3,11 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class BalanceClasses1(BaseClass):
     def __init__(self,classes_indexes, margin=10):
-        """
-        Balance classes by keeping an image if the classes on it are not overrepresented
-        @param classes_indexes: classes indexes to consider
-        @param margin: specify the max difference of number of samples provided with two classes of the possible classes
+        """Balance classes by keeping an image if the classes on it are not overrepresented
+
+        Args:
+            classes_indexes: classes indexes to consider
+            margin: specify the max difference of number of samples provided with two classes of the possible classes
         """
         self.attr_margin = margin
         self.attr_number_of_classes = {k:0 for k in classes_indexes}
@@ -16,10 +17,14 @@ class BalanceClasses1(BaseClass):
         self.attr_global_name = "balance" # save a more compehensible name
 
     def filter(self,classification_label):
-        """
-        method called during training to know if we have to filter this sample or not based on its classification_label
-        @param classification_label: label with ones of a class is on the image and 0 if not. !! Must be provided by ClassificationPatch make_classification_label method for the shape of the labels (with full details)
-        @return: bool, tell if the sample is accepted or rejected
+        """method called during training to know if we have to filter this sample or not based on its classification_label
+
+        Args:
+            classification_label:  label with ones of a class is on the image and 0 if not. !! Must be provided by ClassificationPatch make_classification_label method for the shape of the labels (with full details)
+
+        Returns:
+            bool, tell if the sample is accepted or rejected
+
         """
         # We test the effect of adding this new sample regarding the number of already seen classes
         tmp_if_accepted_dico = {k:v for k,v in self.attr_prct_accepted.items()}

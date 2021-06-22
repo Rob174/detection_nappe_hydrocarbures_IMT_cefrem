@@ -10,13 +10,14 @@ import time
 
 class Patch_creator0(BaseClass):
     def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
-        """
-        Class creating and managing patches
-        @param grid_size_px: size of the patch extracted from the original image
-        @param images_informations_preprocessed: the dict from the json file containing images dataset informations
-        @param test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
-        @param exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
-            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+        """Class creating and managing patches
+
+        Args:
+            grid_size_px: size of the patch extracted from the original image
+            images_informations_preprocessed: dict from the json file containing images dataset informations
+            test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+            exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+                - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
         """
         self.attr_description = "Create a grid by taking a square of a constant pixel size."+\
                                 " It does not consider the resolution of each image."+\
@@ -35,21 +36,30 @@ class Patch_creator0(BaseClass):
     def num_available_patches(self,image: np.ndarray ) -> int:
         """
 
-        @param image: original image of the hdf5 file
-        @return: number of patches possible without cutting any of them
+        Args:
+            image: original image of the hdf5 file
+
+        Returns: number of patches possible without cutting any of them
+
         """
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
 
     def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> Tuple[np.ndarray,bool]:
-        """
-        Creates the patch with provided data and indicate if it is rejected
+        """Creates the patch with provided data and indicate if it is rejected
+
         Magic method __call__ "called" when we "evaluate" the object:
+
         obj = MyClass(....); returnValue = obj(...) <- this call the __call__ magic method
-        @param image: np.ndarray, source image from the hdf5 file
-        @param image_name: str, uniq id of the image in the hdf5 cache
-        @param patch_id: int, id of the patch
-        @param count_reso: bool, indicate if we need to compute statistics on input image resolutions
-        @return: tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
+
+        Args:
+            image: np.ndarray, source image from the hdf5 file
+            image_name: str, uniq id of the image in the hdf5 cache
+            patch_id: int, id of the patch
+            count_reso: bool, indicate if we need to compute statistics on input image resolutions
+
+        Returns:
+            tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
+
         """
         # computing resolution statistics taking a model where the earth is a sphere
         if count_reso is True: # skiping these lines: 0 ns
@@ -76,11 +86,14 @@ class Patch_creator0(BaseClass):
             return patch, True
         return patch, False
     def get_position_patch(self,patch_id: int, input_shape):
-        """
-        Compute the position of the patch with respect to the parameters
-        @param patch_id: int,
-        @param input_shape: tuple with at least two values
-        @return: tuple of ints: xpos,ypos
+        """Compute the position of the patch with respect to the parameters
+
+        Args:
+            patch_id: int,
+            input_shape: tuple with at least two values
+
+        Returns:
+            tuple of ints: xpos,ypos
         """
         num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
         if num_cols_patches * self.attr_grid_size_px >= input_shape[1]:
@@ -92,6 +105,7 @@ class Patch_creator0(BaseClass):
             raise Exception()
         return self.attr_grid_size_px * id_line,self.attr_grid_size_px * id_col
 if __name__ == "__main__":
+    
 
     FolderInfos.init(test_without_data=True)
 

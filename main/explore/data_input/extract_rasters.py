@@ -10,8 +10,7 @@ import numpy as np
 def get_array_raster_file(path):
     with rasterio.open(path) as file_object:
         dataset = file_object.read(1)
-    return dataset,file_object
-
+    return dataset, file_object
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
     files = [FolderInfos.data_test+f for f in os.listdir(FolderInfos.data_test)]
