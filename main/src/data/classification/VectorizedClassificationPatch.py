@@ -6,7 +6,15 @@ import numpy as np
 class VectorizzedClassificationPatch(ClassificationPatch):
     def __init__(self,*args,**kargs):
         super(VectorizzedClassificationPatch, self).__init__(*args,**kargs)
-    def __getitem__(self, item: List[int]):
+    def __getitem__(self, id: List[int]):
+        """
+        Magic method of python called by the object[id] syntax.
+        get the patch of global int ids id
+        @param id: list of int, global ⚠️ id of the patch
+        @return: tuple of 3 lists : patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+                            annotations: np.ndarray (shape (num_classes,), classification patch
+                            rejects:  bool, indicate if we need to reject this sample
+        """
         all_items = self.get_all_items()
         dico_item_patches = {}
         for index_orig, i in enumerate(id):
