@@ -93,7 +93,8 @@ class DataSentinel1Segmentation(BaseClass):
 
         Allow to limit the number of original image used in the dataset
 
-        Returns: list of str: [img_uniq_id0,...]
+        Returns:
+            list of str: [img_uniq_id0,...]
 
         &#34;&#34;&#34;
         if self.attr_limit_num_images is not None:
@@ -137,7 +138,8 @@ class DataSentinel1Segmentation(BaseClass):
 <span>(</span><span>limit_num_images=None, input_size=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class giving access and managing the original dataset stored in the hdf5 and json files</p>
+<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
+<p>Class giving access and managing the original dataset stored in the hdf5 and json files</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>limit_num_images</code></strong></dt>
@@ -201,7 +203,8 @@ class DataSentinel1Segmentation(BaseClass):
 
         Allow to limit the number of original image used in the dataset
 
-        Returns: list of str: [img_uniq_id0,...]
+        Returns:
+            list of str: [img_uniq_id0,...]
 
         &#34;&#34;&#34;
         if self.attr_limit_num_images is not None:
@@ -258,7 +261,11 @@ Returns:</p></div>
 <div class="desc"><p>List available original images available in the dataset (hdf5 file)
 the :lru_cache(maxsize=1) allow to compute it only one time and store the result in a cache</p>
 <p>Allow to limit the number of original image used in the dataset</p>
-<p>Returns: list of str: [img_uniq_id0,&hellip;]</p></div>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code> of <code>str</code></dt>
+<dd>[img_uniq_id0,&hellip;]</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -270,7 +277,8 @@ def get_all_items(self):
 
     Allow to limit the number of original image used in the dataset
 
-    Returns: list of str: [img_uniq_id0,...]
+    Returns:
+        list of str: [img_uniq_id0,...]
 
     &#34;&#34;&#34;
     if self.attr_limit_num_images is not None:

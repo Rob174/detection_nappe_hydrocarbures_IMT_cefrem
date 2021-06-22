@@ -65,7 +65,8 @@ class DataSentinel1Segmentation(BaseClass):
 
         Allow to limit the number of original image used in the dataset
 
-        Returns: list of str: [img_uniq_id0,...]
+        Returns:
+            list of str: [img_uniq_id0,...]
 
         """
         if self.attr_limit_num_images is not None:

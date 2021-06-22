@@ -43,7 +43,8 @@ class ClassificationPatch2(ClassificationPatch):
         Args:
             annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
 
-        Returns: the classification label
+        Returns:
+            annotation_modified,reject: the classification label and a boolean to indicate if the patch is rejected or not
 
         """
         annotation,reject = super(ClassificationPatch2, self).make_classification_label(annotations_patch)

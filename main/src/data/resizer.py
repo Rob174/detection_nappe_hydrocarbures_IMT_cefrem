@@ -23,7 +23,8 @@ class Resizer(BaseClass):
         Args:
             array: the array to resize
 
-        Returns: the resized array
+        Returns:
+            the resized array
 
         """
         if self.attr_out_size_w == array.shape[1]:

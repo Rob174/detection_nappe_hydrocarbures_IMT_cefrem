@@ -33,6 +33,16 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class ModelFactory(BaseClass):
+    &#34;&#34;&#34;Object creating desired model
+
+    Args:
+            model_name: str, name of the model to create. Currently supported:
+            - &#34;efficientnetv4&#34;
+            - &#34;resnet18&#34;
+            - &#34;vgg16&#34;
+            - &#34;deeplabv3&#34;
+            num_classes: int, number of output classes desired
+    &#34;&#34;&#34;
     def __init__(self,model_name,num_classes=2):
         self.attr_global_name = &#34;model&#34;
         if model_name == &#34;efficientnetv4&#34;:
@@ -51,8 +61,11 @@ class ModelFactory(BaseClass):
             raise Exception(&#34;%s is not supported&#34; % model_name)
         self.attr_model_name = model_name
         self.attr_num_classes = num_classes
+    def call(self):
+        &#34;&#34;&#34;Returns the pytorch model&#34;&#34;&#34;
+        return self.model
     def __call__(self):
-        return self.model</code></pre>
+        return self.call()</code></pre>
 </details>
 </section>
 <section>
@@ -69,12 +82,39 @@ class ModelFactory(BaseClass):
 <span>(</span><span>model_name, num_classes=2)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Object creating desired model</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>model_name</code></strong></dt>
+<dd>str, name of the model to create. Currently supported:</dd>
+</dl>
+<ul>
+<li>"efficientnetv4"</li>
+<li>"resnet18"</li>
+<li>"vgg16"</li>
+<li>
+<dl>
+<dt>"deeplabv3"</dt>
+<dt><strong><code>num_classes</code></strong></dt>
+<dd>int, number of output classes desired</dd>
+</dl>
+</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ModelFactory(BaseClass):
+    &#34;&#34;&#34;Object creating desired model
+
+    Args:
+            model_name: str, name of the model to create. Currently supported:
+            - &#34;efficientnetv4&#34;
+            - &#34;resnet18&#34;
+            - &#34;vgg16&#34;
+            - &#34;deeplabv3&#34;
+            num_classes: int, number of output classes desired
+    &#34;&#34;&#34;
     def __init__(self,model_name,num_classes=2):
         self.attr_global_name = &#34;model&#34;
         if model_name == &#34;efficientnetv4&#34;:
@@ -93,13 +133,33 @@ class ModelFactory(BaseClass):
             raise Exception(&#34;%s is not supported&#34; % model_name)
         self.attr_model_name = model_name
         self.attr_num_classes = num_classes
+    def call(self):
+        &#34;&#34;&#34;Returns the pytorch model&#34;&#34;&#34;
+        return self.model
     def __call__(self):
-        return self.model</code></pre>
+        return self.call()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="main.src.param_savers.BaseClass.BaseClass" href="../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="main.src.models.ModelFactory.ModelFactory.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the pytorch model</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self):
+    &#34;&#34;&#34;Returns the pytorch model&#34;&#34;&#34;
+    return self.model</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -119,6 +179,9 @@ class ModelFactory(BaseClass):
 <ul>
 <li>
 <h4><code><a title="main.src.models.ModelFactory.ModelFactory" href="#main.src.models.ModelFactory.ModelFactory">ModelFactory</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.models.ModelFactory.ModelFactory.call" href="#main.src.models.ModelFactory.ModelFactory.call">call</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

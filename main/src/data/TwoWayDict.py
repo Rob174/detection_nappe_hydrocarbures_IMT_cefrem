@@ -16,12 +16,15 @@ class TwoWayDict(BaseClass):
 
 
     Example 1: creating a TwoWayDict and getting values
+
             >>> dico = TwoWayDict({"a":1,"b":2,"c":3})
             >>> dico["a"] # as for a normal dict we can get values as follows
             1
             >>> dico[1] # but we can also access the mapped property
             "a"
+
     Example 2: you can also use the traditionnal .keys() .values() and .items() and specify which keys to use:
+
             >>> dico.keys(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
             ["a","b","c"]
             >>> dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
@@ -30,13 +33,17 @@ class TwoWayDict(BaseClass):
             [("a",1),("b",2),("c",3)]
             >>> dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
             [(1,"a"),(2,"b"),(3,"c")]
+
     Example 3: this object also allows to store additionnal informations with original data
+
             >>> dico = TwoWayDict({"a":(1,"info1"),"b":(2,"info2"),"c":(3,"info3")})
             >>> dico[1]
             "a","info1"
             >>> dico["a"]
             1,"info1"
+
     Example 4: we can also insert values by providing to which group belongs the key:
+
             >>> dico[4,Way.OTHER_WAY] = "d","info4"
 
     """

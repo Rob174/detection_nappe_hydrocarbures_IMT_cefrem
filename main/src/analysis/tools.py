@@ -18,6 +18,8 @@ class RGB_Overlay_Patch:
                                       grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None):
+        return self.call(name_img,model,blending_factor,device)
+    def call(self,name_img,model,blending_factor=0.5,device=None):
         """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:

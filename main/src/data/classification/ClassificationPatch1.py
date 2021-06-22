@@ -4,19 +4,19 @@ from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 import numpy as np
 
 class ClassificationPatch1(ClassificationPatch):
+    """Create and manage patches adding the possibility to use less classes than originally provided
 
+    Args:
+        patch_creator: the object of PatchCreator0 class managing patches
+        input_size: the size of the image provided as input to the model ⚠️
+        limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+        classes_to_use: indicates the classes to use in the final classification label
+        balance: str enum {nobalance,balance} indicating the class used to balance images
+        margin: opt int, argument for the BalanceClass1 class
+    """
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use="spill,seep", balance="nobalance",margin=None):
-        """Create and manage patches adding the possibility to use less classes than originally provided
 
-        Args:
-            patch_creator: the object of PatchCreator0 class managing patches
-            input_size: the size of the image provided as input to the model ⚠️
-            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
-            classes_to_use: indicates the classes to use in the final classification label
-            balance: str enum {nobalance,balance} indicating the class used to balance images
-            margin: opt int, argument for the BalanceClass1 class
-        """
         self.attr_name = self.__class__.__name__
         super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin)
         tmp_mapping = TwoWayDict({})
@@ -35,7 +35,8 @@ class ClassificationPatch1(ClassificationPatch):
         Args:
             annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
 
-        Returns: the classification label
+        Returns:
+            annotation_modified,reject: the classification label and a boolean to indicate if the patch is rejected or not
 
         """
         # call the parent method to get classification with parent method make_classification_label

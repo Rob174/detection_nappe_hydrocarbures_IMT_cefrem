@@ -8,11 +8,12 @@ class OptimizersFactory(BaseClass):
     """Class managing the optimizers
 
     Args:
-            model: model to optimize
-            name: str enum, optimizer to use. Currently supported:
-            - "adam"
-            - "sgd"
-            **params: other parameters for the optimizer
+        model: model to optimize
+        name: str enum, optimizer to use. Currently supported:
+        - "adam"
+        - "sgd"
+
+        params: other parameters for the optimizer
     """
     def __init__(self,model,name="adam",**params):
         self.attr_name = name

@@ -67,7 +67,8 @@ class Patch_creator0(BaseClass):
         Args:
             image: original image of the hdf5 file
 
-        Returns: number of patches possible without cutting any of them
+        Returns:
+            number of patches possible without cutting any of them
 
         &#34;&#34;&#34;
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
@@ -191,7 +192,8 @@ if __name__ == &#34;__main__&#34;:
 <span>(</span><span>grid_size_px, images_informations_preprocessed, test=False, exclusion_policy='marginmorethan_1000')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class creating and managing patches</p>
+<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
+<p>Class creating and managing patches</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>grid_size_px</code></strong></dt>
@@ -239,7 +241,8 @@ if __name__ == &#34;__main__&#34;:
         Args:
             image: original image of the hdf5 file
 
-        Returns: number of patches possible without cutting any of them
+        Returns:
+            number of patches possible without cutting any of them
 
         &#34;&#34;&#34;
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
@@ -430,7 +433,8 @@ if __name__ == &#34;__main__&#34;:
 <dt><strong><code>image</code></strong></dt>
 <dd>original image of the hdf5 file</dd>
 </dl>
-<p>Returns: number of patches possible without cutting any of them</p></div>
+<h2 id="returns">Returns</h2>
+<p>number of patches possible without cutting any of them</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -441,7 +445,8 @@ if __name__ == &#34;__main__&#34;:
     Args:
         image: original image of the hdf5 file
 
-    Returns: number of patches possible without cutting any of them
+    Returns:
+        number of patches possible without cutting any of them
 
     &#34;&#34;&#34;
     return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)</code></pre>

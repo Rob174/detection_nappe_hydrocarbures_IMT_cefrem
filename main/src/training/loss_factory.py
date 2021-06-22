@@ -10,6 +10,7 @@ class LossFactory(BaseClass):
         usage_type: str enum, indicate for which purpose we want a loss. Currently supported:
         - "classification"
         - "segmentation"
+
         preference: optional str enum, indicate the preference for loss. Currently supported:
         - "multiclassnonexlusivcrossentropy"
         - "binarycrossentropy"

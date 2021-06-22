@@ -38,6 +38,21 @@ import numpy as np
 
 
 class Trainer0(BaseClass):
+    &#34;&#34;&#34;Class managing the training process
+
+    Args:
+        batch_size: int, the training batch size: number of sample passed together to the model
+        num_epochs: int, number of complete processing of the dataset by the model
+        tr_prct: float ∈ [0.,1.], percentage of the full dataset dedicated to training
+        dataset: DatasetFactory object to access data
+        model: pytorch model to train
+        optimizer: pyrtoch optimizer to use
+        loss: pytorch loss to use
+        metrics: pytorch metrics to use
+        saver: Saver0 object (see its documentation)
+        eval_step: number of training batches between two validation steps
+        debug: str enum (&#34;true&#34; or &#34;false&#34;) if &#34;true&#34;, save prediction and annotation during training process. ⚠️ can slow down the training process
+    &#34;&#34;&#34;
     def __init__(self ,batch_size,num_epochs,tr_prct,
                  dataset,
                  model,
@@ -46,6 +61,7 @@ class Trainer0(BaseClass):
                  metrics,
                  saver,
                  eval_step,debug=&#34;false&#34;):
+
         self.attr_debug = debug
         if debug == &#34;true&#34;:
             self.attr_tr_vals_true = []
@@ -63,9 +79,11 @@ class Trainer0(BaseClass):
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
         valid_length = length_full_dataset - self.tr_length
-        self.attr_prefetch_factor = 2
+        self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
+        # split the datasets into train and validation
         [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
                                                    generator=torch.Generator().manual_seed(42))
+        # create the dataloader classes to automatically generate the samples
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
                                 # shuffle the dataset at the beginning of each epoch
                                 num_workers=0,  # num workers loading data into ram
@@ -86,6 +104,7 @@ class Trainer0(BaseClass):
         self.attr_global_name = &#34;trainer&#34;
         self.saver(self).save()
     def progress_bar_creation(self):
+        &#34;&#34;&#34;method to create the columns of the progressbar&#34;&#34;&#34;
         self.progress = Progress(
             TextColumn(&#34;{task.fields[name]}&#34;, justify=&#34;right&#34;),
             BarColumn(bar_width=None),
@@ -100,6 +119,7 @@ class Trainer0(BaseClass):
             TimeRemainingColumn()
         )
     def add_to_batch_tr(self,input,output,reject):
+        &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
         if reject is True:
             return None
         self.tr_batches[0].append(input)
@@ -111,6 +131,7 @@ class Trainer0(BaseClass):
         else:
             return None
     def add_to_batch_valid(self,input,output,reject):
+        &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
         if reject is True:
             return None
         self.valid_batches[0].append(input)
@@ -122,6 +143,9 @@ class Trainer0(BaseClass):
         else:
             return None
     def __call__(self):
+        return self.call()
+    def call(self):
+        &#34;&#34;&#34;Train the model&#34;&#34;&#34;
         with self.progress:
             epoch_progress = self.progress.add_task(&#34;epochs&#34;, name=&#34;[red]Epochs&#34;, loss=0., total=self.attr_num_epochs,
                                                status=0)
@@ -205,12 +229,52 @@ class Trainer0(BaseClass):
 <span>(</span><span>batch_size, num_epochs, tr_prct, dataset, model, optimizer, loss, metrics, saver, eval_step, debug='false')</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Class managing the training process</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>batch_size</code></strong></dt>
+<dd>int, the training batch size: number of sample passed together to the model</dd>
+<dt><strong><code>num_epochs</code></strong></dt>
+<dd>int, number of complete processing of the dataset by the model</dd>
+<dt><strong><code>tr_prct</code></strong></dt>
+<dd>float ∈ [0.,1.], percentage of the full dataset dedicated to training</dd>
+<dt><strong><code>dataset</code></strong></dt>
+<dd>DatasetFactory object to access data</dd>
+<dt><strong><code>model</code></strong></dt>
+<dd>pytorch model to train</dd>
+<dt><strong><code>optimizer</code></strong></dt>
+<dd>pyrtoch optimizer to use</dd>
+<dt><strong><code>loss</code></strong></dt>
+<dd>pytorch loss to use</dd>
+<dt><strong><code>metrics</code></strong></dt>
+<dd>pytorch metrics to use</dd>
+<dt><strong><code>saver</code></strong></dt>
+<dd>Saver0 object (see its documentation)</dd>
+<dt><strong><code>eval_step</code></strong></dt>
+<dd>number of training batches between two validation steps</dd>
+<dt><strong><code>debug</code></strong></dt>
+<dd>str enum ("true" or "false") if "true", save prediction and annotation during training process. ⚠️ can slow down the training process</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Trainer0(BaseClass):
+    &#34;&#34;&#34;Class managing the training process
+
+    Args:
+        batch_size: int, the training batch size: number of sample passed together to the model
+        num_epochs: int, number of complete processing of the dataset by the model
+        tr_prct: float ∈ [0.,1.], percentage of the full dataset dedicated to training
+        dataset: DatasetFactory object to access data
+        model: pytorch model to train
+        optimizer: pyrtoch optimizer to use
+        loss: pytorch loss to use
+        metrics: pytorch metrics to use
+        saver: Saver0 object (see its documentation)
+        eval_step: number of training batches between two validation steps
+        debug: str enum (&#34;true&#34; or &#34;false&#34;) if &#34;true&#34;, save prediction and annotation during training process. ⚠️ can slow down the training process
+    &#34;&#34;&#34;
     def __init__(self ,batch_size,num_epochs,tr_prct,
                  dataset,
                  model,
@@ -219,6 +283,7 @@ class Trainer0(BaseClass):
                  metrics,
                  saver,
                  eval_step,debug=&#34;false&#34;):
+
         self.attr_debug = debug
         if debug == &#34;true&#34;:
             self.attr_tr_vals_true = []
@@ -236,9 +301,11 @@ class Trainer0(BaseClass):
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
         valid_length = length_full_dataset - self.tr_length
-        self.attr_prefetch_factor = 2
+        self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
+        # split the datasets into train and validation
         [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
                                                    generator=torch.Generator().manual_seed(42))
+        # create the dataloader classes to automatically generate the samples
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
                                 # shuffle the dataset at the beginning of each epoch
                                 num_workers=0,  # num workers loading data into ram
@@ -259,6 +326,7 @@ class Trainer0(BaseClass):
         self.attr_global_name = &#34;trainer&#34;
         self.saver(self).save()
     def progress_bar_creation(self):
+        &#34;&#34;&#34;method to create the columns of the progressbar&#34;&#34;&#34;
         self.progress = Progress(
             TextColumn(&#34;{task.fields[name]}&#34;, justify=&#34;right&#34;),
             BarColumn(bar_width=None),
@@ -273,6 +341,7 @@ class Trainer0(BaseClass):
             TimeRemainingColumn()
         )
     def add_to_batch_tr(self,input,output,reject):
+        &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
         if reject is True:
             return None
         self.tr_batches[0].append(input)
@@ -284,6 +353,7 @@ class Trainer0(BaseClass):
         else:
             return None
     def add_to_batch_valid(self,input,output,reject):
+        &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
         if reject is True:
             return None
         self.valid_batches[0].append(input)
@@ -295,6 +365,9 @@ class Trainer0(BaseClass):
         else:
             return None
     def __call__(self):
+        return self.call()
+    def call(self):
+        &#34;&#34;&#34;Train the model&#34;&#34;&#34;
         with self.progress:
             epoch_progress = self.progress.add_task(&#34;epochs&#34;, name=&#34;[red]Epochs&#34;, loss=0., total=self.attr_num_epochs,
                                                status=0)
@@ -373,12 +446,13 @@ class Trainer0(BaseClass):
 <span>def <span class="ident">add_to_batch_tr</span></span>(<span>self, input, output, reject)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Add a sample to the current batch if it is not rejected and return the batch if it is full</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add_to_batch_tr(self,input,output,reject):
+    &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
     if reject is True:
         return None
     self.tr_batches[0].append(input)
@@ -395,12 +469,13 @@ class Trainer0(BaseClass):
 <span>def <span class="ident">add_to_batch_valid</span></span>(<span>self, input, output, reject)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Add a sample to the current batch if it is not rejected and return the batch if it is full</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add_to_batch_valid(self,input,output,reject):
+    &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
     if reject is True:
         return None
     self.valid_batches[0].append(input)
@@ -413,16 +488,97 @@ class Trainer0(BaseClass):
         return None</code></pre>
 </details>
 </dd>
+<dt id="main.src.training.Trainer0.Trainer0.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Train the model</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self):
+    &#34;&#34;&#34;Train the model&#34;&#34;&#34;
+    with self.progress:
+        epoch_progress = self.progress.add_task(&#34;epochs&#34;, name=&#34;[red]Epochs&#34;, loss=0., total=self.attr_num_epochs,
+                                           status=0)
+        iterations_progress = self.progress.add_task(&#34;iterations&#34;, name=&#34;[bold blue]Total iterations&#34;, loss=0., status=0,
+                                                total=self.attr_num_epochs * self.tr_length)
+        dataset_valid_iter = iter(self.dataset_valid)
+        device = torch.device(&#34;cuda&#34;)
+        self.model.to(device)
+        current_loss = -1
+        for epoch in range(self.attr_num_epochs):
+            # print(&#34;epoch&#34;)
+
+            for i, [input, output,reject] in enumerate(self.dataset_tr):
+
+                opt_tr_batch = self.add_to_batch_tr(input,output,reject)
+                if opt_tr_batch is not None:
+                    input,output = opt_tr_batch
+                    input = torch.Tensor(input)
+                    output = torch.Tensor(output)
+                    # zero the parameter gradients
+                    self.optimizer.zero_grad()
+
+                    # forward + backward + optimize
+                    prediction = self.model(input.to(device))
+                    loss = self.loss(prediction.float().to(device), output.float().to(device))
+                    loss.backward()
+                    self.optimizer.step()
+                    current_loss = loss.item()
+
+                    self.attr_tr_loss.append(float(current_loss))
+                    self.attr_last_iter = i
+                    self.attr_last_epoch = epoch
+                    prediction = prediction.cpu()
+                    output = output.cpu()
+                    if self.attr_debug == &#34;true&#34;:
+                        self.attr_tr_vals_true.append(output)
+                        self.attr_tr_vals_pred.append(prediction)
+                    self.metrics(prediction, output, &#34;tr&#34;)
+                    self.saver(self.metrics)
+
+                try:
+                    input, output,reject = next(dataset_valid_iter)
+                except StopIteration:
+                    # StopIteration is thrown if dataset ends
+                    # reinitialize data loader
+                    dataset_valid_iter = iter(self.dataset_valid)
+                    input, output,reject = next(dataset_valid_iter)
+                opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+                if opt_valid_batch is not None:
+                    input,output = opt_valid_batch
+                    input = torch.Tensor(input)
+                    output = torch.Tensor(output)
+                    prediction = self.model(input.to(device))
+                    loss = self.loss(prediction.float().to(device), output.float().to(device))
+                    current_loss = loss.item()
+                    self.attr_valid_loss.append(float(current_loss))
+                    self.saver(self.dataset)
+                    self.metrics(prediction.cpu(), output.cpu(), &#34;valid&#34;)
+                    self.saver(self.metrics)
+                    self.saver(self).save()
+
+                    if loss &lt; np.mean(self.attr_valid_loss) and i % 100 == 0:
+                        torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+
+                self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
+            self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
+        torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)</code></pre>
+</details>
+</dd>
 <dt id="main.src.training.Trainer0.Trainer0.progress_bar_creation"><code class="name flex">
 <span>def <span class="ident">progress_bar_creation</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>method to create the columns of the progressbar</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def progress_bar_creation(self):
+    &#34;&#34;&#34;method to create the columns of the progressbar&#34;&#34;&#34;
     self.progress = Progress(
         TextColumn(&#34;{task.fields[name]}&#34;, justify=&#34;right&#34;),
         BarColumn(bar_width=None),
@@ -461,6 +617,7 @@ class Trainer0(BaseClass):
 <ul class="">
 <li><code><a title="main.src.training.Trainer0.Trainer0.add_to_batch_tr" href="#main.src.training.Trainer0.Trainer0.add_to_batch_tr">add_to_batch_tr</a></code></li>
 <li><code><a title="main.src.training.Trainer0.Trainer0.add_to_batch_valid" href="#main.src.training.Trainer0.Trainer0.add_to_batch_valid">add_to_batch_valid</a></code></li>
+<li><code><a title="main.src.training.Trainer0.Trainer0.call" href="#main.src.training.Trainer0.Trainer0.call">call</a></code></li>
 <li><code><a title="main.src.training.Trainer0.Trainer0.progress_bar_creation" href="#main.src.training.Trainer0.Trainer0.progress_bar_creation">progress_bar_creation</a></code></li>
 </ul>
 </li>

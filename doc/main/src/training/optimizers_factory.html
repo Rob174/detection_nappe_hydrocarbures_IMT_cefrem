@@ -32,6 +32,16 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class OptimizersFactory(BaseClass):
+    &#34;&#34;&#34;Class managing the optimizers
+
+    Args:
+        model: model to optimize
+        name: str enum, optimizer to use. Currently supported:
+        - &#34;adam&#34;
+        - &#34;sgd&#34;
+
+        params: other parameters for the optimizer
+    &#34;&#34;&#34;
     def __init__(self,model,name=&#34;adam&#34;,**params):
         self.attr_name = name
         if name == &#34;adam&#34;:
@@ -43,8 +53,10 @@ class OptimizersFactory(BaseClass):
         else:
             raise NotImplementedError(f&#34;{name} has not been implemented&#34;)
         self.attr_global_name = &#34;optimizer&#34;
+    def call(self):
+        return self.optimizer
     def __call__(self):
-        return self.optimizer</code></pre>
+        return self.call()</code></pre>
 </details>
 </section>
 <section>
@@ -61,12 +73,37 @@ class OptimizersFactory(BaseClass):
 <span>(</span><span>model, name='adam', **params)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Class managing the optimizers</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>model</code></strong></dt>
+<dd>model to optimize</dd>
+<dt><strong><code>name</code></strong></dt>
+<dd>str enum, optimizer to use. Currently supported:</dd>
+</dl>
+<ul>
+<li>"adam"</li>
+<li>"sgd"</li>
+</ul>
+<dl>
+<dt><strong><code>params</code></strong></dt>
+<dd>other parameters for the optimizer</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class OptimizersFactory(BaseClass):
+    &#34;&#34;&#34;Class managing the optimizers
+
+    Args:
+        model: model to optimize
+        name: str enum, optimizer to use. Currently supported:
+        - &#34;adam&#34;
+        - &#34;sgd&#34;
+
+        params: other parameters for the optimizer
+    &#34;&#34;&#34;
     def __init__(self,model,name=&#34;adam&#34;,**params):
         self.attr_name = name
         if name == &#34;adam&#34;:
@@ -78,13 +115,31 @@ class OptimizersFactory(BaseClass):
         else:
             raise NotImplementedError(f&#34;{name} has not been implemented&#34;)
         self.attr_global_name = &#34;optimizer&#34;
+    def call(self):
+        return self.optimizer
     def __call__(self):
-        return self.optimizer</code></pre>
+        return self.call()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="main.src.param_savers.BaseClass.BaseClass" href="../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="main.src.training.optimizers_factory.OptimizersFactory.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self):
+    return self.optimizer</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -104,6 +159,9 @@ class OptimizersFactory(BaseClass):
 <ul>
 <li>
 <h4><code><a title="main.src.training.optimizers_factory.OptimizersFactory" href="#main.src.training.optimizers_factory.OptimizersFactory">OptimizersFactory</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.training.optimizers_factory.OptimizersFactory.call" href="#main.src.training.optimizers_factory.OptimizersFactory.call">call</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

@@ -71,7 +71,8 @@ class ClassificationPatch2(ClassificationPatch):
         Args:
             annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
 
-        Returns: the classification label
+        Returns:
+            annotation_modified,reject: the classification label and a boolean to indicate if the patch is rejected or not
 
         &#34;&#34;&#34;
         annotation,reject = super(ClassificationPatch2, self).make_classification_label(annotations_patch)
@@ -98,7 +99,8 @@ class ClassificationPatch2(ClassificationPatch):
 <span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use='spill,seep', balance='nobalance', margin=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not</p>
+<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
+<p>Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>patch_creator</code></strong></dt>
@@ -157,7 +159,8 @@ class ClassificationPatch2(ClassificationPatch):
         Args:
             annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
 
-        Returns: the classification label
+        Returns:
+            annotation_modified,reject: the classification label and a boolean to indicate if the patch is rejected or not
 
         &#34;&#34;&#34;
         annotation,reject = super(ClassificationPatch2, self).make_classification_label(annotations_patch)
@@ -189,7 +192,11 @@ class ClassificationPatch2(ClassificationPatch):
 <dt><strong><code>annotations_patch</code></strong></dt>
 <dd>np.ndarray 2d containing for each pixel the class of this pixel</dd>
 </dl>
-<p>Returns: the classification label</p></div>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>annotation_modified,reject</code></dt>
+<dd>the classification label and a boolean to indicate if the patch is rejected or not</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -204,7 +211,8 @@ class ClassificationPatch2(ClassificationPatch):
     Args:
         annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
 
-    Returns: the classification label
+    Returns:
+        annotation_modified,reject: the classification label and a boolean to indicate if the patch is rejected or not
 
     &#34;&#34;&#34;
     annotation,reject = super(ClassificationPatch2, self).make_classification_label(annotations_patch)

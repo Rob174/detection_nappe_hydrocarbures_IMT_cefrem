@@ -32,6 +32,19 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class LossFactory(BaseClass):
+    &#34;&#34;&#34;Class managing possible losses
+
+    Args:
+        usage_type: str enum, indicate for which purpose we want a loss. Currently supported:
+        - &#34;classification&#34;
+        - &#34;segmentation&#34;
+
+        preference: optional str enum, indicate the preference for loss. Currently supported:
+        - &#34;multiclassnonexlusivcrossentropy&#34;
+        - &#34;binarycrossentropy&#34;
+        - &#34;mse&#34;
+
+    &#34;&#34;&#34;
     def __init__(self, usage_type, preference=None):
         if preference is not None:
             preference = preference.lower()
@@ -54,8 +67,10 @@ class LossFactory(BaseClass):
         else:
             raise NotImplementedError(f&#34;{usage_type} has not been implemented&#34;)
         self.attr_global_name = &#34;loss&#34;
+    def call(self):
+        return self.loss
     def __call__(self):
-        return self.loss</code></pre>
+        return self.call()</code></pre>
 </details>
 </section>
 <section>
@@ -72,12 +87,43 @@ class LossFactory(BaseClass):
 <span>(</span><span>usage_type, preference=None)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Class managing possible losses</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>usage_type</code></strong></dt>
+<dd>str enum, indicate for which purpose we want a loss. Currently supported:</dd>
+</dl>
+<ul>
+<li>"classification"</li>
+<li>"segmentation"</li>
+</ul>
+<dl>
+<dt><strong><code>preference</code></strong></dt>
+<dd>optional str enum, indicate the preference for loss. Currently supported:</dd>
+</dl>
+<ul>
+<li>"multiclassnonexlusivcrossentropy"</li>
+<li>"binarycrossentropy"</li>
+<li>"mse"</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class LossFactory(BaseClass):
+    &#34;&#34;&#34;Class managing possible losses
+
+    Args:
+        usage_type: str enum, indicate for which purpose we want a loss. Currently supported:
+        - &#34;classification&#34;
+        - &#34;segmentation&#34;
+
+        preference: optional str enum, indicate the preference for loss. Currently supported:
+        - &#34;multiclassnonexlusivcrossentropy&#34;
+        - &#34;binarycrossentropy&#34;
+        - &#34;mse&#34;
+
+    &#34;&#34;&#34;
     def __init__(self, usage_type, preference=None):
         if preference is not None:
             preference = preference.lower()
@@ -100,13 +146,31 @@ class LossFactory(BaseClass):
         else:
             raise NotImplementedError(f&#34;{usage_type} has not been implemented&#34;)
         self.attr_global_name = &#34;loss&#34;
+    def call(self):
+        return self.loss
     def __call__(self):
-        return self.loss</code></pre>
+        return self.call()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="main.src.param_savers.BaseClass.BaseClass" href="../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="main.src.training.loss_factory.LossFactory.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self):
+    return self.loss</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -126,6 +190,9 @@ class LossFactory(BaseClass):
 <ul>
 <li>
 <h4><code><a title="main.src.training.loss_factory.LossFactory" href="#main.src.training.loss_factory.LossFactory">LossFactory</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.training.loss_factory.LossFactory.call" href="#main.src.training.loss_factory.LossFactory.call">call</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

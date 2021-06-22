@@ -34,17 +34,71 @@ class Way(Enum):
     ORIGINAL_WAY = &#34;original_way&#34;
     OTHER_WAY = &#34;other_way&#34;
 class TwoWayDict(BaseClass):
-    def __init__(self,attr_dico_one_way,additionnal_infos_attached=None):
+    &#34;&#34;&#34;
+    An object allowing to map two values together and access to them directly as in a dict. It can contains additionnal informations linked to pairs
+
+    ⚠️ Not tested for partial informations: if we provide one additionnal information for one pair, we need to do it for all pairs
+
+    Args:
+        attr_dico_one_way: dict, dictionary containing the mapping with additionnal informations in the value field
+
+
+    Example 1: creating a TwoWayDict and getting values
+
+            &gt;&gt;&gt; dico = TwoWayDict({&#34;a&#34;:1,&#34;b&#34;:2,&#34;c&#34;:3})
+            &gt;&gt;&gt; dico[&#34;a&#34;] # as for a normal dict we can get values as follows
+            1
+            &gt;&gt;&gt; dico[1] # but we can also access the mapped property
+            &#34;a&#34;
+
+    Example 2: you can also use the traditionnal .keys() .values() and .items() and specify which keys to use:
+
+            &gt;&gt;&gt; dico.keys(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
+            [&#34;a&#34;,&#34;b&#34;,&#34;c&#34;]
+            &gt;&gt;&gt; dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
+            [1,2,3]
+            &gt;&gt;&gt; dico.items(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
+            [(&#34;a&#34;,1),(&#34;b&#34;,2),(&#34;c&#34;,3)]
+            &gt;&gt;&gt; dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
+            [(1,&#34;a&#34;),(2,&#34;b&#34;),(3,&#34;c&#34;)]
+
+    Example 3: this object also allows to store additionnal informations with original data
+
+            &gt;&gt;&gt; dico = TwoWayDict({&#34;a&#34;:(1,&#34;info1&#34;),&#34;b&#34;:(2,&#34;info2&#34;),&#34;c&#34;:(3,&#34;info3&#34;)})
+            &gt;&gt;&gt; dico[1]
+            &#34;a&#34;,&#34;info1&#34;
+            &gt;&gt;&gt; dico[&#34;a&#34;]
+            1,&#34;info1&#34;
+
+    Example 4: we can also insert values by providing to which group belongs the key:
+
+            &gt;&gt;&gt; dico[4,Way.OTHER_WAY] = &#34;d&#34;,&#34;info4&#34;
+
+    &#34;&#34;&#34;
+    def __init__(self,attr_dico_one_way):
         self.attr_global_name = &#34;two_way_dict&#34;
-        if additionnal_infos_attached is None:
+        first_key = attr_dico_one_way[list(attr_dico_one_way.keys())[0]]
+        if isinstance(tuple,first_key):
+            self.attr_dico_one_way = {}
+            self.dico_other_way = {}
+            for k,v in attr_dico_one_way.items():
+                self.attr_dico_one_way[k] = v
+                self.dico_other_way[v[0]] = k,*v[1:]
+        else:
             self.attr_dico_one_way = attr_dico_one_way
             self.dico_other_way = {v:k for k,v in attr_dico_one_way.items()}
-        else:
-            self.attr_dico_one_way = {k:(v,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
-            self.dico_other_way = {v:(k,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
+
     def __getitem__(self, item):
         return self.getitem(item)
     def getitem(self, item):
+        &#34;&#34;&#34;Get an item in the TwoWayDict trying first in the first provided way and then in the reverse way
+
+        Args:
+            item: key for which to get the corresponding value
+
+        Returns: the corresponding value to this key with if provided additionnal informations (cf class doc examples)
+
+        &#34;&#34;&#34;
         try:
             return self.attr_dico_one_way[item]
         except:
@@ -53,27 +107,63 @@ class TwoWayDict(BaseClass):
     def __setitem__(self, key, value):
         return self.setitem(key,value)
     def setitem(self, key, value):
+        &#34;&#34;&#34;Add a new value or change the value of key provided.
+
+        Args:
+            key: ⚠️ tuple, providing both the key for which you want to set the value and the information to which way the key belongs (as enum Way)
+            value: the value corresponding to this key with additionnal informations. If so provide a tuple value
+
+        Returns:
+
+        &#34;&#34;&#34;
         value_key = value
-        if isinstance(value,tuple):
-            value_key,additionnal_info = value
         real_key,dico_chosen = key
+        value1 = real_key
+        if isinstance(value,tuple):
+            value_key = value[0]
+            additionnal_info = value[1:]
+            value1 = real_key,*additionnal_info
         if dico_chosen == Way.ORIGINAL_WAY:
             self.attr_dico_one_way[real_key] = value
-            self.dico_other_way[value_key] = real_key
+            self.dico_other_way[value_key] = value1
         else:
-            self.attr_dico_one_way[value_key] = real_key
+            self.attr_dico_one_way[value_key] = value1
             self.dico_other_way[real_key] = value
     def keys(self,dico_chosen=Way.ORIGINAL_WAY):
+        &#34;&#34;&#34;The keys of the object in the way asked
+
+        Args:
+            dico_chosen: enum Way
+
+        Returns: the list of keys of the dict in the original way or in the other way
+
+        &#34;&#34;&#34;
         if dico_chosen == Way.ORIGINAL_WAY:
             return list(self.attr_dico_one_way.keys())
         else:
             return list(self.dico_other_way.keys())
     def values(self,dico_chosen=Way.ORIGINAL_WAY):
+        &#34;&#34;&#34;The values of the object in the way asked
+
+        Args:
+            dico_chosen:  enum Way
+
+        Returns: the list of values of the dict in the original way or in the other way
+
+        &#34;&#34;&#34;
         if dico_chosen == Way.ORIGINAL_WAY:
             return list(self.attr_dico_one_way.values())
         else:
             return list(self.dico_other_way.values())
     def items(self,dico_chosen=Way.ORIGINAL_WAY):
+        &#34;&#34;&#34;The items of the object in the way asked
+
+        Args:
+            dico_chosen: enum Way
+
+        Returns: the list of tuples (key,val) of the dict in the original way or in the other way
+
+        &#34;&#34;&#34;
         if dico_chosen == Way.ORIGINAL_WAY:
             return list(self.attr_dico_one_way.items())
         else:
@@ -93,26 +183,113 @@ class TwoWayDict(BaseClass):
 <dl>
 <dt id="main.src.data.TwoWayDict.TwoWayDict"><code class="flex name class">
 <span>class <span class="ident">TwoWayDict</span></span>
-<span>(</span><span>attr_dico_one_way, additionnal_infos_attached=None)</span>
+<span>(</span><span>attr_dico_one_way)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>An object allowing to map two values together and access to them directly as in a dict. It can contains additionnal informations linked to pairs</p>
+<p>⚠️ Not tested for partial informations: if we provide one additionnal information for one pair, we need to do it for all pairs</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>attr_dico_one_way</code></strong></dt>
+<dd>dict, dictionary containing the mapping with additionnal informations in the value field</dd>
+</dl>
+<p>Example 1: creating a TwoWayDict and getting values</p>
+<pre><code>    &gt;&gt;&gt; dico = TwoWayDict({"a":1,"b":2,"c":3})
+    &gt;&gt;&gt; dico["a"] # as for a normal dict we can get values as follows
+    1
+    &gt;&gt;&gt; dico[1] # but we can also access the mapped property
+    "a"
+</code></pre>
+<p>Example 2: you can also use the traditionnal .keys() .values() and .items() and specify which keys to use:</p>
+<pre><code>    &gt;&gt;&gt; dico.keys(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
+    ["a","b","c"]
+    &gt;&gt;&gt; dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
+    [1,2,3]
+    &gt;&gt;&gt; dico.items(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
+    [("a",1),("b",2),("c",3)]
+    &gt;&gt;&gt; dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
+    [(1,"a"),(2,"b"),(3,"c")]
+</code></pre>
+<p>Example 3: this object also allows to store additionnal informations with original data</p>
+<pre><code>    &gt;&gt;&gt; dico = TwoWayDict({"a":(1,"info1"),"b":(2,"info2"),"c":(3,"info3")})
+    &gt;&gt;&gt; dico[1]
+    "a","info1"
+    &gt;&gt;&gt; dico["a"]
+    1,"info1"
+</code></pre>
+<p>Example 4: we can also insert values by providing to which group belongs the key:</p>
+<pre><code>    &gt;&gt;&gt; dico[4,Way.OTHER_WAY] = "d","info4"
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TwoWayDict(BaseClass):
-    def __init__(self,attr_dico_one_way,additionnal_infos_attached=None):
+    &#34;&#34;&#34;
+    An object allowing to map two values together and access to them directly as in a dict. It can contains additionnal informations linked to pairs
+
+    ⚠️ Not tested for partial informations: if we provide one additionnal information for one pair, we need to do it for all pairs
+
+    Args:
+        attr_dico_one_way: dict, dictionary containing the mapping with additionnal informations in the value field
+
+
+    Example 1: creating a TwoWayDict and getting values
+
+            &gt;&gt;&gt; dico = TwoWayDict({&#34;a&#34;:1,&#34;b&#34;:2,&#34;c&#34;:3})
+            &gt;&gt;&gt; dico[&#34;a&#34;] # as for a normal dict we can get values as follows
+            1
+            &gt;&gt;&gt; dico[1] # but we can also access the mapped property
+            &#34;a&#34;
+
+    Example 2: you can also use the traditionnal .keys() .values() and .items() and specify which keys to use:
+
+            &gt;&gt;&gt; dico.keys(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
+            [&#34;a&#34;,&#34;b&#34;,&#34;c&#34;]
+            &gt;&gt;&gt; dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
+            [1,2,3]
+            &gt;&gt;&gt; dico.items(Way.ORIGINAL_WAY) # as for a normal dict we can get values as follows
+            [(&#34;a&#34;,1),(&#34;b&#34;,2),(&#34;c&#34;,3)]
+            &gt;&gt;&gt; dico.keys(Way.OTHER_WAY) # as for a normal dict we can get values as follows
+            [(1,&#34;a&#34;),(2,&#34;b&#34;),(3,&#34;c&#34;)]
+
+    Example 3: this object also allows to store additionnal informations with original data
+
+            &gt;&gt;&gt; dico = TwoWayDict({&#34;a&#34;:(1,&#34;info1&#34;),&#34;b&#34;:(2,&#34;info2&#34;),&#34;c&#34;:(3,&#34;info3&#34;)})
+            &gt;&gt;&gt; dico[1]
+            &#34;a&#34;,&#34;info1&#34;
+            &gt;&gt;&gt; dico[&#34;a&#34;]
+            1,&#34;info1&#34;
+
+    Example 4: we can also insert values by providing to which group belongs the key:
+
+            &gt;&gt;&gt; dico[4,Way.OTHER_WAY] = &#34;d&#34;,&#34;info4&#34;
+
+    &#34;&#34;&#34;
+    def __init__(self,attr_dico_one_way):
         self.attr_global_name = &#34;two_way_dict&#34;
-        if additionnal_infos_attached is None:
+        first_key = attr_dico_one_way[list(attr_dico_one_way.keys())[0]]
+        if isinstance(tuple,first_key):
+            self.attr_dico_one_way = {}
+            self.dico_other_way = {}
+            for k,v in attr_dico_one_way.items():
+                self.attr_dico_one_way[k] = v
+                self.dico_other_way[v[0]] = k,*v[1:]
+        else:
             self.attr_dico_one_way = attr_dico_one_way
             self.dico_other_way = {v:k for k,v in attr_dico_one_way.items()}
-        else:
-            self.attr_dico_one_way = {k:(v,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
-            self.dico_other_way = {v:(k,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
+
     def __getitem__(self, item):
         return self.getitem(item)
     def getitem(self, item):
+        &#34;&#34;&#34;Get an item in the TwoWayDict trying first in the first provided way and then in the reverse way
+
+        Args:
+            item: key for which to get the corresponding value
+
+        Returns: the corresponding value to this key with if provided additionnal informations (cf class doc examples)
+
+        &#34;&#34;&#34;
         try:
             return self.attr_dico_one_way[item]
         except:
@@ -121,27 +298,63 @@ class TwoWayDict(BaseClass):
     def __setitem__(self, key, value):
         return self.setitem(key,value)
     def setitem(self, key, value):
+        &#34;&#34;&#34;Add a new value or change the value of key provided.
+
+        Args:
+            key: ⚠️ tuple, providing both the key for which you want to set the value and the information to which way the key belongs (as enum Way)
+            value: the value corresponding to this key with additionnal informations. If so provide a tuple value
+
+        Returns:
+
+        &#34;&#34;&#34;
         value_key = value
-        if isinstance(value,tuple):
-            value_key,additionnal_info = value
         real_key,dico_chosen = key
+        value1 = real_key
+        if isinstance(value,tuple):
+            value_key = value[0]
+            additionnal_info = value[1:]
+            value1 = real_key,*additionnal_info
         if dico_chosen == Way.ORIGINAL_WAY:
             self.attr_dico_one_way[real_key] = value
-            self.dico_other_way[value_key] = real_key
+            self.dico_other_way[value_key] = value1
         else:
-            self.attr_dico_one_way[value_key] = real_key
+            self.attr_dico_one_way[value_key] = value1
             self.dico_other_way[real_key] = value
     def keys(self,dico_chosen=Way.ORIGINAL_WAY):
+        &#34;&#34;&#34;The keys of the object in the way asked
+
+        Args:
+            dico_chosen: enum Way
+
+        Returns: the list of keys of the dict in the original way or in the other way
+
+        &#34;&#34;&#34;
         if dico_chosen == Way.ORIGINAL_WAY:
             return list(self.attr_dico_one_way.keys())
         else:
             return list(self.dico_other_way.keys())
     def values(self,dico_chosen=Way.ORIGINAL_WAY):
+        &#34;&#34;&#34;The values of the object in the way asked
+
+        Args:
+            dico_chosen:  enum Way
+
+        Returns: the list of values of the dict in the original way or in the other way
+
+        &#34;&#34;&#34;
         if dico_chosen == Way.ORIGINAL_WAY:
             return list(self.attr_dico_one_way.values())
         else:
             return list(self.dico_other_way.values())
     def items(self,dico_chosen=Way.ORIGINAL_WAY):
+        &#34;&#34;&#34;The items of the object in the way asked
+
+        Args:
+            dico_chosen: enum Way
+
+        Returns: the list of tuples (key,val) of the dict in the original way or in the other way
+
+        &#34;&#34;&#34;
         if dico_chosen == Way.ORIGINAL_WAY:
             return list(self.attr_dico_one_way.items())
         else:
@@ -159,12 +372,26 @@ class TwoWayDict(BaseClass):
 <span>def <span class="ident">getitem</span></span>(<span>self, item)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get an item in the TwoWayDict trying first in the first provided way and then in the reverse way</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>item</code></strong></dt>
+<dd>key for which to get the corresponding value</dd>
+</dl>
+<p>Returns: the corresponding value to this key with if provided additionnal informations (cf class doc examples)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def getitem(self, item):
+    &#34;&#34;&#34;Get an item in the TwoWayDict trying first in the first provided way and then in the reverse way
+
+    Args:
+        item: key for which to get the corresponding value
+
+    Returns: the corresponding value to this key with if provided additionnal informations (cf class doc examples)
+
+    &#34;&#34;&#34;
     try:
         return self.attr_dico_one_way[item]
     except:
@@ -175,12 +402,26 @@ class TwoWayDict(BaseClass):
 <span>def <span class="ident">items</span></span>(<span>self, dico_chosen=Way.ORIGINAL_WAY)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The items of the object in the way asked</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dico_chosen</code></strong></dt>
+<dd>enum Way</dd>
+</dl>
+<p>Returns: the list of tuples (key,val) of the dict in the original way or in the other way</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def items(self,dico_chosen=Way.ORIGINAL_WAY):
+    &#34;&#34;&#34;The items of the object in the way asked
+
+    Args:
+        dico_chosen: enum Way
+
+    Returns: the list of tuples (key,val) of the dict in the original way or in the other way
+
+    &#34;&#34;&#34;
     if dico_chosen == Way.ORIGINAL_WAY:
         return list(self.attr_dico_one_way.items())
     else:
@@ -191,12 +432,26 @@ class TwoWayDict(BaseClass):
 <span>def <span class="ident">keys</span></span>(<span>self, dico_chosen=Way.ORIGINAL_WAY)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The keys of the object in the way asked</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dico_chosen</code></strong></dt>
+<dd>enum Way</dd>
+</dl>
+<p>Returns: the list of keys of the dict in the original way or in the other way</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def keys(self,dico_chosen=Way.ORIGINAL_WAY):
+    &#34;&#34;&#34;The keys of the object in the way asked
+
+    Args:
+        dico_chosen: enum Way
+
+    Returns: the list of keys of the dict in the original way or in the other way
+
+    &#34;&#34;&#34;
     if dico_chosen == Way.ORIGINAL_WAY:
         return list(self.attr_dico_one_way.keys())
     else:
@@ -207,21 +462,41 @@ class TwoWayDict(BaseClass):
 <span>def <span class="ident">setitem</span></span>(<span>self, key, value)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Add a new value or change the value of key provided.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>key</code></strong></dt>
+<dd>⚠️ tuple, providing both the key for which you want to set the value and the information to which way the key belongs (as enum Way)</dd>
+<dt><strong><code>value</code></strong></dt>
+<dd>the value corresponding to this key with additionnal informations. If so provide a tuple value</dd>
+</dl>
+<p>Returns:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def setitem(self, key, value):
+    &#34;&#34;&#34;Add a new value or change the value of key provided.
+
+    Args:
+        key: ⚠️ tuple, providing both the key for which you want to set the value and the information to which way the key belongs (as enum Way)
+        value: the value corresponding to this key with additionnal informations. If so provide a tuple value
+
+    Returns:
+
+    &#34;&#34;&#34;
     value_key = value
-    if isinstance(value,tuple):
-        value_key,additionnal_info = value
     real_key,dico_chosen = key
+    value1 = real_key
+    if isinstance(value,tuple):
+        value_key = value[0]
+        additionnal_info = value[1:]
+        value1 = real_key,*additionnal_info
     if dico_chosen == Way.ORIGINAL_WAY:
         self.attr_dico_one_way[real_key] = value
-        self.dico_other_way[value_key] = real_key
+        self.dico_other_way[value_key] = value1
     else:
-        self.attr_dico_one_way[value_key] = real_key
+        self.attr_dico_one_way[value_key] = value1
         self.dico_other_way[real_key] = value</code></pre>
 </details>
 </dd>
@@ -229,12 +504,26 @@ class TwoWayDict(BaseClass):
 <span>def <span class="ident">values</span></span>(<span>self, dico_chosen=Way.ORIGINAL_WAY)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The values of the object in the way asked</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dico_chosen</code></strong></dt>
+<dd>enum Way</dd>
+</dl>
+<p>Returns: the list of values of the dict in the original way or in the other way</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def values(self,dico_chosen=Way.ORIGINAL_WAY):
+    &#34;&#34;&#34;The values of the object in the way asked
+
+    Args:
+        dico_chosen:  enum Way
+
+    Returns: the list of values of the dict in the original way or in the other way
+
+    &#34;&#34;&#34;
     if dico_chosen == Way.ORIGINAL_WAY:
         return list(self.attr_dico_one_way.values())
     else:

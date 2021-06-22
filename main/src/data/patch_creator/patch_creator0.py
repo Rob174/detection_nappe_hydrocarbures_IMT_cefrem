@@ -39,7 +39,8 @@ class Patch_creator0(BaseClass):
         Args:
             image: original image of the hdf5 file
 
-        Returns: number of patches possible without cutting any of them
+        Returns:
+            number of patches possible without cutting any of them
 
         """
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)

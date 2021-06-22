@@ -32,6 +32,19 @@ import numpy as np
 
 class MetricsFactory(BaseClass):
     def __init__(self,*metrics_names):
+        &#34;&#34;&#34;Class managing metrics
+
+        Args:
+            metrics_names: iterable of metrics as str. Currently supported metrics:
+
+        - &#34;accuracy_classification-[0-9]&#34;: mean of the the mean number of times where the difference between prediction and reference are less than the threashold provided after accuracy_classification-
+        - &#34;mae&#34;: mean average error
+
+        Example:
+            &gt;&gt;&gt; MetricsFactory(&#34;accuracy_classification-0.9&#34;,
+            ...                &#34;mae&#34;,&#34;accuracy_classification-0.95&#34;)
+            ...                # this is the way to provide the iterable of metrics
+        &#34;&#34;&#34;
         self.attr_list_metrics = {}
         self.functions_metrics = []
         for metric in metrics_names:
@@ -68,13 +81,41 @@ class MetricsFactory(BaseClass):
 <span>(</span><span>*metrics_names)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
+<p>Class managing metrics</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>metrics_names</code></strong></dt>
+<dd>iterable of metrics as str. Currently supported metrics:</dd>
+</dl>
+<ul>
+<li>"accuracy_classification-[0-9]": mean of the the mean number of times where the difference between prediction and reference are less than the threashold provided after accuracy_classification-</li>
+<li>"mae": mean average error</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; MetricsFactory(&quot;accuracy_classification-0.9&quot;,
+...                &quot;mae&quot;,&quot;accuracy_classification-0.95&quot;)
+...                # this is the way to provide the iterable of metrics
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MetricsFactory(BaseClass):
     def __init__(self,*metrics_names):
+        &#34;&#34;&#34;Class managing metrics
+
+        Args:
+            metrics_names: iterable of metrics as str. Currently supported metrics:
+
+        - &#34;accuracy_classification-[0-9]&#34;: mean of the the mean number of times where the difference between prediction and reference are less than the threashold provided after accuracy_classification-
+        - &#34;mae&#34;: mean average error
+
+        Example:
+            &gt;&gt;&gt; MetricsFactory(&#34;accuracy_classification-0.9&#34;,
+            ...                &#34;mae&#34;,&#34;accuracy_classification-0.95&#34;)
+            ...                # this is the way to provide the iterable of metrics
+        &#34;&#34;&#34;
         self.attr_list_metrics = {}
         self.functions_metrics = []
         for metric in metrics_names:

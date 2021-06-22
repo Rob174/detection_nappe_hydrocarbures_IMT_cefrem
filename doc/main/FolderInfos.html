@@ -34,17 +34,43 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class FolderInfos(BaseClass):
+    &#34;&#34;&#34;Static class containing interesting folder of the project with a separator adapted for the operating system (windows or linux)
+    We have to first initialize the class by calling the init method and then we can directly call the desired attribute
+
+
+
+    Example of usage:
+    &gt;&gt;&gt; FolderInfos.init(test_without_data=False)
+    &gt;&gt;&gt; FolderInfos.root_folder
+    C:\\....\\detection_nappe_hydrocarbures_IMT_cefrem\\
+    &#34;&#34;&#34;
     input_data_folder = None
+    &#34;&#34;&#34;str, data_in folder path&#34;&#34;&#34;
     data_folder = None
+    &#34;&#34;&#34;str,  data_out folder path&#34;&#34;&#34;
     base_folder = None
+    &#34;&#34;&#34;str, path to the newly created folder for the run&#34;&#34;&#34;
     base_filename = None
+    &#34;&#34;&#34;str, incomplete path to any new file in this new folder&#34;&#34;&#34;
     data_test = None
+    &#34;&#34;&#34;str, data_test folder path&#34;&#34;&#34;
     root_folder = None
+    &#34;&#34;&#34;str, path to the detection_nappe_hydrocarbures_IMT_cefrem folder&#34;&#34;&#34;
     id = None
+    &#34;&#34;&#34;str, uniq id generated with the datetime of the run&#34;&#34;&#34;
     separator = &#34;/&#34;
+    &#34;&#34;&#34;str, proper separator for the operating system (linux or windows)&#34;&#34;&#34;
 
     @staticmethod
     def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
+        &#34;&#34;&#34;Initialize some interesting pathes as static attributes.
+
+        Args:
+            custom_name: str, custom name to add in the folder of the current run
+            subdir: str, subdir for datafolder
+            test_without_data: bool, if False, the object automatically creates a folder for each run. If True this folder is not created.
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;&#34;&#34;&#34;
         if system() != &#34;Linux&#34;:
             FolderInfos.separator = &#34;\\&#34;
         while True:
@@ -85,23 +111,55 @@ class FolderInfos(BaseClass):
 <span>class <span class="ident">FolderInfos</span></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Static class containing interesting folder of the project with a separator adapted for the operating system (windows or linux)
+We have to first initialize the class by calling the init method and then we can directly call the desired attribute</p>
+<p>Example of usage:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; FolderInfos.init(test_without_data=False)
+&gt;&gt;&gt; FolderInfos.root_folder
+C:\....\detection_nappe_hydrocarbures_IMT_cefrem\
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FolderInfos(BaseClass):
+    &#34;&#34;&#34;Static class containing interesting folder of the project with a separator adapted for the operating system (windows or linux)
+    We have to first initialize the class by calling the init method and then we can directly call the desired attribute
+
+
+
+    Example of usage:
+    &gt;&gt;&gt; FolderInfos.init(test_without_data=False)
+    &gt;&gt;&gt; FolderInfos.root_folder
+    C:\\....\\detection_nappe_hydrocarbures_IMT_cefrem\\
+    &#34;&#34;&#34;
     input_data_folder = None
+    &#34;&#34;&#34;str, data_in folder path&#34;&#34;&#34;
     data_folder = None
+    &#34;&#34;&#34;str,  data_out folder path&#34;&#34;&#34;
     base_folder = None
+    &#34;&#34;&#34;str, path to the newly created folder for the run&#34;&#34;&#34;
     base_filename = None
+    &#34;&#34;&#34;str, incomplete path to any new file in this new folder&#34;&#34;&#34;
     data_test = None
+    &#34;&#34;&#34;str, data_test folder path&#34;&#34;&#34;
     root_folder = None
+    &#34;&#34;&#34;str, path to the detection_nappe_hydrocarbures_IMT_cefrem folder&#34;&#34;&#34;
     id = None
+    &#34;&#34;&#34;str, uniq id generated with the datetime of the run&#34;&#34;&#34;
     separator = &#34;/&#34;
+    &#34;&#34;&#34;str, proper separator for the operating system (linux or windows)&#34;&#34;&#34;
 
     @staticmethod
     def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
+        &#34;&#34;&#34;Initialize some interesting pathes as static attributes.
+
+        Args:
+            custom_name: str, custom name to add in the folder of the current run
+            subdir: str, subdir for datafolder
+            test_without_data: bool, if False, the object automatically creates a folder for each run. If True this folder is not created.
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;&#34;&#34;&#34;
         if system() != &#34;Linux&#34;:
             FolderInfos.separator = &#34;\\&#34;
         while True:
@@ -136,35 +194,36 @@ class FolderInfos(BaseClass):
 <dl>
 <dt id="main.FolderInfos.FolderInfos.base_filename"><code class="name">var <span class="ident">base_filename</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, incomplete path to any new file in this new folder</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.base_folder"><code class="name">var <span class="ident">base_folder</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, path to the newly created folder for the run</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.data_folder"><code class="name">var <span class="ident">data_folder</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str,
+data_out folder path</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.data_test"><code class="name">var <span class="ident">data_test</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, data_test folder path</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.id"><code class="name">var <span class="ident">id</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, uniq id generated with the datetime of the run</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.input_data_folder"><code class="name">var <span class="ident">input_data_folder</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, data_in folder path</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.root_folder"><code class="name">var <span class="ident">root_folder</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, path to the detection_nappe_hydrocarbures_IMT_cefrem folder</p></div>
 </dd>
 <dt id="main.FolderInfos.FolderInfos.separator"><code class="name">var <span class="ident">separator</span></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>str, proper separator for the operating system (linux or windows)</p></div>
 </dd>
 </dl>
 <h3>Static methods</h3>
@@ -173,13 +232,30 @@ class FolderInfos(BaseClass):
 <span>def <span class="ident">init</span></span>(<span>custom_name='', subdir='', test_without_data=False)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initialize some interesting pathes as static attributes.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>custom_name</code></strong></dt>
+<dd>str, custom name to add in the folder of the current run</dd>
+<dt><strong><code>subdir</code></strong></dt>
+<dd>str, subdir for datafolder</dd>
+<dt><strong><code>test_without_data</code></strong></dt>
+<dd>bool, if False, the object automatically creates a folder for each run. If True this folder is not created.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
+    &#34;&#34;&#34;Initialize some interesting pathes as static attributes.
+
+    Args:
+        custom_name: str, custom name to add in the folder of the current run
+        subdir: str, subdir for datafolder
+        test_without_data: bool, if False, the object automatically creates a folder for each run. If True this folder is not created.
+    &#34;&#34;&#34;
+    &#34;&#34;&#34;&#34;&#34;&#34;
     if system() != &#34;Linux&#34;:
         FolderInfos.separator = &#34;\\&#34;
     while True:

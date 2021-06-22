@@ -33,6 +33,14 @@ from main.src.param_savers.BaseClass import BaseClass
 class PretrainedModel(nn.Module,BaseClass):
     &#34;&#34;&#34;Pretrained version of resnet with an additional layer to output the correct number of classes
     Done thanks to https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3
+
+
+    Args:
+        original_model: the original pretrained model ⚠️ with weights loaded
+        original_num_classes: int, the number of classes given as output by the original pretrained model
+        num_classes: int, number of desired number of classes
+        out_activation: str, activation to add at the end of the network. Currently supported:
+        - sigmoid
     &#34;&#34;&#34;
     def __init__(self,original_model,original_num_classes=1000,num_classes=3,out_activation=&#34;sigmoid&#34;):
         super(PretrainedModel, self).__init__()
@@ -44,6 +52,15 @@ class PretrainedModel(nn.Module,BaseClass):
             p.requires_grad = False # Freeze all weights of the original model
 
     def forward(self, x):
+        &#34;&#34;&#34; Forward pass on the network with the desired output number of classes and activation function
+
+        Args:
+            x: input for the network
+
+        Returns:
+            prediction of the network
+
+        &#34;&#34;&#34;
         x1 = self.net(x)
         x2 = self.layer1(x1)
         y = self.activation(x2)
@@ -66,7 +83,21 @@ class PretrainedModel(nn.Module,BaseClass):
 <dd>
 <div class="desc"><p>Pretrained version of resnet with an additional layer to output the correct number of classes
 Done thanks to <a href="https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3">https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3</a></p>
-<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p></div>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>original_model</code></strong></dt>
+<dd>the original pretrained model ⚠️ with weights loaded</dd>
+<dt><strong><code>original_num_classes</code></strong></dt>
+<dd>int, the number of classes given as output by the original pretrained model</dd>
+<dt><strong><code>num_classes</code></strong></dt>
+<dd>int, number of desired number of classes</dd>
+<dt><strong><code>out_activation</code></strong></dt>
+<dd>str, activation to add at the end of the network. Currently supported:</dd>
+</dl>
+<ul>
+<li>sigmoid
+Initializes internal Module state, shared by both nn.Module and ScriptModule.</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -74,6 +105,14 @@ Done thanks to <a href="https://discuss.pytorch.org/t/changing-the-number-of-out
 <pre><code class="python">class PretrainedModel(nn.Module,BaseClass):
     &#34;&#34;&#34;Pretrained version of resnet with an additional layer to output the correct number of classes
     Done thanks to https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3
+
+
+    Args:
+        original_model: the original pretrained model ⚠️ with weights loaded
+        original_num_classes: int, the number of classes given as output by the original pretrained model
+        num_classes: int, number of desired number of classes
+        out_activation: str, activation to add at the end of the network. Currently supported:
+        - sigmoid
     &#34;&#34;&#34;
     def __init__(self,original_model,original_num_classes=1000,num_classes=3,out_activation=&#34;sigmoid&#34;):
         super(PretrainedModel, self).__init__()
@@ -85,6 +124,15 @@ Done thanks to <a href="https://discuss.pytorch.org/t/changing-the-number-of-out
             p.requires_grad = False # Freeze all weights of the original model
 
     def forward(self, x):
+        &#34;&#34;&#34; Forward pass on the network with the desired output number of classes and activation function
+
+        Args:
+            x: input for the network
+
+        Returns:
+            prediction of the network
+
+        &#34;&#34;&#34;
         x1 = self.net(x)
         x2 = self.layer1(x1)
         y = self.activation(x2)
@@ -112,20 +160,28 @@ Done thanks to <a href="https://discuss.pytorch.org/t/changing-the-number-of-out
 <span>def <span class="ident">forward</span></span>(<span>self, x) ‑> Callable[..., Any]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the :class:<code>Module</code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div></div>
+<div class="desc"><p>Forward pass on the network with the desired output number of classes and activation function</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x</code></strong></dt>
+<dd>input for the network</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>prediction of the network</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def forward(self, x):
+    &#34;&#34;&#34; Forward pass on the network with the desired output number of classes and activation function
+
+    Args:
+        x: input for the network
+
+    Returns:
+        prediction of the network
+
+    &#34;&#34;&#34;
     x1 = self.net(x)
     x2 = self.layer1(x1)
     y = self.activation(x2)

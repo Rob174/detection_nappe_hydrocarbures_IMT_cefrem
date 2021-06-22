@@ -91,6 +91,14 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
     def getitem(self,id: int):
+        &#34;&#34;&#34;Magic method to get the input, output, and whether this sample is rejected or not of this id
+
+        Args:
+            id: int, global id of the item
+
+        Returns:
+            the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
+        &#34;&#34;&#34;
         input, output, reject = self.attr_dataset.__getitem__(id)
         return input, output, reject
     def __getitem__(self, id: int):
@@ -98,26 +106,6 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
 
     def __len__(self):
         return self.attr_dataset.__len__()
-    def save_stats(self):
-        reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
-        reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
-        print(f&#34;Stat reolution saved at {FolderInfos.base_folder}stats_resoXY.json&#34;)
-        with open(FolderInfos.base_folder + &#34;stats_resoXY.json&#34;, &#34;w&#34;) as fp:
-            json.dump({&#34;resolutionX&#34;: reso_x_stats, &#34;resolutionY&#34;: reso_y_stats}, fp)
-
-
-    def process_resolution_stats(self,resolution_dict):
-        df = pd.DataFrame({
-            &#34;ResolutionX&#34;: list(resolution_dict[&#34;resolutionX&#34;].keys()),
-            &#34;ResolutionY&#34;: list(resolution_dict[&#34;resolutionY&#34;].keys()),
-            &#34;NumberX&#34;: list(resolution_dict[&#34;resolutionX&#34;].values()),
-            &#34;NumberY&#34;: list(resolution_dict[&#34;resolutionY&#34;].values())
-        })
-        fig = px.bar(df, x=&#39;ResolutionX&#39;, y=&#39;NumberX&#39;,title=f&#34;For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width&#34;)
-        fig.write_html(FolderInfos.base_filename + &#34;barplot_resolutionX.html&#34;)
-        plt.clf()
-        fig = px.bar(df, x=&#39;ResolutionY&#39;, y=&#39;NumberY&#39;,title=f&#34;For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width&#34;)
-        fig.write_html(FolderInfos.base_filename + &#34;barplot_resolutionY.html&#34;)
 
 
 if __name__ == &#34;__main__&#34;:
@@ -250,33 +238,21 @@ dataset to classify patches</p>
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
     def getitem(self,id: int):
+        &#34;&#34;&#34;Magic method to get the input, output, and whether this sample is rejected or not of this id
+
+        Args:
+            id: int, global id of the item
+
+        Returns:
+            the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
+        &#34;&#34;&#34;
         input, output, reject = self.attr_dataset.__getitem__(id)
         return input, output, reject
     def __getitem__(self, id: int):
         return self.getitem(id)
 
     def __len__(self):
-        return self.attr_dataset.__len__()
-    def save_stats(self):
-        reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
-        reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
-        print(f&#34;Stat reolution saved at {FolderInfos.base_folder}stats_resoXY.json&#34;)
-        with open(FolderInfos.base_folder + &#34;stats_resoXY.json&#34;, &#34;w&#34;) as fp:
-            json.dump({&#34;resolutionX&#34;: reso_x_stats, &#34;resolutionY&#34;: reso_y_stats}, fp)
-
-
-    def process_resolution_stats(self,resolution_dict):
-        df = pd.DataFrame({
-            &#34;ResolutionX&#34;: list(resolution_dict[&#34;resolutionX&#34;].keys()),
-            &#34;ResolutionY&#34;: list(resolution_dict[&#34;resolutionY&#34;].keys()),
-            &#34;NumberX&#34;: list(resolution_dict[&#34;resolutionX&#34;].values()),
-            &#34;NumberY&#34;: list(resolution_dict[&#34;resolutionY&#34;].values())
-        })
-        fig = px.bar(df, x=&#39;ResolutionX&#39;, y=&#39;NumberX&#39;,title=f&#34;For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width&#34;)
-        fig.write_html(FolderInfos.base_filename + &#34;barplot_resolutionX.html&#34;)
-        plt.clf()
-        fig = px.bar(df, x=&#39;ResolutionY&#39;, y=&#39;NumberY&#39;,title=f&#34;For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width&#34;)
-        fig.write_html(FolderInfos.base_filename + &#34;barplot_resolutionY.html&#34;)</code></pre>
+        return self.attr_dataset.__len__()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -291,54 +267,29 @@ dataset to classify patches</p>
 <span>def <span class="ident">getitem</span></span>(<span>self, id: int)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Magic method to get the input, output, and whether this sample is rejected or not of this id</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>id</code></strong></dt>
+<dd>int, global id of the item</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def getitem(self,id: int):
+    &#34;&#34;&#34;Magic method to get the input, output, and whether this sample is rejected or not of this id
+
+    Args:
+        id: int, global id of the item
+
+    Returns:
+        the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
+    &#34;&#34;&#34;
     input, output, reject = self.attr_dataset.__getitem__(id)
     return input, output, reject</code></pre>
-</details>
-</dd>
-<dt id="main.src.data.DatasetFactory.DatasetFactory.process_resolution_stats"><code class="name flex">
-<span>def <span class="ident">process_resolution_stats</span></span>(<span>self, resolution_dict)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def process_resolution_stats(self,resolution_dict):
-    df = pd.DataFrame({
-        &#34;ResolutionX&#34;: list(resolution_dict[&#34;resolutionX&#34;].keys()),
-        &#34;ResolutionY&#34;: list(resolution_dict[&#34;resolutionY&#34;].keys()),
-        &#34;NumberX&#34;: list(resolution_dict[&#34;resolutionX&#34;].values()),
-        &#34;NumberY&#34;: list(resolution_dict[&#34;resolutionY&#34;].values())
-    })
-    fig = px.bar(df, x=&#39;ResolutionX&#39;, y=&#39;NumberX&#39;,title=f&#34;For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width&#34;)
-    fig.write_html(FolderInfos.base_filename + &#34;barplot_resolutionX.html&#34;)
-    plt.clf()
-    fig = px.bar(df, x=&#39;ResolutionY&#39;, y=&#39;NumberY&#39;,title=f&#34;For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width&#34;)
-    fig.write_html(FolderInfos.base_filename + &#34;barplot_resolutionY.html&#34;)</code></pre>
-</details>
-</dd>
-<dt id="main.src.data.DatasetFactory.DatasetFactory.save_stats"><code class="name flex">
-<span>def <span class="ident">save_stats</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def save_stats(self):
-    reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
-    reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
-    print(f&#34;Stat reolution saved at {FolderInfos.base_folder}stats_resoXY.json&#34;)
-    with open(FolderInfos.base_folder + &#34;stats_resoXY.json&#34;, &#34;w&#34;) as fp:
-        json.dump({&#34;resolutionX&#34;: reso_x_stats, &#34;resolutionY&#34;: reso_y_stats}, fp)</code></pre>
 </details>
 </dd>
 </dl>
@@ -363,8 +314,6 @@ dataset to classify patches</p>
 <h4><code><a title="main.src.data.DatasetFactory.DatasetFactory" href="#main.src.data.DatasetFactory.DatasetFactory">DatasetFactory</a></code></h4>
 <ul class="">
 <li><code><a title="main.src.data.DatasetFactory.DatasetFactory.getitem" href="#main.src.data.DatasetFactory.DatasetFactory.getitem">getitem</a></code></li>
-<li><code><a title="main.src.data.DatasetFactory.DatasetFactory.process_resolution_stats" href="#main.src.data.DatasetFactory.DatasetFactory.process_resolution_stats">process_resolution_stats</a></code></li>
-<li><code><a title="main.src.data.DatasetFactory.DatasetFactory.save_stats" href="#main.src.data.DatasetFactory.DatasetFactory.save_stats">save_stats</a></code></li>
 </ul>
 </li>
 </ul>

@@ -5,10 +5,11 @@ class Parser0(BaseClass):
     """
     Class managing possible arguments available to provide to the python main_script launched in the console
 
-    Example 1: creating a TwoWayDict and getting values
+    Example 1: creating a parser and getting one argument
+
             >>> parser = Parser0() # initialize the parser (constructor)
-            >>> parser = parser() # parse arguments (by calling __call__ method)
-            >>> parser.dataset # example of access to one of the possible argument
+            >>> arguments = parser() # parse arguments (by calling __call__ method)
+            >>> arguments.dataset # example of access to one of the possible argument
             "classificationpatch1"
     """
     def __init__(self):

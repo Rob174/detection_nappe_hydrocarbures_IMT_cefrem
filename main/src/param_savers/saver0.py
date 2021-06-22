@@ -25,7 +25,8 @@ class Saver0:
         Args:
             object: a simple value (int,str,list,dict) or a class inheriting from BaseClass
 
-        Returns: the value of the attribute (if it is a simple value) or a dict of values
+        Returns:
+            the value of the attribute (if it is a simple value) or a dict of values
 
         """
         if isinstance(object,BaseClass) is False:
@@ -44,7 +45,8 @@ class Saver0:
         Args:
             object: object of class inheriting from BaseClass
 
-        Returns: the current object (to eventually chain the call)
+        Returns:
+            the current object (to eventually chain the call)
 
         """
         if isinstance(object,BaseClass) is False:

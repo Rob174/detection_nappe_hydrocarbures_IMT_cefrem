@@ -17,9 +17,9 @@ class VectorizzedClassificationPatch(ClassificationPatch):
         Returns:
             tuple of 3 lists :
 
-                - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
-                - annotations: np.ndarray (shape (num_classes,), classification patch
-                - rejects:  bool, indicate if we need to reject this sample
+            - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+            - annotations: np.ndarray (shape (num_classes,), classification patch
+            - rejects:  bool, indicate if we need to reject this sample
 
         """
         all_items = self.get_all_items()

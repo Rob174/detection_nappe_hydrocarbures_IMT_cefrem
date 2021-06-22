@@ -29,7 +29,8 @@ class PretrainedModel(nn.Module,BaseClass):
         Args:
             x: input for the network
 
-        Returns: prediction of the network
+        Returns:
+            prediction of the network
 
         """
         x1 = self.net(x)

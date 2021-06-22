@@ -36,6 +36,9 @@ from main.src.param_savers.BaseClass import BaseClass
 # import time
 
 class Resizer(BaseClass):
+    &#34;&#34;&#34;
+    Class used to resize the image and store the transformation parameters
+    &#34;&#34;&#34;
     def __init__(self,out_size_w,interpolation=None):
         self.attr_out_size_w = out_size_w
         self.attr_interpolation = interpolation
@@ -43,6 +46,15 @@ class Resizer(BaseClass):
     def __call__(self,array) -&gt; np.ndarray:
         return self.call(array)
     def call(self,array) -&gt; np.ndarray:
+        &#34;&#34;&#34;Perform the resize operation
+
+        Args:
+            array: the array to resize
+
+        Returns:
+            the resized array
+
+        &#34;&#34;&#34;
         if self.attr_out_size_w == array.shape[1]:
             return array
         # resize: warning: cv2.resize(array,(width !!,height !!)) in this order
@@ -101,12 +113,15 @@ if __name__ == &#34;__main__&#34;:
 <span>(</span><span>out_size_w, interpolation=None)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Class used to resize the image and store the transformation parameters</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Resizer(BaseClass):
+    &#34;&#34;&#34;
+    Class used to resize the image and store the transformation parameters
+    &#34;&#34;&#34;
     def __init__(self,out_size_w,interpolation=None):
         self.attr_out_size_w = out_size_w
         self.attr_interpolation = interpolation
@@ -114,6 +129,15 @@ if __name__ == &#34;__main__&#34;:
     def __call__(self,array) -&gt; np.ndarray:
         return self.call(array)
     def call(self,array) -&gt; np.ndarray:
+        &#34;&#34;&#34;Perform the resize operation
+
+        Args:
+            array: the array to resize
+
+        Returns:
+            the resized array
+
+        &#34;&#34;&#34;
         if self.attr_out_size_w == array.shape[1]:
             return array
         # resize: warning: cv2.resize(array,(width !!,height !!)) in this order
@@ -131,12 +155,28 @@ if __name__ == &#34;__main__&#34;:
 <span>def <span class="ident">call</span></span>(<span>self, array) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Perform the resize operation</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>array</code></strong></dt>
+<dd>the array to resize</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>the resized array</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def call(self,array) -&gt; np.ndarray:
+    &#34;&#34;&#34;Perform the resize operation
+
+    Args:
+        array: the array to resize
+
+    Returns:
+        the resized array
+
+    &#34;&#34;&#34;
     if self.attr_out_size_w == array.shape[1]:
         return array
     # resize: warning: cv2.resize(array,(width !!,height !!)) in this order

@@ -45,9 +45,9 @@ class VectorizzedClassificationPatch(ClassificationPatch):
         Returns:
             tuple of 3 lists :
 
-                - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
-                - annotations: np.ndarray (shape (num_classes,), classification patch
-                - rejects:  bool, indicate if we need to reject this sample
+            - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+            - annotations: np.ndarray (shape (num_classes,), classification patch
+            - rejects:  bool, indicate if we need to reject this sample
 
         &#34;&#34;&#34;
         all_items = self.get_all_items()
@@ -91,7 +91,8 @@ class VectorizzedClassificationPatch(ClassificationPatch):
 <span>(</span><span>*args, **kargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
+<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
+<p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
 filteer them.</p>
 <h2 id="args">Args</h2>
 <dl>
@@ -124,9 +125,9 @@ filteer them.</p>
         Returns:
             tuple of 3 lists :
 
-                - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
-                - annotations: np.ndarray (shape (num_classes,), classification patch
-                - rejects:  bool, indicate if we need to reject this sample
+            - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+            - annotations: np.ndarray (shape (num_classes,), classification patch
+            - rejects:  bool, indicate if we need to reject this sample
 
         &#34;&#34;&#34;
         all_items = self.get_all_items()
@@ -176,10 +177,13 @@ filteer them.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>tuple of 3 lists :</p>
-<pre><code>- patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
-- annotations: np.ndarray (shape (num_classes,), classification patch
-- rejects:  bool, indicate if we need to reject this sample
-</code></pre></div>
+<ul>
+<li>patches:
+np.ndarray (shape (grid_size,grid_size,3)), input image for the model</li>
+<li>annotations: np.ndarray (shape (num_classes,), classification patch</li>
+<li>rejects:
+bool, indicate if we need to reject this sample</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -195,9 +199,9 @@ filteer them.</p>
     Returns:
         tuple of 3 lists :
 
-            - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
-            - annotations: np.ndarray (shape (num_classes,), classification patch
-            - rejects:  bool, indicate if we need to reject this sample
+        - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+        - annotations: np.ndarray (shape (num_classes,), classification patch
+        - rejects:  bool, indicate if we need to reject this sample
 
     &#34;&#34;&#34;
     all_items = self.get_all_items()
