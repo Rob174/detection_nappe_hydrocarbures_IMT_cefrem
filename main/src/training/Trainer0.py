@@ -77,7 +77,7 @@ class Trainer0(BaseClass):
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
         if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-            full_batch = (np.stack(self.tr_batches[0],axis=0),np.stack(self.tr_batches[1],axis=0))
+            full_batch = (np.concatenate(self.tr_batches[0],axis=0),np.concatenate(self.tr_batches[1],axis=0))
             self.tr_batches = [[],[]]
             return full_batch
         else:
