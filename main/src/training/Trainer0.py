@@ -155,7 +155,7 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
                         self.saver(self).save()
 
-                        if loss < np.min(self.attr_valid_loss) and i % 100 == 0:
+                        if loss < np.mean(self.attr_valid_loss) and i % 100 == 0:
                             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)

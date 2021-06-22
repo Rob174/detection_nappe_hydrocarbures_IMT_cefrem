@@ -3,6 +3,7 @@ from typing import Tuple, List, Union
 import numpy as np
 import psutil
 
+from main.FolderInfos import FolderInfos
 from main.src.data.TwoWayDict import  Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
 from main.src.data.balance_classes.no_balance import NoBalance
@@ -10,6 +11,7 @@ from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import time
+from rasterio.transform import Affine,rowcol
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
@@ -38,6 +40,14 @@ class ClassificationPatch(DataSentinel1Segmentation):
         if self.attr_limit_num_images is not None:
             return list_items[:self.attr_limit_num_images]
         return list_items
+    def get_geographic_coords_of_patch(self,name_src_img,patch_id):
+        img = self.images[name_src_img]
+        transform_array = self.images_infos[name_src_img]["transform"]
+        transform_array = np.array(transform_array)
+        transform = Affine.from_gdal(a=transform_array[0, 0], b=transform_array[0, 1], c=transform_array[0, 2],
+                                     d=transform_array[1, 0], e=transform_array[1, 1], f=transform_array[1, 2])
+        posx,posy = self.patch_creator.get_position_patch(patch_id=patch_id,input_shape=img.shape)
+        return rowcol(transform,posx,posy)
 
     def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         [item, patch_id] = self.get_all_items()[id] # 0 ns

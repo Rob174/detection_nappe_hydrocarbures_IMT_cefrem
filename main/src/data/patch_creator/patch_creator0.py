@@ -49,7 +49,6 @@ class Patch_creator0(BaseClass):
             self.attr_num_rejected += 1
             return patch, True
         return patch, False
-
     def get_position_patch(self,patch_id: int, input_shape):
         num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
         if num_cols_patches * self.attr_grid_size_px >= input_shape[1]:
