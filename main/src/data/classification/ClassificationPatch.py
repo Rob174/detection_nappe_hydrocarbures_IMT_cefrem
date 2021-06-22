@@ -80,7 +80,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # Get the corresponding geographical coordinates
         return rowcol(transform,posx,posy)
 
-    def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
+    def getitem(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
 
         get the patch of global int id id

@@ -6,7 +6,7 @@ import numpy as np
 class VectorizzedClassificationPatch(ClassificationPatch):
     def __init__(self,*args,**kargs):
         super(VectorizzedClassificationPatch, self).__init__(*args,**kargs)
-    def __getitem__(self, id: List[int]):
+    def getitem(self, id: List[int]):
         """Magic method of python called by the object[id] syntax.
 
         get the patch of global int ids id

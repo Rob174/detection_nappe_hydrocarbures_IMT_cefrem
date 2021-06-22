@@ -43,8 +43,9 @@ class Patch_creator0(BaseClass):
 
         """
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
-
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> Tuple[np.ndarray,bool]:
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False):
+        return self.call(image,image_name,patch_id,count_reso)
+    def call(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> Tuple[np.ndarray,bool]:
         """Creates the patch with provided data and indicate if it is rejected
 
         Magic method __call__ "called" when we "evaluate" the object:

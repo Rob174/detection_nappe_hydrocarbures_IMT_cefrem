@@ -14,6 +14,27 @@ import time
 
 
 class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
+    """Class managing the dataset creation and access with options of:
+    - different dataset possible
+    - different patch creator possible
+
+    Args:
+        dataset_name: str, name of the dataset to build. Currently supported
+        - "classificationpatch", dataset of classification on patches with original classes
+        - "classificationpatch1", dataset of classification on patches with less classes than the original dataset
+        - "classificationpatch2", dataset of classification on patches merging specified classes together to predict if there is something or not
+        usage_type: str,
+        - "classification",  dataset to classify patches
+        - "segmentation", dataset to segment an image
+        patch_creator: str for classification only, class to produce and manage patches:
+        - "fixed_px": create the PatchCreator0 class which generate fixed px size patches
+        grid_size: int, classification only with fixed_px size. To specify the size of a patch
+        input_size: int, size of the image given to the model
+        exclusion_policy: str, policy to exclude patches. See ClassificationPatch0
+        classes_to_use: str, classes names separated but commas to indicate the classes to use
+        balance: str, indicate which class to use to balance (or not) the dataset according to classes repartition (see ClassificationPatch)
+        margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
+    """
     def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px",
                  grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills",
                  balance="nobalance",margin=None):
@@ -41,10 +62,11 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         else:
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
-
-    def __getitem__(self, id: int):
+    def getitem(self,id: int):
         input, output, reject = self.attr_dataset.__getitem__(id)
         return input, output, reject
+    def __getitem__(self, id: int):
+        return self.getitem(id)
 
     def __len__(self):
         return self.attr_dataset.__len__()

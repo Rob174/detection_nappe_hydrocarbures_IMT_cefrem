@@ -13,6 +13,8 @@ class Resizer(BaseClass):
         self.attr_interpolation = interpolation
         self.attr_global_name = "resizer"
     def __call__(self,array) -> np.ndarray:
+        return self.call(array)
+    def call(self,array) -> np.ndarray:
         if self.attr_out_size_w == array.shape[1]:
             return array
         # resize: warning: cv2.resize(array,(width !!,height !!)) in this order

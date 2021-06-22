@@ -41,8 +41,9 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = "dataset"
-
-    def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
+    def __get__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
+        return self.getitem(id)
+    def getitem(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         """Magic python method to get the item of global id asked
 
         Args:

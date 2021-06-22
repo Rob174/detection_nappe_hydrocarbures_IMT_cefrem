@@ -15,11 +15,16 @@ class TwoWayDict(BaseClass):
             self.attr_dico_one_way = {k:(v,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
             self.dico_other_way = {v:(k,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
     def __getitem__(self, item):
+        return self.getitem(item)
+    def getitem(self, item):
         try:
             return self.attr_dico_one_way[item]
         except:
             return self.dico_other_way[item]
+
     def __setitem__(self, key, value):
+        return self.setitem(key,value)
+    def setitem(self, key, value):
         value_key = value
         if isinstance(value,tuple):
             value_key,additionnal_info = value
