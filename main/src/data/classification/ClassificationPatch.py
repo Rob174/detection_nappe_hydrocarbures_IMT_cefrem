@@ -83,7 +83,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
             patch,reject = self.patch_creator(annotations, name, patch_id=id)
-            liste_patches[id].append(self.make_classification_label(patch))
+            classif = self.make_classification_label(patch)
+            liste_patches[id].append(classif[0])
             liste_patches[id].append(reject)
         return liste_patches
 
