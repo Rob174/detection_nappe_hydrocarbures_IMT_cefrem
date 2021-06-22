@@ -18,10 +18,10 @@ class Trainer0(BaseClass):
                  metrics,
                  saver,
                  eval_step,debug="false"):
+        self.attr_debug = debug
         if debug == "true":
             self.attr_tr_vals_true = []
             self.attr_tr_vals_pred = []
-            self.attr_debug = debug
         self.attr_tr_batch_size = batch_size
         self.attr_tr_size = tr_prct
         self.attr_num_epochs = num_epochs
