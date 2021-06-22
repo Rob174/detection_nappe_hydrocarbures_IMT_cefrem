@@ -88,9 +88,9 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 - ✔️ shapes statistics update
 
 ## 22-06-06
-- ✔️ Important bug fix ! Training not using correct batches
+- ✔️ Important bug fix ! Training not using correct batches --> compiling version a39e48ff933e16c063e15d3c371f78308a8bdbb5
 - 🔨 Adding debug option to save training reference and output
-- ⏲️ get the position of the image/patch
+- 🔨 get the position of the image/patch
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
