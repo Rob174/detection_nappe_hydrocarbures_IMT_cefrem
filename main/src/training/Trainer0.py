@@ -103,7 +103,6 @@ class Trainer0(BaseClass):
             device = torch.device("cuda")
             self.model.to(device)
             current_loss = -1
-            import time
             for epoch in range(self.attr_num_epochs):
                 # print("epoch")
 
@@ -112,6 +111,8 @@ class Trainer0(BaseClass):
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         input,output = opt_tr_batch
+                        input = torch.Tensor(input)
+                        output = torch.Tensor(output)
                         # zero the parameter gradients
                         self.optimizer.zero_grad()
 
