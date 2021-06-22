@@ -10,6 +10,14 @@ import time
 
 class Patch_creator0(BaseClass):
     def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
+        """
+        Class creating and managing patches
+        @param grid_size_px: size of the patch extracted from the original image
+        @param images_informations_preprocessed: the dict from the json file containing images dataset informations
+        @param test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+        @param exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+        """
         self.attr_description = "Create a grid by taking a square of a constant pixel size."+\
                                 " It does not consider the resolution of each image."+\
                                 " It rejects a patch if it is not fully included in the original image"
@@ -17,17 +25,33 @@ class Patch_creator0(BaseClass):
         self.coords = [] # For logs: to show the square on the original image
         self.test = test
         self.images_informations_preprocessed: dict = images_informations_preprocessed
-        self.attr_resolution_used = {"x":{}, "y":{}}
+        self.attr_resolution_used = {"x":{}, "y":{}} # dict of dict to count the number of uniq resolution seen
         self.attr_exclusion_policy = exclusion_policy
         self.reject = {}
         self.attr_num_rejected = 0
+        self.attr_name = self.__class__.__name__
         self.attr_global_name = "patch_creator"
 
     def num_available_patches(self,image: np.ndarray ) -> int:
-        # return num_lignes*num_cols
+        """
+
+        @param image: original image of the hdf5 file
+        @return: number of patches possible without cutting any of them
+        """
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
 
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False, *args, **kargs) -> Tuple[np.ndarray,bool]:
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -> Tuple[np.ndarray,bool]:
+        """
+        Creates the patch with provided data and indicate if it is rejected
+        Magic method __call__ "called" when we "evaluate" the object:
+        obj = MyClass(....); returnValue = obj(...) <- this call the __call__ magic method
+        @param image: np.ndarray, source image from the hdf5 file
+        @param image_name: str, uniq id of the image in the hdf5 cache
+        @param patch_id: int, id of the patch
+        @param count_reso: bool, indicate if we need to compute statistics on input image resolutions
+        @return: tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
+        """
+        # computing resolution statistics taking a model where the earth is a sphere
         if count_reso is True: # skiping these lines: 0 ns
             radius_earth_meters = 6371e3
             reso_x = self.images_informations_preprocessed[image_name]["resolution"][0] * np.pi/180. * radius_earth_meters
@@ -40,8 +64,10 @@ class Patch_creator0(BaseClass):
             self.attr_resolution_used["y"][reso_y] += 1
 
         pos_x,pos_y = self.get_position_patch(patch_id,image.shape) # ~ 0 ns
+        # Save the coordinates (in px on the image from the hdf5) of the patch if we need them (especially during tests)
         if self.test is True: # skipping: 0 ns
             self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
+        # extract the patch
         patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
         # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
         # with x the threshold provided in the attr_exclusion_policy after the "_"
@@ -50,6 +76,12 @@ class Patch_creator0(BaseClass):
             return patch, True
         return patch, False
     def get_position_patch(self,patch_id: int, input_shape):
+        """
+        Compute the position of the patch with respect to the parameters
+        @param patch_id: int,
+        @param input_shape: tuple with at least two values
+        @return: tuple of ints: xpos,ypos
+        """
         num_cols_patches = int(input_shape[1] / self.attr_grid_size_px)
         if num_cols_patches * self.attr_grid_size_px >= input_shape[1]:
             num_cols_patches -= 1
