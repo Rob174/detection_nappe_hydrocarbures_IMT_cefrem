@@ -90,7 +90,7 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 ## 22-06-06
 - ✔️ Important bug fix ! Training not using correct batches
 - 🔨 Adding debug option to save training reference and output
-- ⏲️ get the position of the image/patch
+- 🔨 get the position of the image/patch
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
