@@ -63,6 +63,14 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
     def getitem(self,id: int):
+        """Magic method to get the input, output, and whether this sample is rejected or not of this id
+
+        Args:
+            id: int, global id of the item
+
+        Returns:
+            the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
+        """
         input, output, reject = self.attr_dataset.__getitem__(id)
         return input, output, reject
     def __getitem__(self, id: int):
@@ -70,26 +78,6 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
 
     def __len__(self):
         return self.attr_dataset.__len__()
-    def save_stats(self):
-        reso_x_stats = self.attr_dataset.attrend_resolutionX_stats
-        reso_y_stats = self.attr_dataset.attrend_resolutionX_stats
-        print(f"Stat reolution saved at {FolderInfos.base_folder}stats_resoXY.json")
-        with open(FolderInfos.base_folder + "stats_resoXY.json", "w") as fp:
-            json.dump({"resolutionX": reso_x_stats, "resolutionY": reso_y_stats}, fp)
-
-
-    def process_resolution_stats(self,resolution_dict):
-        df = pd.DataFrame({
-            "ResolutionX": list(resolution_dict["resolutionX"].keys()),
-            "ResolutionY": list(resolution_dict["resolutionY"].keys()),
-            "NumberX": list(resolution_dict["resolutionX"].values()),
-            "NumberY": list(resolution_dict["resolutionY"].values())
-        })
-        fig = px.bar(df, x='ResolutionX', y='NumberX',title=f"For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width")
-        fig.write_html(FolderInfos.base_filename + "barplot_resolutionX.html")
-        plt.clf()
-        fig = px.bar(df, x='ResolutionY', y='NumberY',title=f"For a {self.attr_patch_creator.attr_grid_size_px} fixed grid size\nand {self.attr_dataset.attr_resizer.attr_out_size_w} dataset output width")
-        fig.write_html(FolderInfos.base_filename + "barplot_resolutionY.html")
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@ import numpy as np
 class VectorizzedClassificationPatch(ClassificationPatch):
     def __init__(self,*args,**kargs):
         super(VectorizzedClassificationPatch, self).__init__(*args,**kargs)
-    def __getitem__(self, id: List[int]):
+    def getitem(self, id: List[int]):
         &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
 
         get the patch of global int ids id
@@ -113,7 +113,7 @@ filteer them.</p>
 <pre><code class="python">class VectorizzedClassificationPatch(ClassificationPatch):
     def __init__(self,*args,**kargs):
         super(VectorizzedClassificationPatch, self).__init__(*args,**kargs)
-    def __getitem__(self, id: List[int]):
+    def getitem(self, id: List[int]):
         &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
 
         get the patch of global int ids id
@@ -161,6 +161,73 @@ filteer them.</p>
 <li><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation">DataSentinel1Segmentation</a></li>
 <li><a title="main.src.param_savers.BaseClass.BaseClass" href="../../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="main.src.data.classification.VectorizedClassificationPatch.VectorizzedClassificationPatch.getitem"><code class="name flex">
+<span>def <span class="ident">getitem</span></span>(<span>self, id: List[int])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Magic method of python called by the object[id] syntax.</p>
+<p>get the patch of global int ids id</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>id</code></strong></dt>
+<dd>list of int, global ⚠️ id of the patch</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>tuple of 3 lists :</p>
+<pre><code>- patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+- annotations: np.ndarray (shape (num_classes,), classification patch
+- rejects:  bool, indicate if we need to reject this sample
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getitem(self, id: List[int]):
+    &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
+
+    get the patch of global int ids id
+
+    Args:
+        id: list of int, global ⚠️ id of the patch
+
+    Returns:
+        tuple of 3 lists :
+
+            - patches:   np.ndarray (shape (grid_size,grid_size,3)), input image for the model
+            - annotations: np.ndarray (shape (num_classes,), classification patch
+            - rejects:  bool, indicate if we need to reject this sample
+
+    &#34;&#34;&#34;
+    all_items = self.get_all_items()
+    dico_item_patches = {}
+    for index_orig, i in enumerate(id):
+        item_name, patch_id = all_items[i]
+        if item_name not in dico_item_patches:
+            dico_item_patches[item_name] = []
+        dico_item_patches[item_name].append([patch_id, index_orig])
+    dico_values_patches = {}
+    dico_values_patch_annotations = {}
+    dico_values_patch_rejects = {}
+    for item_name, liste_patches in dico_item_patches.items():
+        img = self.images[item_name]
+        annotations = self.annotations_labels[item_name]
+        # from here can be parallellized (gpu ??)
+        patches_ids = list(map(lambda x: x[0], liste_patches))
+        for patch_id, original_index in patches_ids:
+            img_patch, reject = self.patch_creator(img, item_name, patch_id=patch_id)
+            annotations_patch, reject = self.patch_creator(annotations, item_name, patch_id=patch_id)
+            dico_values_patches[original_index] = img_patch
+            dico_values_patch_annotations[original_index] = annotations_patch
+            dico_values_patch_rejects[original_index] = reject
+    patches = np.stack([np.stack((dico_values_patches[k],)*3,axis=0) for k in sorted(dico_values_patches.keys())],axis=0)
+    annotations = np.stack([self.make_classification_label(dico_values_patch_annotations[k]) for k in sorted(dico_values_patch_annotations.keys())],axis=0)
+    rejects = np.array([dico_values_patch_rejects[k] for k in sorted(dico_values_patch_rejects.keys())])
+    return patches,annotations,rejects</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationPatch</a></b></code>:
@@ -192,6 +259,9 @@ filteer them.</p>
 <ul>
 <li>
 <h4><code><a title="main.src.data.classification.VectorizedClassificationPatch.VectorizzedClassificationPatch" href="#main.src.data.classification.VectorizedClassificationPatch.VectorizzedClassificationPatch">VectorizzedClassificationPatch</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.data.classification.VectorizedClassificationPatch.VectorizzedClassificationPatch.getitem" href="#main.src.data.classification.VectorizedClassificationPatch.VectorizzedClassificationPatch.getitem">getitem</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

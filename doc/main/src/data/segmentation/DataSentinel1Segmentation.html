@@ -69,8 +69,9 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = &#34;dataset&#34;
-
-    def __getitem__(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
+    def __get__(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
+        return self.getitem(id)
+    def getitem(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
         &#34;&#34;&#34;Magic python method to get the item of global id asked
 
         Args:
@@ -176,8 +177,9 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = &#34;dataset&#34;
-
-    def __getitem__(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
+    def __get__(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
+        return self.getitem(id)
+    def getitem(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
         &#34;&#34;&#34;Magic python method to get the item of global id asked
 
         Args:
@@ -276,6 +278,42 @@ def get_all_items(self):
     return list(self.images.keys())</code></pre>
 </details>
 </dd>
+<dt id="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem"><code class="name flex">
+<span>def <span class="ident">getitem</span></span>(<span>self, id: int) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Magic python method to get the item of global id asked</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>id</code></strong></dt>
+<dd>int, global id of the sample</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>image, np.ndarray 2d image resized to the size specified in constructor</li>
+<li>annotation, np.ndarray 2d annotation resized to the size specified in constructor</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getitem(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
+    &#34;&#34;&#34;Magic python method to get the item of global id asked
+
+    Args:
+        id: int, global id of the sample
+
+    Returns:
+        - image, np.ndarray 2d image resized to the size specified in constructor
+        - annotation, np.ndarray 2d annotation resized to the size specified in constructor
+    &#34;&#34;&#34;
+    # Get the image uniq id corresponding to this global id
+    item = self.get_all_items()[id]
+    img = self.images[item]
+    self.current_name = item # for tests if we need access to the last image processed
+    return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -299,6 +337,7 @@ def get_all_items(self):
 <ul class="">
 <li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close">close</a></code></li>
 <li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items">get_all_items</a></code></li>
+<li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem">getitem</a></code></li>
 </ul>
 </li>
 </ul>

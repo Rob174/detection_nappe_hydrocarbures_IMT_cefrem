@@ -2,7 +2,15 @@ import argparse
 from main.src.param_savers.BaseClass import BaseClass
 
 class Parser0(BaseClass):
-    """Desiged for """
+    """
+    Class managing possible arguments available to provide to the python main_script launched in the console
+
+    Example 1: creating a TwoWayDict and getting values
+            >>> parser = Parser0() # initialize the parser (constructor)
+            >>> parser = parser() # parse arguments (by calling __call__ method)
+            >>> parser.dataset # example of access to one of the possible argument
+            "classificationpatch1"
+    """
     def __init__(self):
         self.attr_global_name = "parser"
         self.attr_name = self.__class__.__name__
@@ -41,8 +49,14 @@ class Parser0(BaseClass):
 
                     '-nbEpochs':['nb_epochs',1,int,"Indique le nb de passage du dataset"],
                     '-augm':['augmentation',"f",str,"Indique le nb de passage du dataset"]}
+    def __call__(self):
+        return self.call()
+    def call(self):
+        """Parse arguments provided
 
-    def __call__(self, *args, **kwargs):
+        Returns: an object where we can access arguments provided as properties of the object (cf class examples)
+
+        """
         for arg_name,[variable,default_val,type,description] in self.args.items():
             self.parser.add_argument(arg_name,dest=variable,default=default_val,type=type,help=description)
         return self.parser.parse_args()

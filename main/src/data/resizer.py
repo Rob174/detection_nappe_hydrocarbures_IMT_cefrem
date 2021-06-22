@@ -8,6 +8,9 @@ from main.src.param_savers.BaseClass import BaseClass
 # import time
 
 class Resizer(BaseClass):
+    """
+    Class used to resize the image and store the transformation parameters
+    """
     def __init__(self,out_size_w,interpolation=None):
         self.attr_out_size_w = out_size_w
         self.attr_interpolation = interpolation
@@ -15,6 +18,14 @@ class Resizer(BaseClass):
     def __call__(self,array) -> np.ndarray:
         return self.call(array)
     def call(self,array) -> np.ndarray:
+        """Perform the resize operation
+
+        Args:
+            array: the array to resize
+
+        Returns: the resized array
+
+        """
         if self.attr_out_size_w == array.shape[1]:
             return array
         # resize: warning: cv2.resize(array,(width !!,height !!)) in this order

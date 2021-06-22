@@ -10,6 +10,21 @@ import numpy as np
 
 
 class Trainer0(BaseClass):
+    """Class managing the training process
+
+    Args:
+        batch_size: int, the training batch size: number of sample passed together to the model
+        num_epochs: int, number of complete processing of the dataset by the model
+        tr_prct: float ∈ [0.,1.], percentage of the full dataset dedicated to training
+        dataset: DatasetFactory object to access data
+        model: pytorch model to train
+        optimizer: pyrtoch optimizer to use
+        loss: pytorch loss to use
+        metrics: pytorch metrics to use
+        saver: Saver0 object (see its documentation)
+        eval_step: number of training batches between two validation steps
+        debug: str enum ("true" or "false") if "true", save prediction and annotation during training process. ⚠️ can slow down the training process
+    """
     def __init__(self ,batch_size,num_epochs,tr_prct,
                  dataset,
                  model,
@@ -18,6 +33,7 @@ class Trainer0(BaseClass):
                  metrics,
                  saver,
                  eval_step,debug="false"):
+
         self.attr_debug = debug
         if debug == "true":
             self.attr_tr_vals_true = []
@@ -35,9 +51,11 @@ class Trainer0(BaseClass):
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
         valid_length = length_full_dataset - self.tr_length
-        self.attr_prefetch_factor = 2
+        self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
+        # split the datasets into train and validation
         [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
                                                    generator=torch.Generator().manual_seed(42))
+        # create the dataloader classes to automatically generate the samples
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
                                 # shuffle the dataset at the beginning of each epoch
                                 num_workers=0,  # num workers loading data into ram
@@ -58,6 +76,7 @@ class Trainer0(BaseClass):
         self.attr_global_name = "trainer"
         self.saver(self).save()
     def progress_bar_creation(self):
+        """method to create the columns of the progressbar"""
         self.progress = Progress(
             TextColumn("{task.fields[name]}", justify="right"),
             BarColumn(bar_width=None),
@@ -72,6 +91,7 @@ class Trainer0(BaseClass):
             TimeRemainingColumn()
         )
     def add_to_batch_tr(self,input,output,reject):
+        """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
         if reject is True:
             return None
         self.tr_batches[0].append(input)
@@ -83,6 +103,7 @@ class Trainer0(BaseClass):
         else:
             return None
     def add_to_batch_valid(self,input,output,reject):
+        """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
         if reject is True:
             return None
         self.valid_batches[0].append(input)
@@ -94,6 +115,9 @@ class Trainer0(BaseClass):
         else:
             return None
     def __call__(self):
+        return self.call()
+    def call(self):
+        """Train the model"""
         with self.progress:
             epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0., total=self.attr_num_epochs,
                                                status=0)

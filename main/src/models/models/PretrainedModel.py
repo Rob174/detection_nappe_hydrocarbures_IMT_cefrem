@@ -5,6 +5,14 @@ from main.src.param_savers.BaseClass import BaseClass
 class PretrainedModel(nn.Module,BaseClass):
     """Pretrained version of resnet with an additional layer to output the correct number of classes
     Done thanks to https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3
+
+
+    Args:
+        original_model: the original pretrained model ⚠️ with weights loaded
+        original_num_classes: int, the number of classes given as output by the original pretrained model
+        num_classes: int, number of desired number of classes
+        out_activation: str, activation to add at the end of the network. Currently supported:
+        - sigmoid
     """
     def __init__(self,original_model,original_num_classes=1000,num_classes=3,out_activation="sigmoid"):
         super(PretrainedModel, self).__init__()
@@ -16,6 +24,14 @@ class PretrainedModel(nn.Module,BaseClass):
             p.requires_grad = False # Freeze all weights of the original model
 
     def forward(self, x):
+        """ Forward pass on the network with the desired output number of classes and activation function
+
+        Args:
+            x: input for the network
+
+        Returns: prediction of the network
+
+        """
         x1 = self.net(x)
         x2 = self.layer1(x1)
         y = self.activation(x2)

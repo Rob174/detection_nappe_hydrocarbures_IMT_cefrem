@@ -6,6 +6,31 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class FolderInfos(BaseClass):
+    """Static class containing interesting folder of the project with a separator adapted for the operating system (windows or linux)
+    We have to first initialize the class by calling the init method and then we can directly call the desired attribute
+
+    Initialize some interesting pathes as static attributes.
+
+    Args:
+        custom_name: str, custom name to add in the folder of the current run
+        subdir: str, subdir for datafolder
+        test_without_data: bool, if False, the object automatically creates a folder for each run. If True this folder is not created.
+
+    Static attributes:
+        input_data_folder: str, data_in folder path
+        data_folder: str,  data_out folder path
+        base_folder: str, path to the newly created folder for the run
+        base_filename: str, incomplete path to any new file in this new folder
+        data_test: str, data_test folder path
+        root_folder: str, path to the detection_nappe_hydrocarbures_IMT_cefrem folder
+        id: str, uniq id generated with the datetime of the run
+        separator: str, proper separator for the operating system (linux or windows)
+
+    Example of usage:
+    >>> FolderInfos.init(test_without_data=False)
+    >>> FolderInfos.root_folder
+    C:\\....\\detection_nappe_hydrocarbures_IMT_cefrem\\
+    """
     input_data_folder = None
     data_folder = None
     base_folder = None
@@ -17,6 +42,10 @@ class FolderInfos(BaseClass):
 
     @staticmethod
     def init(custom_name="",subdir="",test_without_data=False):
+        """
+
+        """
+        """"""
         if system() != "Linux":
             FolderInfos.separator = "\\"
         while True:

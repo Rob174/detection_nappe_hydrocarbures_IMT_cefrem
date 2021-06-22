@@ -4,6 +4,18 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class LossFactory(BaseClass):
+    """Class managing possible losses
+
+    Args:
+        usage_type: str enum, indicate for which purpose we want a loss. Currently supported:
+        - "classification"
+        - "segmentation"
+        preference: optional str enum, indicate the preference for loss. Currently supported:
+        - "multiclassnonexlusivcrossentropy"
+        - "binarycrossentropy"
+        - "mse"
+
+    """
     def __init__(self, usage_type, preference=None):
         if preference is not None:
             preference = preference.lower()
@@ -26,5 +38,7 @@ class LossFactory(BaseClass):
         else:
             raise NotImplementedError(f"{usage_type} has not been implemented")
         self.attr_global_name = "loss"
-    def __call__(self):
+    def call(self):
         return self.loss
+    def __call__(self):
+        return self.call()

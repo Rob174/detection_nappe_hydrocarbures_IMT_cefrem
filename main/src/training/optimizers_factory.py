@@ -5,6 +5,15 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class OptimizersFactory(BaseClass):
+    """Class managing the optimizers
+
+    Args:
+            model: model to optimize
+            name: str enum, optimizer to use. Currently supported:
+            - "adam"
+            - "sgd"
+            **params: other parameters for the optimizer
+    """
     def __init__(self,model,name="adam",**params):
         self.attr_name = name
         if name == "adam":
@@ -16,5 +25,7 @@ class OptimizersFactory(BaseClass):
         else:
             raise NotImplementedError(f"{name} has not been implemented")
         self.attr_global_name = "optimizer"
-    def __call__(self):
+    def call(self):
         return self.optimizer
+    def __call__(self):
+        return self.call()

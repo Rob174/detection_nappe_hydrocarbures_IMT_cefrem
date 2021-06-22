@@ -5,7 +5,21 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class ModelFactory(BaseClass):
+    """Object creating desired model
+
+    Args:
+            model_name: str, name of the model to create. Currently supported:
+            - "efficientnetv4"
+            - "resnet18"
+            - "vgg16"
+            - "deeplabv3"
+            num_classes: int, number of output classes desired
+    """
     def __init__(self,model_name,num_classes=2):
+        """
+
+
+        """
         self.attr_global_name = "model"
         if model_name == "efficientnetv4":
             self.model = EfficientNet.from_pretrained('efficientnet-b0',num_classes=num_classes)
@@ -23,5 +37,8 @@ class ModelFactory(BaseClass):
             raise Exception("%s is not supported" % model_name)
         self.attr_model_name = model_name
         self.attr_num_classes = num_classes
-    def __call__(self):
+    def call(self):
+        """Returns the pytorch model"""
         return self.model
+    def __call__(self):
+        return self.call()

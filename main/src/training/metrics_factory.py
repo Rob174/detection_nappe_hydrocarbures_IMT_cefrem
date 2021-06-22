@@ -4,6 +4,16 @@ import numpy as np
 
 class MetricsFactory(BaseClass):
     def __init__(self,*metrics_names):
+        """Class managing metrics
+
+        Args:
+            *metrics_names: iterable of metrics as str. Currently supported metrics:
+            - "accuracy_classification-[0-9]": mean of the the mean number of times where the difference between prediction and reference are less than the threashold provided after accuracy_classification-
+            - "mae": mean average error
+
+        Example:
+            >>> MetricsFactory("accuracy_classification-0.9","mae","accuracy_classification-0.95") # <- this is the way to provide the iterable of metrics
+        """
         self.attr_list_metrics = {}
         self.functions_metrics = []
         for metric in metrics_names:

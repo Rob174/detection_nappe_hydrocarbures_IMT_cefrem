@@ -43,11 +43,16 @@ class TwoWayDict(BaseClass):
             self.attr_dico_one_way = {k:(v,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
             self.dico_other_way = {v:(k,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
     def __getitem__(self, item):
+        return self.getitem(item)
+    def getitem(self, item):
         try:
             return self.attr_dico_one_way[item]
         except:
             return self.dico_other_way[item]
+
     def __setitem__(self, key, value):
+        return self.setitem(key,value)
+    def setitem(self, key, value):
         value_key = value
         if isinstance(value,tuple):
             value_key,additionnal_info = value
@@ -106,11 +111,16 @@ class TwoWayDict(BaseClass):
             self.attr_dico_one_way = {k:(v,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
             self.dico_other_way = {v:(k,additionnal_infos_attached[k]) for k,v in attr_dico_one_way.items()}
     def __getitem__(self, item):
+        return self.getitem(item)
+    def getitem(self, item):
         try:
             return self.attr_dico_one_way[item]
         except:
             return self.dico_other_way[item]
+
     def __setitem__(self, key, value):
+        return self.setitem(key,value)
+    def setitem(self, key, value):
         value_key = value
         if isinstance(value,tuple):
             value_key,additionnal_info = value
@@ -145,6 +155,22 @@ class TwoWayDict(BaseClass):
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="main.src.data.TwoWayDict.TwoWayDict.getitem"><code class="name flex">
+<span>def <span class="ident">getitem</span></span>(<span>self, item)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getitem(self, item):
+    try:
+        return self.attr_dico_one_way[item]
+    except:
+        return self.dico_other_way[item]</code></pre>
+</details>
+</dd>
 <dt id="main.src.data.TwoWayDict.TwoWayDict.items"><code class="name flex">
 <span>def <span class="ident">items</span></span>(<span>self, dico_chosen=Way.ORIGINAL_WAY)</span>
 </code></dt>
@@ -175,6 +201,28 @@ class TwoWayDict(BaseClass):
         return list(self.attr_dico_one_way.keys())
     else:
         return list(self.dico_other_way.keys())</code></pre>
+</details>
+</dd>
+<dt id="main.src.data.TwoWayDict.TwoWayDict.setitem"><code class="name flex">
+<span>def <span class="ident">setitem</span></span>(<span>self, key, value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setitem(self, key, value):
+    value_key = value
+    if isinstance(value,tuple):
+        value_key,additionnal_info = value
+    real_key,dico_chosen = key
+    if dico_chosen == Way.ORIGINAL_WAY:
+        self.attr_dico_one_way[real_key] = value
+        self.dico_other_way[value_key] = real_key
+    else:
+        self.attr_dico_one_way[value_key] = real_key
+        self.dico_other_way[real_key] = value</code></pre>
 </details>
 </dd>
 <dt id="main.src.data.TwoWayDict.TwoWayDict.values"><code class="name flex">
@@ -244,8 +292,10 @@ class TwoWayDict(BaseClass):
 <li>
 <h4><code><a title="main.src.data.TwoWayDict.TwoWayDict" href="#main.src.data.TwoWayDict.TwoWayDict">TwoWayDict</a></code></h4>
 <ul class="">
+<li><code><a title="main.src.data.TwoWayDict.TwoWayDict.getitem" href="#main.src.data.TwoWayDict.TwoWayDict.getitem">getitem</a></code></li>
 <li><code><a title="main.src.data.TwoWayDict.TwoWayDict.items" href="#main.src.data.TwoWayDict.TwoWayDict.items">items</a></code></li>
 <li><code><a title="main.src.data.TwoWayDict.TwoWayDict.keys" href="#main.src.data.TwoWayDict.TwoWayDict.keys">keys</a></code></li>
+<li><code><a title="main.src.data.TwoWayDict.TwoWayDict.setitem" href="#main.src.data.TwoWayDict.TwoWayDict.setitem">setitem</a></code></li>
 <li><code><a title="main.src.data.TwoWayDict.TwoWayDict.values" href="#main.src.data.TwoWayDict.TwoWayDict.values">values</a></code></li>
 </ul>
 </li>

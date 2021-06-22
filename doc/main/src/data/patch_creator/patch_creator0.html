@@ -71,8 +71,9 @@ class Patch_creator0(BaseClass):
 
         &#34;&#34;&#34;
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
-
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False):
+        return self.call(image,image_name,patch_id,count_reso)
+    def call(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
         &#34;&#34;&#34;Creates the patch with provided data and indicate if it is rejected
 
         Magic method __call__ &#34;called&#34; when we &#34;evaluate&#34; the object:
@@ -242,8 +243,9 @@ if __name__ == &#34;__main__&#34;:
 
         &#34;&#34;&#34;
         return int(image.shape[0] / self.attr_grid_size_px) * int(image.shape[1] / self.attr_grid_size_px)
-
-    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
+    def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False):
+        return self.call(image,image_name,patch_id,count_reso)
+    def call(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
         &#34;&#34;&#34;Creates the patch with provided data and indicate if it is rejected
 
         Magic method __call__ &#34;called&#34; when we &#34;evaluate&#34; the object:
@@ -310,6 +312,73 @@ if __name__ == &#34;__main__&#34;:
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.call"><code class="name flex">
+<span>def <span class="ident">call</span></span>(<span>self, image: numpy.ndarray, image_name: str, patch_id: int, count_reso=False) ‑> Tuple[numpy.ndarray, bool]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates the patch with provided data and indicate if it is rejected</p>
+<p>Magic method <strong>call</strong> "called" when we "evaluate" the object:</p>
+<p>obj = MyClass(....); returnValue = obj(&hellip;) &lt;- this call the <strong>call</strong> magic method</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>image</code></strong></dt>
+<dd>np.ndarray, source image from the hdf5 file</dd>
+<dt><strong><code>image_name</code></strong></dt>
+<dd>str, uniq id of the image in the hdf5 cache</dd>
+<dt><strong><code>patch_id</code></strong></dt>
+<dd>int, id of the patch</dd>
+<dt><strong><code>count_reso</code></strong></dt>
+<dd>bool, indicate if we need to compute statistics on input image resolutions</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def call(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False) -&gt; Tuple[np.ndarray,bool]:
+    &#34;&#34;&#34;Creates the patch with provided data and indicate if it is rejected
+
+    Magic method __call__ &#34;called&#34; when we &#34;evaluate&#34; the object:
+
+    obj = MyClass(....); returnValue = obj(...) &lt;- this call the __call__ magic method
+
+    Args:
+        image: np.ndarray, source image from the hdf5 file
+        image_name: str, uniq id of the image in the hdf5 cache
+        patch_id: int, id of the patch
+        count_reso: bool, indicate if we need to compute statistics on input image resolutions
+
+    Returns:
+        tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
+
+    &#34;&#34;&#34;
+    # computing resolution statistics taking a model where the earth is a sphere
+    if count_reso is True: # skiping these lines: 0 ns
+        radius_earth_meters = 6371e3
+        reso_x = self.images_informations_preprocessed[image_name][&#34;resolution&#34;][0] * np.pi/180. * radius_earth_meters
+        reso_y = self.images_informations_preprocessed[image_name][&#34;resolution&#34;][1] * np.pi/180. * radius_earth_meters
+        if reso_x not in self.attr_resolution_used[&#34;x&#34;].keys():
+            self.attr_resolution_used[&#34;x&#34;][reso_x] = 0
+        if reso_x not in self.attr_resolution_used[&#34;y&#34;].keys():
+            self.attr_resolution_used[&#34;y&#34;][reso_y] = 0
+        self.attr_resolution_used[&#34;x&#34;][reso_x] += 1
+        self.attr_resolution_used[&#34;y&#34;][reso_y] += 1
+
+    pos_x,pos_y = self.get_position_patch(patch_id,image.shape) # ~ 0 ns
+    # Save the coordinates (in px on the image from the hdf5) of the patch if we need them (especially during tests)
+    if self.test is True: # skipping: 0 ns
+        self.coords.append([(pos_y,pos_x),(pos_y + self.attr_grid_size_px,pos_x + self.attr_grid_size_px)])
+    # extract the patch
+    patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
+    # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
+    # with x the threshold provided in the attr_exclusion_policy after the &#34;_&#34;
+    if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+        self.attr_num_rejected += 1
+        return patch, True
+    return patch, False</code></pre>
+</details>
+</dd>
 <dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch"><code class="name flex">
 <span>def <span class="ident">get_position_patch</span></span>(<span>self, patch_id: int, input_shape)</span>
 </code></dt>
@@ -399,6 +468,7 @@ if __name__ == &#34;__main__&#34;:
 <li>
 <h4><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a></code></h4>
 <ul class="">
+<li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.call" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.call">call</a></code></li>
 <li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch">get_position_patch</a></code></li>
 <li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches">num_available_patches</a></code></li>
 </ul>

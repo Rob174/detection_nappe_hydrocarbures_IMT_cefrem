@@ -108,7 +108,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # Get the corresponding geographical coordinates
         return rowcol(transform,posx,posy)
 
-    def __getitem__(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
+    def getitem(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
 
         get the patch of global int id id
@@ -304,7 +304,7 @@ filteer them.</p>
         # Get the corresponding geographical coordinates
         return rowcol(transform,posx,posy)
 
-    def __getitem__(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
+    def getitem(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
 
         get the patch of global int id id
@@ -483,6 +483,68 @@ def get_all_items(self):
     return rowcol(transform,posx,posy)</code></pre>
 </details>
 </dd>
+<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem"><code class="name flex">
+<span>def <span class="ident">getitem</span></span>(<span>self, id: Union[int, List[int]]) ‑> Tuple[numpy.ndarray, numpy.ndarray, bool]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Magic method of python called by the object[id] syntax.</p>
+<p>get the patch of global int id id</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>id</code></strong></dt>
+<dd>int, global ⚠️ id of the patch</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+classif: np.ndarray (shape (num_classes,), classification patch ;
+reject:
+bool, indicate if we need to reject this sample ;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getitem(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
+    &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
+
+    get the patch of global int id id
+
+    Args:
+        id: int, global ⚠️ id of the patch
+
+    Returns:
+        tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+               classif: np.ndarray (shape (num_classes,), classification patch ;
+               reject:  bool, indicate if we need to reject this sample ;
+    &#34;&#34;&#34;
+    # get the src image id (item: str) and the patch_id (int)
+    [item, patch_id] = self.get_all_items()[id] # 0 ns
+    # get the source image from the hdf5 cache
+    img = self.images[item] # 1ms but 0 most of the time
+    # get the source true classification / annotation from the other hdf5 cache
+    annotations = self.annotations_labels[item] # 1ms but 0 most of the time
+    # get the patch with the selected id for the input image and the annotation
+    ## two lines: btwn 21 and 54 ms
+    img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
+    annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
+    # we reject an image if it contains margins (cf patchcreator)
+    # save the resolution of the patch if it has not already been seen
+    if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
+        self.save_resolution(item, img_patch) #
+    # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
+    input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
+    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+    input = np.stack((input, input, input), axis=0) # 0 ns most of the time
+    # Create the classification label with the proper technic ⚠️⚠️ inheritance
+    classif,balance_reject = self.make_classification_label(annotations_patch) # ~ 2 ms
+    # As the balancing operation are done in the make_classification_label method, we reject an image
+    # if it is rejected due to margins or balancing
+    reject = reject and balance_reject
+    return input, classif, reject</code></pre>
+</details>
+</dd>
 <dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label"><code class="name flex">
 <span>def <span class="ident">make_classification_label</span></span>(<span>self, annotations_patch)</span>
 </code></dt>
@@ -605,6 +667,7 @@ def get_all_items(self):
 <ul class="">
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items">get_all_items</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch">get_geographic_coords_of_patch</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem">getitem</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label">make_classification_label</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image">make_patches_of_image</a></code></li>
 </ul>
