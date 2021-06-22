@@ -93,6 +93,7 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 - 🔨 get the position of the image/patch
 - ✔️ vizualize property of trainings with regex filter
 - ✔️ interactive visualizer of dataframe with property of trainings
+- ✔️ integrated and html documentation of the code
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
