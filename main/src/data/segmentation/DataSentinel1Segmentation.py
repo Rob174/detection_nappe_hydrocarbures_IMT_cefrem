@@ -37,7 +37,7 @@ class DataSentinel1Segmentation(BaseClass):
         #concretely we can ask:
         # - self.attr_class_mapping[0] -> returns "other" as a normal dict
         # - self.attr_class_mapping["other"] -> returns 0 with this new type of object
-        self.attr_original_class_mapping = {k:v for k,v in self.attr_class_mapping.items()}
+        self.attr_original_class_mapping = TwoWayDict({k:v for k,v in self.attr_class_mapping.items()})
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = "dataset"
