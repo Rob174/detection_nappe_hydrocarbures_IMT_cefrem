@@ -31,18 +31,18 @@ class Parser0(BaseClass):
                     '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
                     '-balance_mg':['balance_margin',10,int,"Indicate the margin of supplementary image for one class"],
                     # Model
-                    '-model':['model',"vgg16",str,"To choose the network architecture used {"],
+                    '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"seep,spill",str,"Indicate the class used for training separated by an underscore"],
                     # Training
                     '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
                     '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],
                     '-loss':['loss_preference',"binarycrossentropy",str,"Loss prefered for training"],
 
-                    '-lr':['lr',1e-3,float,"Learning rate of the optimizer"],
+                    '-lr':['lr',1e-5,float,"Learning rate of the optimizer"],
                     '-eps':['eps',1e-7,float,"Epsilon of the optimizer if it is Adam"],
                     '-opti':['optimizer',"adam",str,"Optimisateur"],
 
-                    '-nbImg':['nb_images',1080,int,"Limit the number of images of the training dataset"],
+                    '-nbImg':['nb_images',-1,int,"Limit the number of images of the training dataset"],
                     '-debug':['debug',"false",str,"Indicate if we want to save reference and predictions for each iteration"],
 
 

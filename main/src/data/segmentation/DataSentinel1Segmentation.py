@@ -21,11 +21,14 @@ class DataSentinel1Segmentation(BaseClass):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             input_size: the size of the image provided as input to the model ⚠️
         """
+        self.attr_with_normalization = True
         self.attr_name = self.__class__.__name__
         # Opening the cache
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp:
             self.images_infos = copy.deepcopy(json.load(fp))
+        with open(f"{FolderInfos.input_data_folder}pixel_stats.json","r") as fp:
+            self.pixel_stats = copy.deepcopy(json.load(fp))
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
         self.attr_class_mapping = TwoWayDict( # a twoway dict allowing to store pairs of hashable objects:
@@ -43,6 +46,10 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_global_name = "dataset"
     def __get__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
+    def getimage(self,name: str) -> np.ndarray:
+        img = self.images[name]
+        img = (img-self.pixel_stats["mean"])/self.pixel_stats["std"]
+        return img
     def getitem(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         """Magic python method to get the item of global id asked
 
@@ -55,7 +62,7 @@ class DataSentinel1Segmentation(BaseClass):
         """
         # Get the image uniq id corresponding to this global id
         item = self.get_all_items()[id]
-        img = self.images[item]
+        img = self.getimage(item)
         self.current_name = item # for tests if we need access to the last image processed
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
     @lru_cache(maxsize=1)

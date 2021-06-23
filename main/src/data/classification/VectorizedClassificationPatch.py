@@ -33,7 +33,7 @@ class VectorizzedClassificationPatch(ClassificationPatch):
         dico_values_patch_annotations = {}
         dico_values_patch_rejects = {}
         for item_name, liste_patches in dico_item_patches.items():
-            img = self.images[item_name]
+            img = self.getitem(item_name)
             annotations = self.annotations_labels[item_name]
             # from here can be parallellized (gpu ??)
             patches_ids = list(map(lambda x: x[0], liste_patches))

@@ -12,9 +12,10 @@ class FolderInfos(BaseClass):
 
 
     Example of usage:
-    >>> FolderInfos.init(test_without_data=False)
-    >>> FolderInfos.root_folder
-    C:\\....\\detection_nappe_hydrocarbures_IMT_cefrem\\
+
+        >>> FolderInfos.init(test_without_data=False)
+        >>> FolderInfos.root_folder
+        C:\\....\\detection_nappe_hydrocarbures_IMT_cefrem\\
     """
     input_data_folder = None
     """str, data_in folder path"""
