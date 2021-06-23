@@ -24,7 +24,7 @@ class Parser0(BaseClass):
                     '-dataset':['dataset',"classificationpatch1",str,"Indicate the dataset used to constitue datasets {classificationpatch}"],
                     '-usage_type':['usage_type',"classification",str,"Indicate the source dataset used to constitue datasets {segmentation, classification}"],
                     '-patch':['patch',"fixed_px",str,"Indicate the type of patch to create {fixed_px}"],
-                    '-patchExclPol': ['patch_exclude_policy', "marginmorethan_10000000000", str, "Indicates the policy to exclude patches (especially patches containing margins)"],
+                    '-patchExclPol': ['patch_exclude_policy', "marginmorethan_1000", str, "Indicates the policy to exclude patches (especially patches containing margins)"],
                     '-grid_size':['grid_size',1000,int,"Indicate the grid size applied on the original image"],
                     '-in_size':['input_size',256,int,"Indicate the output size of the image obtained by resizing it after patches creation"],
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
