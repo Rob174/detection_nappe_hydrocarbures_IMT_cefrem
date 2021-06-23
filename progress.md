@@ -100,6 +100,7 @@ As no parameters produces better performances, we will investigate:
 - deeper models:
   - ⏳ vgg16
 - launch a debugging session to see if the predictions are coherent
+- unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
