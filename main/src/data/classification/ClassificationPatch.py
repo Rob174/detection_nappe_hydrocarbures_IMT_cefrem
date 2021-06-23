@@ -79,7 +79,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         posx,posy = self.patch_creator.get_position_patch(patch_id=patch_id,input_shape=img.shape)
         # Get the corresponding geographical coordinates
         return rowcol(transform,posx,posy)
-
+    def __getitem__(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]:
+        return self.getitem(id)
     def getitem(self, id: Union[int,List[int]]) -> Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
 
