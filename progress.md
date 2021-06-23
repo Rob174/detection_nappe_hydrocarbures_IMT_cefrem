@@ -98,7 +98,7 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 ## 23-06-06
 As no parameters produces better performances, we will investigate:
 - deeper models:
-  - ⏳ vgg16
+  - ✔️ vgg16
 - launch a debugging session to see if the predictions are coherent
 - unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 - launch a training to compare with and without margin usage
