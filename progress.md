@@ -99,17 +99,15 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 As no parameters produces better performances, we will investigate:
 - deeper models:
   - ✔️ vgg16
-- launch a debugging session to see if the predictions are coherent
-- unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
-- launch a training to compare with and without margin usage
 - 🚩 test concurrent training with terminal launch
   - Training time explodes from ~2h to ~15h for 2 trainings in parallel (maybe caused by memory problem or concurrent access to hdf5 file)
-- ⏲️ Standardize data
-  - ⏲️ Compute statistics (mean and standard deviation) of the global dataset
-  - Use these statistics to apply standardization
+- ✔️ Standardize data
+  - ✔️ Compute statistics (mean and standard deviation) of the global dataset
+  - ✔️ Use these statistics to apply standardization
 - ✔️ correct filter metadata problem commit [f02d1c5f37](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/f02d1c5f374ef1097dfffb22332bc535664b1056)
   - ✔️ simplification
   - ✔️ works
+  - 
 
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
@@ -126,3 +124,8 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
   - Compute statistics (mean and standard deviation) of the global dataset
   - Use these statistics to apply standardization
 - 2️⃣ Play with the learning rate
+- unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
+- Training to launch:
+  - with / without algo balance
+  - reducing lr
+  - unfreeze all layers of the pretrained model
