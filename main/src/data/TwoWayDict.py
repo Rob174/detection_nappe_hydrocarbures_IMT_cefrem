@@ -49,16 +49,20 @@ class TwoWayDict(BaseClass):
     """
     def __init__(self,attr_dico_one_way):
         self.attr_global_name = "two_way_dict"
-        first_key = attr_dico_one_way[list(attr_dico_one_way.keys())[0]]
-        if isinstance(first_key,tuple):
+        if attr_dico_one_way == {}:
             self.attr_dico_one_way = {}
             self.dico_other_way = {}
-            for k,v in attr_dico_one_way.items():
-                self.attr_dico_one_way[k] = v
-                self.dico_other_way[v[0]] = k,*v[1:]
         else:
-            self.attr_dico_one_way = attr_dico_one_way
-            self.dico_other_way = {v:k for k,v in attr_dico_one_way.items()}
+            first_key = attr_dico_one_way[list(attr_dico_one_way.keys())[0]]
+            if isinstance(first_key,tuple):
+                self.attr_dico_one_way = {}
+                self.dico_other_way = {}
+                for k,v in attr_dico_one_way.items():
+                    self.attr_dico_one_way[k] = v
+                    self.dico_other_way[v[0]] = k,*v[1:]
+            else:
+                self.attr_dico_one_way = attr_dico_one_way
+                self.dico_other_way = {v:k for k,v in attr_dico_one_way.items()}
 
     def __getitem__(self, item):
         return self.getitem(item)
