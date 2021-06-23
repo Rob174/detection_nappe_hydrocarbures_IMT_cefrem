@@ -105,9 +105,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
         img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
         annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
         # we reject an image if it contains margins (cf patchcreator)
-        # save the resolution of the patch if it has not already been seen
-        if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
-            self.save_resolution(item, img_patch) #
         # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
