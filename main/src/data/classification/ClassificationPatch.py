@@ -53,7 +53,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """
         list_items = []
         for img_name in list(self.images.keys()):
-            img = self.getimage(img_name)
+            img = self.images[img_name]
             num_ids = self.patch_creator.num_available_patches(img)
             list_items.extend([[img_name, i] for i in range(num_ids)])
         if self.attr_limit_num_images is not None: # Limit the number of images used
