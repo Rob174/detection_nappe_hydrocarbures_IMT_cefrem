@@ -101,6 +101,7 @@ As no parameters produces better performances, we will investigate:
   - ⏳ vgg16
 - launch a debugging session to see if the predictions are coherent
 - unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
+- launch a training to compare with and without margin usage
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
