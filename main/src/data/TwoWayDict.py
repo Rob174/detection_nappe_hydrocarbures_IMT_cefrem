@@ -50,7 +50,7 @@ class TwoWayDict(BaseClass):
     def __init__(self,attr_dico_one_way):
         self.attr_global_name = "two_way_dict"
         first_key = attr_dico_one_way[list(attr_dico_one_way.keys())[0]]
-        if isinstance(tuple,first_key):
+        if isinstance(first_key,tuple):
             self.attr_dico_one_way = {}
             self.dico_other_way = {}
             for k,v in attr_dico_one_way.items():
