@@ -107,7 +107,7 @@ As no parameters produces better performances, we will investigate:
 - ⏲️ Standardize data
   - ⏲️ Compute statistics (mean and standard deviation) of the global dataset
   - Use these statistics to apply standardization
-- ✔️ correct filter metadata problem
+- ✔️ correct filter metadata problem commit [f02d1c5f37](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/f02d1c5f374ef1097dfffb22332bc535664b1056)
   - ✔️ simplification
   - ✔️ works
 
