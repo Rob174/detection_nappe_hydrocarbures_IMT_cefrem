@@ -95,6 +95,15 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 - ✔️ interactive visualizer of dataframe with property of trainings
 - ✔️ integrated and html documentation of the code
 
+## 23-06-06
+As no parameters produces better performances, we will investigate:
+- deeper models:
+  - ⏳ vgg16
+- launch a debugging session to see if the predictions are coherent
+- unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
+- launch a training to compare with and without margin usage
+- ⏲️ test concurrent training with terminal launch
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
 ## TODO
