@@ -158,7 +158,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         num_patches = self.patch_creator.num_available_patches(last_image)
         # Create all the patches of input images
         for id in range(num_patches):
-            patch,reject = self.patch_creator(last_image, name, patch_id=id, keep=True)
+            patch,reject = self.patch_creator(last_image, name, patch_id=id)
             liste_patches.append([patch])
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
