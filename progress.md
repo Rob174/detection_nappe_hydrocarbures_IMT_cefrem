@@ -102,7 +102,15 @@ As no parameters produces better performances, we will investigate:
 - launch a debugging session to see if the predictions are coherent
 - unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 - launch a training to compare with and without margin usage
-- ⏲️ test concurrent training with terminal launch
+- 🚩 test concurrent training with terminal launch
+  - Training time explodes from ~2h to ~15h for 2 trainings in parallel (maybe caused by memory problem or concurrent access to hdf5 file)
+- ⏲️ Standardize data
+  - ⏲️ Compute statistics (mean and standard deviation) of the global dataset
+  - Use these statistics to apply standardization
+- ✔️ correct filter metadata problem
+  - ✔️ simplification
+  - ✔️ works
+
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
@@ -110,5 +118,11 @@ As no parameters produces better performances, we will investigate:
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
 
-- 9️⃣ Confusion matrix
-- 6️⃣ Rotation augmentation
+- 3️⃣ Augmentations
+  - mirrors
+  - rotation with step of 15°
+  - reducing the size (⚠️ too small objects)
+- 1️⃣ Standardize data
+  - Compute statistics (mean and standard deviation) of the global dataset
+  - Use these statistics to apply standardization
+- 2️⃣ Play with the learning rate
