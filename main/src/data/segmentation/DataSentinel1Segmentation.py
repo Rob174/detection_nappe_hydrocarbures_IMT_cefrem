@@ -47,7 +47,7 @@ class DataSentinel1Segmentation(BaseClass):
     def __get__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
     def getimage(self,name: str) -> np.ndarray:
-        img = self.images[name]
+        img = np.array(self.images[name])
         img = (img-self.pixel_stats["mean"])/self.pixel_stats["std"]
         return img
     def getitem(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
