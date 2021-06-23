@@ -128,10 +128,7 @@ class Trainer0(BaseClass):
             self.model.to(device)
             current_loss = -1
             for epoch in range(self.attr_num_epochs):
-                # print("epoch")
-
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
-
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         input,output = opt_tr_batch

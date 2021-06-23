@@ -97,7 +97,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # get the src image id (item: str) and the patch_id (int)
         [item, patch_id] = self.get_all_items()[id] # 0 ns
         # get the source image from the hdf5 cache
-        img = self.getimage(item) # 1ms but 0 most of the time
+        img = self.images[item] # 1ms but 0 most of the time
         # get the source true classification / annotation from the other hdf5 cache
         annotations = self.annotations_labels[item] # 1ms but 0 most of the time
         # get the patch with the selected id for the input image and the annotation
@@ -109,6 +109,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
+        input = (input-self.pixel_stats["mean"])/self.pixel_stats["std"]
         # Create the classification label with the proper technic ⚠️⚠️ inheritance
         classif,balance_reject = self.make_classification_label(annotations_patch) # ~ 2 ms
         # As the balancing operation are done in the make_classification_label method, we reject an image
