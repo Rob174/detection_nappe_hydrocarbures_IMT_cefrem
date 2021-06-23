@@ -1,14 +1,14 @@
 import json
 import subprocess
-import sys
+import os, sys
+sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
+sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
+sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src")
+sys.path.append(r"C:\Users\robin\Documents\projets")
 
 from main.src.training.Trainer0 import Trainer0
 from main.src.training.metrics_factory import MetricsFactory
 
-path_root_project = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_inria_cefrem"
-sys.path.append(path_root_project)
-sys.path.append(r"C:/Users/robin/Documents/projets/")
-sys.path.append(path_root_project + f"\src")
 
 from main.src.training.loss_factory import LossFactory
 from main.src.training.optimizers_factory import OptimizersFactory
