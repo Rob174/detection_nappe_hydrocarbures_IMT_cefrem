@@ -24,11 +24,11 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_with_normalization = True
         self.attr_name = self.__class__.__name__
         # Opening the cache
-        self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
-        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json") as fp:
-            self.images_infos = copy.deepcopy(json.load(fp))
+        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json","r") as fp:
+            self.images_infos = json.load(fp)
         with open(f"{FolderInfos.input_data_folder}pixel_stats.json","r") as fp:
-            self.pixel_stats = copy.deepcopy(json.load(fp))
+            self.pixel_stats = json.load(fp)
+        self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
         self.attr_class_mapping = TwoWayDict( # a twoway dict allowing to store pairs of hashable objects:
@@ -61,6 +61,7 @@ class DataSentinel1Segmentation(BaseClass):
             - annotation, np.ndarray 2d annotation resized to the size specified in constructor
         """
         # Get the image uniq id corresponding to this global id
+
         item = self.get_all_items()[id]
         img = self.getimage(item)
         self.current_name = item # for tests if we need access to the last image processed

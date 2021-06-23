@@ -53,7 +53,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """
         list_items = []
         for img_name in list(self.images.keys()):
-            img = self.getitem(img_name)
+            img = self.getimage(img_name)
             num_ids = self.patch_creator.num_available_patches(img)
             list_items.extend([[img_name, i] for i in range(num_ids)])
         if self.attr_limit_num_images is not None: # Limit the number of images used
@@ -69,7 +69,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         Returns:
             tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
         """
-        img = self.getitem(name_src_img) # read image from the hdf5 file
+        img = self.getimage(name_src_img) # read image from the hdf5 file
         transform_array = self.images_infos[name_src_img]["transform"] # get the corresponding transformation array
         transform_array = np.array(transform_array)
         # transfer it into a rasterio AffineTransformation object
@@ -97,7 +97,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # get the src image id (item: str) and the patch_id (int)
         [item, patch_id] = self.get_all_items()[id] # 0 ns
         # get the source image from the hdf5 cache
-        img = self.getitem(item) # 1ms but 0 most of the time
+        img = self.getimage(item) # 1ms but 0 most of the time
         # get the source true classification / annotation from the other hdf5 cache
         annotations = self.annotations_labels[item] # 1ms but 0 most of the time
         # get the patch with the selected id for the input image and the annotation
@@ -152,7 +152,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             - classif: np.ndarray classification label as returned by make_classification_label
             - reject: bool reject only based on margins
         """
-        last_image = np.copy(np.array(self.getitem(name), dtype=np.float32))
+        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
         liste_patches = []
         num_patches = self.patch_creator.num_available_patches(last_image)
         # Create all the patches of input images
@@ -170,6 +170,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     def __len__(self) -> int:
         """Magic method called when we make len(obj)"""
+
         return len(self.get_all_items())
 
 # Tests in DatasetFactory

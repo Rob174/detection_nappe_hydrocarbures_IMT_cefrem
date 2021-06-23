@@ -25,7 +25,6 @@ from git import Repo
 
 if __name__ == "__main__":
     FolderInfos.init()
-    dico_save_parameters = {"data": {}, "model": {}}
     saver = Saver0(FolderInfos.base_filename+"parameters.json")
     parser = Parser0()
     saver(parser)
