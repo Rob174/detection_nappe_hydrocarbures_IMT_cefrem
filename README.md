@@ -183,4 +183,7 @@ Questions
 - confirmation: algorithme pour vérifier la validité à appliquer sur le shapefile global ?
 - formule categorical crossentropy (cf LossFactory)
 
-### prochaine réunion mercredi 23/06 9h
+### mercredi 23/06 10h40
+
+- besoin de répondre à Mr Gondet ?
+- résultats à l'heure actuelle
