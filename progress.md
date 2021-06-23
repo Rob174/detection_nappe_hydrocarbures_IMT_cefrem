@@ -98,7 +98,7 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 ## 23-06-06
 As no parameters produces better performances, we will investigate:
 - deeper models:
-  - ⏳ vgg16
+  - ✔️ vgg16
 - launch a debugging session to see if the predictions are coherent
 - unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 - launch a training to compare with and without margin usage
@@ -107,7 +107,7 @@ As no parameters produces better performances, we will investigate:
 - ⏲️ Standardize data
   - ⏲️ Compute statistics (mean and standard deviation) of the global dataset
   - Use these statistics to apply standardization
-- ✔️ correct filter metadata problem
+- ✔️ correct filter metadata problem commit [f02d1c5f37](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/f02d1c5f374ef1097dfffb22332bc535664b1056)
   - ✔️ simplification
   - ✔️ works
 
