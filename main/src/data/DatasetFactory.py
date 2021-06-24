@@ -34,10 +34,13 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         classes_to_use: str, classes names separated but commas to indicate the classes to use
         balance: str, indicate which class to use to balance (or not) the dataset according to classes repartition (see ClassificationPatch)
         margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
+        augmentations: opt str, list of augmentations to apply seprated by commas
+        augmenter: opt str, name of the augmenter to use
     """
     def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px",
                  grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills",
-                 balance="nobalance",margin=None):
+                 balance="nobalance",margin=None,
+                 augmentations="none",augmenter="noaugmenter"):
         self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
@@ -50,11 +53,19 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
 
         if usage_type == "classification":
             if dataset_name == "classificationpatch":
-                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,balance=balance,margin=margin)
+                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
+                                                        balance=balance,margin=margin,
+                                                        augmentations=augmentations,augmenter=augmenter)
             elif dataset_name == "classificationpatch1":
-                self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use,balance=balance,margin=margin)
+                self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
+                                                         classes_to_use=classes_to_use,
+                                                         balance=balance,margin=margin,
+                                                         augmentations=augmentations,augmenter=augmenter)
             elif dataset_name == "classificationpatch2":
-                self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,classes_to_use=classes_to_use,balance=balance,margin=margin)
+                self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
+                                                         classes_to_use=classes_to_use,
+                                                         balance=balance,margin=margin,
+                                                         augmentations=augmentations,augmenter=augmenter)
 
         elif usage_type == "segmentation":
             if dataset_name == "sentinel1":

@@ -42,7 +42,9 @@ if __name__ == "__main__":
                              exclusion_policy=arguments.patch_exclude_policy,
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
-                             margin=arguments.balance_margin)
+                             margin=arguments.balance_margin,
+                             augmenter=arguments.augmenter,
+                             augmentations=arguments.augmentations)
     saver["date"] = FolderInfos.id
     saver(dataset)
 

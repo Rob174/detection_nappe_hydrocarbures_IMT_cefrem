@@ -6,7 +6,8 @@ import numpy as np
 
 class ClassificationPatch2(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
-                 classes_to_use="spill,seep", balance="nobalance",margin=None):
+                 classes_to_use="spill,seep", balance="nobalance",margin=None,
+                 augmentations="none",augmenter="augmenter0"):
         """Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
 
         Args:
@@ -16,8 +17,10 @@ class ClassificationPatch2(ClassificationPatch):
             classes_to_use: indicates the classes to use in the final classification label
             balance: str enum {nobalance,balance} indicating the class used to balance images
             margin: opt int, argument for the BalanceClass1 class
+            augmentations: opt str, list of augmentations to apply seprated by commas
+            augmenter: opt str, name of the augmenter to use
         """
-        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin)
+        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin,augmentations,augmenter)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use

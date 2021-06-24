@@ -15,7 +15,7 @@ All of the transformations are randomly chosen and can change between epochs
 
 >>> image = ...
 >>> annotation = ...
->>> array,annotation = augmenter.transform(image,annotation)
+>>> image,annotation = augmenter.transform(image,annotation)
 
 To allow to keep a constant interface, we made a NoAugmenter class which performs
 no augmentation and directly returns the input

@@ -30,6 +30,8 @@ class Parser0(BaseClass):
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
                     '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
                     '-balance_mg':['balance_margin',10,int,"Indicate the margin of supplementary image for one class"],
+                    '-augmenter':['augmenter',str,"noaugmenter","Indicate which augmenter to use"],
+                    '-augmentations':['augmentations',"none",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"seep,spill",str,"Indicate the class used for training separated by an underscore"],

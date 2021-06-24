@@ -13,12 +13,15 @@ class ClassificationPatch1(ClassificationPatch):
         classes_to_use: indicates the classes to use in the final classification label
         balance: str enum {nobalance,balance} indicating the class used to balance images
         margin: opt int, argument for the BalanceClass1 class
+        augmentations: opt str, list of augmentations to apply seprated by commas
+        augmenter: opt str, name of the augmenter to use
     """
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
-                 classes_to_use="spill,seep", balance="nobalance",margin=None):
+                 classes_to_use="spill,seep", balance="nobalance",margin=None,
+                 augmentations="none",augmenter="augmenter0"):
 
         self.attr_name = self.__class__.__name__
-        super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin)
+        super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin,augmentations,augmenter)
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
         self.attr_classes_to_use = classes_to_use

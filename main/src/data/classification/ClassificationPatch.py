@@ -19,7 +19,7 @@ from rasterio.transform import Affine,rowcol
 class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance="nobalance",margin=None,
-                 augmentations="none",augmenter="augmenter0"):
+                 augmentations="none",augmenter="noaugmenter"):
         """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
         filteer them.
 
@@ -29,6 +29,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             balance: str enum {nobalance,balance} indicating the class used to balance images
             margin: opt int, argument for the BalanceClass1 class
+            augmentations: opt str, list of augmentations to apply seprated by commas
+            augmenter: opt str, name of the augmenter to use
         """
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.patch_creator = patch_creator
