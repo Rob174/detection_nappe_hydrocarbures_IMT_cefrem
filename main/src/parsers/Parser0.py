@@ -31,10 +31,10 @@ class Parser0(BaseClass):
                     '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
                     '-balance_mg':['balance_margin',10,int,"Indicate the margin of supplementary image for one class"],
                     # Augmentations
-                    '-augmenter_img':['augmenter_img',str,"noaugmenter","Indicate which augmenter to use to apply transformations on source image"],
-                    '-augmentations_img':['augmentations_img',str,"none","Indicate the augmentations to apply to images in the order desired seprated by commas"],
-                    '-augmenter_patch':['augmenter',str,"noaugmenter","Indicate which augmenter to use to use to apply transformations on patches"],
-                    '-augmentations_patch':['augmentations_patch',str,"none","Indicate the augmentations to apply to patches in the order desired seprated by commas"],
+                    '-augmenter_img':['augmenter_img',"noaugmenter",str,"Indicate which augmenter to use to apply transformations on source image"],
+                    '-augmentations_img':['augmentations_img',"none",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
+                    '-augmenter_patch':['augmenter',"noaugmenter",str,"Indicate which augmenter to use to use to apply transformations on patches"],
+                    '-augmentations_patch':['augmentations_patch',"none",str,"Indicate the augmentations to apply to patches in the order desired seprated by commas"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"seep,spill",str,"Indicate the class used for training separated by an underscore"],
