@@ -22,7 +22,8 @@ class ClassificationPatch1(ClassificationPatch):
                  augmentations_patch="none",augmenter_patch="noaugmenter"):
 
         self.attr_name = self.__class__.__name__
-        super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin,augmentations,augmenter)
+        super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,margin,
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
         self.attr_classes_to_use = classes_to_use

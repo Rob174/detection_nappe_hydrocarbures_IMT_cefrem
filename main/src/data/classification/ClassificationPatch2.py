@@ -21,7 +21,8 @@ class ClassificationPatch2(ClassificationPatch):
             augmentations: opt str, list of augmentations to apply seprated by commas
             augmenter: opt str, name of the augmenter to use
         """
-        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin,augmentations,augmenter)
+        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin,
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
