@@ -187,13 +187,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
         for id in range(num_patches):
             patch,reject = self.patch_creator(last_image, name, patch_id=id)
             liste_patches.append([patch])
+            liste_patches[id].append(reject)
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
             patch,reject = self.patch_creator(annotations, name, patch_id=id)
             classif = self.make_classification_label(patch)
             # we ignore balancing rejects
-            liste_patches[id].append(classif[0])
-            liste_patches[id].append(reject)
+            liste_patches[id].insert(1,classif[0])
         return liste_patches
 
     def __len__(self) -> int:

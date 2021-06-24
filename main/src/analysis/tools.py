@@ -49,8 +49,10 @@ class RGB_Overlay_Patch:
         ) # prepare the progress bar -> tell which columns to display
         with progress: # progress bar manager to use the progress bar
             progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
+            skipped = 0
             for id,[input,output,filter] in enumerate(patches):
                 if filter is True: # skip the image if the dataset ask to skip this patch (can be for multiple reasons -> see DatasetFactory parameters supplied)
+                    skipped += 1
                     continue
                 input_adapted = np.stack((input,input,input),axis=0) # convert patch to rgb
                 # pytorch can only make predictions for batches of images. That is why we create a "batch" of one image by adding one dimension to the image:
@@ -87,42 +89,64 @@ class RGB_Overlay_Patch:
                 overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_true * blending_factor
                 overlay_pred[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_pred * blending_factor
                 progress.update(progression, advance=1)
+        print(f"skipped {skipped}")
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-06-19_04h32min09s_'
+    choice_folder1 = '2021-06-24_00h33min02s_'
     from main.src.models.ModelFactory import ModelFactory
-    import json
-
-    FolderInfos.init(test_without_data=True)
-    folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
-    with open(folder + choice_folder1 + "parameters.json", "r") as fp:
-        dico = json.load(fp)
-
-    rgb_overlay = RGB_Overlay_Patch(dataset_name="classificationpatch1", usage_type="classification",
-                                    patch_creator="fixed_px",
-                                    grid_size=dico["data"]["attr_patch_creator"]["attr_grid_size_px"],
-                                    input_size=dico["data"]["attr_dataset"]["attr_resizer"][
-                                        "attr_out_size_w"],
-                                    classes_to_use=dico["data"]["attr_dataset"]["attr_classes_to_use"]
-                                    )
-    epoch = 0
-    iteration = 60835
-    import torch
+    from main.src.analysis.tools import RGB_Overlay_Patch
+    import json, os
 
     name = "027481_0319CB_0EB7"
+    FolderInfos.init(test_without_data=True)
+    folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
 
-    device = torch.device("cuda") # get the gpu
-    model = ModelFactory(model_name=dico["model"]["attr_model_name"], num_classes=dico["model"]["attr_num_classes"])() # create and get the model
-    model.to(device) # put it on the gpu
-    model.load_state_dict(torch.load(f"{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt")) # load pretrained weights
-    array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device) # create the overlay (use method __call__)
+    if os.path.exists(folder + choice_folder1 + "_" + name + "_rgb_overlay_pred.png") is True:
+        print("loading from cache")
+        import matplotlib.pyplot as plt
+        from PIL import Image
 
-    import matplotlib.pyplot as plt
-    # show the result in two separated figures
-    plt.figure(figsize=(10,10))
-    plt.imshow(array_overlay[0])
-    plt.figure(figsize=(10,10))
-    plt.imshow(array_overlay[1])
-    plt.show()
-    print(array_overlay)
+        image_true = Image.open(folder + choice_folder1 + "_" + name + "_rgb_overlay_true.png")
+        image_pred = Image.open(folder + choice_folder1 + "_" + name + "_rgb_overlay_pred.png")
+        plt.figure(figsize=(10, 10))
+        plt.imshow(image_true)
+        plt.figure(figsize=(10, 10))
+        plt.imshow(image_pred)
+        plt.show()
+    else:
+        print("not already computed, processing...")
+        with open(folder + choice_folder1 + "parameters.json", "r") as fp:
+            dico = json.load(fp)
+
+        rgb_overlay = RGB_Overlay_Patch(dataset_name="classificationpatch1", usage_type="classification",
+                                        patch_creator="fixed_px",
+                                        grid_size=dico["data"]["attr_patch_creator"]["attr_grid_size_px"],
+                                        input_size=dico["data"]["attr_dataset"]["attr_resizer"][
+                                            "attr_out_size_w"],
+                                        classes_to_use=dico["data"]["attr_dataset"]["attr_classes_to_use"]
+                                        )
+        epoch = 0
+        iteration = 60835
+        import torch
+
+        device = torch.device("cuda")
+        model = ModelFactory(model_name=dico["model"]["attr_model_name"],
+                             num_classes=dico["model"]["attr_num_classes"])()
+        model.to(device)
+        model.load_state_dict(torch.load(f"{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt"))
+        array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device)
+
+        import matplotlib.pyplot as plt
+
+        plt.figure(figsize=(10, 10))
+        plt.imshow(array_overlay[0])
+        plt.gcf().text(0.02, 0.75, f"RGB with order {dico['data']['attr_dataset']['attr_classes_to_use']}", fontsize=14)
+        plt.savefig(f"{folder}{choice_folder1}_{name}_rgb_overlay_true.png")
+        plt.figure(figsize=(10, 10))
+        plt.imshow(array_overlay[1])
+        plt.gcf().text(0.02, 0.75, f"RGB with order {dico['data']['attr_dataset']['attr_classes_to_use']}", fontsize=14)
+        plt.savefig(f"{folder}{choice_folder1}_{name}_rgb_overlay_pred.png")
+        plt.figure(figsize=(10, 10))
+        plt.imshow(array_overlay[2], cmap="gray")
+        plt.show()
