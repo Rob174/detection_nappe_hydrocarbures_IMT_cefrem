@@ -113,10 +113,9 @@ As no parameters produces better performances, we will investigate:
 - ⏳ playing with learning rate
 - ⏳ with / without algo balance
 - ✔️ with / without algo margins
-- ⏲️ Augmentations
-  - ⏲️ mirrors
-  - rotation with step of 15°
-  - reducing the size (⚠️ too small objects)
+- ✔️ Augmentations
+  - ✔️ mirrors
+  - ✔️ rotation with step of 15°
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
@@ -125,8 +124,6 @@ As no parameters produces better performances, we will investigate:
 Priorities 1️⃣: high priority ; 9️⃣low priority
 
 - 3️⃣ Augmentations
-  - mirrors
-  - rotation with step of 15°
   - reducing the size (⚠️ too small objects)
 - unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 - Training to launch:
