@@ -4,6 +4,22 @@ from main.src.data.classification.ClassificationPatch import ClassificationPatch
 import numpy as np
 
 class VectorizzedClassificationPatch(ClassificationPatch):
+    """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
+    filter them.
+
+    It is a specialized version that allows to process multiple items together
+
+    Args:
+        patch_creator: the object of PatchCreator0 class managing patches
+        input_size: the size of the image provided as input to the model ⚠️
+        limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+        balance: str enum {nobalance,balance} indicating the class used to balance images
+        margin: opt int, argument for the BalanceClass1 class
+        augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
+        augmenter_img: opt str, name of the augmenter to use on source image
+        augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
+        augmenter_patch: opt str, name of the augmenter to use on patches
+    """
     def __init__(self,*args,**kargs):
         super(VectorizzedClassificationPatch, self).__init__(*args,**kargs)
     def getitem(self, id: List[int]):
