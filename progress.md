@@ -110,13 +110,13 @@ As no parameters produces better performances, we will investigate:
   - 
 
 ## 24-06-06
-- ⏳ playing with learning rate
-- ⏳ with / without algo balance
+- ⏲️ playing with learning rate
+- ✔️ with / without algo balance
 - ✔️ with / without algo margins
 - 🔨 Augmentations
   - ✔️ mirrors
   - ✔️ rotation with step of 15°
-- patch augmentation vs iimage augmentation
+- 🔨 patch augmentation vs iimage augmentation
 - ⏲️ Doc
 - Debug overlay
 
