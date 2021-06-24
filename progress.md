@@ -109,6 +109,14 @@ As no parameters produces better performances, we will investigate:
   - ✔️ works
   - 
 
+## 24-06-06
+- ⏳ playing with learning rate
+- ⏳ with / without algo balance
+- ✔️ with / without algo margins
+- ⏲️ Augmentations
+  - ⏲️ mirrors
+  - rotation with step of 15°
+  - reducing the size (⚠️ too small objects)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
@@ -120,12 +128,6 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
   - mirrors
   - rotation with step of 15°
   - reducing the size (⚠️ too small objects)
-- 1️⃣ Standardize data
-  - Compute statistics (mean and standard deviation) of the global dataset
-  - Use these statistics to apply standardization
-- 2️⃣ Play with the learning rate
 - unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 - Training to launch:
-  - with / without algo balance
-  - reducing lr
   - unfreeze all layers of the pretrained model
