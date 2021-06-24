@@ -113,7 +113,7 @@ As no parameters produces better performances, we will investigate:
 - ⏳ playing with learning rate
 - ⏳ with / without algo balance
 - ✔️ with / without algo margins
-- ✔️ Augmentations
+- 🔨 Augmentations
   - ✔️ mirrors
   - ✔️ rotation with step of 15°
 - ⏲️ Doc
