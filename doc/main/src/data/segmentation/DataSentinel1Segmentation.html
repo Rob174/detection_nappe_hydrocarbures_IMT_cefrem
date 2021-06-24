@@ -49,11 +49,14 @@ class DataSentinel1Segmentation(BaseClass):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             input_size: the size of the image provided as input to the model ⚠️
         &#34;&#34;&#34;
+        self.attr_with_normalization = True
         self.attr_name = self.__class__.__name__
         # Opening the cache
+        with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;,&#34;r&#34;) as fp:
+            self.images_infos = json.load(fp)
+        with open(f&#34;{FolderInfos.input_data_folder}pixel_stats.json&#34;,&#34;r&#34;) as fp:
+            self.pixel_stats = json.load(fp)
         self.images = File(f&#34;{FolderInfos.input_data_folder}images_preprocessed.hdf5&#34;, &#34;r&#34;)
-        with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;) as fp:
-            self.images_infos = copy.deepcopy(json.load(fp))
         self.annotations_labels = File(f&#34;{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5&#34;, &#34;r&#34;)
         self.attr_limit_num_images = limit_num_images
         self.attr_class_mapping = TwoWayDict( # a twoway dict allowing to store pairs of hashable objects:
@@ -65,12 +68,16 @@ class DataSentinel1Segmentation(BaseClass):
         #concretely we can ask:
         # - self.attr_class_mapping[0] -&gt; returns &#34;other&#34; as a normal dict
         # - self.attr_class_mapping[&#34;other&#34;] -&gt; returns 0 with this new type of object
-        self.attr_original_class_mapping = {k:v for k,v in self.attr_class_mapping.items()}
+        self.attr_original_class_mapping = TwoWayDict({k:v for k,v in self.attr_class_mapping.items()})
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = &#34;dataset&#34;
     def __get__(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
+    def getimage(self,name: str) -&gt; np.ndarray:
+        img = np.array(self.images[name])
+        img = (img-self.pixel_stats[&#34;mean&#34;])/self.pixel_stats[&#34;std&#34;]
+        return img
     def getitem(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
         &#34;&#34;&#34;Magic python method to get the item of global id asked
 
@@ -82,8 +89,9 @@ class DataSentinel1Segmentation(BaseClass):
             - annotation, np.ndarray 2d annotation resized to the size specified in constructor
         &#34;&#34;&#34;
         # Get the image uniq id corresponding to this global id
+
         item = self.get_all_items()[id]
-        img = self.images[item]
+        img = self.getimage(item)
         self.current_name = item # for tests if we need access to the last image processed
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
     @lru_cache(maxsize=1)
@@ -159,11 +167,14 @@ class DataSentinel1Segmentation(BaseClass):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             input_size: the size of the image provided as input to the model ⚠️
         &#34;&#34;&#34;
+        self.attr_with_normalization = True
         self.attr_name = self.__class__.__name__
         # Opening the cache
+        with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;,&#34;r&#34;) as fp:
+            self.images_infos = json.load(fp)
+        with open(f&#34;{FolderInfos.input_data_folder}pixel_stats.json&#34;,&#34;r&#34;) as fp:
+            self.pixel_stats = json.load(fp)
         self.images = File(f&#34;{FolderInfos.input_data_folder}images_preprocessed.hdf5&#34;, &#34;r&#34;)
-        with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;) as fp:
-            self.images_infos = copy.deepcopy(json.load(fp))
         self.annotations_labels = File(f&#34;{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5&#34;, &#34;r&#34;)
         self.attr_limit_num_images = limit_num_images
         self.attr_class_mapping = TwoWayDict( # a twoway dict allowing to store pairs of hashable objects:
@@ -175,12 +186,16 @@ class DataSentinel1Segmentation(BaseClass):
         #concretely we can ask:
         # - self.attr_class_mapping[0] -&gt; returns &#34;other&#34; as a normal dict
         # - self.attr_class_mapping[&#34;other&#34;] -&gt; returns 0 with this new type of object
-        self.attr_original_class_mapping = {k:v for k,v in self.attr_class_mapping.items()}
+        self.attr_original_class_mapping = TwoWayDict({k:v for k,v in self.attr_class_mapping.items()})
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = &#34;dataset&#34;
     def __get__(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
+    def getimage(self,name: str) -&gt; np.ndarray:
+        img = np.array(self.images[name])
+        img = (img-self.pixel_stats[&#34;mean&#34;])/self.pixel_stats[&#34;std&#34;]
+        return img
     def getitem(self, id: int) -&gt; Tuple[np.ndarray, np.ndarray]:
         &#34;&#34;&#34;Magic python method to get the item of global id asked
 
@@ -192,8 +207,9 @@ class DataSentinel1Segmentation(BaseClass):
             - annotation, np.ndarray 2d annotation resized to the size specified in constructor
         &#34;&#34;&#34;
         # Get the image uniq id corresponding to this global id
+
         item = self.get_all_items()[id]
-        img = self.images[item]
+        img = self.getimage(item)
         self.current_name = item # for tests if we need access to the last image processed
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
     @lru_cache(maxsize=1)
@@ -286,6 +302,21 @@ def get_all_items(self):
     return list(self.images.keys())</code></pre>
 </details>
 </dd>
+<dt id="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getimage"><code class="name flex">
+<span>def <span class="ident">getimage</span></span>(<span>self, name: str) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getimage(self,name: str) -&gt; np.ndarray:
+    img = np.array(self.images[name])
+    img = (img-self.pixel_stats[&#34;mean&#34;])/self.pixel_stats[&#34;std&#34;]
+    return img</code></pre>
+</details>
+</dd>
 <dt id="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem"><code class="name flex">
 <span>def <span class="ident">getitem</span></span>(<span>self, id: int) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
@@ -316,8 +347,9 @@ def get_all_items(self):
         - annotation, np.ndarray 2d annotation resized to the size specified in constructor
     &#34;&#34;&#34;
     # Get the image uniq id corresponding to this global id
+
     item = self.get_all_items()[id]
-    img = self.images[item]
+    img = self.getimage(item)
     self.current_name = item # for tests if we need access to the last image processed
     return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])</code></pre>
 </details>
@@ -345,6 +377,7 @@ def get_all_items(self):
 <ul class="">
 <li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close">close</a></code></li>
 <li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items">get_all_items</a></code></li>
+<li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getimage" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getimage">getimage</a></code></li>
 <li><code><a title="main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem" href="#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem">getitem</a></code></li>
 </ul>
 </li>

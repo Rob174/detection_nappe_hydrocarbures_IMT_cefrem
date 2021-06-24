@@ -97,7 +97,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         Returns:
             tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
         &#34;&#34;&#34;
-        img = self.images[name_src_img] # read image from the hdf5 file
+        img = self.getimage(name_src_img) # read image from the hdf5 file
         transform_array = self.images_infos[name_src_img][&#34;transform&#34;] # get the corresponding transformation array
         transform_array = np.array(transform_array)
         # transfer it into a rasterio AffineTransformation object
@@ -107,7 +107,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         posx,posy = self.patch_creator.get_position_patch(patch_id=patch_id,input_shape=img.shape)
         # Get the corresponding geographical coordinates
         return rowcol(transform,posx,posy)
-
+    def __getitem__(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]:
+        return self.getitem(id)
     def getitem(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
 
@@ -132,13 +133,11 @@ class ClassificationPatch(DataSentinel1Segmentation):
         img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
         annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
         # we reject an image if it contains margins (cf patchcreator)
-        # save the resolution of the patch if it has not already been seen
-        if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
-            self.save_resolution(item, img_patch) #
         # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
+        input = (input-self.pixel_stats[&#34;mean&#34;])/self.pixel_stats[&#34;std&#34;]
         # Create the classification label with the proper technic ⚠️⚠️ inheritance
         classif,balance_reject = self.make_classification_label(annotations_patch) # ~ 2 ms
         # As the balancing operation are done in the make_classification_label method, we reject an image
@@ -182,12 +181,12 @@ class ClassificationPatch(DataSentinel1Segmentation):
             - classif: np.ndarray classification label as returned by make_classification_label
             - reject: bool reject only based on margins
         &#34;&#34;&#34;
-        last_image = np.copy(np.array(self.images[name], dtype=np.float32))
+        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
         liste_patches = []
         num_patches = self.patch_creator.num_available_patches(last_image)
         # Create all the patches of input images
         for id in range(num_patches):
-            patch,reject = self.patch_creator(last_image, name, patch_id=id, keep=True)
+            patch,reject = self.patch_creator(last_image, name, patch_id=id)
             liste_patches.append([patch])
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
@@ -200,6 +199,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     def __len__(self) -&gt; int:
         &#34;&#34;&#34;Magic method called when we make len(obj)&#34;&#34;&#34;
+
         return len(self.get_all_items())
 
 # Tests in DatasetFactory</code></pre>
@@ -294,7 +294,7 @@ filteer them.</p>
         Returns:
             tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
         &#34;&#34;&#34;
-        img = self.images[name_src_img] # read image from the hdf5 file
+        img = self.getimage(name_src_img) # read image from the hdf5 file
         transform_array = self.images_infos[name_src_img][&#34;transform&#34;] # get the corresponding transformation array
         transform_array = np.array(transform_array)
         # transfer it into a rasterio AffineTransformation object
@@ -304,7 +304,8 @@ filteer them.</p>
         posx,posy = self.patch_creator.get_position_patch(patch_id=patch_id,input_shape=img.shape)
         # Get the corresponding geographical coordinates
         return rowcol(transform,posx,posy)
-
+    def __getitem__(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]:
+        return self.getitem(id)
     def getitem(self, id: Union[int,List[int]]) -&gt; Tuple[np.ndarray, np.ndarray,bool]: # btwn 25 and 50 ms
         &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
 
@@ -329,13 +330,11 @@ filteer them.</p>
         img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
         annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
         # we reject an image if it contains margins (cf patchcreator)
-        # save the resolution of the patch if it has not already been seen
-        if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
-            self.save_resolution(item, img_patch) #
         # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
         # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
         input = np.stack((input, input, input), axis=0) # 0 ns most of the time
+        input = (input-self.pixel_stats[&#34;mean&#34;])/self.pixel_stats[&#34;std&#34;]
         # Create the classification label with the proper technic ⚠️⚠️ inheritance
         classif,balance_reject = self.make_classification_label(annotations_patch) # ~ 2 ms
         # As the balancing operation are done in the make_classification_label method, we reject an image
@@ -379,12 +378,12 @@ filteer them.</p>
             - classif: np.ndarray classification label as returned by make_classification_label
             - reject: bool reject only based on margins
         &#34;&#34;&#34;
-        last_image = np.copy(np.array(self.images[name], dtype=np.float32))
+        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
         liste_patches = []
         num_patches = self.patch_creator.num_available_patches(last_image)
         # Create all the patches of input images
         for id in range(num_patches):
-            patch,reject = self.patch_creator(last_image, name, patch_id=id, keep=True)
+            patch,reject = self.patch_creator(last_image, name, patch_id=id)
             liste_patches.append([patch])
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
@@ -397,6 +396,7 @@ filteer them.</p>
 
     def __len__(self) -&gt; int:
         &#34;&#34;&#34;Magic method called when we make len(obj)&#34;&#34;&#34;
+
         return len(self.get_all_items())</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -472,7 +472,7 @@ def get_all_items(self):
     Returns:
         tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
     &#34;&#34;&#34;
-    img = self.images[name_src_img] # read image from the hdf5 file
+    img = self.getimage(name_src_img) # read image from the hdf5 file
     transform_array = self.images_infos[name_src_img][&#34;transform&#34;] # get the corresponding transformation array
     transform_array = np.array(transform_array)
     # transfer it into a rasterio AffineTransformation object
@@ -531,13 +531,11 @@ bool, indicate if we need to reject this sample ;</dd>
     img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
     annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
     # we reject an image if it contains margins (cf patchcreator)
-    # save the resolution of the patch if it has not already been seen
-    if (item, patch_id) in self.img_not_seen: # Gpe of 2 lines: ~ 1 ms
-        self.save_resolution(item, img_patch) #
     # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
     input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
     input = np.stack((input, input, input), axis=0) # 0 ns most of the time
+    input = (input-self.pixel_stats[&#34;mean&#34;])/self.pixel_stats[&#34;std&#34;]
     # Create the classification label with the proper technic ⚠️⚠️ inheritance
     classif,balance_reject = self.make_classification_label(annotations_patch) # ~ 2 ms
     # As the balancing operation are done in the make_classification_label method, we reject an image
@@ -620,12 +618,12 @@ bool, indicate if we need to reject this sample ;</dd>
         - classif: np.ndarray classification label as returned by make_classification_label
         - reject: bool reject only based on margins
     &#34;&#34;&#34;
-    last_image = np.copy(np.array(self.images[name], dtype=np.float32))
+    last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
     liste_patches = []
     num_patches = self.patch_creator.num_available_patches(last_image)
     # Create all the patches of input images
     for id in range(num_patches):
-        patch,reject = self.patch_creator(last_image, name, patch_id=id, keep=True)
+        patch,reject = self.patch_creator(last_image, name, patch_id=id)
         liste_patches.append([patch])
     annotations = np.array(self.annotations_labels[name], dtype=np.float32)
     for id in range(num_patches):

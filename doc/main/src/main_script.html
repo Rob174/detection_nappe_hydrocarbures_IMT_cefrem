@@ -28,15 +28,15 @@
 </summary>
 <pre><code class="python">import json
 import subprocess
-import sys
+import os, sys
+sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem&#34;)
+sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main&#34;)
+sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src&#34;)
+sys.path.append(r&#34;C:\Users\robin\Documents\projets&#34;)
 
 from main.src.training.Trainer0 import Trainer0
 from main.src.training.metrics_factory import MetricsFactory
 
-path_root_project = r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_inria_cefrem&#34;
-sys.path.append(path_root_project)
-sys.path.append(r&#34;C:/Users/robin/Documents/projets/&#34;)
-sys.path.append(path_root_project + f&#34;\src&#34;)
 
 from main.src.training.loss_factory import LossFactory
 from main.src.training.optimizers_factory import OptimizersFactory
@@ -53,7 +53,6 @@ from git import Repo
 
 if __name__ == &#34;__main__&#34;:
     FolderInfos.init()
-    dico_save_parameters = {&#34;data&#34;: {}, &#34;model&#34;: {}}
     saver = Saver0(FolderInfos.base_filename+&#34;parameters.json&#34;)
     parser = Parser0()
     saver(parser)

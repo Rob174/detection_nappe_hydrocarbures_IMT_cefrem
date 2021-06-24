@@ -156,10 +156,7 @@ class Trainer0(BaseClass):
             self.model.to(device)
             current_loss = -1
             for epoch in range(self.attr_num_epochs):
-                # print(&#34;epoch&#34;)
-
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
-
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         input,output = opt_tr_batch
@@ -207,7 +204,7 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
                         self.saver(self).save()
 
-                        if loss &lt; np.mean(self.attr_valid_loss) and i % 100 == 0:
+                        if loss &lt; np.mean(self.attr_valid_loss) or i % 1000 == 0:
                             torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
 
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
@@ -378,10 +375,7 @@ class Trainer0(BaseClass):
             self.model.to(device)
             current_loss = -1
             for epoch in range(self.attr_num_epochs):
-                # print(&#34;epoch&#34;)
-
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
-
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         input,output = opt_tr_batch
@@ -429,7 +423,7 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
                         self.saver(self).save()
 
-                        if loss &lt; np.mean(self.attr_valid_loss) and i % 100 == 0:
+                        if loss &lt; np.mean(self.attr_valid_loss) or i % 1000 == 0:
                             torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
 
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
@@ -509,10 +503,7 @@ class Trainer0(BaseClass):
         self.model.to(device)
         current_loss = -1
         for epoch in range(self.attr_num_epochs):
-            # print(&#34;epoch&#34;)
-
             for i, [input, output,reject] in enumerate(self.dataset_tr):
-
                 opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                 if opt_tr_batch is not None:
                     input,output = opt_tr_batch
@@ -560,7 +551,7 @@ class Trainer0(BaseClass):
                     self.saver(self.metrics)
                     self.saver(self).save()
 
-                    if loss &lt; np.mean(self.attr_valid_loss) and i % 100 == 0:
+                    if loss &lt; np.mean(self.attr_valid_loss) or i % 1000 == 0:
                         torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
 
                 self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
