@@ -4,6 +4,8 @@ import numpy as np
 import psutil
 
 from main.FolderInfos import FolderInfos
+from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
+from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.TwoWayDict import  Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
 from main.src.data.balance_classes.no_balance import NoBalance
@@ -16,7 +18,8 @@ from rasterio.transform import Affine,rowcol
 
 class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
-                 limit_num_images: int = None, balance="nobalance",margin=None):
+                 limit_num_images: int = None, balance="nobalance",margin=None,
+                 augmentations="none",augmenter="augmenter0"):
         """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
         filteer them.
 
@@ -39,6 +42,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
             self.attr_balance = BalanceClasses1(classes_indexes=self.attr_class_mapping.keys(Way.ORIGINAL_WAY),
                                                 margin=margin)
+        if augmentations != "none":
+            if augmenter == "augmenter0":
+                self.attr_augmenter = Augmenter0(allowed_transformations=augmentations)
+            else:
+                raise NotImplementedError(f"{augmenter} is not implemented")
+        else:
+            self.attr_augmenter = NoAugmenter()
 
 
     @lru_cache(maxsize=1)
@@ -100,6 +110,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         img = self.images[item] # 1ms but 0 most of the time
         # get the source true classification / annotation from the other hdf5 cache
         annotations = self.annotations_labels[item] # 1ms but 0 most of the time
+        # Make augmentations if necessary (thanks to NoAugment class
+        img,annotations = self.attr_augmenter.transform(img,annotations)
         # get the patch with the selected id for the input image and the annotation
         ## two lines: btwn 21 and 54 ms
         img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
