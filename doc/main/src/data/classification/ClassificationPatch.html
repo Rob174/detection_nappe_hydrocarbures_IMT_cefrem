@@ -47,7 +47,7 @@ from rasterio.transform import Affine,rowcol
 class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance=&#34;nobalance&#34;,margin=None,
-                 augmentations=&#34;none&#34;,augmenter=&#34;augmenter0&#34;):
+                 augmentations=&#34;none&#34;,augmenter=&#34;noaugmenter&#34;):
         &#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
         filteer them.
 
@@ -57,6 +57,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             balance: str enum {nobalance,balance} indicating the class used to balance images
             margin: opt int, argument for the BalanceClass1 class
+            augmentations: opt str, list of augmentations to apply seprated by commas
+            augmenter: opt str, name of the augmenter to use
         &#34;&#34;&#34;
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.patch_creator = patch_creator
@@ -228,7 +230,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch"><code class="flex name class">
 <span>class <span class="ident">ClassificationPatch</span></span>
-<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, balance='nobalance', margin=None, augmentations='none', augmenter='augmenter0')</span>
+<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, balance='nobalance', margin=None, augmentations='none', augmenter='noaugmenter')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
@@ -246,6 +248,10 @@ filteer them.</p>
 <dd>str enum {nobalance,balance} indicating the class used to balance images</dd>
 <dt><strong><code>margin</code></strong></dt>
 <dd>opt int, argument for the BalanceClass1 class</dd>
+<dt><strong><code>augmentations</code></strong></dt>
+<dd>opt str, list of augmentations to apply seprated by commas</dd>
+<dt><strong><code>augmenter</code></strong></dt>
+<dd>opt str, name of the augmenter to use</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -254,7 +260,7 @@ filteer them.</p>
 <pre><code class="python">class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance=&#34;nobalance&#34;,margin=None,
-                 augmentations=&#34;none&#34;,augmenter=&#34;augmenter0&#34;):
+                 augmentations=&#34;none&#34;,augmenter=&#34;noaugmenter&#34;):
         &#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
         filteer them.
 
@@ -264,6 +270,8 @@ filteer them.</p>
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             balance: str enum {nobalance,balance} indicating the class used to balance images
             margin: opt int, argument for the BalanceClass1 class
+            augmentations: opt str, list of augmentations to apply seprated by commas
+            augmenter: opt str, name of the augmenter to use
         &#34;&#34;&#34;
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.patch_creator = patch_creator

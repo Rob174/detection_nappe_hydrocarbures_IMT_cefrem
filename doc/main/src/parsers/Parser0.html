@@ -58,6 +58,8 @@ class Parser0(BaseClass):
                     &#39;-bs&#39;:[&#39;batch_size&#39;,10,int,&#34;Indique le nombre d&#39;images par batch&#34;],
                     &#39;-balance&#39;:[&#39;balance&#39;,&#34;balanceclasses1&#34;,str,&#34;Indicate the policy to balance classes&#34;],
                     &#39;-balance_mg&#39;:[&#39;balance_margin&#39;,10,int,&#34;Indicate the margin of supplementary image for one class&#34;],
+                    &#39;-augmenter&#39;:[&#39;augmenter&#39;,str,&#34;noaugmenter&#34;,&#34;Indicate which augmenter to use&#34;],
+                    &#39;-augmentations&#39;:[&#39;augmentations&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;],
                     # Model
                     &#39;-model&#39;:[&#39;model&#39;,&#34;resnet18&#34;,str,&#34;To choose the network architecture used {&#34;],
                     &#39;-classes&#39;:[&#39;classes&#39;,&#34;seep,spill&#34;,str,&#34;Indicate the class used for training separated by an underscore&#34;],
@@ -144,6 +146,8 @@ class Parser0(BaseClass):
                     &#39;-bs&#39;:[&#39;batch_size&#39;,10,int,&#34;Indique le nombre d&#39;images par batch&#34;],
                     &#39;-balance&#39;:[&#39;balance&#39;,&#34;balanceclasses1&#34;,str,&#34;Indicate the policy to balance classes&#34;],
                     &#39;-balance_mg&#39;:[&#39;balance_margin&#39;,10,int,&#34;Indicate the margin of supplementary image for one class&#34;],
+                    &#39;-augmenter&#39;:[&#39;augmenter&#39;,str,&#34;noaugmenter&#34;,&#34;Indicate which augmenter to use&#34;],
+                    &#39;-augmentations&#39;:[&#39;augmentations&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;],
                     # Model
                     &#39;-model&#39;:[&#39;model&#39;,&#34;resnet18&#34;,str,&#34;To choose the network architecture used {&#34;],
                     &#39;-classes&#39;:[&#39;classes&#39;,&#34;seep,spill&#34;,str,&#34;Indicate the class used for training separated by an underscore&#34;],

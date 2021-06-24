@@ -63,6 +63,8 @@ class VectorizzedClassificationPatch(ClassificationPatch):
         for item_name, liste_patches in dico_item_patches.items():
             img = self.getimage(item_name)
             annotations = self.annotations_labels[item_name]
+            # Make augmentations if necessary (thanks to NoAugment class
+            img,annotations = self.attr_augmenter.transform(img,annotations)
             # from here can be parallellized (gpu ??)
             patches_ids = list(map(lambda x: x[0], liste_patches))
             for patch_id, original_index in patches_ids:
@@ -106,6 +108,10 @@ filteer them.</p>
 <dd>str enum {nobalance,balance} indicating the class used to balance images</dd>
 <dt><strong><code>margin</code></strong></dt>
 <dd>opt int, argument for the BalanceClass1 class</dd>
+<dt><strong><code>augmentations</code></strong></dt>
+<dd>opt str, list of augmentations to apply seprated by commas</dd>
+<dt><strong><code>augmenter</code></strong></dt>
+<dd>opt str, name of the augmenter to use</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -143,6 +149,8 @@ filteer them.</p>
         for item_name, liste_patches in dico_item_patches.items():
             img = self.getimage(item_name)
             annotations = self.annotations_labels[item_name]
+            # Make augmentations if necessary (thanks to NoAugment class
+            img,annotations = self.attr_augmenter.transform(img,annotations)
             # from here can be parallellized (gpu ??)
             patches_ids = list(map(lambda x: x[0], liste_patches))
             for patch_id, original_index in patches_ids:
@@ -217,6 +225,8 @@ bool, indicate if we need to reject this sample</li>
     for item_name, liste_patches in dico_item_patches.items():
         img = self.getimage(item_name)
         annotations = self.annotations_labels[item_name]
+        # Make augmentations if necessary (thanks to NoAugment class
+        img,annotations = self.attr_augmenter.transform(img,annotations)
         # from here can be parallellized (gpu ??)
         patches_ids = list(map(lambda x: x[0], liste_patches))
         for patch_id, original_index in patches_ids:
