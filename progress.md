@@ -116,6 +116,7 @@ As no parameters produces better performances, we will investigate:
 - 🔨 Augmentations
   - ✔️ mirrors
   - ✔️ rotation with step of 15°
+- patch augmentation vs iimage augmentation
 - ⏲️ Doc
 - Debug overlay
 
