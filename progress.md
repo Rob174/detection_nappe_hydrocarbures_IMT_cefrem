@@ -116,6 +116,8 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Augmentations
   - ✔️ mirrors
   - ✔️ rotation with step of 15°
+- ⏲️ Doc
+- Debug overlay
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
