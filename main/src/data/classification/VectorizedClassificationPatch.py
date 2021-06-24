@@ -36,12 +36,14 @@ class VectorizzedClassificationPatch(ClassificationPatch):
             img = self.getimage(item_name)
             annotations = self.annotations_labels[item_name]
             # Make augmentations if necessary (thanks to NoAugment class
-            img,annotations = self.attr_augmenter.transform(img,annotations)
+            img,annotations = self.attr_img_augmenter.transform(img,annotations)
             # from here can be parallellized (gpu ??)
             patches_ids = list(map(lambda x: x[0], liste_patches))
             for patch_id, original_index in patches_ids:
                 img_patch, reject = self.patch_creator(img, item_name, patch_id=patch_id)
                 annotations_patch, reject = self.patch_creator(annotations, item_name, patch_id=patch_id)
+                if reject is False:
+                    img_patch, annotations_patch = self.attr_patch_augmenter.transform(img_patch, annotations_patch)
                 dico_values_patches[original_index] = img_patch
                 dico_values_patch_annotations[original_index] = annotations_patch
                 dico_values_patch_rejects[original_index] = reject

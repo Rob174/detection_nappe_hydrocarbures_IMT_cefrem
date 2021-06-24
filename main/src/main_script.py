@@ -43,8 +43,10 @@ if __name__ == "__main__":
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
                              margin=arguments.balance_margin,
-                             augmenter=arguments.augmenter,
-                             augmentations=arguments.augmentations)
+                             augmenter_img=arguments.augmenter_img,
+                             augmentations_img=arguments.augmentations_img,
+                             augmenter_patch=arguments.augmenter_patch,
+                             augmentations_patch=arguments.augmentations_patch)
     saver["date"] = FolderInfos.id
     saver(dataset)
 
