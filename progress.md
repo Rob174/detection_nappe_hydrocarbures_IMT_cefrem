@@ -114,7 +114,7 @@ As no parameters produces better performances, we will investigate:
 - ⏳ with / without algo balance
 - ✔️ with / without algo margins
 - ⏲️ Augmentations
-  - mirrors
+  - ⏲️ mirrors
   - rotation with step of 15°
   - reducing the size (⚠️ too small objects)
 
