@@ -19,7 +19,8 @@ from rasterio.transform import Affine,rowcol
 class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance="nobalance",margin=None,
-                 augmentations="none",augmenter="noaugmenter"):
+                 augmentations_img="none",augmenter_img="noaugmenter",
+                 augmentations_patch="none",augmenter_patch="noaugmenter"):
         """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
         filteer them.
 
@@ -44,13 +45,20 @@ class ClassificationPatch(DataSentinel1Segmentation):
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
             self.attr_balance = BalanceClasses1(classes_indexes=self.attr_class_mapping.keys(Way.ORIGINAL_WAY),
                                                 margin=margin)
-        if augmentations != "none":
-            if augmenter == "augmenter0":
-                self.attr_augmenter = Augmenter0(allowed_transformations=augmentations)
+        if augmentations_img != "none":
+            if augmenter_img == "augmenter0":
+                self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
             else:
-                raise NotImplementedError(f"{augmenter} is not implemented")
+                raise NotImplementedError(f"{augmenter_img} is not implemented")
         else:
-            self.attr_augmenter = NoAugmenter()
+            self.attr_img_augmenter = NoAugmenter()
+        if augmentations_patch != "none":
+            if augmenter_patch == "augmenter0":
+                self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmenter_patch)
+            else:
+                raise NotImplementedError(f"{augmenter_patch} is not implemented")
+        else:
+            self.attr_patch_augmenter = NoAugmenter()
 
 
     @lru_cache(maxsize=1)
@@ -112,12 +120,15 @@ class ClassificationPatch(DataSentinel1Segmentation):
         img = self.images[item] # 1ms but 0 most of the time
         # get the source true classification / annotation from the other hdf5 cache
         annotations = self.annotations_labels[item] # 1ms but 0 most of the time
-        # Make augmentations if necessary (thanks to NoAugment class
-        img,annotations = self.attr_augmenter.transform(img,annotations)
+        # Make augmentations on input image if necessary (thanks to NoAugment class)
+        img,annotations = self.attr_img_augmenter.transform(img,annotations)
         # get the patch with the selected id for the input image and the annotation
         ## two lines: btwn 21 and 54 ms
         img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
         annotations_patch,reject = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
+        # Make augmentations on patch if necessary (thanks to NoAugment class) and if it is not rejected
+        if reject is False:
+            img_patch,annotations_patch = self.attr_patch_augmenter.transform(img_patch,annotations_patch)
         # we reject an image if it contains margins (cf patchcreator)
         # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes

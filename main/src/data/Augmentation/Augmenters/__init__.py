@@ -6,7 +6,7 @@ eventually how these augmentation are applied.... with the attribute attr_ synta
 
 They have to provide at least the following interface:
 
->>> class NoAugmenter(BaseClass):
+>>> class MyAugmenter(BaseClass):
 ...     def __init__(self,*args,**kargs):
 ...         # store informations about transformations in attr_... attributes
 ...     def transform(self,image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
