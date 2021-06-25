@@ -127,10 +127,14 @@ class Trainer0(BaseClass):
             device = torch.device("cuda")
             self.model.to(device)
             current_loss = -1
+            it_tr = 0
+            it_val = 0
+            opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
+                        it_tr += 1
                         input,output = opt_tr_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -155,15 +159,18 @@ class Trainer0(BaseClass):
                         self.metrics(prediction, output, "tr")
                         self.saver(self.metrics)
 
-                    try:
-                        input, output,reject = next(dataset_valid_iter)
-                    except StopIteration:
-                        # StopIteration is thrown if dataset ends
-                        # reinitialize data loader
-                        dataset_valid_iter = iter(self.dataset_valid)
-                        input, output,reject = next(dataset_valid_iter)
-                    opt_valid_batch = self.add_to_batch_valid(input,output,reject)
-                    if opt_valid_batch is not None:
+                    if opt_valid_batch is None:
+                        try:
+                            input, output,reject = next(dataset_valid_iter)
+                        except StopIteration:
+                            # StopIteration is thrown if dataset ends
+                            # reinitialize data loader
+                            dataset_valid_iter = iter(self.dataset_valid)
+                            input, output,reject = next(dataset_valid_iter)
+                        opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+
+                    else:
+                        it_val += 1
                         input,output = opt_valid_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -176,9 +183,12 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
                         self.saver(self).save()
 
-                        if loss < np.mean(self.attr_valid_loss) or i % 1000 == 0:
+                        if loss < np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
-
+                        opt_valid_batch = None
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
                 self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
+            self.saver(self.dataset)
+            self.saver(self.metrics)
+            self.saver(self).save()

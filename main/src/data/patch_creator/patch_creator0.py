@@ -9,16 +9,16 @@ from main.src.param_savers.BaseClass import BaseClass
 import time
 
 class Patch_creator0(BaseClass):
-    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
-        """Class creating and managing patches
+    """Class creating and managing patches
 
-        Args:
-            grid_size_px: size of the patch extracted from the original image
-            images_informations_preprocessed: dict from the json file containing images dataset informations
-            test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
-            exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
-                - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
-        """
+    Args:
+        grid_size_px: size of the patch extracted from the original image
+        images_informations_preprocessed: dict from the json file containing images dataset informations
+        test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+        exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+    """
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy="marginmorethan_1000"):
         self.attr_description = "Create a grid by taking a square of a constant pixel size."+\
                                 " It does not consider the resolution of each image."+\
                                 " It rejects a patch if it is not fully included in the original image"

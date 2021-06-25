@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Optional
 import numpy as np
 import psutil
 
@@ -125,6 +125,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # get the patch with the selected id for the input image and the annotation
         ## two lines: btwn 21 and 54 ms
         img_patch,reject = self.patch_creator(img, item, patch_id=patch_id) # btwn 10 ms and 50 ms
+        if reject is True:
+            return np.zeros((2,2),dtype=np.float32), np.zeros((2,2),dtype=np.float32), True # to save computation time and keep np array output
         annotations_patch,_ = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
         # Make augmentations on patch if necessary (thanks to NoAugment class) and if it is not rejected
         if reject is False:
