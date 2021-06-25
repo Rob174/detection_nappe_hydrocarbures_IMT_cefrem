@@ -19,11 +19,6 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
-import numpy as np
-
-import torch
-from rich.progress import Progress, TextColumn, BarColumn, DownloadColumn, TimeElapsedColumn, TimeRemainingColumn
-from git import Repo
 
 if __name__ == "__main__":
     FolderInfos.init()

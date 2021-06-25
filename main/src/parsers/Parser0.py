@@ -28,7 +28,7 @@ class Parser0(BaseClass):
                     '-grid_size':['grid_size',1000,int,"Indicate the grid size applied on the original image"],
                     '-in_size':['input_size',256,int,"Indicate the output size of the image obtained by resizing it after patches creation"],
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
-                    '-balance':['balance',"nobalance",str,"Indicate the policy to balance classes"],
+                    '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
                     # Augmentations
                     '-augmenter_img':['augmenter_img',"noaugmenter",str,"Indicate which augmenter to use to apply transformations on source image"],
                     '-augmentations_img':['augmentations_img',"none",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
@@ -38,7 +38,7 @@ class Parser0(BaseClass):
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by a comma"],
                     # Training
-                    '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
+                    '-num_epochs':['num_epochs',10,int,"Number of epochs / repetitions of the training dataset"],
                     '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],
                     '-loss':['loss_preference',"binarycrossentropy",str,"Loss prefered for training"],
 
