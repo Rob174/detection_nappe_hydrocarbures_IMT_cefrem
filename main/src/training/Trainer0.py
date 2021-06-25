@@ -188,7 +188,7 @@ class Trainer0(BaseClass):
                         opt_valid_batch = None
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
                 self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-            torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
-            self.saver(self.dataset)
-            self.saver(self.metrics)
-            self.saver(self).save()
+                torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
+                self.saver(self.dataset)
+                self.saver(self.metrics)
+                self.saver(self).save()
