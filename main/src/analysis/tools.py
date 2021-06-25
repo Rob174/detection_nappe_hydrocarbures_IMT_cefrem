@@ -31,7 +31,7 @@ class RGB_Overlay_Patch:
         Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
 
         """
-        original_img = self.dataset.attr_dataset.images[name_img] # radar image input (1 channel only)
+        original_img = np.array(self.dataset.attr_dataset.images[name_img]) # radar image input (1 channel only)
         overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32) # prepare the overlays with 3 channels for colors
         overlay_pred = np.zeros((*original_img.shape,3),dtype=np.float32)
         normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
@@ -93,7 +93,7 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-06-24_00h33min02s_'
+    choice_folder1 = '2021-06-24_13h22min03s_'
     from main.src.models.ModelFactory import ModelFactory
     from main.src.analysis.tools import RGB_Overlay_Patch
     import json, os
