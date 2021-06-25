@@ -123,6 +123,15 @@ As no parameters produces better performances, we will investigate:
 ## 25-06-06
 - ✔️ Launching a debugging session
 - ✔️ ⚠️⚠️ Major bug fix on reject system (balance and margin exclusion) [f728e82d](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/commit/f728e82ddc4962d4d15f4c9bfd449c27a5ce428f)
+- ✔️ Resize augmentation
+- tests:
+  - ✔️ balance margins 1000 1 epoch
+  - ⏳ nobalance margins 100000000 1 epoch
+  - nobalance margins 1000 1 epoch
+  - balance margins 1000 10 epoch
+  - balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5
+  - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1
+  - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1 augmentations_patch mirrors,rotation,resize_4_1.5
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
