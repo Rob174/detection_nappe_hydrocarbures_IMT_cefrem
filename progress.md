@@ -118,7 +118,11 @@ As no parameters produces better performances, we will investigate:
   - ✔️ rotation with step of 15°
 - 🔨 patch augmentation vs iimage augmentation
 - ⏲️ Doc
-- Debug overlay
+- ✔️ Debug overlay
+
+## 25-06-06
+- ✔️ Launching a debugging session
+- ✔️ ⚠️⚠️ Major bug fix on reject system (balance and margin exclusion) [f728e82d](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/commit/f728e82ddc4962d4d15f4c9bfd449c27a5ce428f)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
