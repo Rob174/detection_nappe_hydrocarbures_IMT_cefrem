@@ -21,14 +21,14 @@ class Parser0(BaseClass):
                     '-no_security': ['no_security', "false", str,
                                  "Indicate if you want to check if all python files have been commited before launching the training process {true to disable the security}"],
                     # Dataset
-                    '-dataset':['dataset',"classificationpatch1",str,"Indicate the dataset used to constitue datasets {classificationpatch}"],
+                    '-dataset':['dataset',"classificationpatch",str,"Indicate the dataset used to constitue datasets {classificationpatch}"],
                     '-usage_type':['usage_type',"classification",str,"Indicate the source dataset used to constitue datasets {segmentation, classification}"],
                     '-patch':['patch',"fixed_px",str,"Indicate the type of patch to create {fixed_px}"],
-                    '-patchExclPol': ['patch_exclude_policy', "marginmorethan_1000", str, "Indicates the policy to exclude patches (especially patches containing margins)"],
+                    '-patchExclPol': ['patch_exclude_policy', "marginmorethan_1000000000", str, "Indicates the policy to exclude patches (especially patches containing margins)"],
                     '-grid_size':['grid_size',1000,int,"Indicate the grid size applied on the original image"],
                     '-in_size':['input_size',256,int,"Indicate the output size of the image obtained by resizing it after patches creation"],
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
-                    '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
+                    '-balance':['balance',"nobalance",str,"Indicate the policy to balance classes"],
                     # Augmentations
                     '-augmenter_img':['augmenter_img',"noaugmenter",str,"Indicate which augmenter to use to apply transformations on source image"],
                     '-augmentations_img':['augmentations_img',"none",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
@@ -36,7 +36,7 @@ class Parser0(BaseClass):
                     '-augmentations_patch':['augmentations_patch',"none",str,"Indicate the augmentations to apply to patches in the order desired seprated by commas"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
-                    '-classes':['classes',"seep,spill",str,"Indicate the class used for training separated by an underscore"],
+                    '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by a comma"],
                     # Training
                     '-num_epochs':['num_epochs',1,int,"Number of epochs / repetitions of the training dataset"],
                     '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],
