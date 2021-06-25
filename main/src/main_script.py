@@ -71,5 +71,5 @@ if __name__ == "__main__":
     Trainer0(batch_size=arguments.batch_size,num_epochs=arguments.num_epochs,tr_prct=0.7,
              dataset=dataset,model=model,
              optimizer=optimizer_pytorch,loss=criterion_pytorch,metrics=metrics,saver=saver,
-             eval_step=arguments.eval_step)()
+             eval_step=arguments.eval_step,debug=arguments.debug)()
     print("end")
