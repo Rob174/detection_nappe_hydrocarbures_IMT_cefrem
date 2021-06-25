@@ -59,6 +59,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
                 raise NotImplementedError(f"{augmenter_patch} is not implemented")
         else:
             self.attr_patch_augmenter = NoAugmenter()
+        # Cache to store between epochs rejected images if we have no image augmenter
+        self.cache_img_id_rejected = []
 
 
     @lru_cache(maxsize=1)
@@ -120,6 +122,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         img = self.images[item] # 1ms but 0 most of the time
         # get the source true classification / annotation from the other hdf5 cache
         annotations = self.annotations_labels[item] # 1ms but 0 most of the time
+        if isinstance(self.attr_img_augmenter,NoAugmenter) and [item,patch_id] in self.cache_img_id_rejected:
+            return np.zeros((2,2),dtype=np.float32), np.zeros((2,2),dtype=np.float32), True # to save computation time and keep np array output
         # Make augmentations on input image if necessary (thanks to NoAugment class)
         img,annotations = self.attr_img_augmenter.transform(img,annotations)
         # get the patch with the selected id for the input image and the annotation
@@ -142,6 +146,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # As the balancing operation are done in the make_classification_label method, we reject an image
         # if it is rejected due to margins or balancing
         reject = reject or balance_reject
+        if isinstance(self.attr_img_augmenter,NoAugmenter):
+            self.cache_img_id_rejected.append([item,patch_id])
         return input, classif, reject
 
     def make_classification_label(self, annotations_patch):

@@ -1,4 +1,5 @@
 from main.src.data.Augmentation.Augmentations.Mirrors import Mirrors
+from main.src.data.Augmentation.Augmentations.Resize import Resize
 from main.src.data.Augmentation.Augmentations.Rotations import Rotations
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -9,16 +10,24 @@ class Augmenter0(BaseClass):
     """Manage and keep track of augmentations to apply
 
         Args:
-            allowed_transformations: str, list of augmentations to apply seprated by commas
+            allowed_transformations: str, list of augmentations to apply seprated by commas. Currently supported:
+            - mirrors
+            - rotations
+            - resize: provided as "resize_...range..._...shift..."
     """
     def __init__(self,allowed_transformations="mirrors,rotations"):
         self.attr_allowed_transformations = allowed_transformations
         self.attr_transformations_classes =  []
         for transfo in self.attr_allowed_transformations.split(","):
             if transfo == "mirrors":
-                self.attr_transformations_classes.append(Mirrors)
+                self.attr_transformations_classes.append(Mirrors.compute_random_augment)
             elif transfo == "rotations":
-                self.attr_transformations_classes.append(Rotations)
+                self.attr_transformations_classes.append(Rotations.compute_random_augment)
+            elif "resize" in transfo:
+                [_,range,shift] = transfo.split("_")
+                range = float(range)
+                shift = float(shift)
+                self.attr_transformations_classes.append(lambda x,y:Resize.compute_random_augment(x,y,range=range,shift=shift))
             else:
                 raise NotImplementedError(f"{transfo} is not implemented")
     def transform(self,image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
@@ -34,6 +43,6 @@ class Augmenter0(BaseClass):
             The randomly transformed image and annotation
 
         """
-        for Transfo in self.attr_transformations_classes:
-            image,annotation = Transfo.compute_random_augment(image,annotation)
+        for compute_random_augment in self.attr_transformations_classes:
+            image,annotation = compute_random_augment(image,annotation)
         return image,annotation
