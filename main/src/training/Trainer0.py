@@ -147,11 +147,11 @@ class Trainer0(BaseClass):
                         self.attr_tr_loss.append(float(current_loss))
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
-                        prediction = prediction.cpu()
-                        output = output.cpu()
+                        prediction: torch.Tensor = prediction.cpu()
+                        output: torch.Tensor = output.cpu()
                         if self.attr_debug == "true":
-                            self.attr_tr_vals_true.append(output)
-                            self.attr_tr_vals_pred.append(prediction)
+                            self.attr_tr_vals_true.append(output.detach().numpy().tolist())
+                            self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
                         self.metrics(prediction, output, "tr")
                         self.saver(self.metrics)
 
