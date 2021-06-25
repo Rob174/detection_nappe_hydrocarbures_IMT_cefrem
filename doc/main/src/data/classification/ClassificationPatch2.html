@@ -35,7 +35,8 @@ import numpy as np
 class ClassificationPatch2(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use=&#34;spill,seep&#34;, balance=&#34;nobalance&#34;,margin=None,
-                 augmentations=&#34;none&#34;,augmenter=&#34;augmenter0&#34;):
+                 augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
+                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
         &#34;&#34;&#34;Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
 
         Args:
@@ -44,11 +45,13 @@ class ClassificationPatch2(ClassificationPatch):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             classes_to_use: indicates the classes to use in the final classification label
             balance: str enum {nobalance,balance} indicating the class used to balance images
-            margin: opt int, argument for the BalanceClass1 class
-            augmentations: opt str, list of augmentations to apply seprated by commas
-            augmenter: opt str, name of the augmenter to use
+            augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
+            augmenter_img: opt str, name of the augmenter to use on source image
+            augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
+            augmenter_patch: opt str, name of the augmenter to use on patches
         &#34;&#34;&#34;
-        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin,augmentations,augmenter)
+        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
@@ -99,12 +102,32 @@ class ClassificationPatch2(ClassificationPatch):
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch2.ClassificationPatch2"><code class="flex name class">
 <span>class <span class="ident">ClassificationPatch2</span></span>
-<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use='spill,seep', balance='nobalance', margin=None, augmentations='none', augmenter='augmenter0')</span>
+<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use='spill,seep', balance='nobalance', margin=None, augmentations_img='none', augmenter_img='noaugmenter', augmentations_patch='none', augmenter_patch='noaugmenter')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
-<p>Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not</p>
+<div class="desc"><p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
+filteer them.</p>
 <h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>patch_creator</code></strong></dt>
+<dd>the object of PatchCreator0 class managing patches</dd>
+<dt><strong><code>input_size</code></strong></dt>
+<dd>the size of the image provided as input to the model ⚠️</dd>
+<dt><strong><code>limit_num_images</code></strong></dt>
+<dd>limit the number of image in the dataset per epoch (before filtering)</dd>
+<dt><strong><code>balance</code></strong></dt>
+<dd>str enum {nobalance,balance} indicating the class used to balance images</dd>
+<dt><strong><code>augmentations_img</code></strong></dt>
+<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
+<dt><strong><code>augmenter_img</code></strong></dt>
+<dd>opt str, name of the augmenter to use on source image</dd>
+<dt><strong><code>augmentations_patch</code></strong></dt>
+<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
+<dt><strong><code>augmenter_patch</code></strong></dt>
+<dd>opt str, name of the augmenter to use on patches</dd>
+</dl>
+<p>Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not</p>
+<h2 id="args_1">Args</h2>
 <dl>
 <dt><strong><code>patch_creator</code></strong></dt>
 <dd>the object of PatchCreator0 class managing patches</dd>
@@ -116,12 +139,14 @@ class ClassificationPatch2(ClassificationPatch):
 <dd>indicates the classes to use in the final classification label</dd>
 <dt><strong><code>balance</code></strong></dt>
 <dd>str enum {nobalance,balance} indicating the class used to balance images</dd>
-<dt><strong><code>margin</code></strong></dt>
-<dd>opt int, argument for the BalanceClass1 class</dd>
-<dt><strong><code>augmentations</code></strong></dt>
-<dd>opt str, list of augmentations to apply seprated by commas</dd>
-<dt><strong><code>augmenter</code></strong></dt>
-<dd>opt str, name of the augmenter to use</dd>
+<dt><strong><code>augmentations_img</code></strong></dt>
+<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
+<dt><strong><code>augmenter_img</code></strong></dt>
+<dd>opt str, name of the augmenter to use on source image</dd>
+<dt><strong><code>augmentations_patch</code></strong></dt>
+<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
+<dt><strong><code>augmenter_patch</code></strong></dt>
+<dd>opt str, name of the augmenter to use on patches</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -130,7 +155,8 @@ class ClassificationPatch2(ClassificationPatch):
 <pre><code class="python">class ClassificationPatch2(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use=&#34;spill,seep&#34;, balance=&#34;nobalance&#34;,margin=None,
-                 augmentations=&#34;none&#34;,augmenter=&#34;augmenter0&#34;):
+                 augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
+                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
         &#34;&#34;&#34;Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
 
         Args:
@@ -139,11 +165,13 @@ class ClassificationPatch2(ClassificationPatch):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             classes_to_use: indicates the classes to use in the final classification label
             balance: str enum {nobalance,balance} indicating the class used to balance images
-            margin: opt int, argument for the BalanceClass1 class
-            augmentations: opt str, list of augmentations to apply seprated by commas
-            augmenter: opt str, name of the augmenter to use
+            augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
+            augmenter_img: opt str, name of the augmenter to use on source image
+            augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
+            augmenter_patch: opt str, name of the augmenter to use on patches
         &#34;&#34;&#34;
-        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin,augmentations,augmenter)
+        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use

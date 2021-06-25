@@ -1,0 +1,1 @@
+"""Class for test purposes. Deprecated """

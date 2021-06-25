@@ -52,14 +52,16 @@ class Parser0(BaseClass):
                     &#39;-dataset&#39;:[&#39;dataset&#39;,&#34;classificationpatch1&#34;,str,&#34;Indicate the dataset used to constitue datasets {classificationpatch}&#34;],
                     &#39;-usage_type&#39;:[&#39;usage_type&#39;,&#34;classification&#34;,str,&#34;Indicate the source dataset used to constitue datasets {segmentation, classification}&#34;],
                     &#39;-patch&#39;:[&#39;patch&#39;,&#34;fixed_px&#34;,str,&#34;Indicate the type of patch to create {fixed_px}&#34;],
-                    &#39;-patchExclPol&#39;: [&#39;patch_exclude_policy&#39;, &#34;marginmorethan_1000000000&#34;, str, &#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;],
+                    &#39;-patchExclPol&#39;: [&#39;patch_exclude_policy&#39;, &#34;marginmorethan_1000&#34;, str, &#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;],
                     &#39;-grid_size&#39;:[&#39;grid_size&#39;,1000,int,&#34;Indicate the grid size applied on the original image&#34;],
                     &#39;-in_size&#39;:[&#39;input_size&#39;,256,int,&#34;Indicate the output size of the image obtained by resizing it after patches creation&#34;],
                     &#39;-bs&#39;:[&#39;batch_size&#39;,10,int,&#34;Indique le nombre d&#39;images par batch&#34;],
                     &#39;-balance&#39;:[&#39;balance&#39;,&#34;balanceclasses1&#34;,str,&#34;Indicate the policy to balance classes&#34;],
-                    &#39;-balance_mg&#39;:[&#39;balance_margin&#39;,10,int,&#34;Indicate the margin of supplementary image for one class&#34;],
-                    &#39;-augmenter&#39;:[&#39;augmenter&#39;,str,&#34;noaugmenter&#34;,&#34;Indicate which augmenter to use&#34;],
-                    &#39;-augmentations&#39;:[&#39;augmentations&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;],
+                    # Augmentations
+                    &#39;-augmenter_img&#39;:[&#39;augmenter_img&#39;,&#34;noaugmenter&#34;,str,&#34;Indicate which augmenter to use to apply transformations on source image&#34;],
+                    &#39;-augmentations_img&#39;:[&#39;augmentations_img&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;],
+                    &#39;-augmenter_patch&#39;:[&#39;augmenter_patch&#39;,&#34;noaugmenter&#34;,str,&#34;Indicate which augmenter to use to use to apply transformations on patches&#34;],
+                    &#39;-augmentations_patch&#39;:[&#39;augmentations_patch&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to patches in the order desired seprated by commas&#34;],
                     # Model
                     &#39;-model&#39;:[&#39;model&#39;,&#34;resnet18&#34;,str,&#34;To choose the network architecture used {&#34;],
                     &#39;-classes&#39;:[&#39;classes&#39;,&#34;seep,spill&#34;,str,&#34;Indicate the class used for training separated by an underscore&#34;],
@@ -73,7 +75,7 @@ class Parser0(BaseClass):
                     &#39;-opti&#39;:[&#39;optimizer&#39;,&#34;adam&#34;,str,&#34;Optimisateur&#34;],
 
                     &#39;-nbImg&#39;:[&#39;nb_images&#39;,-1,int,&#34;Limit the number of images of the training dataset&#34;],
-                    &#39;-debug&#39;:[&#39;debug&#39;,&#34;false&#34;,str,&#34;Indicate if we want to save reference and predictions for each iteration&#34;],
+                    &#39;-debug&#39;:[&#39;debug&#39;,&#34;true&#34;,str,&#34;Indicate if we want to save reference and predictions for each iteration&#34;],
 
 
 
@@ -140,14 +142,16 @@ class Parser0(BaseClass):
                     &#39;-dataset&#39;:[&#39;dataset&#39;,&#34;classificationpatch1&#34;,str,&#34;Indicate the dataset used to constitue datasets {classificationpatch}&#34;],
                     &#39;-usage_type&#39;:[&#39;usage_type&#39;,&#34;classification&#34;,str,&#34;Indicate the source dataset used to constitue datasets {segmentation, classification}&#34;],
                     &#39;-patch&#39;:[&#39;patch&#39;,&#34;fixed_px&#34;,str,&#34;Indicate the type of patch to create {fixed_px}&#34;],
-                    &#39;-patchExclPol&#39;: [&#39;patch_exclude_policy&#39;, &#34;marginmorethan_1000000000&#34;, str, &#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;],
+                    &#39;-patchExclPol&#39;: [&#39;patch_exclude_policy&#39;, &#34;marginmorethan_1000&#34;, str, &#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;],
                     &#39;-grid_size&#39;:[&#39;grid_size&#39;,1000,int,&#34;Indicate the grid size applied on the original image&#34;],
                     &#39;-in_size&#39;:[&#39;input_size&#39;,256,int,&#34;Indicate the output size of the image obtained by resizing it after patches creation&#34;],
                     &#39;-bs&#39;:[&#39;batch_size&#39;,10,int,&#34;Indique le nombre d&#39;images par batch&#34;],
                     &#39;-balance&#39;:[&#39;balance&#39;,&#34;balanceclasses1&#34;,str,&#34;Indicate the policy to balance classes&#34;],
-                    &#39;-balance_mg&#39;:[&#39;balance_margin&#39;,10,int,&#34;Indicate the margin of supplementary image for one class&#34;],
-                    &#39;-augmenter&#39;:[&#39;augmenter&#39;,str,&#34;noaugmenter&#34;,&#34;Indicate which augmenter to use&#34;],
-                    &#39;-augmentations&#39;:[&#39;augmentations&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;],
+                    # Augmentations
+                    &#39;-augmenter_img&#39;:[&#39;augmenter_img&#39;,&#34;noaugmenter&#34;,str,&#34;Indicate which augmenter to use to apply transformations on source image&#34;],
+                    &#39;-augmentations_img&#39;:[&#39;augmentations_img&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;],
+                    &#39;-augmenter_patch&#39;:[&#39;augmenter_patch&#39;,&#34;noaugmenter&#34;,str,&#34;Indicate which augmenter to use to use to apply transformations on patches&#34;],
+                    &#39;-augmentations_patch&#39;:[&#39;augmentations_patch&#39;,&#34;none&#34;,str,&#34;Indicate the augmentations to apply to patches in the order desired seprated by commas&#34;],
                     # Model
                     &#39;-model&#39;:[&#39;model&#39;,&#34;resnet18&#34;,str,&#34;To choose the network architecture used {&#34;],
                     &#39;-classes&#39;:[&#39;classes&#39;,&#34;seep,spill&#34;,str,&#34;Indicate the class used for training separated by an underscore&#34;],
@@ -161,7 +165,7 @@ class Parser0(BaseClass):
                     &#39;-opti&#39;:[&#39;optimizer&#39;,&#34;adam&#34;,str,&#34;Optimisateur&#34;],
 
                     &#39;-nbImg&#39;:[&#39;nb_images&#39;,-1,int,&#34;Limit the number of images of the training dataset&#34;],
-                    &#39;-debug&#39;:[&#39;debug&#39;,&#34;false&#34;,str,&#34;Indicate if we want to save reference and predictions for each iteration&#34;],
+                    &#39;-debug&#39;:[&#39;debug&#39;,&#34;true&#34;,str,&#34;Indicate if we want to save reference and predictions for each iteration&#34;],
 
 
 

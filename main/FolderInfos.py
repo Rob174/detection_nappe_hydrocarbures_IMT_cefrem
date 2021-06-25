@@ -1,3 +1,4 @@
+"""Static class containing interesting folder of the project with a separator adapted for the operating system (windows or linux)"""
 import time
 from time import strftime, gmtime, localtime
 import os

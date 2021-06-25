@@ -28,19 +28,17 @@
 </summary>
 <pre><code class="python">from main.src.param_savers.BaseClass import BaseClass
 
+import numpy as np
 
 class BalanceClasses1(BaseClass):
-    def __init__(self,classes_indexes, margin=10):
-        &#34;&#34;&#34;Balance classes by keeping an image if the classes on it are not overrepresented
+    def __init__(self,other_index):
+        &#34;&#34;&#34;Balance classes by excluding patches where there is only the other class
 
         Args:
-            classes_indexes: classes indexes to consider
-            margin: specify the max difference of number of samples provided with two classes of the possible classes
+            other_index: index of the class other
         &#34;&#34;&#34;
-        self.attr_margin = margin
-        self.attr_number_of_classes = {k:0 for k in classes_indexes}
-        self.attr_number_accepted = {k:0 for k in classes_indexes}
-        self.attr_prct_accepted = {k:0 for k in classes_indexes}
+        self.attr_other_index = other_index
+        self.attr_num_accepted = 0
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.attr_global_name = &#34;balance&#34; # save a more compehensible name
 
@@ -54,21 +52,10 @@ class BalanceClasses1(BaseClass):
             bool, tell if the sample is accepted or rejected
 
         &#34;&#34;&#34;
-        # We test the effect of adding this new sample regarding the number of already seen classes
-        tmp_if_accepted_dico = {k:v for k,v in self.attr_prct_accepted.items()}
-        for k in self.attr_number_of_classes:
-            self.attr_number_of_classes[k] += int(classification_label[k])
-            tmp_if_accepted_dico[k] += int(classification_label[k])
-        reject = True
-        num_classes = tmp_if_accepted_dico.values()
-        # if adding this sample allows to keep a difference between the most seen and the least seen classes below the margin, we accept this new sample
-        if max(num_classes)-min(num_classes) &lt;= self.attr_margin:
-            reject = False
-            # and we update statistics
-            for k in self.attr_number_of_classes:
-                self.attr_number_accepted[k] += int(classification_label[k])
-                self.attr_prct_accepted[k] = self.attr_number_accepted[k] / self.attr_number_of_classes[k] if self.attr_number_of_classes[k] != 0 else 0
-        return reject</code></pre>
+        if len(classification_label[classification_label &gt; 0]) == 1 and np.argmax(classification_label) == self.attr_other_index:
+            self.attr_num_accepted += 1
+            return True
+        return False</code></pre>
 </details>
 </section>
 <section>
@@ -82,34 +69,29 @@ class BalanceClasses1(BaseClass):
 <dl>
 <dt id="main.src.data.balance_classes.balance_classes.BalanceClasses1"><code class="flex name class">
 <span>class <span class="ident">BalanceClasses1</span></span>
-<span>(</span><span>classes_indexes, margin=10)</span>
+<span>(</span><span>other_index)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
-<p>Balance classes by keeping an image if the classes on it are not overrepresented</p>
+<p>Balance classes by excluding patches where there is only the other class</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>classes_indexes</code></strong></dt>
-<dd>classes indexes to consider</dd>
-<dt><strong><code>margin</code></strong></dt>
-<dd>specify the max difference of number of samples provided with two classes of the possible classes</dd>
+<dt><strong><code>other_index</code></strong></dt>
+<dd>index of the class other</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BalanceClasses1(BaseClass):
-    def __init__(self,classes_indexes, margin=10):
-        &#34;&#34;&#34;Balance classes by keeping an image if the classes on it are not overrepresented
+    def __init__(self,other_index):
+        &#34;&#34;&#34;Balance classes by excluding patches where there is only the other class
 
         Args:
-            classes_indexes: classes indexes to consider
-            margin: specify the max difference of number of samples provided with two classes of the possible classes
+            other_index: index of the class other
         &#34;&#34;&#34;
-        self.attr_margin = margin
-        self.attr_number_of_classes = {k:0 for k in classes_indexes}
-        self.attr_number_accepted = {k:0 for k in classes_indexes}
-        self.attr_prct_accepted = {k:0 for k in classes_indexes}
+        self.attr_other_index = other_index
+        self.attr_num_accepted = 0
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.attr_global_name = &#34;balance&#34; # save a more compehensible name
 
@@ -123,21 +105,10 @@ class BalanceClasses1(BaseClass):
             bool, tell if the sample is accepted or rejected
 
         &#34;&#34;&#34;
-        # We test the effect of adding this new sample regarding the number of already seen classes
-        tmp_if_accepted_dico = {k:v for k,v in self.attr_prct_accepted.items()}
-        for k in self.attr_number_of_classes:
-            self.attr_number_of_classes[k] += int(classification_label[k])
-            tmp_if_accepted_dico[k] += int(classification_label[k])
-        reject = True
-        num_classes = tmp_if_accepted_dico.values()
-        # if adding this sample allows to keep a difference between the most seen and the least seen classes below the margin, we accept this new sample
-        if max(num_classes)-min(num_classes) &lt;= self.attr_margin:
-            reject = False
-            # and we update statistics
-            for k in self.attr_number_of_classes:
-                self.attr_number_accepted[k] += int(classification_label[k])
-                self.attr_prct_accepted[k] = self.attr_number_accepted[k] / self.attr_number_of_classes[k] if self.attr_number_of_classes[k] != 0 else 0
-        return reject</code></pre>
+        if len(classification_label[classification_label &gt; 0]) == 1 and np.argmax(classification_label) == self.attr_other_index:
+            self.attr_num_accepted += 1
+            return True
+        return False</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -171,21 +142,10 @@ class BalanceClasses1(BaseClass):
         bool, tell if the sample is accepted or rejected
 
     &#34;&#34;&#34;
-    # We test the effect of adding this new sample regarding the number of already seen classes
-    tmp_if_accepted_dico = {k:v for k,v in self.attr_prct_accepted.items()}
-    for k in self.attr_number_of_classes:
-        self.attr_number_of_classes[k] += int(classification_label[k])
-        tmp_if_accepted_dico[k] += int(classification_label[k])
-    reject = True
-    num_classes = tmp_if_accepted_dico.values()
-    # if adding this sample allows to keep a difference between the most seen and the least seen classes below the margin, we accept this new sample
-    if max(num_classes)-min(num_classes) &lt;= self.attr_margin:
-        reject = False
-        # and we update statistics
-        for k in self.attr_number_of_classes:
-            self.attr_number_accepted[k] += int(classification_label[k])
-            self.attr_prct_accepted[k] = self.attr_number_accepted[k] / self.attr_number_of_classes[k] if self.attr_number_of_classes[k] != 0 else 0
-    return reject</code></pre>
+    if len(classification_label[classification_label &gt; 0]) == 1 and np.argmax(classification_label) == self.attr_other_index:
+        self.attr_num_accepted += 1
+        return True
+    return False</code></pre>
 </details>
 </dd>
 </dl>

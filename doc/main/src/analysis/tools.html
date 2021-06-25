@@ -59,7 +59,7 @@ class RGB_Overlay_Patch:
         Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
 
         &#34;&#34;&#34;
-        original_img = self.dataset.attr_dataset.images[name_img] # radar image input (1 channel only)
+        original_img = np.array(self.dataset.attr_dataset.images[name_img]) # radar image input (1 channel only)
         overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32) # prepare the overlays with 3 channels for colors
         overlay_pred = np.zeros((*original_img.shape,3),dtype=np.float32)
         normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
@@ -77,8 +77,10 @@ class RGB_Overlay_Patch:
         ) # prepare the progress bar -&gt; tell which columns to display
         with progress: # progress bar manager to use the progress bar
             progression = progress.add_task(&#34;generation&#34;, name=&#34;[red]Progress&#34;, total=len(patches))
+            skipped = 0
             for id,[input,output,filter] in enumerate(patches):
                 if filter is True: # skip the image if the dataset ask to skip this patch (can be for multiple reasons -&gt; see DatasetFactory parameters supplied)
+                    skipped += 1
                     continue
                 input_adapted = np.stack((input,input,input),axis=0) # convert patch to rgb
                 # pytorch can only make predictions for batches of images. That is why we create a &#34;batch&#34; of one image by adding one dimension to the image:
@@ -115,45 +117,67 @@ class RGB_Overlay_Patch:
                 overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_true * blending_factor
                 overlay_pred[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_pred * blending_factor
                 progress.update(progression, advance=1)
+        print(f&#34;skipped {skipped}&#34;)
         return overlay_true,overlay_pred,original_img
 
 if __name__ == &#34;__main__&#34;:
-    choice_folder1 = &#39;2021-06-19_04h32min09s_&#39;
+    choice_folder1 = &#39;2021-06-24_13h22min03s_&#39;
     from main.src.models.ModelFactory import ModelFactory
-    import json
-
-    FolderInfos.init(test_without_data=True)
-    folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
-    with open(folder + choice_folder1 + &#34;parameters.json&#34;, &#34;r&#34;) as fp:
-        dico = json.load(fp)
-
-    rgb_overlay = RGB_Overlay_Patch(dataset_name=&#34;classificationpatch1&#34;, usage_type=&#34;classification&#34;,
-                                    patch_creator=&#34;fixed_px&#34;,
-                                    grid_size=dico[&#34;data&#34;][&#34;attr_patch_creator&#34;][&#34;attr_grid_size_px&#34;],
-                                    input_size=dico[&#34;data&#34;][&#34;attr_dataset&#34;][&#34;attr_resizer&#34;][
-                                        &#34;attr_out_size_w&#34;],
-                                    classes_to_use=dico[&#34;data&#34;][&#34;attr_dataset&#34;][&#34;attr_classes_to_use&#34;]
-                                    )
-    epoch = 0
-    iteration = 60835
-    import torch
+    from main.src.analysis.tools import RGB_Overlay_Patch
+    import json, os
 
     name = &#34;027481_0319CB_0EB7&#34;
+    FolderInfos.init(test_without_data=True)
+    folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
 
-    device = torch.device(&#34;cuda&#34;) # get the gpu
-    model = ModelFactory(model_name=dico[&#34;model&#34;][&#34;attr_model_name&#34;], num_classes=dico[&#34;model&#34;][&#34;attr_num_classes&#34;])() # create and get the model
-    model.to(device) # put it on the gpu
-    model.load_state_dict(torch.load(f&#34;{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt&#34;)) # load pretrained weights
-    array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device) # create the overlay (use method __call__)
+    if os.path.exists(folder + choice_folder1 + &#34;_&#34; + name + &#34;_rgb_overlay_pred.png&#34;) is True:
+        print(&#34;loading from cache&#34;)
+        import matplotlib.pyplot as plt
+        from PIL import Image
 
-    import matplotlib.pyplot as plt
-    # show the result in two separated figures
-    plt.figure(figsize=(10,10))
-    plt.imshow(array_overlay[0])
-    plt.figure(figsize=(10,10))
-    plt.imshow(array_overlay[1])
-    plt.show()
-    print(array_overlay)</code></pre>
+        image_true = Image.open(folder + choice_folder1 + &#34;_&#34; + name + &#34;_rgb_overlay_true.png&#34;)
+        image_pred = Image.open(folder + choice_folder1 + &#34;_&#34; + name + &#34;_rgb_overlay_pred.png&#34;)
+        plt.figure(figsize=(10, 10))
+        plt.imshow(image_true)
+        plt.figure(figsize=(10, 10))
+        plt.imshow(image_pred)
+        plt.show()
+    else:
+        print(&#34;not already computed, processing...&#34;)
+        with open(folder + choice_folder1 + &#34;parameters.json&#34;, &#34;r&#34;) as fp:
+            dico = json.load(fp)
+
+        rgb_overlay = RGB_Overlay_Patch(dataset_name=&#34;classificationpatch1&#34;, usage_type=&#34;classification&#34;,
+                                        patch_creator=&#34;fixed_px&#34;,
+                                        grid_size=dico[&#34;data&#34;][&#34;attr_patch_creator&#34;][&#34;attr_grid_size_px&#34;],
+                                        input_size=dico[&#34;data&#34;][&#34;attr_dataset&#34;][&#34;attr_resizer&#34;][
+                                            &#34;attr_out_size_w&#34;],
+                                        classes_to_use=dico[&#34;data&#34;][&#34;attr_dataset&#34;][&#34;attr_classes_to_use&#34;]
+                                        )
+        epoch = 0
+        iteration = 60835
+        import torch
+
+        device = torch.device(&#34;cuda&#34;)
+        model = ModelFactory(model_name=dico[&#34;model&#34;][&#34;attr_model_name&#34;],
+                             num_classes=dico[&#34;model&#34;][&#34;attr_num_classes&#34;])()
+        model.to(device)
+        model.load_state_dict(torch.load(f&#34;{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt&#34;))
+        array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device)
+
+        import matplotlib.pyplot as plt
+
+        plt.figure(figsize=(10, 10))
+        plt.imshow(array_overlay[0])
+        plt.gcf().text(0.02, 0.75, f&#34;RGB with order {dico[&#39;data&#39;][&#39;attr_dataset&#39;][&#39;attr_classes_to_use&#39;]}&#34;, fontsize=14)
+        plt.savefig(f&#34;{folder}{choice_folder1}_{name}_rgb_overlay_true.png&#34;)
+        plt.figure(figsize=(10, 10))
+        plt.imshow(array_overlay[1])
+        plt.gcf().text(0.02, 0.75, f&#34;RGB with order {dico[&#39;data&#39;][&#39;attr_dataset&#39;][&#39;attr_classes_to_use&#39;]}&#34;, fontsize=14)
+        plt.savefig(f&#34;{folder}{choice_folder1}_{name}_rgb_overlay_pred.png&#34;)
+        plt.figure(figsize=(10, 10))
+        plt.imshow(array_overlay[2], cmap=&#34;gray&#34;)
+        plt.show()</code></pre>
 </details>
 </section>
 <section>
@@ -196,7 +220,7 @@ if __name__ == &#34;__main__&#34;:
         Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
 
         &#34;&#34;&#34;
-        original_img = self.dataset.attr_dataset.images[name_img] # radar image input (1 channel only)
+        original_img = np.array(self.dataset.attr_dataset.images[name_img]) # radar image input (1 channel only)
         overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32) # prepare the overlays with 3 channels for colors
         overlay_pred = np.zeros((*original_img.shape,3),dtype=np.float32)
         normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
@@ -214,8 +238,10 @@ if __name__ == &#34;__main__&#34;:
         ) # prepare the progress bar -&gt; tell which columns to display
         with progress: # progress bar manager to use the progress bar
             progression = progress.add_task(&#34;generation&#34;, name=&#34;[red]Progress&#34;, total=len(patches))
+            skipped = 0
             for id,[input,output,filter] in enumerate(patches):
                 if filter is True: # skip the image if the dataset ask to skip this patch (can be for multiple reasons -&gt; see DatasetFactory parameters supplied)
+                    skipped += 1
                     continue
                 input_adapted = np.stack((input,input,input),axis=0) # convert patch to rgb
                 # pytorch can only make predictions for batches of images. That is why we create a &#34;batch&#34; of one image by adding one dimension to the image:
@@ -252,6 +278,7 @@ if __name__ == &#34;__main__&#34;:
                 overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_true * blending_factor
                 overlay_pred[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_pred * blending_factor
                 progress.update(progression, advance=1)
+        print(f&#34;skipped {skipped}&#34;)
         return overlay_true,overlay_pred,original_img</code></pre>
 </details>
 <h3>Methods</h3>
@@ -290,7 +317,7 @@ overlay_true,overlay_pred,original_img as np arrays</p></div>
     Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
 
     &#34;&#34;&#34;
-    original_img = self.dataset.attr_dataset.images[name_img] # radar image input (1 channel only)
+    original_img = np.array(self.dataset.attr_dataset.images[name_img]) # radar image input (1 channel only)
     overlay_true = np.zeros((*original_img.shape,3),dtype=np.float32) # prepare the overlays with 3 channels for colors
     overlay_pred = np.zeros((*original_img.shape,3),dtype=np.float32)
     normalize = lambda x:(x-np.min(original_img))/(np.max(original_img)-np.min(original_img))
@@ -308,8 +335,10 @@ overlay_true,overlay_pred,original_img as np arrays</p></div>
     ) # prepare the progress bar -&gt; tell which columns to display
     with progress: # progress bar manager to use the progress bar
         progression = progress.add_task(&#34;generation&#34;, name=&#34;[red]Progress&#34;, total=len(patches))
+        skipped = 0
         for id,[input,output,filter] in enumerate(patches):
             if filter is True: # skip the image if the dataset ask to skip this patch (can be for multiple reasons -&gt; see DatasetFactory parameters supplied)
+                skipped += 1
                 continue
             input_adapted = np.stack((input,input,input),axis=0) # convert patch to rgb
             # pytorch can only make predictions for batches of images. That is why we create a &#34;batch&#34; of one image by adding one dimension to the image:
@@ -346,6 +375,7 @@ overlay_true,overlay_pred,original_img as np arrays</p></div>
             overlay_true[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_true * blending_factor
             overlay_pred[coordx1_not_resize:coordx2_not_resize,coordy1_not_resize:coordy2_not_resize,:] = input * (1-blending_factor) + color_pred * blending_factor
             progress.update(progression, advance=1)
+    print(f&#34;skipped {skipped}&#34;)
     return overlay_true,overlay_pred,original_img</code></pre>
 </details>
 </dd>

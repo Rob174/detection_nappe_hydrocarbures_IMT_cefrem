@@ -1,3 +1,5 @@
+"""Script to launch with(out) arguments to train the model and save the results"""
+
 import json
 import subprocess
 import os, sys

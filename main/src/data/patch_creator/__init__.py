@@ -10,8 +10,8 @@ Each of the class must have the following structure:
 ...         self.attr_global_name = "patch_creator"
 ...     def num_available_patches(self,image: np.ndarray ) -> int:
 ...         # count the number of patches available for an original image
-...     def __call__(self, image: np.ndarray,image_name: str, patch_id: int,count_reso=False):
-...         return self.call(image,image_name,patch_id,count_reso)
+...     def __call__(self, image: np.ndarray,image_name: str, patch_id: int,*args,**kargs):
+...         return self.call(image,image_name,patch_id,*args,**kargs)
 ...     def call(self, image: np.ndarray,image_name: str, patch_id: int,*args,**kargs) -> Tuple[np.ndarray,bool]:
 ...         # Creates the patch with provided data and indicate if it is rejected
 ...

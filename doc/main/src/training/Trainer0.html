@@ -120,7 +120,7 @@ class Trainer0(BaseClass):
         )
     def add_to_batch_tr(self,input,output,reject):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True:
+        if reject is True or reject.cpu().detach().numpy()[0]:
             return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
@@ -132,7 +132,7 @@ class Trainer0(BaseClass):
             return None
     def add_to_batch_valid(self,input,output,reject):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True:
+        if reject is True or reject.cpu().detach().numpy()[0]:
             return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
@@ -155,10 +155,14 @@ class Trainer0(BaseClass):
             device = torch.device(&#34;cuda&#34;)
             self.model.to(device)
             current_loss = -1
+            it_tr = 0
+            it_val = 0
+            opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
+                        it_tr += 1
                         input,output = opt_tr_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -175,23 +179,26 @@ class Trainer0(BaseClass):
                         self.attr_tr_loss.append(float(current_loss))
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
-                        prediction = prediction.cpu()
-                        output = output.cpu()
+                        prediction: torch.Tensor = prediction.cpu()
+                        output: torch.Tensor = output.cpu()
                         if self.attr_debug == &#34;true&#34;:
-                            self.attr_tr_vals_true.append(output)
-                            self.attr_tr_vals_pred.append(prediction)
+                            self.attr_tr_vals_true.append(output.detach().numpy().tolist())
+                            self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
                         self.metrics(prediction, output, &#34;tr&#34;)
                         self.saver(self.metrics)
 
-                    try:
-                        input, output,reject = next(dataset_valid_iter)
-                    except StopIteration:
-                        # StopIteration is thrown if dataset ends
-                        # reinitialize data loader
-                        dataset_valid_iter = iter(self.dataset_valid)
-                        input, output,reject = next(dataset_valid_iter)
-                    opt_valid_batch = self.add_to_batch_valid(input,output,reject)
-                    if opt_valid_batch is not None:
+                    if opt_valid_batch is None:
+                        try:
+                            input, output,reject = next(dataset_valid_iter)
+                        except StopIteration:
+                            # StopIteration is thrown if dataset ends
+                            # reinitialize data loader
+                            dataset_valid_iter = iter(self.dataset_valid)
+                            input, output,reject = next(dataset_valid_iter)
+                        opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+
+                    else:
+                        it_val += 1
                         input,output = opt_valid_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -204,12 +211,15 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
                         self.saver(self).save()
 
-                        if loss &lt; np.mean(self.attr_valid_loss) or i % 1000 == 0:
+                        if loss &lt; np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                             torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
-
+                        opt_valid_batch = None
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
                 self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)</code></pre>
+            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+            self.saver(self.dataset)
+            self.saver(self.metrics)
+            self.saver(self).save()</code></pre>
 </details>
 </section>
 <section>
@@ -339,7 +349,7 @@ class Trainer0(BaseClass):
         )
     def add_to_batch_tr(self,input,output,reject):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True:
+        if reject is True or reject.cpu().detach().numpy()[0]:
             return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
@@ -351,7 +361,7 @@ class Trainer0(BaseClass):
             return None
     def add_to_batch_valid(self,input,output,reject):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True:
+        if reject is True or reject.cpu().detach().numpy()[0]:
             return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
@@ -374,10 +384,14 @@ class Trainer0(BaseClass):
             device = torch.device(&#34;cuda&#34;)
             self.model.to(device)
             current_loss = -1
+            it_tr = 0
+            it_val = 0
+            opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
                 for i, [input, output,reject] in enumerate(self.dataset_tr):
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
+                        it_tr += 1
                         input,output = opt_tr_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -394,23 +408,26 @@ class Trainer0(BaseClass):
                         self.attr_tr_loss.append(float(current_loss))
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
-                        prediction = prediction.cpu()
-                        output = output.cpu()
+                        prediction: torch.Tensor = prediction.cpu()
+                        output: torch.Tensor = output.cpu()
                         if self.attr_debug == &#34;true&#34;:
-                            self.attr_tr_vals_true.append(output)
-                            self.attr_tr_vals_pred.append(prediction)
+                            self.attr_tr_vals_true.append(output.detach().numpy().tolist())
+                            self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
                         self.metrics(prediction, output, &#34;tr&#34;)
                         self.saver(self.metrics)
 
-                    try:
-                        input, output,reject = next(dataset_valid_iter)
-                    except StopIteration:
-                        # StopIteration is thrown if dataset ends
-                        # reinitialize data loader
-                        dataset_valid_iter = iter(self.dataset_valid)
-                        input, output,reject = next(dataset_valid_iter)
-                    opt_valid_batch = self.add_to_batch_valid(input,output,reject)
-                    if opt_valid_batch is not None:
+                    if opt_valid_batch is None:
+                        try:
+                            input, output,reject = next(dataset_valid_iter)
+                        except StopIteration:
+                            # StopIteration is thrown if dataset ends
+                            # reinitialize data loader
+                            dataset_valid_iter = iter(self.dataset_valid)
+                            input, output,reject = next(dataset_valid_iter)
+                        opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+
+                    else:
+                        it_val += 1
                         input,output = opt_valid_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -423,12 +440,15 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
                         self.saver(self).save()
 
-                        if loss &lt; np.mean(self.attr_valid_loss) or i % 1000 == 0:
+                        if loss &lt; np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                             torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
-
+                        opt_valid_batch = None
                     self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
                 self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)</code></pre>
+            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+            self.saver(self.dataset)
+            self.saver(self.metrics)
+            self.saver(self).save()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -447,7 +467,7 @@ class Trainer0(BaseClass):
 </summary>
 <pre><code class="python">def add_to_batch_tr(self,input,output,reject):
     &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-    if reject is True:
+    if reject is True or reject.cpu().detach().numpy()[0]:
         return None
     self.tr_batches[0].append(input)
     self.tr_batches[1].append(output)
@@ -470,7 +490,7 @@ class Trainer0(BaseClass):
 </summary>
 <pre><code class="python">def add_to_batch_valid(self,input,output,reject):
     &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-    if reject is True:
+    if reject is True or reject.cpu().detach().numpy()[0]:
         return None
     self.valid_batches[0].append(input)
     self.valid_batches[1].append(output)
@@ -502,10 +522,14 @@ class Trainer0(BaseClass):
         device = torch.device(&#34;cuda&#34;)
         self.model.to(device)
         current_loss = -1
+        it_tr = 0
+        it_val = 0
+        opt_valid_batch = None
         for epoch in range(self.attr_num_epochs):
             for i, [input, output,reject] in enumerate(self.dataset_tr):
                 opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                 if opt_tr_batch is not None:
+                    it_tr += 1
                     input,output = opt_tr_batch
                     input = torch.Tensor(input)
                     output = torch.Tensor(output)
@@ -522,23 +546,26 @@ class Trainer0(BaseClass):
                     self.attr_tr_loss.append(float(current_loss))
                     self.attr_last_iter = i
                     self.attr_last_epoch = epoch
-                    prediction = prediction.cpu()
-                    output = output.cpu()
+                    prediction: torch.Tensor = prediction.cpu()
+                    output: torch.Tensor = output.cpu()
                     if self.attr_debug == &#34;true&#34;:
-                        self.attr_tr_vals_true.append(output)
-                        self.attr_tr_vals_pred.append(prediction)
+                        self.attr_tr_vals_true.append(output.detach().numpy().tolist())
+                        self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
                     self.metrics(prediction, output, &#34;tr&#34;)
                     self.saver(self.metrics)
 
-                try:
-                    input, output,reject = next(dataset_valid_iter)
-                except StopIteration:
-                    # StopIteration is thrown if dataset ends
-                    # reinitialize data loader
-                    dataset_valid_iter = iter(self.dataset_valid)
-                    input, output,reject = next(dataset_valid_iter)
-                opt_valid_batch = self.add_to_batch_valid(input,output,reject)
-                if opt_valid_batch is not None:
+                if opt_valid_batch is None:
+                    try:
+                        input, output,reject = next(dataset_valid_iter)
+                    except StopIteration:
+                        # StopIteration is thrown if dataset ends
+                        # reinitialize data loader
+                        dataset_valid_iter = iter(self.dataset_valid)
+                        input, output,reject = next(dataset_valid_iter)
+                    opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+
+                else:
+                    it_val += 1
                     input,output = opt_valid_batch
                     input = torch.Tensor(input)
                     output = torch.Tensor(output)
@@ -551,12 +578,15 @@ class Trainer0(BaseClass):
                     self.saver(self.metrics)
                     self.saver(self).save()
 
-                    if loss &lt; np.mean(self.attr_valid_loss) or i % 1000 == 0:
+                    if loss &lt; np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                         torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
-
+                    opt_valid_batch = None
                 self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
             self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-        torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)</code></pre>
+        torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+        self.saver(self.dataset)
+        self.saver(self.metrics)
+        self.saver(self).save()</code></pre>
 </details>
 </dd>
 <dt id="main.src.training.Trainer0.Trainer0.progress_bar_creation"><code class="name flex">

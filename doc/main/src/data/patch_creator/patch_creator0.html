@@ -37,16 +37,16 @@ from main.src.param_savers.BaseClass import BaseClass
 import time
 
 class Patch_creator0(BaseClass):
-    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
-        &#34;&#34;&#34;Class creating and managing patches
+    &#34;&#34;&#34;Class creating and managing patches
 
-        Args:
-            grid_size_px: size of the patch extracted from the original image
-            images_informations_preprocessed: dict from the json file containing images dataset informations
-            test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
-            exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
-                - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
-        &#34;&#34;&#34;
+    Args:
+        grid_size_px: size of the patch extracted from the original image
+        images_informations_preprocessed: dict from the json file containing images dataset informations
+        test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+        exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+    &#34;&#34;&#34;
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
         self.attr_description = &#34;Create a grid by taking a square of a constant pixel size.&#34;+\
                                 &#34; It does not consider the resolution of each image.&#34;+\
                                 &#34; It rejects a patch if it is not fully included in the original image&#34;
@@ -114,7 +114,8 @@ class Patch_creator0(BaseClass):
         if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
-        return patch, False
+        else:
+            return patch, False
     def get_position_patch(self,patch_id: int, input_shape):
         &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
 
@@ -192,8 +193,7 @@ if __name__ == &#34;__main__&#34;:
 <span>(</span><span>grid_size_px, images_informations_preprocessed, test=False, exclusion_policy='marginmorethan_1000')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
-<p>Class creating and managing patches</p>
+<div class="desc"><p>Class creating and managing patches</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>grid_size_px</code></strong></dt>
@@ -211,16 +211,16 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Patch_creator0(BaseClass):
-    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
-        &#34;&#34;&#34;Class creating and managing patches
+    &#34;&#34;&#34;Class creating and managing patches
 
-        Args:
-            grid_size_px: size of the patch extracted from the original image
-            images_informations_preprocessed: dict from the json file containing images dataset informations
-            test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
-            exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
-                - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
-        &#34;&#34;&#34;
+    Args:
+        grid_size_px: size of the patch extracted from the original image
+        images_informations_preprocessed: dict from the json file containing images dataset informations
+        test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
+        exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
+            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+    &#34;&#34;&#34;
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
         self.attr_description = &#34;Create a grid by taking a square of a constant pixel size.&#34;+\
                                 &#34; It does not consider the resolution of each image.&#34;+\
                                 &#34; It rejects a patch if it is not fully included in the original image&#34;
@@ -288,7 +288,8 @@ if __name__ == &#34;__main__&#34;:
         if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
-        return patch, False
+        else:
+            return patch, False
     def get_position_patch(self,patch_id: int, input_shape):
         &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
 
@@ -379,7 +380,8 @@ if __name__ == &#34;__main__&#34;:
     if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
         self.attr_num_rejected += 1
         return patch, True
-    return patch, False</code></pre>
+    else:
+        return patch, False</code></pre>
 </details>
 </dd>
 <dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch"><code class="name flex">
