@@ -13,13 +13,12 @@ from main.src.data.DatasetFactory import DatasetFactory
 class RGB_Overlay_Patch:
     def __init__(self,dataset_name="classificationpatch",usage_type="classification",patch_creator="fixed_px",
                  grid_size=1000,input_size=256,classes_to_use="other,seep,spill"):
-        FolderInfos.init(test_without_data=False)
         self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,
                                       grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None):
         return self.call(name_img,model,blending_factor,device)
-    def call(self,name_img,model,blending_factor=0.5,device=None):
+    def call(self,name_img,model,blending_factor=0.25,device=None):
         """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:
@@ -93,7 +92,7 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-06-25_14h20min09s_'
+    choice_folder1 = '2021-06-25_16h26min28s_'
     from main.src.models.ModelFactory import ModelFactory
     from main.src.analysis.tools import RGB_Overlay_Patch
     import json, os
