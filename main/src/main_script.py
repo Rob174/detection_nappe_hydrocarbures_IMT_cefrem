@@ -42,7 +42,6 @@ if __name__ == "__main__":
                              exclusion_policy=arguments.patch_exclude_policy,
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
-                             margin=arguments.balance_margin,
                              augmenter_img=arguments.augmenter_img,
                              augmentations_img=arguments.augmentations_img,
                              augmenter_patch=arguments.augmenter_patch,

@@ -25,14 +25,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
         input_size: the size of the image provided as input to the model ⚠️
         limit_num_images: limit the number of image in the dataset per epoch (before filtering)
         balance: str enum {nobalance,balance} indicating the class used to balance images
-        margin: opt int, argument for the BalanceClass1 class
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_img: opt str, name of the augmenter to use on source image
         augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_patch: opt str, name of the augmenter to use on patches
     """
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
-                 limit_num_images: int = None, balance="nobalance",margin=None,
+                 limit_num_images: int = None, balance="nobalance",
                  augmentations_img="none",augmenter_img="noaugmenter",
                  augmentations_patch="none",augmenter_patch="noaugmenter"):
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
@@ -45,8 +44,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             self.attr_balance = NoBalance()
         elif balance == "balanceclasses1":
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
-            self.attr_balance = BalanceClasses1(classes_indexes=self.attr_class_mapping.keys(Way.ORIGINAL_WAY),
-                                                margin=margin)
+            self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping["other"])
         if augmentations_img != "none":
             if augmenter_img == "augmenter0":
                 self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)

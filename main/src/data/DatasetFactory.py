@@ -41,7 +41,7 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
     """
     def __init__(self, dataset_name="classificationpatch", usage_type="classification", patch_creator="fixed_px",
                  grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills",
-                 balance="nobalance",margin=None,
+                 balance="nobalance",
                  augmentations_img="none",augmenter_img="noaugmenter",
                  augmentations_patch="none",augmenter_patch="noaugmenter"):
         self.attr_global_name = "data"
@@ -57,19 +57,19 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         if usage_type == "classification":
             if dataset_name == "classificationpatch":
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
-                                                        balance=balance,margin=margin,
+                                                        balance=balance,
                                                          augmentations_img=augmentations_img,augmenter_img=augmenter_img,
                                                          augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
             elif dataset_name == "classificationpatch1":
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
-                                                         balance=balance,margin=margin,
+                                                         balance=balance,
                                                          augmentations_img=augmentations_img,augmenter_img=augmenter_img,
                                                          augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
             elif dataset_name == "classificationpatch2":
                 self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
-                                                         balance=balance,margin=margin,
+                                                         balance=balance,
                                                          augmentations_img=augmentations_img,augmenter_img=augmenter_img,
                                                          augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
 

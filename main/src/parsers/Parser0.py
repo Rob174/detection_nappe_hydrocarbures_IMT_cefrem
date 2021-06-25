@@ -29,7 +29,6 @@ class Parser0(BaseClass):
                     '-in_size':['input_size',256,int,"Indicate the output size of the image obtained by resizing it after patches creation"],
                     '-bs':['batch_size',10,int,"Indique le nombre d'images par batch"],
                     '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
-                    '-balance_mg':['balance_margin',10,int,"Indicate the margin of supplementary image for one class"],
                     # Augmentations
                     '-augmenter_img':['augmenter_img',"noaugmenter",str,"Indicate which augmenter to use to apply transformations on source image"],
                     '-augmentations_img':['augmentations_img',"none",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],

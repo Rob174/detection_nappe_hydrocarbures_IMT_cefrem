@@ -17,13 +17,12 @@ class ClassificationPatch2(ClassificationPatch):
             limit_num_images: limit the number of image in the dataset per epoch (before filtering)
             classes_to_use: indicates the classes to use in the final classification label
             balance: str enum {nobalance,balance} indicating the class used to balance images
-            margin: opt int, argument for the BalanceClass1 class
             augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
             augmenter_img: opt str, name of the augmenter to use on source image
             augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
             augmenter_patch: opt str, name of the augmenter to use on patches
         """
-        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,margin,
+        super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,
                                                    augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
