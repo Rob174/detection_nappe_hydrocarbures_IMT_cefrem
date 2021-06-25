@@ -116,8 +116,8 @@ As no parameters produces better performances, we will investigate:
 - 🔨 Augmentations
   - ✔️ mirrors
   - ✔️ rotation with step of 15°
-- 🔨 patch augmentation vs iimage augmentation
-- ⏲️ Doc
+- 🔨 patch augmentation vs image augmentation
+- ✔️ Doc
 - ✔️ Debug overlay
 
 ## 25-06-06
@@ -126,9 +126,9 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Resize augmentation
 - tests:
   - ✔️ balance margins 1000 1 epoch
-  - ⏳ nobalance margins 100000000 1 epoch
-  - nobalance margins 1000 1 epoch
-  - balance margins 1000 10 epoch
+  - ✔️ nobalance margins 100000000 1 epoch
+  - ✔️ nobalance margins 1000 1 epoch
+  - ⏳ balance margins 1000 10 epoch
   - balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5
   - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1
   - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1 augmentations_patch mirrors,rotation,resize_4_1.5
