@@ -86,7 +86,8 @@ class Patch_creator0(BaseClass):
         if len(patch[patch == 0]) > int(self.attr_exclusion_policy.split("_")[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
-        return patch, False
+        else:
+            return patch, False
     def get_position_patch(self,patch_id: int, input_shape):
         """Compute the position of the patch with respect to the parameters
 

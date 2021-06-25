@@ -92,7 +92,7 @@ class Trainer0(BaseClass):
         )
     def add_to_batch_tr(self,input,output,reject):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        if reject is True:
+        if reject is True or reject.cpu().detach().numpy()[0]:
             return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
@@ -104,7 +104,7 @@ class Trainer0(BaseClass):
             return None
     def add_to_batch_valid(self,input,output,reject):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        if reject is True:
+        if reject is True or reject.cpu().detach().numpy()[0]:
             return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)

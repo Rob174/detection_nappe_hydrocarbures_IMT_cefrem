@@ -27,7 +27,7 @@ class BalanceClasses1(BaseClass):
 
         """
         # We test the effect of adding this new sample regarding the number of already seen classes
-        tmp_if_accepted_dico = {k:v for k,v in self.attr_prct_accepted.items()}
+        tmp_if_accepted_dico = {k:v for k,v in self.attr_number_accepted.items()}
         for k in self.attr_number_of_classes:
             self.attr_number_of_classes[k] += int(classification_label[k])
             tmp_if_accepted_dico[k] += int(classification_label[k])
