@@ -139,8 +139,5 @@ As no parameters produces better performances, we will investigate:
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
 
-- 3️⃣ Augmentations
-  - reducing the size (⚠️ too small objects)
-- unfreeze all layers of the pretrained model (today only the newly added dense layer is trainable)
 - Training to launch:
   - unfreeze all layers of the pretrained model
