@@ -145,7 +145,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # As the balancing operation are done in the make_classification_label method, we reject an image
         # if it is rejected due to margins or balancing
         reject = reject or balance_reject
-        if isinstance(self.attr_img_augmenter,NoAugmenter):
+        if isinstance(self.attr_img_augmenter,NoAugmenter) and reject is True:
             self.cache_img_id_rejected.append([item,patch_id])
         return input, classif, reject
 
