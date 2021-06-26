@@ -135,6 +135,7 @@ class Trainer0(BaseClass):
                     opt_tr_batch = self.add_to_batch_tr(input,output,reject)
                     if opt_tr_batch is not None:
                         it_tr += 1
+                        print(f"Training step {it_tr}")
                         input,output = opt_tr_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
@@ -171,6 +172,7 @@ class Trainer0(BaseClass):
 
                     else:
                         it_val += 1
+                        print(f"Valid step {it_val}")
                         input,output = opt_valid_batch
                         input = torch.Tensor(input)
                         output = torch.Tensor(output)
