@@ -133,8 +133,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             return np.zeros((2,2),dtype=np.float32), np.zeros((2,2),dtype=np.float32), True # to save computation time and keep np array output
         annotations_patch,_ = self.patch_creator(annotations, item, patch_id=patch_id) # btwn 10 ms and 30 ms (10 ms most of the time)
         # Make augmentations on patch if necessary (thanks to NoAugment class) and if it is not rejected
-        if reject is False:
-            img_patch,annotations_patch = self.attr_patch_augmenter.transform(img_patch,annotations_patch)
+        img_patch,annotations_patch = self.attr_patch_augmenter.transform(img_patch,annotations_patch)
         # we reject an image if it contains margins (cf patchcreator)
         # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
         input = self.attr_resizer(img_patch) # ~ 0 ns most of the time, 1 ms sometimes
