@@ -29,6 +29,8 @@ class Saver0:
             the value of the attribute (if it is a simple value) or a dict of values
 
         """
+        if isinstance(object,list) and isinstance(object[0],BaseClass):
+            return [self.recursive_dict(o) for o in object]
         if isinstance(object,BaseClass) is False:
             return object
         else:
