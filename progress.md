@@ -124,6 +124,8 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Launching a debugging session
 - ✔️ ⚠️⚠️ Major bug fix on reject system (balance and margin exclusion) [f728e82d](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/commit/f728e82ddc4962d4d15f4c9bfd449c27a5ce428f)
 - ✔️ Resize augmentation
+- ✔️ ⚠️⚠️ Major bug fix for **multi epoch** reject system (balance and margin exclusion) [e4ab323
+](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/e4ab3238bde1c383b4d197c147ca64eeb76fa00f)
 - tests:
   - ✔️ balance margins 1000 1 epoch
   - ✔️ nobalance margins 100000000 1 epoch
