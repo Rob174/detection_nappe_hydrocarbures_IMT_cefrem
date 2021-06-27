@@ -33,6 +33,6 @@ class Rotations(BaseClass):
         rotation_matrix = cv2.getRotationMatrix2D(image_center, angle, 1.0)
         image = cv2.warpAffine(image, rotation_matrix, image.shape[1::-1],
                                 flags=cv2.INTER_LANCZOS4)
-        annotation = cv2.warpAffine(annotation, rotation_matrix, annotation.shape[1::-1],
+        annotation = cv2.warpAffine((annotation).astype(np.float32), rotation_matrix, annotation.shape[1::-1],
                                 flags=cv2.INTER_LANCZOS4)
         return image,annotation
