@@ -54,7 +54,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             self.attr_img_augmenter = NoAugmenter()
         if augmentations_patch != "none":
             if augmenter_patch == "augmenter0":
-                self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmenter_patch)
+                self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmentations_patch)
             else:
                 raise NotImplementedError(f"{augmenter_patch} is not implemented")
         else:
