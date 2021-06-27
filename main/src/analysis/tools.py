@@ -92,7 +92,7 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-06-25_16h26min28s_'
+    choice_folder1 = '2021-06-26_16h55min45s_'
     from main.src.models.ModelFactory import ModelFactory
     from main.src.analysis.tools import RGB_Overlay_Patch
     import json, os
