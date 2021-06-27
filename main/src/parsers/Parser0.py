@@ -33,7 +33,7 @@ class Parser0(BaseClass):
                     '-augmenter_img':['augmenter_img',"noaugmenter",str,"Indicate which augmenter to use to apply transformations on source image"],
                     '-augmentations_img':['augmentations_img',"none",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
                     '-augmenter_patch':['augmenter_patch',"augmenter0",str,"Indicate which augmenter to use to use to apply transformations on patches"],
-                    '-augmentations_patch':['augmentations_patch',"mirrors,rotation,resize_4_1.5",str,"Indicate the augmentations to apply to patches in the order desired seprated by commas"],
+                    '-augmentations_patch':['augmentations_patch',"mirrors,rotations,resize_4_1.5",str,"Indicate the augmentations to apply to patches in the order desired seprated by commas"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by a comma"],
