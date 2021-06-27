@@ -7,11 +7,10 @@ class Mirrors:
 
         >>> array = ...
         >>> annotation = ...
-        >>> transformed_array, transformed_annotation = Mirrors.compute_random_augment(array,annotation)
+        >>> transformed_array, transformed_annotation = Mirrors().compute_random_augment(array,annotation)
         ... # Compute the random transformation with the static class
     """
-    @staticmethod
-    def compute_random_augment(image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
+    def compute_random_augment(self,image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
         """Compute the random mirrors transformations
 
         Args:

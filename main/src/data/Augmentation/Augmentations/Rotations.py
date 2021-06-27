@@ -8,12 +8,11 @@ class Rotations:
 
         >>> array = ...
         >>> annotation = ...
-        >>> transformed_array, transformed_annotation = Rotations.compute_random_augment(array,annotation)
+        >>> transformed_array, transformed_annotation = Rotations().compute_random_augment(array,annotation)
         ... # Compute the random transformation with the static class
     """
     attr_angle_step = 15
-    @staticmethod
-    def compute_random_augment(image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
+    def compute_random_augment(self,image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
         """Compute the random rotations transformations
 
         Args:

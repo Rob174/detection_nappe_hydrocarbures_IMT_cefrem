@@ -20,14 +20,14 @@ class Augmenter0(BaseClass):
         self.attr_transformations_classes =  []
         for transfo in self.attr_allowed_transformations.split(","):
             if transfo == "mirrors":
-                self.attr_transformations_classes.append(Mirrors.compute_random_augment)
+                self.attr_transformations_classes.append(Mirrors())
             elif transfo == "rotations":
-                self.attr_transformations_classes.append(Rotations.compute_random_augment)
+                self.attr_transformations_classes.append(Rotations())
             elif "resize" in transfo:
                 [_,range,shift] = transfo.split("_")
                 range = float(range)
                 shift = float(shift)
-                self.attr_transformations_classes.append(lambda x,y:Resize.compute_random_augment(x,y,range=range,shift=shift))
+                self.attr_transformations_classes.append(Resize(range=range,shift=shift))
             else:
                 raise NotImplementedError(f"{transfo} is not implemented")
     def transform(self,image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
@@ -43,6 +43,6 @@ class Augmenter0(BaseClass):
             The randomly transformed image and annotation
 
         """
-        for compute_random_augment in self.attr_transformations_classes:
-            image,annotation = compute_random_augment(image,annotation)
+        for transfoObj in self.attr_transformations_classes:
+            image,annotation = transfoObj.compute_random_augment(image,annotation)
         return image,annotation
