@@ -38,7 +38,7 @@ class Parser0(BaseClass):
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by a comma"],
                     # Training
-                    '-num_epochs':['num_epochs',10,int,"Number of epochs / repetitions of the training dataset"],
+                    '-num_epochs':['num_epochs',100,int,"Number of epochs / repetitions of the training dataset"],
                     '-eval_step':['eval_step',10,int,"Number of training steps between two evaluation/validation steps"],
                     '-loss':['loss_preference',"binarycrossentropy",str,"Loss prefered for training"],
 
