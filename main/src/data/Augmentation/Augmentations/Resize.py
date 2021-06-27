@@ -2,8 +2,10 @@ import numpy as np
 import cv2
 from typing import Tuple
 
+from main.src.param_savers.BaseClass import BaseClass
 
-class Resize:
+
+class Resize(BaseClass):
     def __init__(self, range: float, shift: float):
         self.attr_range = range
         self.attr_shift = shift

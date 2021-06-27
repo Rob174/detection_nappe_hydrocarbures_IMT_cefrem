@@ -2,7 +2,10 @@ import numpy as np
 import cv2
 from typing import Tuple
 
-class Rotations:
+from main.src.param_savers.BaseClass import BaseClass
+
+
+class Rotations(BaseClass):
     """Class computing random rotations of 15° steps
     Usage:
 
