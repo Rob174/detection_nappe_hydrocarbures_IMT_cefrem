@@ -135,6 +135,7 @@ As no parameters produces better performances, we will investigate:
   - ⏳ balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5
   - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1
   - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1 augmentations_patch mirrors,rotation,resize_4_1.5
+  - ⏲️ filter dataset algorithm
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
