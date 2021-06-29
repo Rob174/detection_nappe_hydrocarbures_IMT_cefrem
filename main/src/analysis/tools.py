@@ -71,6 +71,10 @@ class RGB_Overlay_Patch:
                 color_pred = np.ones((resized_grid_size,resized_grid_size,3))
                 for i,c in enumerate(output):
                     color_true[:,:,i] *= c
+                if id == 94:
+                    b=0
+                if output[1] > 0 or output[2] > 0:
+                    b = 0
                 if device is not None:
                     prediction = prediction.cpu().detach().numpy()
                 for i,c in enumerate(prediction[0]):
@@ -92,9 +96,8 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-06-26_16h55min45s_'
+    choice_folder1 = '2021-06-27_10h27min05s_'
     from main.src.models.ModelFactory import ModelFactory
-    from main.src.analysis.tools import RGB_Overlay_Patch
     import json, os
 
     name = "027481_0319CB_0EB7"

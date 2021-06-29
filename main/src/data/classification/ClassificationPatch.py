@@ -38,6 +38,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
+        self.attr_classes_to_use = "other,seep,spill"
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
         self.attr_global_name = "dataset"
         if balance == "nobalance":
