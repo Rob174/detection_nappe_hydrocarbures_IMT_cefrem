@@ -1,6 +1,6 @@
 # Progress
 
-✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause
 
 ## 07-06-2021
 
@@ -133,21 +133,19 @@ As no parameters produces better performances, we will investigate:
   - ✔️ balance margins 1000 10 epoch
 ## 28-06-06
 - ✔️ classificationpatch balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5 (more than 1 day of training)
-- 🔨 filter dataset algorithm clusters [#27](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/27)
+- 🛑🔨(partially) filter dataset algorithm clusters [#27](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/27)
 
 ## 29-06-06
-- Checking if bug in rgb_overlay
+- ✔️ Checking if bug in rgb_overlay
   - ok, loss checked and computed manually, gives coherent results but the model predicts always the same value for the training above (0.32438424 0.60291094 0.659301  )
   - [Possible cause](https://stackoverflow.com/questions/41881220/keras-predict-always-output-same-value-in-multi-classification): class imbalance. 
   - Possible solutions
     - Raise training time --> pb: here 100 epochs -> more than 1 day of training
       - Reduce time consumption of hdf5 cache cf [#27](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/27)
     - Adjust loss to give  more importance to seep and spills positive detection
-- **classificationpatch1** balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5
-- balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1
-- balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1 augmentations_patch mirrors,rotation,resize_4_1.5
+- 
 
-✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
+✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause
 
 ## TODO
 
@@ -155,3 +153,5 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
 
 - Training to launch:
   - unfreeze all layers of the pretrained model
+- 1️⃣ Optimize rotation algorithm for big images with inverse transformation
+- 2️⃣ Create a new hdf5 file with balanced augmented dataset of fixed patches ready to use
