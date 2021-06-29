@@ -143,7 +143,7 @@ As no parameters produces better performances, we will investigate:
     - Raise training time --> pb: here 100 epochs -> more than 1 day of training
       - Reduce time consumption of hdf5 cache cf [#27](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/27)
     - Adjust loss to give  more importance to seep and spills positive detection
-- 
+- Before working to implement and generate the new hdf5 file (with balanced augmented dataset of fixed patches ready to use) release [v1.0](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/v1.0) added
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause
 
