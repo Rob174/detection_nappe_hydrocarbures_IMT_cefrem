@@ -33,9 +33,11 @@ def min_distance(x1,y1,x2,y2,x3,y3,x4,y4):
     if res.success is False:
         raise Exception("Pb with minimization method: try to change the method used in the minimize function")
     return distance_btw_two_points_on_edges(res.x)
+class Stats_
 def do():
 
     annotations,name_to_annotations = get_annotations_points(*get_annotations())
+    list_cluster_dims = []
     with File(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_in\annotations_labels_preprocessed.hdf5","r") as cache:
         for i, [name, img] in enumerate(cache.items()):
             print("----------------------------------------------")
@@ -74,16 +76,17 @@ def do():
                             break
                     if added_to_existing_cluster is False:
                         lclusters.append([points])
-            clean_img = np.zeros((*img.shape,3),dtype=np.uint8)
-            segmentation_map = Image.fromarray(clean_img)
-            draw = ImageDraw.ImageDraw(segmentation_map)
-            get_color = lambda x:matplotlib.colors.to_hex([*colorsys.hsv_to_rgb(x/len(lclusters),1,1)])
+            # clean_img = np.zeros((*img.shape,3),dtype=np.uint8)
+            # segmentation_map = Image.fromarray(clean_img)
+            # draw = ImageDraw.ImageDraw(segmentation_map)
+            # get_color = lambda x:matplotlib.colors.to_hex([*colorsys.hsv_to_rgb(x/len(lclusters),1,1)])
             print(f"{len(lclusters)} clusters found")
             for i,cluster in enumerate(lclusters):
                 print(f"\t- {len(cluster)} shapes : ",cluster)
-                for shape_points in cluster:
-                    color = get_color(i)
-                    draw.polygon(shape_points, fill=color)
+                cv2.minAreaRect(np.array())
+                # for shape_points in cluster:
+                #     color = get_color(i)
+                #     draw.polygon(shape_points, fill=color)
 
             #     plt.figure()
             #     plt.imshow(np.asarray(segmentation_map),cmap="gray")
