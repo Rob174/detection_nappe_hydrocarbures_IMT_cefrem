@@ -1,13 +1,24 @@
+"""Script that allows to create gather images into clusters of images according to a minimal distance below a px threshold distance (cf variable threshold)
+This functionnality has been postponed due to better solution (storing directly static patches into an hdf5 cache
+
+if you want to continue to develop this functionnality, there is the following todo list:
+- create bounding box with opencv OR minAreaRect with rotation (to store less data)
+- check width height boxes statistics and ensure that patches of 1000, (~1500 ?) px can be computed without margins
+
+- launch final algo on all images into a new hdf5 file (⚠️⚠️ check if there is enough hard drive memory before)
+"""
 from h5py import File
 import numpy as np
 import cv2
 import colorsys
 from PIL import Image,ImageDraw
 import matplotlib
+import matplotlib.pyplot as plt
 
 from main.FolderInfos import FolderInfos
 from main.src.data.preprocessing.correct_overlap_annotations import get_annotations,get_annotations_points
 from scipy.optimize import minimize, LinearConstraint
+
 
 distance = lambda point1, point2: np.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 def min_distance(x1,y1,x2,y2,x3,y3,x4,y4):
@@ -33,7 +44,6 @@ def min_distance(x1,y1,x2,y2,x3,y3,x4,y4):
     if res.success is False:
         raise Exception("Pb with minimization method: try to change the method used in the minimize function")
     return distance_btw_two_points_on_edges(res.x)
-class Stats_
 def do():
 
     annotations,name_to_annotations = get_annotations_points(*get_annotations())
@@ -76,46 +86,25 @@ def do():
                             break
                     if added_to_existing_cluster is False:
                         lclusters.append([points])
-            # clean_img = np.zeros((*img.shape,3),dtype=np.uint8)
-            # segmentation_map = Image.fromarray(clean_img)
-            # draw = ImageDraw.ImageDraw(segmentation_map)
-            # get_color = lambda x:matplotlib.colors.to_hex([*colorsys.hsv_to_rgb(x/len(lclusters),1,1)])
+            # Drawing the shapes with one color per cluster: only for debugging purpose
+            # Use directly all points from each cluster to compute boxes
+            clean_img = np.zeros((*img.shape,3),dtype=np.uint8)
+            segmentation_map = Image.fromarray(clean_img)
+            draw = ImageDraw.ImageDraw(segmentation_map)
+            get_color = lambda x:matplotlib.colors.to_hex([*colorsys.hsv_to_rgb(x/len(lclusters),1,1)])
             print(f"{len(lclusters)} clusters found")
             for i,cluster in enumerate(lclusters):
                 print(f"\t- {len(cluster)} shapes : ",cluster)
                 cv2.minAreaRect(np.array())
-                # for shape_points in cluster:
-                #     color = get_color(i)
-                #     draw.polygon(shape_points, fill=color)
+                for shape_points in cluster:
+                    color = get_color(i)
+                    draw.polygon(shape_points, fill=color)
 
-            #     plt.figure()
-            #     plt.imshow(np.asarray(segmentation_map),cmap="gray")
-            #     plt.figure()
-            #     plt.imshow(img.astype(np.uint8),cmap="gray")
-            #     plt.show()
-            # break
-    #     n = len(cache.keys())
-    #     for i,[name,img] in enumerate(cache.items()):
-    #         classes_to_analyse = [1,2]
-    #         print(f"{i/n*100:.2f}%")
-    #         img = np.copy(np.array(img,dtype=np.float32))
-    #         for classe in classes_to_analyse:
-    #             contours,hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    #             if len(contours) == 0:
-    #                 continue
-    #             lshapes = []
-    #             # Get list of points = contours of each shape
-    #             for points,hier in zip(contours,hierarchy[0]):
-    #                 if hier[-1] != -1:
-    #                     continue
-    #                 lshapes.append(points)
-    #             lclusters = []
-    #             dist_clustering_max = 250
-    #             for points in lshapes:
-    #                 if len(lclusters) == 0:
-    #                     lclusters.append([points])
-    #                 else:
-    #                     for i,cluster_list in enumerate(lclusters):
-    #                         for points_clusteri in cluster_list:
+            plt.figure()
+            plt.imshow(np.asarray(segmentation_map),cmap="gray")
+            plt.figure()
+            plt.imshow(img.astype(np.uint8),cmap="gray")
+            plt.show()
+            break
 if __name__ == "__main__":
     do()
