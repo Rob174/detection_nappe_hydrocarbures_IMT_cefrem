@@ -131,9 +131,15 @@ As no parameters produces better performances, we will investigate:
   - ✔️ nobalance margins 100000000 1 epoch
   - ✔️ nobalance margins 1000 1 epoch
   - ✔️ balance margins 1000 10 epoch
-  - ⏳ balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5
-  - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1
-  - balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1 augmentations_patch mirrors,rotation,resize_4_1.5
+## 28-06-06
+- ✔️ classificationpatch balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5 (more than 1 day of training)
+- 🔨 filter dataset algorithm clusters
+
+## 29-06-06
+- **classificationpatch1** balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5
+- Checking if bug in rgb_overlay
+- balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1
+- balance margins 1000 10 epoch augmentations_img mirrors,rotation,resize_1_0.1 augmentations_patch mirrors,rotation,resize_4_1.5
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve
 
