@@ -49,15 +49,15 @@ if __name__ == "__main__":
     transformation_matrix_without_transl = cv2.getRotationMatrix2D((rows / 2, cols / 2), 45, 1)#.dot(shift_patch)[:-1,:]
     rotation_matr = np.concatenate((cv2.getRotationMatrix2D((rows / 2, cols / 2), 45, 1),[[0,0,1]]),axis=0) #2500,2500
     transformation_matrix_without_transl1 = shift_patch.dot(rotation_matr)[:-1,:]
-    # result = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
-    # result1 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
-    # result2 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
-    # result3 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
-    # result4 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
-    # result5 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
+    result = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
+    result1 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
+    result2 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
+    result3 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
+    result4 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
+    result5 = cv2.warpAffine(img,transformation_matrix_without_transl1,dsize=(size,size))
     # # # Approach 2
-    transformation_matrix = cv2.getRotationMatrix2D((rows/2,cols/2),45,1)
-    result = cv2.warpAffine(img,transformation_matrix,dsize=(cols,rows))
-    result1 = cv2.warpAffine(img,transformation_matrix,dsize=(cols,rows))
-    result2 = cv2.warpAffine(img,transformation_matrix,dsize=(cols,rows))
+    # transformation_matrix = cv2.getRotationMatrix2D((rows/2,cols/2),45,1)
+    # result = cv2.warpAffine(img,transformation_matrix,dsize=(cols,rows))
+    # result1 = cv2.warpAffine(img,transformation_matrix,dsize=(cols,rows))
+    # result2 = cv2.warpAffine(img,transformation_matrix,dsize=(cols,rows))
     print()
