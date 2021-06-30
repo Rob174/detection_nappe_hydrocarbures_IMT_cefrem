@@ -144,7 +144,11 @@ As no parameters produces better performances, we will investigate:
       - Reduce time consumption of hdf5 cache cf [#27](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/27)
     - Adjust loss to give  more importance to seep and spills positive detection
 - 🛰️ Before working to implement and generate the new hdf5 file (with balanced augmented dataset of fixed patches ready to use) release [v1.0](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/v1.0) added ``git checkout v1.0`` to switch to this branch
+
+## 30-06-06
 - ⏲️ Optimize rotation algorithm for big images with inverse transformation
+  - ✔️ proof of concept
+  - ⏲️ integrate it to existing code (resize, rotation)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
