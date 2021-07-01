@@ -153,6 +153,8 @@ As no parameters produces better performances, we will investigate:
 - ⏲️ Optimize rotation algorithm for big images with inverse transformation
   - ⏲️ integrate it to existing code (resize, rotation)
   - ⏲️ changing from getitem protocol to iter protocol (more adapted as we want to ignore some items)
+    - ✔️ supporting split
+    - progressbar problem (unknown size of the dataset -> no overall progress status possible)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
