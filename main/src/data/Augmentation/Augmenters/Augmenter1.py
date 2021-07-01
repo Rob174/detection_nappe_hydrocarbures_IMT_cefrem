@@ -78,5 +78,5 @@ class Augmenter1(BaseClass):
         transformation_matrix = partial_transformation_matrix.dot(transformation_matrix)
         return image, annotation, transformation_matrix
 
-    def choose_new_augmentation(self):
+    def choose_new_augmentations(self):
         return self.attr_transformations_classes.choose_new_augmentation()

@@ -8,6 +8,8 @@ from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, Ti
 from rich.console import Console
 import numpy as np
 
+from main.src.training.TrValidSplit import TrValidSplit, trvalidsplit
+
 
 class Trainer0(BaseClass):
     """Class managing the training process
@@ -53,8 +55,7 @@ class Trainer0(BaseClass):
         valid_length = length_full_dataset - self.tr_length
         self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
         # split the datasets into train and validation
-        [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
-                                                   generator=torch.Generator().manual_seed(42))
+        [dataset_tr, dataset_valid] = trvalidsplit(dataset)
         # create the dataloader classes to automatically generate the samples
         self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
                                 # shuffle the dataset at the beginning of each epoch
@@ -90,10 +91,8 @@ class Trainer0(BaseClass):
             "•",
             TimeRemainingColumn()
         )
-    def add_to_batch_tr(self,input,output,reject):
+    def add_to_batch_tr(self,input,output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        if reject is True or reject.cpu().detach().numpy()[0]:
-            return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
         if len(self.tr_batches[0]) == self.attr_tr_batch_size:
@@ -102,10 +101,8 @@ class Trainer0(BaseClass):
             return full_batch
         else:
             return None
-    def add_to_batch_valid(self,input,output,reject):
+    def add_to_batch_valid(self,input,output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        if reject is True or reject.cpu().detach().numpy()[0]:
-            return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
         if len(self.valid_batches[0]) == self.attr_valid_batch_size:
@@ -131,8 +128,8 @@ class Trainer0(BaseClass):
             it_val = 0
             opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
-                for i, [input, output,reject] in enumerate(self.dataset_tr):
-                    opt_tr_batch = self.add_to_batch_tr(input,output,reject)
+                for i, [input, output,transformation_matrix,item] in enumerate(self.dataset_tr):
+                    opt_tr_batch = self.add_to_batch_tr(input,output)
                     if opt_tr_batch is not None:
                         it_tr += 1
                         input,output = opt_tr_batch
@@ -167,7 +164,7 @@ class Trainer0(BaseClass):
                             # reinitialize data loader
                             dataset_valid_iter = iter(self.dataset_valid)
                             input, output,reject = next(dataset_valid_iter)
-                        opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+                        opt_valid_batch = self.add_to_batch_valid(input,output)
 
                     else:
                         it_val += 1

@@ -83,11 +83,16 @@ class Patch_creator0(BaseClass):
         patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
         # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
         # with x the threshold provided in the attr_exclusion_policy after the "_"
-        if len(patch[patch == 0]) > int(self.attr_exclusion_policy.split("_")[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+        if Patch_creator0.check_reject(patch,int(self.attr_exclusion_policy.split("_")[1])) is True : # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
         else:
             return patch, False
+    @staticmethod
+    def check_reject(patch: np.ndarray,threshold_px: int):
+        if len(patch[patch == 0]) > threshold_px:  # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+            return True
+        return False
     def get_position_patch(self,patch_id: int, input_shape):
         """Compute the position of the patch with respect to the parameters
 
