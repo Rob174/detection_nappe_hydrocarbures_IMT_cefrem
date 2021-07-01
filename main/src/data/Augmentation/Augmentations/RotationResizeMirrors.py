@@ -17,14 +17,15 @@ class RotationResizeMirrors(BaseClass):
 
         >>> array = ...
         >>> annotation = ...
-        >>> patch_array, patch_annotation, transformation_matrix = RotationResizeMirrors(patch_size=1000,rotation_step=15,resize_lower_fact_float=0.25,resize_upper_fact_float=4).compute_random_augment(array,annotation,
+        >>> patch_array, patch_annotation, transformation_matrix = RotationResizeMirrors(patch_size_before_final_resize=1000, patch_size_final_resize=256,rotation_step=15,resize_lower_fact_float=0.25,resize_upper_fact_float=4).compute_random_augment(array,annotation,
         ...                                                                                        angle=15,resize_factor=2,
         ...                                                                                        mirrorlr=False,mirrorud=True,
         ...                                                                                        coord_patch=(1000,1000))
         ... # Compute the random transformation with the static class
-        >>> patch_array
+        >>> patch_array.shape
+        (256,256)
     """
-    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize,rotation_step: float,resize_lower_fact_float: float,resize_upper_fact_float: float):
+    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int,rotation_step: float,resize_lower_fact_float: float,resize_upper_fact_float: float):
         self.attr_patch_size_before_final_resize = patch_size_before_final_resize
         self.attr_patch_size_final_resize = patch_size_final_resize
         self.attr_rotation_step = rotation_step
