@@ -79,22 +79,9 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         else:
             raise NotImplementedError()
         self.attr_length_dataset = len(self.attr_dataset)
-    def getitem(self,id: int):
-        """Magic method to get the input, output, and whether this sample is rejected or not of this id
+    def __iter__(self):
+        return self.attr_dataset.__iter__()
 
-        Args:
-            id: int, global id of the item
-
-        Returns:
-            the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
-        """
-        input, output, reject = self.attr_dataset.__getitem__(id)
-        return input, output, reject
-    def __getitem__(self, id: int):
-        return self.getitem(id)
-
-    def __len__(self):
-        return self.attr_dataset.__len__()
 
 
 if __name__ == "__main__":
