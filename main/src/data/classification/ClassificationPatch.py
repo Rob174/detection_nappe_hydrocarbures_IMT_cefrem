@@ -79,24 +79,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.cache_img_id_rejected = []
 
 
-    @lru_cache(maxsize=1)
-    def get_all_items(self):
-        """List available original images available in the dataset (hdf5 file)
-        the :lru_cache(maxsize=1) allow to compute it only one time and store the result in a cache
-
-        Allow to limit the number of original image used in the dataset
-
-        Returns: list of list of str,int: [[img_uniq_id,id_patch],...]
-
-        """
-        list_items = []
-        for img_name in list(self.images.keys()):
-            img = self.images[img_name]
-            num_ids = self.patch_creator.num_available_patches(img)
-            list_items.extend([[img_name, i] for i in range(num_ids)])
-        if self.attr_limit_num_images is not None: # Limit the number of images used
-            return list_items[:self.attr_limit_num_images]
-        return list_items
     def get_geographic_coords_of_patch(self,name_src_img,patch_id):
         """Get the coordinates of the upper left pixel of the patch specified
 
@@ -120,6 +102,18 @@ class ClassificationPatch(DataSentinel1Segmentation):
     def __iter__(self,dataset="tr"):
         return iter(self.generator(dataset))
     def generate_item_with_augmentation_at_once(self,dataset="tr"):
+        """
+
+        Args:
+            dataset: str, tr or valid to choose source images for tr or valid dataset
+
+        Returns:
+            generator of the dataset (object that support __iter__ and __next__ magic methods)
+            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+                   classif: np.ndarray (shape (num_classes,), classification patch ;
+                   transformation_matrix:  the transformation matrix to transform the source image
+                   item: str name of the source image
+        """
         if isinstance(self.attr_img_augmenter,Augmenter1) is False:
             raise Exception("Only augmenter1 is supported with this method of dataset generation")
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
@@ -151,14 +145,15 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """Magic method of python called by the object[id] syntax.
 
         get the patch of global int id id
-
         Args:
-            id: int, global ⚠️ id of the patch
+            dataset:
 
         Returns:
+            generator of the dataset (object that support __iter__ and __next__ magic methods)
             tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
-                   reject:  bool, indicate if we need to reject this sample ;
+                   None:  no transformation matrix is available for this method
+                   item: str name of the source image
         """
         if isinstance(self.attr_img_augmenter,Augmenter1) is True:
             raise Exception("Augmenter1 is not supported with this method of dataset generation. Use Augmenter0")

@@ -8,7 +8,9 @@ class ClassificationPatch2(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use="spill,seep", balance="nobalance",margin=None,
                  augmentations_img="none",augmenter_img="noaugmenter",
-                 augmentations_patch="none",augmenter_patch="noaugmenter"):
+                 augmentations_patch="none",augmenter_patch="noaugmenter",
+                 augmentation_factor: int=100,
+                 tr_percent=0.7):
         """Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
 
         Args:
@@ -23,7 +25,8 @@ class ClassificationPatch2(ClassificationPatch):
             augmenter_patch: opt str, name of the augmenter to use on patches
         """
         super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,
-                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch,
+                                                   augmentation_factor=augmentation_factor,tr_percent=tr_percent)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use

@@ -38,6 +38,7 @@ class VectorizzedClassificationPatch(ClassificationPatch):
             - rejects:  bool, indicate if we need to reject this sample
 
         """
+        raise Exception("Not adapted")
         all_items = self.get_all_items()
         dico_item_patches = {}
         for index_orig, i in enumerate(id):
