@@ -57,14 +57,8 @@ class Trainer0(BaseClass):
         # split the datasets into train and validation
         [dataset_tr, dataset_valid] = trvalidsplit(dataset)
         # create the dataloader classes to automatically generate the samples
-        self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=False,
-                                # shuffle the dataset at the beginning of each epoch
-                                num_workers=0,  # num workers loading data into ram
-                                prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
-        self.dataset_valid = DataLoader(dataset_valid, batch_size=1, shuffle=False,
-                                   # shuffle the dataset at the beginning of each epoch
-                                   num_workers=0,  # num workers loading data into ram
-                                   prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
+        self.dataset_tr = dataset_tr  # there will be a total of 2 * num_workers samples prefetched across all workers
+        self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.model = model
 
         self.attr_tr_loss = []
