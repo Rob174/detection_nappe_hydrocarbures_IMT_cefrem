@@ -80,14 +80,14 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 
 - ✔️ Classify only by using 2 probabilities (seep or spill) --> if vector output (0,0) --> other
 
-## 21-06-06
+## 21-06-2021
 - ✔️dashboard bug fixes
 - ✔️ training on 2 classes or 1 class
 - ✔️ profiling methods
 - ✔️ balance the dataset
 - ✔️ shapes statistics update
 
-## 22-06-06
+## 22-06-2021
 - ✔️ Important bug fix ! Training not using correct batches --> compiling version [a39e48](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/a39e48ff933e16c063e15d3c371f78308a8bdbb5)
 - 🔨 Adding debug option to save training reference and output
 - 🔨 get the position of the image/patch
@@ -95,7 +95,7 @@ Working version : [dd43dc4](https://github.com/Rob174/detection_nappe_hydrocarbu
 - ✔️ interactive visualizer of dataframe with property of trainings
 - ✔️ integrated and html documentation of the code
 
-## 23-06-06
+## 23-06-2021
 As no parameters produces better performances, we will investigate:
 - deeper models:
   - ✔️ vgg16
@@ -109,7 +109,7 @@ As no parameters produces better performances, we will investigate:
   - ✔️ works
   - 
 
-## 24-06-06
+## 24-06-2021
 - ⏲️ playing with learning rate
 - ✔️ with / without algo balance
 - ✔️ with / without algo margins
@@ -120,7 +120,7 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Doc
 - ✔️ Debug overlay
 
-## 25-06-06
+## 25-06-2021
 - ✔️ Launching a debugging session
 - ✔️ ⚠️⚠️ Major bug fix on reject system (balance and margin exclusion) [f728e82d](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/commit/f728e82ddc4962d4d15f4c9bfd449c27a5ce428f)
 - ✔️ Resize augmentation
@@ -131,11 +131,11 @@ As no parameters produces better performances, we will investigate:
   - ✔️ nobalance margins 100000000 1 epoch
   - ✔️ nobalance margins 1000 1 epoch
   - ✔️ balance margins 1000 10 epoch
-## 28-06-06
+## 28-06-2021
 - ✔️ classificationpatch balance margins 1000 10 epoch augmentations_patch mirrors,rotation,resize_4_1.5 (more than 1 day of training)
 - 🛑🔨(partially) filter dataset algorithm clusters [#27](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/27)
 
-## 29-06-06
+## 29-06-2021
 - ✔️ Checking if bug in rgb_overlay
   - ok, loss checked and computed manually, gives coherent results but the model predicts always the same value for the training above (0.32438424 0.60291094 0.659301  )
   - [Possible cause](https://stackoverflow.com/questions/41881220/keras-predict-always-output-same-value-in-multi-classification): class imbalance. 
@@ -145,10 +145,14 @@ As no parameters produces better performances, we will investigate:
     - Adjust loss to give  more importance to seep and spills positive detection
 - 🛰️ Before working to implement and generate the new hdf5 file (with balanced augmented dataset of fixed patches ready to use) release [v1.0](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/v1.0) added ``git checkout v1.0`` to switch to this branch
 
-## 30-06-06
+## 30-06-2021
 - ⏲️ Optimize rotation algorithm for big images with inverse transformation
   - ✔️ proof of concept
   - ⏲️ integrate it to existing code (resize, rotation)
+## 01-07-2021
+- ⏲️ Optimize rotation algorithm for big images with inverse transformation
+  - ⏲️ integrate it to existing code (resize, rotation)
+  - ⏲️ changing from getitem protocol to iter protocol (more adapted as we want to ignore some items)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
