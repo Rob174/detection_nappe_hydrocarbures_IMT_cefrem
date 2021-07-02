@@ -146,15 +146,19 @@ As no parameters produces better performances, we will investigate:
 - 🛰️ Before working to implement and generate the new hdf5 file (with balanced augmented dataset of fixed patches ready to use) release [v1.0](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/v1.0) added ``git checkout v1.0`` to switch to this branch
 
 ## 30-06-2021
-- ⏲️ Optimize rotation algorithm for big images with inverse transformation
+- ✔️ Optimize rotation algorithm for big images with inverse transformation
   - ✔️ proof of concept
-  - ⏲️ integrate it to existing code (resize, rotation)
+  - ✔️ integrate it to existing code (resize, rotation)
 ## 01-07-2021
-- ⏲️ Optimize rotation algorithm for big images with inverse transformation
-  - ⏲️ integrate it to existing code (resize, rotation)
-  - ⏲️ changing from getitem protocol to iter protocol (more adapted as we want to ignore some items)
+- ✔️ Optimize rotation algorithm for big images with inverse transformation
+  - ✔️ integrate it to existing code (resize, rotation)
+  - ✔️ changing from getitem protocol to iter protocol (more adapted as we want to ignore some items)
     - ✔️ supporting split
-    - progressbar problem (unknown size of the dataset -> no overall progress status possible)
+## 02-07-2021
+
+- ✔️ Optimize rotation algorithm for big images with inverse transformation
+    - ✔️ progressbar problem (unknown size of the dataset -> no overall progress status possible)
+    - ✔️ debug transformation warpaffine shiftings (for posterity ⚠️⚠️ order of dimensions in opencv ⚠️⚠️ not rows,cols but cols,rows)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
