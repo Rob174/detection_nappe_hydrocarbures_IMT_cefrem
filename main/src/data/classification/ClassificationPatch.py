@@ -65,8 +65,10 @@ class ClassificationPatch(DataSentinel1Segmentation):
                 self.generator = self.generate_item_with_augmentation_at_once
 
             else:
+                self.generator = self.generate_item_step_by_step
                 raise NotImplementedError(f"{augmenter_img} is not implemented")
         else:
+            self.generator = self.generate_item_step_by_step
             self.attr_img_augmenter = NoAugmenter()
         if augmentations_patch != "none":
             if augmenter_patch == "augmenter0":
@@ -216,6 +218,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # Check if we need to reject the patch due to overrepresented class
         balance_reject = self.attr_balance.filter(output)
         return output,balance_reject
+    def __len__(self):
+        return
 
     def make_patches_of_image(self, name: str):
         """Creates and returns all patches of an image

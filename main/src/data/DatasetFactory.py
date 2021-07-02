@@ -78,9 +78,8 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
                 self.attr_dataset = DataSentinel1Segmentation()
         else:
             raise NotImplementedError()
-        self.attr_length_dataset = len(self.attr_dataset)
-    def __iter__(self):
-        return self.attr_dataset.__iter__()
+    def __iter__(self,dataset):
+        return self.attr_dataset.__iter__(dataset)
 
 
 

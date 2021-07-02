@@ -47,12 +47,9 @@ class Trainer0(BaseClass):
         self.optimizer = optimizer
         self.loss = loss
         self.metrics = metrics
-        length_full_dataset = len(dataset)
-        self.tr_length = int(length_full_dataset * tr_prct)
         self.saver = saver
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
-        valid_length = length_full_dataset - self.tr_length
         self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
         # split the datasets into train and validation
         [dataset_tr, dataset_valid] = trvalidsplit(dataset)
@@ -81,6 +78,8 @@ class Trainer0(BaseClass):
             "•",
             TextColumn("[bold blue]last_loss: {task.fields[loss]:.4e}", justify="right"),
             "•",
+            TextColumn("[bold blue]num_processed_img: {task.fields[img_processed]:.4e}", justify="right"),
+            "•",
             TimeElapsedColumn(),
             "•",
             TimeRemainingColumn()
@@ -90,7 +89,7 @@ class Trainer0(BaseClass):
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
         if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-            full_batch = (np.concatenate(self.tr_batches[0],axis=0),np.concatenate(self.tr_batches[1],axis=0))
+            full_batch = (np.stack(self.tr_batches[0],axis=0),np.stack(self.tr_batches[1],axis=0))
             self.tr_batches = [[],[]]
             return full_batch
         else:
@@ -100,7 +99,7 @@ class Trainer0(BaseClass):
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
         if len(self.valid_batches[0]) == self.attr_valid_batch_size:
-            full_batch = (np.concatenate(self.valid_batches[0], axis=0), np.concatenate(self.valid_batches[1], axis=0))
+            full_batch = (np.stack(self.valid_batches[0], axis=0), np.stack(self.valid_batches[1], axis=0))
             self.valid_batches = [[], []]
             return full_batch
         else:
@@ -111,9 +110,7 @@ class Trainer0(BaseClass):
         """Train the model"""
         with self.progress:
             epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0., total=self.attr_num_epochs,
-                                               status=0)
-            iterations_progress = self.progress.add_task("iterations", name="[bold blue]Total iterations", loss=0., status=0,
-                                                    total=self.attr_num_epochs * self.tr_length)
+                                               status=0,img_processed=0)
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.model.to(device)
@@ -152,12 +149,12 @@ class Trainer0(BaseClass):
 
                     if opt_valid_batch is None:
                         try:
-                            input, output,reject = next(dataset_valid_iter)
+                            input, output,transformation_matrix,item = next(dataset_valid_iter)
                         except StopIteration:
                             # StopIteration is thrown if dataset ends
                             # reinitialize data loader
                             dataset_valid_iter = iter(self.dataset_valid)
-                            input, output,reject = next(dataset_valid_iter)
+                            input, output,transformation_matrix,item = next(dataset_valid_iter)
                         opt_valid_batch = self.add_to_batch_valid(input,output)
 
                     else:
@@ -177,8 +174,8 @@ class Trainer0(BaseClass):
                         if loss < np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                             torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
                         opt_valid_batch = None
-                    self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
-                self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
+                    self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
+                self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch,img_processed=i)
                 torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
                 self.saver(self.dataset)
                 self.saver(self.metrics)
