@@ -145,6 +145,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     yield image_patch,classification,transformation_matrix,item
+        raise Exception()
 
     def generate_item_step_by_step(self,dataset="tr"): # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
