@@ -57,8 +57,9 @@ class RotationResizeMirrors(BaseClass):
                                                      [0,    1,  -coord_patch[0]],
                                                      [0,    0,   1]])
         transformation_matrix = shift_patch_into_position_matrix.dot(partial_transformation_matrix)
-        patch_image = cv2.warpAffine(image,transformation_matrix[:-1,:],dsize=(self.attr_patch_size_final_resize,self.attr_patch_size_final_resize))
         patch_annotation = cv2.warpAffine(annotation,transformation_matrix[:-1,:],dsize=(self.attr_patch_size_final_resize,self.attr_patch_size_final_resize))
+        patch_image = cv2.warpAffine(image, transformation_matrix[:-1, :],
+                                     dsize=(self.attr_patch_size_final_resize, self.attr_patch_size_final_resize))
         return patch_image,patch_annotation, transformation_matrix
     def get_grid(self,img_shape,partial_transformation_matrix: np.ndarray) -> List[Tuple[int,int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.

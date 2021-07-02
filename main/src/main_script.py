@@ -42,7 +42,8 @@ if __name__ == "__main__":
                              augmenter_img=arguments.augmenter_img,
                              augmentations_img=arguments.augmentations_img,
                              augmenter_patch=arguments.augmenter_patch,
-                             augmentations_patch=arguments.augmentations_patch
+                             augmentations_patch=arguments.augmentations_patch,
+                             augmentation_factor=arguments.augmentation_factor
                              )
     saver["date"] = FolderInfos.id
     saver(dataset)

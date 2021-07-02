@@ -123,7 +123,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
-            for item in images_available:
+            for item in images_available[:2]:
                 image = np.array(self.images[item])
                 annotations = np.array(self.annotations_labels[item],dtype=np.float32)
                 partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
