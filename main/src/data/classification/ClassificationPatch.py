@@ -133,7 +133,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                                                                                                 partial_transformation_matrix=partial_transformation_matrix,
                                                                                                 patch_upper_left_corner_coords=patch_upper_left_corner_coords
                                                                                                 )
-                    reject = self.patch_creator.check_reject(image,threshold_px=10)
+                    reject = self.patch_creator.check_reject(image_patch,threshold_px=10)
                     if reject is True:
                         print("reject")
                         continue
