@@ -53,8 +53,8 @@ class RotationResizeMirrors(BaseClass):
             - the transformation matrix
         """
 
-        shift_patch_into_position_matrix = np.array([[1,    0,  -coord_patch[0]],
-                                                     [0,    1,  -coord_patch[1]],
+        shift_patch_into_position_matrix = np.array([[1,    0,  -coord_patch[1]],
+                                                     [0,    1,  -coord_patch[0]],
                                                      [0,    0,   1]])
         transformation_matrix = shift_patch_into_position_matrix.dot(partial_transformation_matrix)
         patch_image = cv2.warpAffine(image,transformation_matrix[:-1,:],dsize=(self.attr_patch_size_final_resize,self.attr_patch_size_final_resize))
