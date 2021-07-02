@@ -118,20 +118,22 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """
         if isinstance(self.attr_img_augmenter,Augmenter1) is False:
             raise Exception("Only augmenter1 is supported with this method of dataset generation")
+        if isinstance(self.attr_patch_augmenter,NoAugmenter) is False:
+            raise Exception("The patch augmenter is not supported when you choose augmenter1 for image augmenter")
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
-            augmentations_parameters = self.attr_img_augmenter.choose_new_augmentations()
             random.shuffle(images_available)
             for item in images_available:
-                image = self.images[item]
-                annotations = self.annotations_labels[item]
-                for patch_id in np.random.permutation(range(self.patch_creator.num_available_patches(image))):
-                    patch_upper_left_corner_coords = self.patch_creator.get_position_patch(patch_id,image.shape)
+                image = np.array(self.images[item])
+                annotations = np.array(self.annotations_labels[item],dtype=np.float32)
+                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image.shape)
+                for patch_upper_left_corner_coords in np.random.permutation(self.attr_img_augmenter.get_grid(image.shape,partial_transformation_matrix)):
+                    print("step")
                     image_patch,annotations_patch,transformation_matrix = self.attr_img_augmenter.transform(image=image,
-                                                                                                annotations=annotations,
-                                                                                                patch_upper_left_corner_coords=patch_upper_left_corner_coords,
-                                                                                                **augmentations_parameters
-                                                                                                            )
+                                                                                                annotation=annotations,
+                                                                                                partial_transformation_matrix=partial_transformation_matrix,
+                                                                                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                                                                                                )
                     reject = self.patch_creator.check_reject(image,threshold_px=10)
                     if reject is True:
                         continue

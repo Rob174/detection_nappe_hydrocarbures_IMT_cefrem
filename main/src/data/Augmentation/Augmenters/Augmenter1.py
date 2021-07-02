@@ -6,7 +6,7 @@ from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
 from main.src.param_savers.BaseClass import BaseClass
 
 import numpy as np
-from typing import Tuple, List, Any, Dict
+from typing import Tuple, List, Any, Dict, Iterator
 
 
 class Augmenter1(BaseClass):
@@ -42,7 +42,7 @@ class Augmenter1(BaseClass):
         """
         if "combinedRotResizeMir" in allowed_transformations:
             seen = True
-            [_,_,rotation_step,resize_lower_fact_float,resize_upper_fact_float] = allowed_transformations.split("_")
+            [_,rotation_step,resize_lower_fact_float,resize_upper_fact_float] = allowed_transformations.split("_")
             rotation_step = float(rotation_step)
             resize_lower_fact_float = float(resize_lower_fact_float)
             resize_upper_fact_float = float(resize_upper_fact_float)
@@ -54,8 +54,8 @@ class Augmenter1(BaseClass):
                                                                            )
         else:
             raise NotImplementedError(f"{allowed_transformations} is not implemented")
-    def transform(self,image: np.ndarray, annotation: np.ndarray,
-                  patch_upper_left_corner_coords: Tuple[int],**augmentation_parameters: Dict[str,Any]) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
+    def transform(self,image: np.ndarray, annotation: np.ndarray,partial_transformation_matrix: np.ndarray,
+                  patch_upper_left_corner_coords: Tuple[int,int],) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
         """Compute the random augmentations in the order in which they have been supplied.
 
                 Apply the same augmentations to the image and to the annotation
@@ -63,8 +63,8 @@ class Augmenter1(BaseClass):
                 Args:
                     image: np.ndarray, the input image to transform
                     annotation: np.array, the corresponding annotation
+                    partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
                     patch_upper_left_corner_coords: tuple of int, coordinates of the upperleft corner of the patch in the transformed image
-                    augmentation_parameters: dict
 
                 Returns:
                     tuple of 3 np.ndarray
@@ -73,10 +73,32 @@ class Augmenter1(BaseClass):
                     - the transformation matrix
 
                 """
-        transformation_matrix = np.identity(3)
-        image, annotation, partial_transformation_matrix = self.attr_transformations_classes.compute_random_augment(image, annotation,**augmentation_parameters)
-        transformation_matrix = partial_transformation_matrix.dot(transformation_matrix)
-        return image, annotation, transformation_matrix
+        image, annotation, partial_transformation_matrix = self.attr_transformations_classes.compute_random_augment(image, annotation,partial_transformation_matrix,
+                                                                                                                    coord_patch=patch_upper_left_corner_coords)
+        return image, annotation, partial_transformation_matrix
 
-    def choose_new_augmentations(self):
-        return self.attr_transformations_classes.choose_new_augmentation()
+
+    def get_grid(self,img_shape,partial_transformation_matrix: np.ndarray) -> Iterator[Tuple[int,int]]:
+        """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
+
+
+        Args:
+            img_shape: shape of the original image
+            partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
+
+        Returns:
+            iterator that produces tuples with coordinates of each upper left corner of each patch
+        """
+
+        return self.attr_transformations_classes.get_grid(img_shape,partial_transformation_matrix)
+    def choose_new_augmentations(self,img_shape) -> np.ndarray:
+        """Method that allows to create a new augmentation dict containing
+
+        Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
+            Internally this matrix include the following transformations:
+            - angle
+            - resize_factor
+            - mirrorlr
+            - mirrorud
+        """
+        return self.attr_transformations_classes.choose_new_augmentation(img_shape)
