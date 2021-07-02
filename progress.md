@@ -159,6 +159,8 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Optimize rotation algorithm for big images with inverse transformation
     - ✔️ progressbar problem (unknown size of the dataset -> no overall progress status possible)
     - ✔️ debug transformation warpaffine shiftings (for posterity ⚠️⚠️ order of dimensions in opencv ⚠️⚠️ not rows,cols but cols,rows)
+    - ✔️ profiling to check bottlenecks
+- ⏲️ Create a new hdf5 file with balanced augmented dataset of fixed patches ready to use
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
