@@ -135,14 +135,15 @@ class ClassificationPatch(DataSentinel1Segmentation):
                                                                                                 )
                     reject = self.patch_creator.check_reject(image_patch,threshold_px=10)
                     if reject is True:
-                        print("reject")
+                        # print("reject")
                         continue
-                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
                     classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
                     if balance_reject is True:
+                        # print("reject due to balance ",classification)
                         continue
+                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+                    image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     yield image_patch,classification,transformation_matrix,item
 
     def generate_item_step_by_step(self,dataset="tr"): # btwn 25 and 50 ms
