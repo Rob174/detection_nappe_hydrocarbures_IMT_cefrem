@@ -123,7 +123,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
-            for item in images_available[:2]:
+            for item in images_available:
                 image = np.array(self.images[item])
                 annotations = np.array(self.annotations_labels[item],dtype=np.float32)
                 partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
@@ -145,7 +145,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     yield image_patch,classification,transformation_matrix,item
-        raise Exception()
+            raise Exception()
 
     def generate_item_step_by_step(self,dataset="tr"): # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
