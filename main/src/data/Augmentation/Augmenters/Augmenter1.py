@@ -78,7 +78,7 @@ class Augmenter1(BaseClass):
         return image, annotation, partial_transformation_matrix
 
 
-    def get_grid(self,img_shape,partial_transformation_matrix: np.ndarray) -> Iterator[Tuple[int,int]]:
+    def get_grid(self,img_shape,partial_transformation_matrix: np.ndarray) -> List[Tuple[int,int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
 
 
@@ -91,14 +91,15 @@ class Augmenter1(BaseClass):
         """
 
         return self.attr_transformations_classes.get_grid(img_shape,partial_transformation_matrix)
-    def choose_new_augmentations(self,img_shape) -> np.ndarray:
+    def choose_new_augmentations(self,image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
 
         Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
+            ⚠️⚠️⚠️⚠️️ coordinates in OPENCV are in the opposite way of the normal row,cols way ⚠️⚠️⚠️⚠
             Internally this matrix include the following transformations:
             - angle
             - resize_factor
             - mirrorlr
             - mirrorud
         """
-        return self.attr_transformations_classes.choose_new_augmentation(img_shape)
+        return self.attr_transformations_classes.choose_new_augmentation(image)

@@ -126,9 +126,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
             for item in images_available:
                 image = np.array(self.images[item])
                 annotations = np.array(self.annotations_labels[item],dtype=np.float32)
-                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image.shape)
+                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
                 for patch_upper_left_corner_coords in np.random.permutation(self.attr_img_augmenter.get_grid(image.shape,partial_transformation_matrix)):
-                    print("step")
                     image_patch,annotations_patch,transformation_matrix = self.attr_img_augmenter.transform(image=image,
                                                                                                 annotation=annotations,
                                                                                                 partial_transformation_matrix=partial_transformation_matrix,
@@ -136,6 +135,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                                                                                                 )
                     reject = self.patch_creator.check_reject(image,threshold_px=10)
                     if reject is True:
+                        print("reject")
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
