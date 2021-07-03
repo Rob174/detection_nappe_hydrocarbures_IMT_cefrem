@@ -31,10 +31,10 @@ class Parser0(BaseClass):
                     '-balance':['balance',"balanceclasses1",str,"Indicate the policy to balance classes"],
                     # Augmentations
                     '-augmenter_img':['augmenter_img',"augmenter1",str,"Indicate which augmenter to use to apply transformations on source image"],
-                    '-augmentations_img':['augmentations_img',"combinedRotResizeMir_15_0.25_4",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
+                    '-augmentations_img':['augmentations_img',"combinedRotResizeMir_10_0.25_4",str,"Indicate the augmentations to apply to images in the order desired seprated by commas"],
                     '-augmenter_patch':['augmenter_patch',"noaugmenter",str,"Indicate which augmenter to use to use to apply transformations on patches"],
                     '-augmentations_patch':['augmentations_patch',"none",str,"Indicate the augmentations to apply to patches in the order desired seprated by commas"],
-                    '-augmentation_factor':['augmentation_factor',1,int,"The number of times that the source image is augmented"],
+                    '-augmentation_factor':['augmentation_factor',100,int,"The number of times that the source image is augmented"],
                     # Model
                     '-model':['model',"resnet18",str,"To choose the network architecture used {"],
                     '-classes':['classes',"other,seep,spill",str,"Indicate the class used for training separated by a comma"],
