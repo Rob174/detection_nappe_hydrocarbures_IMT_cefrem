@@ -37,12 +37,14 @@ class TrainerGenerateCache(BaseClass):
                     dico_info[str(i)] = {"source_img":item, "transformation_matrix":transformation_matrix.tolist()}
                     cache_images.create_dataset(str(i),shape=input.shape ,dtype='f' ,data=input)
                     cache_annotations.create_dataset(str(i),shape=output.shape ,dtype='i' ,data=output)
+                    print("\rsave %d" % i)
                     if i % 100 == 0:
+                        print("\rsave step %d" % i)
                         with open(FolderInfos.input_data_folder+"filtered_img_infos.json","w") as fp:
-                            json.dump(dico_info,fp)
+                            json.dump(dico_info,fp,indent=4)
 
                 with open(FolderInfos.input_data_folder+"filtered_img_infos.json","w") as fp:
-                    json.dump(dico_info, fp)
+                    json.dump(dico_info, fp,indent=4)
 
         self.saver(self.dataset)
         self.saver(self).save()
