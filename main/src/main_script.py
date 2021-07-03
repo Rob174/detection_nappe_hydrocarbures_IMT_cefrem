@@ -19,6 +19,7 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
+from main.src.training.TrainerGenerateCache import TrainerGenerateCache
 
 if __name__ == "__main__":
     FolderInfos.init()
@@ -66,7 +67,7 @@ if __name__ == "__main__":
 
     print("start")
 
-    Trainer0(batch_size=arguments.batch_size,num_epochs=arguments.num_epochs,tr_prct=0.7,
+    TrainerGenerateCache(batch_size=arguments.batch_size,num_epochs=arguments.num_epochs,tr_prct=0.7,
              dataset=dataset,model=model,
              optimizer=optimizer_pytorch,loss=criterion_pytorch,metrics=metrics,saver=saver,
              eval_step=arguments.eval_step,debug=arguments.debug)()

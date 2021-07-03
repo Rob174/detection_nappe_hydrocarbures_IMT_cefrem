@@ -45,7 +45,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_classes_to_use = "other,seep,spill"
         self.attr_augmentation_factor = augmentation_factor
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
-        self.tr_keys = list(self.images.keys())[:int(len(self.images)*tr_percent)]
+        self.tr_keys = list(self.images.keys())
         self.valid_keys = list(self.images.keys())[int(len(self.images)*tr_percent):]
         self.attr_global_name = "dataset"
         if balance == "nobalance":
@@ -123,6 +123,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
+            nb_patch = 0
             for item in images_available:
                 image = np.array(self.images[item])
                 annotations = np.array(self.annotations_labels[item],dtype=np.float32)
@@ -143,8 +144,10 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         # print("reject due to balance ",classification)
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
-                    yield image_patch,classification,transformation_matrix,item
+                    # image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
+                    nb_patch += 1
+                    yield image_patch,np.array(annotations_patch,dtype=np.uint8),transformation_matrix,item
+            print(f"{nb_patch} usable for one dataset")
 
     def generate_item_step_by_step(self,dataset="tr"): # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.

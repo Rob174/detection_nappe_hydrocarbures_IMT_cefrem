@@ -5,7 +5,7 @@ from main.src.param_savers.BaseClass import BaseClass
 import h5py
 
 
-class Trainer0(BaseClass):
+class TrainerGenerateCache(BaseClass):
     """Class managing the training process
 
     Args:
@@ -28,6 +28,8 @@ class Trainer0(BaseClass):
         return self.call()
     def call(self):
         """Save the input and outputs with metadata"""
+        self.saver(self.dataset)
+        self.saver(self).save()
         with h5py.File(FolderInfos.input_data_folder+"filtered_cache_images.hdf5","w") as cache_images:
             with h5py.File(FolderInfos.input_data_folder+"filtered_cache_annotations.hdf5","w") as cache_annotations:
                 dico_info = {}
