@@ -161,6 +161,9 @@ As no parameters produces better performances, we will investigate:
     - ✔️ debug transformation warpaffine shiftings (for posterity ⚠️⚠️ order of dimensions in opencv ⚠️⚠️ not rows,cols but cols,rows)
     - ✔️ profiling to check bottlenecks
 - ⏲️ Create a new hdf5 file with balanced augmented dataset of fixed patches ready to use
+## 05-07-2021
+- ⏲️ Cache creation in progress
+- ⏲️ Slides
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
