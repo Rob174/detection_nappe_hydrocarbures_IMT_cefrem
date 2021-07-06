@@ -29,12 +29,12 @@ class Parser0(BaseClass):
         self.parser = argparse.ArgumentParser()
         self.args = {
 
-                    '-no_security': {"dest":'no_security', "default":EnumGitCheck.NOGITCHECK, "type":EnumGitCheck,"help":"Indicate if you want to check if all python files have been commited before launching the training process true to disable the security"},
+                    '-no_security': {"dest":'no_security', "default":EnumGitCheck.NOGITCHECK, "type":EnumGitCheck,"help":"Indicate if you want to check if all python files have been commited before launching the training process true to disable the security","choices":list(EnumGitCheck)},
                     # Dataset
                     '-dataset':{"dest":'dataset',"default":"classificationpatch1","type":EnumClassificationDataset,"help":"Indicate the dataset used to constitue datasets","choices":list(EnumClassificationDataset)},
                     '-usage_type':{"dest":'usage_type',"default":"classification","type":EnumUsage,"help":"Indicate the source dataset used to constitue datasets","choices":list(EnumUsage)},
                     '-patch':{"dest":'patch',"default":"fixed_px","type":EnumPatchAlgorithm,"help":"Indicate the type of patch to create","choices":list(EnumPatchAlgorithm)},
-                    '-patchExclPol': {"dest":"patch_exclude_policy", "default":EnumPatchExcludePolicy.MarginMoreThan, "type":EnumPatchExcludePolicy, "help":"Indicates the policy to exclude patches (especially patches containing margins)"},
+                    '-patchExclPol': {"dest":"patch_exclude_policy", "default":EnumPatchExcludePolicy.MarginMoreThan, "type":EnumPatchExcludePolicy, "help":"Indicates the policy to exclude patches (especially patches containing margins)","choices":list(EnumPatchExcludePolicy)},
                     '-patchExclThreshold': {"dest":"patch_exclude_policy_threshold", "default":1000, "type":int, "help":"The threshold used for margin more than algorithm"},
                     '-grid_size':{"dest":'grid_size',"default":1000,"type":int,"help":"Indicate the grid size applied on the original image"},
                     '-in_size':{"dest":'input_size',"default":256,"type":int,"help":"Indicate the output size of the image obtained by resizing it after patches creation"},
@@ -72,6 +72,7 @@ class Parser0(BaseClass):
         """
         for arg_name,dico_params in self.args.items():
             self.parser.add_argument(arg_name,**dico_params)
+        self.parser.print_help()
         return self.parser.parse_args()
 
 if __name__ == "__main__":
