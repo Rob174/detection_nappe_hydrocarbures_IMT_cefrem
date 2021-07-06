@@ -79,7 +79,7 @@ class Trainer0(BaseClass):
             TextColumn("[bold blue]last_loss: {task.fields[loss]:.4e}", justify="right"),
             "•"
         ]
-        self.length = len(self.dataset,dataset="tr")
+        self.length = len(self.dataset_tr)
         if self.length is None:
             colums.extend([
                 TextColumn("[bold blue]num_processed_img: {task.fields[img_processed]:.4e}", justify="right"),
