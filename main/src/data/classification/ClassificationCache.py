@@ -95,8 +95,6 @@ class ClassificationCache(BaseClass):
             #  if the class is in the patch
             if value in annotations_patch:
                 output[value] = 1.
-        # Modify the label if require
-        output = self.attr_label_modifier.make_classification_label(output)
         return output
     def __len__(self,dataset) -> Optional[int]:
         if dataset == "tr":
