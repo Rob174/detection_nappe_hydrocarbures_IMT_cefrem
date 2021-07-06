@@ -1,13 +1,10 @@
-from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
-from main.src.data.TwoWayDict import TwoWayDict, Way
-from main.src.data.balance_classes.enums import EnumBalance
-from main.src.data.classification.ClassificationPatch import ClassificationPatch
-from main.src.data.enums import EnumClasses
-from main.src.data.patch_creator.patch_creator0 import Patch_creator0
-import numpy as np
 from typing import Tuple
 
-from main.src.param_savers.BaseClass import BaseClass
+import numpy as np
+
+from main.src.data.TwoWayDict import TwoWayDict, Way
+from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
+from main.src.data.enums import EnumClasses
 
 
 class LabelModifier1(AbstractLabelModifier):
@@ -18,7 +15,6 @@ class LabelModifier1(AbstractLabelModifier):
     """
 
     def __init__(self, classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
-        super(LabelModifier1, self).__init__()
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
@@ -38,7 +34,6 @@ class LabelModifier1(AbstractLabelModifier):
 
         """
         # of shape (val_0-1_class_other,val_0-1_class_1,val_0-1_class_2...)
-        super(LabelModifier1, self).make_classification_label()
         # Create a classification label with less classes
         annotation_modified = np.zeros((len(self.attr_class_mapping.keys()),))
         # {index_src_0:(class0,index_dest0),index_src_1:(class1,index_dest1),....}

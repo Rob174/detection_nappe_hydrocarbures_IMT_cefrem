@@ -1,22 +1,19 @@
+import json
+from typing import Tuple
+
+import torch
+
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.classification.ClassificationCache import ClassificationCache
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
-from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
-from main.src.data.classification.ClassificationPatch2 import ClassificationPatch2
-
-from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
-import json
 from main.src.param_savers.BaseClass import BaseClass
-import torch
-from typing import List, Tuple
 
 
 class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):

@@ -1,10 +1,10 @@
 from abc import ABC,abstractmethod
-
+import numpy as np
 
 class AbstractLabelModifier(ABC):
     def __init__(self):
         pass
-
+    @abstractmethod
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
         """Creates the classification label based on the annotation patch image
 

@@ -12,18 +12,16 @@ from main.src.data.TwoWayDict import  Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
-from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
-from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
-import time
 from rasterio.transform import Affine,rowcol
 from typing import Tuple
+from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
+from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
+from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
