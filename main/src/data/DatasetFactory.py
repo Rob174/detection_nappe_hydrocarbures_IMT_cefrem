@@ -5,17 +5,14 @@ from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
 from main.src.data.classification.ClassificationPatch2 import ClassificationPatch2
 from main.src.data.classification.enums import EnumClassificationDataset
-from main.src.data.enums import EnumUsage
+from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
-import matplotlib.pyplot as plt
 import json
-import plotly.express as px
-import pandas as pd
 from main.src.param_savers.BaseClass import BaseClass
 import torch
-import time
+from typing import List, Tuple
 
 
 class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
@@ -31,7 +28,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         input_size: int, size of the image given to the model
         exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [ClassificationPatch](./classification/ClassificationPatch.html)
         exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
-        classes_to_use: str, classes names separated but commas to indicate the classes to use
+        classes_to_use: Tuple[EnumClasses], the classes to use
         balance: EnumBalance,
         margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
         augmentations_img: opt str, list of augmentations to apply seprated by commas
@@ -46,7 +43,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=1000,
                  exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,exclusion_policy_threshold:int=1000,
-                 classes_to_use="seep,spills",
+                 classes_to_use: Tuple[EnumClasses]=(EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
@@ -58,7 +55,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
                                                      images_informations_preprocessed=dico_infos,
                                                      exclusion_policy=exclusion_policy,
-                                                     exclude_policy_threshold=exclusion_policy_threshold)
+                                                     exclusion_policy_threshold=exclusion_policy_threshold)
         else:
             raise NotImplementedError(f"{patch_creator} is not implemented")
 

@@ -5,7 +5,7 @@ from main.src.enums import EnumGitCheck
 from main.src.models.enums import EnumModels, EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.data.classification.enums import EnumClassificationDataset
-from main.src.data.enums import EnumUsage
+from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import *
 from main.src.data.balance_classes.enums import *
 from main.src.training.enums import EnumLoss
@@ -41,14 +41,14 @@ class Parser0(BaseClass):
                     '-bs':{"dest":'batch_size',"default":10,"type":int,"help":"Indique le nombre d'images par batch"},
                     '-balance':{"dest":'balance',"default":"balanceclasses1","type":EnumBalance,"help":"Indicate the policy to balance classes","choices":list(EnumBalance)},
                     # Augmentations
-                    '-augmenter_img':{"dest":'augmenter_img',"default":"augmenter1","type":EnumAugmenter,"help":"Indicate which augmenter to use to apply transformations on source image","choices":list(EnumAugmenter)},
+                    '-augmenter_img':{"dest":'augmenter_img',"default":EnumAugmenter.Augmenter1,"type":EnumAugmenter,"help":"Indicate which augmenter to use to apply transformations on source image","choices":list(EnumAugmenter)},
                     '-augmentations_img':{"dest":'augmentations_img',"default":"combinedRotResizeMir_10_0.25_4","type":str,"help":"Indicate the augmentations to apply to images in the order desired seprated by commas"},
-                    '-augmenter_patch':{"dest":'augmenter_patch',"default":"noaugmenter","type":EnumAugmenter,"help":"Indicate which augmenter to use to use to apply transformations on patches","choices":list(EnumAugmenter)},
+                    '-augmenter_patch':{"dest":'augmenter_patch',"default":EnumAugmenter.NoAugmenter,"type":EnumAugmenter,"help":"Indicate which augmenter to use to use to apply transformations on patches","choices":list(EnumAugmenter)},
                     '-augmentations_patch':{"dest":'augmentations_patch',"default":"none","type":str,"help":"Indicate the augmentations to apply to patches in the order desired seprated by commas"},
                     '-augmentation_factor':{"dest":'augmentation_factor',"default":100,"type":int,"help":"The number of times that the source image is augmented"},
                     # Model
                     '-model':{"dest":'model',"default":"resnet18","type":EnumModels,"help":"To choose the network architecture used","choices":list(EnumModels)},
-                    '-classes':{"dest":'classes',"default":"other,seep,spill","type":str,"help":"Indicate the class used for training separated by a comma"},
+                    '-classes':{"dest":'classes',"default":[EnumClasses.Other,EnumClasses.Seep,EnumClasses.Spill],"type":EnumClasses,"help":"Indicate the class used for training separated by a comma","nargs":"+","choices":list(EnumClasses)},
                     # Training
                     '-num_epochs':{"dest":'num_epochs',"default":100,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
                     '-eval_step':{"dest":'eval_step',"default":10,"type":int,"help":"Number of training steps between two evaluation/validation steps"},

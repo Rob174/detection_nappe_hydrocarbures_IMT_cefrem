@@ -40,7 +40,7 @@ if __name__ == "__main__":
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
-                             patch_exclude_policy_threshold = arguments.patch_exclude_policy_threshold,
+                             exclusion_policy_threshold = arguments.patch_exclude_policy_threshold,
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
                              augmenter_img=arguments.augmenter_img,
