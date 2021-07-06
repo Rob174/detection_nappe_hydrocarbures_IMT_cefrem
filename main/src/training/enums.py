@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class EnumLoss(Enum,str):
+class EnumLoss(str,Enum):
     MulticlassnonExlusivCrossentropy = "multiclassnonexlusivcrossentropy"
     BinaryCrossentropy = "binarycrossentropy"
     MSE = "mse"

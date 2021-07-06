@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class EnumAugmenter(Enum,str):
+class EnumAugmenter(str,Enum):
     Augmenter0 = "augmenter0"
     """A step by step augmenter. See [Augmenter0](./Augmenter0.html)"""
     Augmenter1 = "augmenter1"

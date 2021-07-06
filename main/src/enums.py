@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class EnumGitCheck(Enum,str):
+class EnumGitCheck(str,Enum):
     GITCHECK = "gitcheck"
     NOGITCHECK = "nogitcheck"

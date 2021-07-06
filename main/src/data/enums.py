@@ -1,13 +1,13 @@
 from enum import Enum
 
 
-class EnumUsage(Enum,str):
+class EnumUsage(str,Enum):
     Classification = "classification"
     """dataset to classify patches"""
     Segmentation = "segmentation"
     """dataset to segment an image"""
 
-class EnumClasses(Enum,str):
+class EnumClasses(str,Enum):
     Other = "other"
     Seep = "seep"
     Spill = "spill"
