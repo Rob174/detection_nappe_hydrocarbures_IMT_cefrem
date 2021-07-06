@@ -59,7 +59,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
                 self.generator = self.generate_item_step_by_step
             elif augmenter_img == "augmenter1":
                 self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
-                                                     patch_size_before_final_resize=self.patch_creator.attr_grid_size_px,
+                                                     patch_size_before_final_resize=
+                                                     self.patch_creator.attr_grid_size_px,
                                                      patch_size_final_resize=input_size
                                                      )
                 self.generator = self.generate_item_with_augmentation_at_once
