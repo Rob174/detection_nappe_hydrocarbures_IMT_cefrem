@@ -32,10 +32,10 @@ import numpy as np
 import random
 
 from main.FolderInfos import FolderInfos
-from main.src.data.AbstractAugmentation.Augmenters.Augmenter0 import Augmenter0
-from main.src.data.AbstractAugmentation.Augmenters.Augmenter1 import Augmenter1
-from main.src.data.AbstractAugmentation.Augmenters.NoAugmenter import NoAugmenter
-from main.src.data.AbstractAugmentation.Augmenters.enums import EnumAugmenter
+from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
+from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
+from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.TwoWayDict import  Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
 from main.src.data.balance_classes.enums import EnumBalance
@@ -298,7 +298,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch"><code class="flex name class">
 <span>class <span class="ident">ClassificationPatch</span></span>
-<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="../balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.AbstractAugmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.AbstractAugmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, tr_percent=0.7)</span>
+<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="../balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, tr_percent=0.7)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,

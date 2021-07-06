@@ -3,7 +3,7 @@ from typing import Tuple, Sequence, Iterator, List, Any, Dict
 import cv2
 
 from main.src.data.Augmentation.Augmentations.AbstractAugmentationWithMatrix import AbstractAugmentationWithMatrix
-class RotationResizeMirrors(AbstractAugmentation):
+class RotationResizeMirrors(AbstractAugmentationWithMatrix):
     """Class computing random rotation along a vertical or horizontal axis
 
     Args:

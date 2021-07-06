@@ -32,6 +32,9 @@
 import json
 import subprocess
 import os, sys
+
+from main.src.enums import EnumGitCheck
+
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src&#34;)
@@ -57,7 +60,7 @@ if __name__ == &#34;__main__&#34;:
     arguments = Parser0()()
     saver[&#34;commit&#34;] = subprocess.check_output([&#39;git&#39;, &#39;rev-parse&#39;, &#39;HEAD&#39;]).decode(&#34;utf-8&#34;).strip()
     changes = subprocess.check_output([&#39;git&#39;, &#39;diff&#39;, &#39;--name-only&#39;,&#34;--&#34;,&#34;*.py&#34;]).decode(&#34;ascii&#34;).split(&#34;\n&#34;)[:-1]
-    if arguments.no_security != &#34;true&#34; and len(changes):
+    if arguments.no_security == EnumGitCheck.GITCHECK and len(changes):
         changes_str = &#34;\n&#34;.join(list(map(lambda x:&#39;\t- &#39;+x,changes)))
         input(f&#34;There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?&#34;)
     dataset = DatasetFactory(dataset_name=arguments.dataset,
@@ -66,6 +69,7 @@ if __name__ == &#34;__main__&#34;:
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
+                             patch_exclude_policy_threshold = arguments.patch_exclude_policy_threshold,
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
                              augmenter_img=arguments.augmenter_img,

@@ -28,7 +28,8 @@
 </summary>
 <pre><code class="python">import argparse
 
-from main.src.data.AbstractAugmentation.Augmenters.enums import EnumAugmenter
+from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
+from main.src.enums import EnumGitCheck
 from main.src.models.enums import EnumModels, EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.data.classification.enums import EnumClassificationDataset
@@ -37,6 +38,7 @@ from main.src.data.patch_creator.enums import *
 from main.src.data.balance_classes.enums import *
 from main.src.training.enums import EnumLoss
 
+from typing import List
 
 class Parser0(BaseClass):
     &#34;&#34;&#34;
@@ -55,36 +57,37 @@ class Parser0(BaseClass):
         self.parser = argparse.ArgumentParser()
         self.args = {
 
-                    &#39;-no_security&#39;: {&#34;name_or_flag&#34;:&#39;no_security&#39;, &#34;default&#34;:&#34;false&#34;, &#34;type&#34;:str,&#34;help&#34;:&#34;Indicate if you want to check if all python files have been commited before launching the training process true to disable the security&#34;},
+                    &#39;-no_security&#39;: {&#34;dest&#34;:&#39;no_security&#39;, &#34;default&#34;:EnumGitCheck.NOGITCHECK, &#34;type&#34;:EnumGitCheck,&#34;help&#34;:&#34;Indicate if you want to check if all python files have been commited before launching the training process true to disable the security&#34;},
                     # Dataset
-                    &#39;-dataset&#39;:{&#34;name_or_flag&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumClassificationDataset,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumClassificationDataset)},
-                    &#39;-usage_type&#39;:{&#34;name_or_flag&#34;:&#39;usage_type&#39;,&#34;default&#34;:&#34;classification&#34;,&#34;type&#34;:EnumUsage,&#34;help&#34;:&#34;Indicate the source dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumUsage)},
-                    &#39;-patch&#39;:{&#34;name_or_flag&#34;:&#39;patch&#39;,&#34;default&#34;:&#34;fixed_px&#34;,&#34;type&#34;:EnumPatchAlgorithm,&#34;help&#34;:&#34;Indicate the type of patch to create&#34;,&#34;choices&#34;:list(EnumPatchAlgorithm)},
-                    &#39;-patchExclPol&#39;: {&#34;name_or_flag&#34;:&#39;patch_exclude_policy&#39;, &#34;default&#34;:&#34;marginmorethan_1000&#34;, &#34;type&#34;:str, &#34;help&#34;:&#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;},
-                    &#39;-grid_size&#39;:{&#34;name_or_flag&#34;:&#39;grid_size&#39;,&#34;default&#34;:1000,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the grid size applied on the original image&#34;},
-                    &#39;-in_size&#39;:{&#34;name_or_flag&#34;:&#39;input_size&#39;,&#34;default&#34;:256,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the output size of the image obtained by resizing it after patches creation&#34;},
-                    &#39;-bs&#39;:{&#34;name_or_flag&#34;:&#39;batch_size&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Indique le nombre d&#39;images par batch&#34;},
-                    &#39;-balance&#39;:{&#34;name_or_flag&#34;:&#39;balance&#39;,&#34;default&#34;:&#34;balanceclasses1&#34;,&#34;type&#34;:EnumBalance,&#34;help&#34;:&#34;Indicate the policy to balance classes&#34;,&#34;choices&#34;:list(EnumBalance)},
+                    &#39;-dataset&#39;:{&#34;dest&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumClassificationDataset,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumClassificationDataset)},
+                    &#39;-usage_type&#39;:{&#34;dest&#34;:&#39;usage_type&#39;,&#34;default&#34;:&#34;classification&#34;,&#34;type&#34;:EnumUsage,&#34;help&#34;:&#34;Indicate the source dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumUsage)},
+                    &#39;-patch&#39;:{&#34;dest&#34;:&#39;patch&#39;,&#34;default&#34;:&#34;fixed_px&#34;,&#34;type&#34;:EnumPatchAlgorithm,&#34;help&#34;:&#34;Indicate the type of patch to create&#34;,&#34;choices&#34;:list(EnumPatchAlgorithm)},
+                    &#39;-patchExclPol&#39;: {&#34;dest&#34;:&#34;patch_exclude_policy&#34;, &#34;default&#34;:EnumPatchExcludePolicy.MarginMoreThan, &#34;type&#34;:EnumPatchExcludePolicy, &#34;help&#34;:&#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;},
+                    &#39;-patchExclThreshold&#39;: {&#34;dest&#34;:&#34;patch_exclude_policy_threshold&#34;, &#34;default&#34;:1000, &#34;type&#34;:int, &#34;help&#34;:&#34;The threshold used for margin more than algorithm&#34;},
+                    &#39;-grid_size&#39;:{&#34;dest&#34;:&#39;grid_size&#39;,&#34;default&#34;:1000,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the grid size applied on the original image&#34;},
+                    &#39;-in_size&#39;:{&#34;dest&#34;:&#39;input_size&#39;,&#34;default&#34;:256,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the output size of the image obtained by resizing it after patches creation&#34;},
+                    &#39;-bs&#39;:{&#34;dest&#34;:&#39;batch_size&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Indique le nombre d&#39;images par batch&#34;},
+                    &#39;-balance&#39;:{&#34;dest&#34;:&#39;balance&#39;,&#34;default&#34;:&#34;balanceclasses1&#34;,&#34;type&#34;:EnumBalance,&#34;help&#34;:&#34;Indicate the policy to balance classes&#34;,&#34;choices&#34;:list(EnumBalance)},
                     # Augmentations
-                    &#39;-augmenter_img&#39;:{&#34;name_or_flag&#34;:&#39;augmenter_img&#39;,&#34;default&#34;:&#34;augmenter1&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to apply transformations on source image&#34;,&#34;choices&#34;:list(EnumAugmenter)},
-                    &#39;-augmentations_img&#39;:{&#34;name_or_flag&#34;:&#39;augmentations_img&#39;,&#34;default&#34;:&#34;combinedRotResizeMir_10_0.25_4&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;},
-                    &#39;-augmenter_patch&#39;:{&#34;name_or_flag&#34;:&#39;augmenter_patch&#39;,&#34;default&#34;:&#34;noaugmenter&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to use to apply transformations on patches&#34;,&#34;choices&#34;:list(EnumAugmenter)},
-                    &#39;-augmentations_patch&#39;:{&#34;name_or_flag&#34;:&#39;augmentations_patch&#39;,&#34;default&#34;:&#34;none&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to patches in the order desired seprated by commas&#34;},
-                    &#39;-augmentation_factor&#39;:{&#34;name_or_flag&#34;:&#39;augmentation_factor&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;The number of times that the source image is augmented&#34;},
+                    &#39;-augmenter_img&#39;:{&#34;dest&#34;:&#39;augmenter_img&#39;,&#34;default&#34;:&#34;augmenter1&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to apply transformations on source image&#34;,&#34;choices&#34;:list(EnumAugmenter)},
+                    &#39;-augmentations_img&#39;:{&#34;dest&#34;:&#39;augmentations_img&#39;,&#34;default&#34;:&#34;combinedRotResizeMir_10_0.25_4&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;},
+                    &#39;-augmenter_patch&#39;:{&#34;dest&#34;:&#39;augmenter_patch&#39;,&#34;default&#34;:&#34;noaugmenter&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to use to apply transformations on patches&#34;,&#34;choices&#34;:list(EnumAugmenter)},
+                    &#39;-augmentations_patch&#39;:{&#34;dest&#34;:&#39;augmentations_patch&#39;,&#34;default&#34;:&#34;none&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to patches in the order desired seprated by commas&#34;},
+                    &#39;-augmentation_factor&#39;:{&#34;dest&#34;:&#39;augmentation_factor&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;The number of times that the source image is augmented&#34;},
                     # Model
-                    &#39;-model&#39;:{&#34;name_or_flag&#34;:&#39;model&#39;,&#34;default&#34;:&#34;resnet18&#34;,&#34;type&#34;:EnumModels,&#34;help&#34;:&#34;To choose the network architecture used&#34;,&#34;choices&#34;:list(EnumModels)},
-                    &#39;-classes&#39;:{&#34;name_or_flag&#34;:&#39;classes&#39;,&#34;default&#34;:&#34;other,seep,spill&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the class used for training separated by a comma&#34;},
+                    &#39;-model&#39;:{&#34;dest&#34;:&#39;model&#39;,&#34;default&#34;:&#34;resnet18&#34;,&#34;type&#34;:EnumModels,&#34;help&#34;:&#34;To choose the network architecture used&#34;,&#34;choices&#34;:list(EnumModels)},
+                    &#39;-classes&#39;:{&#34;dest&#34;:&#39;classes&#39;,&#34;default&#34;:&#34;other,seep,spill&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the class used for training separated by a comma&#34;},
                     # Training
-                    &#39;-num_epochs&#39;:{&#34;name_or_flag&#34;:&#39;num_epochs&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of epochs / repetitions of the training dataset&#34;},
-                    &#39;-eval_step&#39;:{&#34;name_or_flag&#34;:&#39;eval_step&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of training steps between two evaluation/validation steps&#34;},
-                    &#39;-loss&#39;:{&#34;name_or_flag&#34;:&#39;loss_preference&#39;,&#34;default&#34;:&#34;binarycrossentropy&#34;,&#34;type&#34;:EnumLoss,&#34;help&#34;:&#34;Loss prefered for training&#34;,&#34;choices&#34;:list(EnumLoss)},
+                    &#39;-num_epochs&#39;:{&#34;dest&#34;:&#39;num_epochs&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of epochs / repetitions of the training dataset&#34;},
+                    &#39;-eval_step&#39;:{&#34;dest&#34;:&#39;eval_step&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of training steps between two evaluation/validation steps&#34;},
+                    &#39;-loss&#39;:{&#34;dest&#34;:&#39;loss_preference&#39;,&#34;default&#34;:&#34;binarycrossentropy&#34;,&#34;type&#34;:EnumLoss,&#34;help&#34;:&#34;Loss prefered for training&#34;,&#34;choices&#34;:list(EnumLoss)},
 
-                    &#39;-lr&#39;:{&#34;name_or_flag&#34;:&#39;lr&#39;,&#34;default&#34;:1e-5,&#34;type&#34;:float,&#34;help&#34;:&#34;Learning rate of the optimizer&#34;},
-                    &#39;-eps&#39;:{&#34;name_or_flag&#34;:&#39;eps&#39;,&#34;default&#34;:1e-7,&#34;type&#34;:float,&#34;help&#34;:&#34;Epsilon of the optimizer if it is Adam&#34;},
-                    &#39;-opti&#39;:{&#34;name_or_flag&#34;:&#39;optimizer&#39;,&#34;default&#34;:&#34;adam&#34;,&#34;type&#34;:EnumOptimizer,&#34;help&#34;:&#34;Optimizer algorithm&#34;,&#34;choices&#34;:list(EnumOptimizer)},
+                    &#39;-lr&#39;:{&#34;dest&#34;:&#39;lr&#39;,&#34;default&#34;:1e-5,&#34;type&#34;:float,&#34;help&#34;:&#34;Learning rate of the optimizer&#34;},
+                    &#39;-eps&#39;:{&#34;dest&#34;:&#39;eps&#39;,&#34;default&#34;:1e-7,&#34;type&#34;:float,&#34;help&#34;:&#34;Epsilon of the optimizer if it is Adam&#34;},
+                    &#39;-opti&#39;:{&#34;dest&#34;:&#39;optimizer&#39;,&#34;default&#34;:&#34;adam&#34;,&#34;type&#34;:EnumOptimizer,&#34;help&#34;:&#34;Optimizer algorithm&#34;,&#34;choices&#34;:list(EnumOptimizer)},
 
-                    &#39;-nbImg&#39;:{&#34;name_or_flag&#34;:&#39;nb_images&#39;,&#34;default&#34;:-1,&#34;type&#34;:int,&#34;help&#34;:&#34;Limit the number of images of the training dataset&#34;},
-                    &#39;-debug&#39;:{&#34;name_or_flag&#34;:&#39;debug&#39;,&#34;default&#34;:&#34;true&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate if we want to save reference and predictions for each iteration&#34;}
+                    &#39;-nbImg&#39;:{&#34;dest&#34;:&#39;nb_images&#39;,&#34;default&#34;:-1,&#34;type&#34;:int,&#34;help&#34;:&#34;Limit the number of images of the training dataset&#34;},
+                    &#39;-debug&#39;:{&#34;dest&#34;:&#39;debug&#39;,&#34;default&#34;:&#34;true&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate if we want to save reference and predictions for each iteration&#34;}
         }
 
     def __call__(self):
@@ -97,7 +100,11 @@ class Parser0(BaseClass):
         &#34;&#34;&#34;
         for arg_name,dico_params in self.args.items():
             self.parser.add_argument(arg_name,**dico_params)
-        return self.parser.parse_args()</code></pre>
+        return self.parser.parse_args()
+
+if __name__ == &#34;__main__&#34;:
+    args = Parser0()()
+    stop = 0</code></pre>
 </details>
 </section>
 <section>
@@ -141,36 +148,37 @@ class Parser0(BaseClass):
         self.parser = argparse.ArgumentParser()
         self.args = {
 
-                    &#39;-no_security&#39;: {&#34;name_or_flag&#34;:&#39;no_security&#39;, &#34;default&#34;:&#34;false&#34;, &#34;type&#34;:str,&#34;help&#34;:&#34;Indicate if you want to check if all python files have been commited before launching the training process true to disable the security&#34;},
+                    &#39;-no_security&#39;: {&#34;dest&#34;:&#39;no_security&#39;, &#34;default&#34;:EnumGitCheck.NOGITCHECK, &#34;type&#34;:EnumGitCheck,&#34;help&#34;:&#34;Indicate if you want to check if all python files have been commited before launching the training process true to disable the security&#34;},
                     # Dataset
-                    &#39;-dataset&#39;:{&#34;name_or_flag&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumClassificationDataset,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumClassificationDataset)},
-                    &#39;-usage_type&#39;:{&#34;name_or_flag&#34;:&#39;usage_type&#39;,&#34;default&#34;:&#34;classification&#34;,&#34;type&#34;:EnumUsage,&#34;help&#34;:&#34;Indicate the source dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumUsage)},
-                    &#39;-patch&#39;:{&#34;name_or_flag&#34;:&#39;patch&#39;,&#34;default&#34;:&#34;fixed_px&#34;,&#34;type&#34;:EnumPatchAlgorithm,&#34;help&#34;:&#34;Indicate the type of patch to create&#34;,&#34;choices&#34;:list(EnumPatchAlgorithm)},
-                    &#39;-patchExclPol&#39;: {&#34;name_or_flag&#34;:&#39;patch_exclude_policy&#39;, &#34;default&#34;:&#34;marginmorethan_1000&#34;, &#34;type&#34;:str, &#34;help&#34;:&#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;},
-                    &#39;-grid_size&#39;:{&#34;name_or_flag&#34;:&#39;grid_size&#39;,&#34;default&#34;:1000,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the grid size applied on the original image&#34;},
-                    &#39;-in_size&#39;:{&#34;name_or_flag&#34;:&#39;input_size&#39;,&#34;default&#34;:256,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the output size of the image obtained by resizing it after patches creation&#34;},
-                    &#39;-bs&#39;:{&#34;name_or_flag&#34;:&#39;batch_size&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Indique le nombre d&#39;images par batch&#34;},
-                    &#39;-balance&#39;:{&#34;name_or_flag&#34;:&#39;balance&#39;,&#34;default&#34;:&#34;balanceclasses1&#34;,&#34;type&#34;:EnumBalance,&#34;help&#34;:&#34;Indicate the policy to balance classes&#34;,&#34;choices&#34;:list(EnumBalance)},
+                    &#39;-dataset&#39;:{&#34;dest&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumClassificationDataset,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumClassificationDataset)},
+                    &#39;-usage_type&#39;:{&#34;dest&#34;:&#39;usage_type&#39;,&#34;default&#34;:&#34;classification&#34;,&#34;type&#34;:EnumUsage,&#34;help&#34;:&#34;Indicate the source dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumUsage)},
+                    &#39;-patch&#39;:{&#34;dest&#34;:&#39;patch&#39;,&#34;default&#34;:&#34;fixed_px&#34;,&#34;type&#34;:EnumPatchAlgorithm,&#34;help&#34;:&#34;Indicate the type of patch to create&#34;,&#34;choices&#34;:list(EnumPatchAlgorithm)},
+                    &#39;-patchExclPol&#39;: {&#34;dest&#34;:&#34;patch_exclude_policy&#34;, &#34;default&#34;:EnumPatchExcludePolicy.MarginMoreThan, &#34;type&#34;:EnumPatchExcludePolicy, &#34;help&#34;:&#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;},
+                    &#39;-patchExclThreshold&#39;: {&#34;dest&#34;:&#34;patch_exclude_policy_threshold&#34;, &#34;default&#34;:1000, &#34;type&#34;:int, &#34;help&#34;:&#34;The threshold used for margin more than algorithm&#34;},
+                    &#39;-grid_size&#39;:{&#34;dest&#34;:&#39;grid_size&#39;,&#34;default&#34;:1000,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the grid size applied on the original image&#34;},
+                    &#39;-in_size&#39;:{&#34;dest&#34;:&#39;input_size&#39;,&#34;default&#34;:256,&#34;type&#34;:int,&#34;help&#34;:&#34;Indicate the output size of the image obtained by resizing it after patches creation&#34;},
+                    &#39;-bs&#39;:{&#34;dest&#34;:&#39;batch_size&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Indique le nombre d&#39;images par batch&#34;},
+                    &#39;-balance&#39;:{&#34;dest&#34;:&#39;balance&#39;,&#34;default&#34;:&#34;balanceclasses1&#34;,&#34;type&#34;:EnumBalance,&#34;help&#34;:&#34;Indicate the policy to balance classes&#34;,&#34;choices&#34;:list(EnumBalance)},
                     # Augmentations
-                    &#39;-augmenter_img&#39;:{&#34;name_or_flag&#34;:&#39;augmenter_img&#39;,&#34;default&#34;:&#34;augmenter1&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to apply transformations on source image&#34;,&#34;choices&#34;:list(EnumAugmenter)},
-                    &#39;-augmentations_img&#39;:{&#34;name_or_flag&#34;:&#39;augmentations_img&#39;,&#34;default&#34;:&#34;combinedRotResizeMir_10_0.25_4&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;},
-                    &#39;-augmenter_patch&#39;:{&#34;name_or_flag&#34;:&#39;augmenter_patch&#39;,&#34;default&#34;:&#34;noaugmenter&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to use to apply transformations on patches&#34;,&#34;choices&#34;:list(EnumAugmenter)},
-                    &#39;-augmentations_patch&#39;:{&#34;name_or_flag&#34;:&#39;augmentations_patch&#39;,&#34;default&#34;:&#34;none&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to patches in the order desired seprated by commas&#34;},
-                    &#39;-augmentation_factor&#39;:{&#34;name_or_flag&#34;:&#39;augmentation_factor&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;The number of times that the source image is augmented&#34;},
+                    &#39;-augmenter_img&#39;:{&#34;dest&#34;:&#39;augmenter_img&#39;,&#34;default&#34;:&#34;augmenter1&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to apply transformations on source image&#34;,&#34;choices&#34;:list(EnumAugmenter)},
+                    &#39;-augmentations_img&#39;:{&#34;dest&#34;:&#39;augmentations_img&#39;,&#34;default&#34;:&#34;combinedRotResizeMir_10_0.25_4&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to images in the order desired seprated by commas&#34;},
+                    &#39;-augmenter_patch&#39;:{&#34;dest&#34;:&#39;augmenter_patch&#39;,&#34;default&#34;:&#34;noaugmenter&#34;,&#34;type&#34;:EnumAugmenter,&#34;help&#34;:&#34;Indicate which augmenter to use to use to apply transformations on patches&#34;,&#34;choices&#34;:list(EnumAugmenter)},
+                    &#39;-augmentations_patch&#39;:{&#34;dest&#34;:&#39;augmentations_patch&#39;,&#34;default&#34;:&#34;none&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the augmentations to apply to patches in the order desired seprated by commas&#34;},
+                    &#39;-augmentation_factor&#39;:{&#34;dest&#34;:&#39;augmentation_factor&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;The number of times that the source image is augmented&#34;},
                     # Model
-                    &#39;-model&#39;:{&#34;name_or_flag&#34;:&#39;model&#39;,&#34;default&#34;:&#34;resnet18&#34;,&#34;type&#34;:EnumModels,&#34;help&#34;:&#34;To choose the network architecture used&#34;,&#34;choices&#34;:list(EnumModels)},
-                    &#39;-classes&#39;:{&#34;name_or_flag&#34;:&#39;classes&#39;,&#34;default&#34;:&#34;other,seep,spill&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the class used for training separated by a comma&#34;},
+                    &#39;-model&#39;:{&#34;dest&#34;:&#39;model&#39;,&#34;default&#34;:&#34;resnet18&#34;,&#34;type&#34;:EnumModels,&#34;help&#34;:&#34;To choose the network architecture used&#34;,&#34;choices&#34;:list(EnumModels)},
+                    &#39;-classes&#39;:{&#34;dest&#34;:&#39;classes&#39;,&#34;default&#34;:&#34;other,seep,spill&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate the class used for training separated by a comma&#34;},
                     # Training
-                    &#39;-num_epochs&#39;:{&#34;name_or_flag&#34;:&#39;num_epochs&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of epochs / repetitions of the training dataset&#34;},
-                    &#39;-eval_step&#39;:{&#34;name_or_flag&#34;:&#39;eval_step&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of training steps between two evaluation/validation steps&#34;},
-                    &#39;-loss&#39;:{&#34;name_or_flag&#34;:&#39;loss_preference&#39;,&#34;default&#34;:&#34;binarycrossentropy&#34;,&#34;type&#34;:EnumLoss,&#34;help&#34;:&#34;Loss prefered for training&#34;,&#34;choices&#34;:list(EnumLoss)},
+                    &#39;-num_epochs&#39;:{&#34;dest&#34;:&#39;num_epochs&#39;,&#34;default&#34;:100,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of epochs / repetitions of the training dataset&#34;},
+                    &#39;-eval_step&#39;:{&#34;dest&#34;:&#39;eval_step&#39;,&#34;default&#34;:10,&#34;type&#34;:int,&#34;help&#34;:&#34;Number of training steps between two evaluation/validation steps&#34;},
+                    &#39;-loss&#39;:{&#34;dest&#34;:&#39;loss_preference&#39;,&#34;default&#34;:&#34;binarycrossentropy&#34;,&#34;type&#34;:EnumLoss,&#34;help&#34;:&#34;Loss prefered for training&#34;,&#34;choices&#34;:list(EnumLoss)},
 
-                    &#39;-lr&#39;:{&#34;name_or_flag&#34;:&#39;lr&#39;,&#34;default&#34;:1e-5,&#34;type&#34;:float,&#34;help&#34;:&#34;Learning rate of the optimizer&#34;},
-                    &#39;-eps&#39;:{&#34;name_or_flag&#34;:&#39;eps&#39;,&#34;default&#34;:1e-7,&#34;type&#34;:float,&#34;help&#34;:&#34;Epsilon of the optimizer if it is Adam&#34;},
-                    &#39;-opti&#39;:{&#34;name_or_flag&#34;:&#39;optimizer&#39;,&#34;default&#34;:&#34;adam&#34;,&#34;type&#34;:EnumOptimizer,&#34;help&#34;:&#34;Optimizer algorithm&#34;,&#34;choices&#34;:list(EnumOptimizer)},
+                    &#39;-lr&#39;:{&#34;dest&#34;:&#39;lr&#39;,&#34;default&#34;:1e-5,&#34;type&#34;:float,&#34;help&#34;:&#34;Learning rate of the optimizer&#34;},
+                    &#39;-eps&#39;:{&#34;dest&#34;:&#39;eps&#39;,&#34;default&#34;:1e-7,&#34;type&#34;:float,&#34;help&#34;:&#34;Epsilon of the optimizer if it is Adam&#34;},
+                    &#39;-opti&#39;:{&#34;dest&#34;:&#39;optimizer&#39;,&#34;default&#34;:&#34;adam&#34;,&#34;type&#34;:EnumOptimizer,&#34;help&#34;:&#34;Optimizer algorithm&#34;,&#34;choices&#34;:list(EnumOptimizer)},
 
-                    &#39;-nbImg&#39;:{&#34;name_or_flag&#34;:&#39;nb_images&#39;,&#34;default&#34;:-1,&#34;type&#34;:int,&#34;help&#34;:&#34;Limit the number of images of the training dataset&#34;},
-                    &#39;-debug&#39;:{&#34;name_or_flag&#34;:&#39;debug&#39;,&#34;default&#34;:&#34;true&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate if we want to save reference and predictions for each iteration&#34;}
+                    &#39;-nbImg&#39;:{&#34;dest&#34;:&#39;nb_images&#39;,&#34;default&#34;:-1,&#34;type&#34;:int,&#34;help&#34;:&#34;Limit the number of images of the training dataset&#34;},
+                    &#39;-debug&#39;:{&#34;dest&#34;:&#39;debug&#39;,&#34;default&#34;:&#34;true&#34;,&#34;type&#34;:str,&#34;help&#34;:&#34;Indicate if we want to save reference and predictions for each iteration&#34;}
         }
 
     def __call__(self):

@@ -27,14 +27,14 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from main.FolderInfos import FolderInfos
-from main.src.data.AbstractAugmentation.Augmenters.enums import EnumAugmenter
+from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
 from main.src.data.classification.ClassificationPatch2 import ClassificationPatch2
 from main.src.data.classification.enums import EnumClassificationDataset
 from main.src.data.enums import EnumUsage
-from main.src.data.patch_creator.enums import EnumPatchAlgorithm
+from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import matplotlib.pyplot as plt
@@ -57,7 +57,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the model
-        exclusion_policy: str, policy to exclude patches. See ClassificationPatch0
+        exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [ClassificationPatch](./classification/ClassificationPatch.html)
+        exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
         classes_to_use: str, classes names separated but commas to indicate the classes to use
         balance: EnumBalance,
         margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
@@ -71,7 +72,9 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
                  usage_type: EnumUsage = EnumUsage.Classification,
                  patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
-                 grid_size=1000, input_size=1000, exclusion_policy=&#34;marginmorethan_1000&#34;, classes_to_use=&#34;seep,spills&#34;,
+                 grid_size=1000, input_size=1000,
+                 exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,exclusion_policy_threshold:int=1000,
+                 classes_to_use=&#34;seep,spills&#34;,
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
@@ -82,7 +85,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         if patch_creator == EnumPatchAlgorithm.FixedPx:
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
                                                      images_informations_preprocessed=dico_infos,
-                                                     exclusion_policy=exclusion_policy)
+                                                     exclusion_policy=exclusion_policy,
+                                                     exclude_policy_threshold=exclusion_policy_threshold)
         else:
             raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
 
@@ -145,7 +149,7 @@ if __name__ == &#34;__main__&#34;:
 <dl>
 <dt id="main.src.data.DatasetFactory.DatasetFactory"><code class="flex name class">
 <span>class <span class="ident">DatasetFactory</span></span>
-<span>(</span><span>dataset_name: <a title="main.src.data.classification.enums.EnumClassificationDataset" href="classification/enums.html#main.src.data.classification.enums.EnumClassificationDataset">EnumClassificationDataset</a> = EnumClassificationDataset.ClassificationPatch, usage_type: <a title="main.src.data.enums.EnumUsage" href="enums.html#main.src.data.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, patch_creator: <a title="main.src.data.patch_creator.enums.EnumPatchAlgorithm" href="patch_creator/enums.html#main.src.data.patch_creator.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a> = EnumPatchAlgorithm.FixedPx, grid_size=1000, input_size=1000, exclusion_policy='marginmorethan_1000', classes_to_use='seep,spills', balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.AbstractAugmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.AbstractAugmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1)</span>
+<span>(</span><span>dataset_name: <a title="main.src.data.classification.enums.EnumClassificationDataset" href="classification/enums.html#main.src.data.classification.enums.EnumClassificationDataset">EnumClassificationDataset</a> = EnumClassificationDataset.ClassificationPatch, usage_type: <a title="main.src.data.enums.EnumUsage" href="enums.html#main.src.data.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, patch_creator: <a title="main.src.data.patch_creator.enums.EnumPatchAlgorithm" href="patch_creator/enums.html#main.src.data.patch_creator.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a> = EnumPatchAlgorithm.FixedPx, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use='seep,spills', balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the dataset creation and access with options of:
@@ -164,7 +168,9 @@ if __name__ == &#34;__main__&#34;:
 <dt><strong><code>input_size</code></strong></dt>
 <dd>int, size of the image given to the model</dd>
 <dt><strong><code>exclusion_policy</code></strong></dt>
-<dd>str, policy to exclude patches. See ClassificationPatch0</dd>
+<dd>EnumPatchExcludePolicy, policy to exclude patches. See <a href="./classification/ClassificationPatch.html">ClassificationPatch</a></dd>
+<dt><strong><code>exclusion_policy_threshold</code></strong></dt>
+<dd>int, parameter for EnumPatchExcludePolicy.MarginMoreThan</dd>
 <dt><strong><code>classes_to_use</code></strong></dt>
 <dd>str, classes names separated but commas to indicate the classes to use</dd>
 <dt><strong><code>balance</code></strong></dt>
@@ -197,7 +203,8 @@ if __name__ == &#34;__main__&#34;:
         patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the model
-        exclusion_policy: str, policy to exclude patches. See ClassificationPatch0
+        exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [ClassificationPatch](./classification/ClassificationPatch.html)
+        exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
         classes_to_use: str, classes names separated but commas to indicate the classes to use
         balance: EnumBalance,
         margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
@@ -211,7 +218,9 @@ if __name__ == &#34;__main__&#34;:
     def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
                  usage_type: EnumUsage = EnumUsage.Classification,
                  patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
-                 grid_size=1000, input_size=1000, exclusion_policy=&#34;marginmorethan_1000&#34;, classes_to_use=&#34;seep,spills&#34;,
+                 grid_size=1000, input_size=1000,
+                 exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,exclusion_policy_threshold:int=1000,
+                 classes_to_use=&#34;seep,spills&#34;,
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
@@ -222,7 +231,8 @@ if __name__ == &#34;__main__&#34;:
         if patch_creator == EnumPatchAlgorithm.FixedPx:
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
                                                      images_informations_preprocessed=dico_infos,
-                                                     exclusion_policy=exclusion_policy)
+                                                     exclusion_policy=exclusion_policy,
+                                                     exclude_policy_threshold=exclusion_policy_threshold)
         else:
             raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
 
