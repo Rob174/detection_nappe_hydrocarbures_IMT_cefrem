@@ -238,7 +238,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # Check if we need to reject the patch due to overrepresented class
         balance_reject = self.attr_balance.filter(output)
         # Modify the label if require
-        output = self.attr_label_modifier.make_classification_label(annotations_patch)
+        output = self.attr_label_modifier.make_classification_label(output)
         return output,balance_reject
     def __len__(self):
         return
