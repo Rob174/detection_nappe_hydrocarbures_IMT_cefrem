@@ -14,6 +14,12 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DataSentinel1Segmentation(BaseClass):
+    attr_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
+        {  # Formatted in the following way: src_index in cache, name, the position encode destination index
+            0: "other",
+            1: "spill",
+            2: "seep",
+        })
     def __init__(self,limit_num_images=None,input_size=None):
         """Class giving access and managing the original dataset stored in the hdf5 and json files
 
@@ -31,12 +37,6 @@ class DataSentinel1Segmentation(BaseClass):
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
-        self.attr_class_mapping = TwoWayDict( # a twoway dict allowing to store pairs of hashable objects:
-            {  # Formatted in the following way: src_index in cache, name, the position encode destination index
-                0: "other",
-                1: "spill",
-                2: "seep",
-            })
         #concretely we can ask:
         # - self.attr_class_mapping[0] -> returns "other" as a normal dict
         # - self.attr_class_mapping["other"] -> returns 0 with this new type of object

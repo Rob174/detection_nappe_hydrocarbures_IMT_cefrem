@@ -18,7 +18,7 @@ class BalanceClasses1(BaseClass):
         """method called during training to know if we have to filter this sample or not based on its classification_label
 
         Args:
-            classification_label:  label with ones of a class is on the image and 0 if not. !! Must be provided by ClassificationPatch make_classification_label method for the shape of the labels (with full details)
+            classification_label:  label with ones of a class is on the image and 0 if not. !! Must be provided by NoLabelModifier make_classification_label method for the shape of the labels (with full details)
 
         Returns:
             bool, tell if the sample is accepted or rejected

@@ -32,7 +32,7 @@ from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.enums import EnumGitCheck
 from main.src.models.enums import EnumModels, EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
-from main.src.data.classification.enums import EnumClassificationDataset
+from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import *
 from main.src.data.balance_classes.enums import *
@@ -59,7 +59,7 @@ class Parser0(BaseClass):
 
                     &#39;-no_security&#39;: {&#34;dest&#34;:&#39;no_security&#39;, &#34;default&#34;:EnumGitCheck.NOGITCHECK, &#34;type&#34;:EnumGitCheck,&#34;help&#34;:&#34;Indicate if you want to check if all python files have been commited before launching the training process true to disable the security&#34;,&#34;choices&#34;:list(EnumGitCheck)},
                     # Dataset
-                    &#39;-dataset&#39;:{&#34;dest&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumClassificationDataset,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumClassificationDataset)},
+                    &#39;-dataset&#39;:{&#34;dest&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumLabelModifier,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumLabelModifier)},
                     &#39;-usage_type&#39;:{&#34;dest&#34;:&#39;usage_type&#39;,&#34;default&#34;:&#34;classification&#34;,&#34;type&#34;:EnumUsage,&#34;help&#34;:&#34;Indicate the source dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumUsage)},
                     &#39;-patch&#39;:{&#34;dest&#34;:&#39;patch&#39;,&#34;default&#34;:&#34;fixed_px&#34;,&#34;type&#34;:EnumPatchAlgorithm,&#34;help&#34;:&#34;Indicate the type of patch to create&#34;,&#34;choices&#34;:list(EnumPatchAlgorithm)},
                     &#39;-patchExclPol&#39;: {&#34;dest&#34;:&#34;patch_exclude_policy&#34;, &#34;default&#34;:EnumPatchExcludePolicy.MarginMoreThan, &#34;type&#34;:EnumPatchExcludePolicy, &#34;help&#34;:&#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;,&#34;choices&#34;:list(EnumPatchExcludePolicy)},
@@ -151,7 +151,7 @@ if __name__ == &#34;__main__&#34;:
 
                     &#39;-no_security&#39;: {&#34;dest&#34;:&#39;no_security&#39;, &#34;default&#34;:EnumGitCheck.NOGITCHECK, &#34;type&#34;:EnumGitCheck,&#34;help&#34;:&#34;Indicate if you want to check if all python files have been commited before launching the training process true to disable the security&#34;,&#34;choices&#34;:list(EnumGitCheck)},
                     # Dataset
-                    &#39;-dataset&#39;:{&#34;dest&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumClassificationDataset,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumClassificationDataset)},
+                    &#39;-dataset&#39;:{&#34;dest&#34;:&#39;dataset&#39;,&#34;default&#34;:&#34;classificationpatch1&#34;,&#34;type&#34;:EnumLabelModifier,&#34;help&#34;:&#34;Indicate the dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumLabelModifier)},
                     &#39;-usage_type&#39;:{&#34;dest&#34;:&#39;usage_type&#39;,&#34;default&#34;:&#34;classification&#34;,&#34;type&#34;:EnumUsage,&#34;help&#34;:&#34;Indicate the source dataset used to constitue datasets&#34;,&#34;choices&#34;:list(EnumUsage)},
                     &#39;-patch&#39;:{&#34;dest&#34;:&#39;patch&#39;,&#34;default&#34;:&#34;fixed_px&#34;,&#34;type&#34;:EnumPatchAlgorithm,&#34;help&#34;:&#34;Indicate the type of patch to create&#34;,&#34;choices&#34;:list(EnumPatchAlgorithm)},
                     &#39;-patchExclPol&#39;: {&#34;dest&#34;:&#34;patch_exclude_policy&#34;, &#34;default&#34;:EnumPatchExcludePolicy.MarginMoreThan, &#34;type&#34;:EnumPatchExcludePolicy, &#34;help&#34;:&#34;Indicates the policy to exclude patches (especially patches containing margins)&#34;,&#34;choices&#34;:list(EnumPatchExcludePolicy)},

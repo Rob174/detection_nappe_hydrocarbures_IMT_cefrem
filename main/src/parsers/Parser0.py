@@ -4,7 +4,7 @@ from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.enums import EnumGitCheck
 from main.src.models.enums import EnumModels, EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
-from main.src.data.classification.enums import EnumClassificationDataset
+from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import *
 from main.src.data.balance_classes.enums import *
@@ -31,7 +31,7 @@ class Parser0(BaseClass):
 
                     '-no_security': {"dest":'no_security', "default":EnumGitCheck.NOGITCHECK, "type":EnumGitCheck,"help":"Indicate if you want to check if all python files have been commited before launching the training process true to disable the security","choices":list(EnumGitCheck)},
                     # Dataset
-                    '-dataset':{"dest":'dataset',"default":"classificationpatch1","type":EnumClassificationDataset,"help":"Indicate the dataset used to constitue datasets","choices":list(EnumClassificationDataset)},
+                    '-dataset':{"dest":'dataset',"default":"classificationpatch1","type":EnumLabelModifier, "help": "Indicate the dataset used to constitue datasets", "choices":list(EnumLabelModifier)},
                     '-usage_type':{"dest":'usage_type',"default":"classification","type":EnumUsage,"help":"Indicate the source dataset used to constitue datasets","choices":list(EnumUsage)},
                     '-patch':{"dest":'patch',"default":"fixed_px","type":EnumPatchAlgorithm,"help":"Indicate the type of patch to create","choices":list(EnumPatchAlgorithm)},
                     '-patchExclPol': {"dest":"patch_exclude_policy", "default":EnumPatchExcludePolicy.MarginMoreThan, "type":EnumPatchExcludePolicy, "help":"Indicates the policy to exclude patches (especially patches containing margins)","choices":list(EnumPatchExcludePolicy)},

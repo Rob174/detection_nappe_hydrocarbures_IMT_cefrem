@@ -32,7 +32,7 @@ from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
 from main.src.data.classification.ClassificationPatch2 import ClassificationPatch2
-from main.src.data.classification.enums import EnumClassificationDataset
+from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
@@ -49,7 +49,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     - different patch creator possible
 
     Args:
-        dataset_name: EnumClassificationDataset,
+        dataset_name: EnumLabelModifier,
         usage_type: EnumUsage,
         patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
@@ -66,7 +66,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         augmentation_factor: int, the number of times that the source image is augmented
     &#34;&#34;&#34;
 
-    def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
+    def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.ClassificationPatch,
                  usage_type: EnumUsage = EnumUsage.Classification,
                  patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=1000,
@@ -88,7 +88,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
             raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
 
         if usage_type == EnumUsage.Classification:
-            if dataset_name == EnumClassificationDataset.ClassificationPatch:
+            if dataset_name == EnumLabelModifier.ClassificationPatch:
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
                                                         balance=balance,
                                                         augmentations_img=augmentations_img,
@@ -96,7 +96,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                                                         augmentations_patch=augmentations_patch,
                                                         augmenter_patch=augmenter_patch,
                                                         augmentation_factor=augmentation_factor)
-            elif dataset_name == EnumClassificationDataset.ClassificationPatch1:
+            elif dataset_name == EnumLabelModifier.ClassificationPatch1:
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
@@ -105,7 +105,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                                                          augmentations_patch=augmentations_patch,
                                                          augmenter_patch=augmenter_patch,
                                                          augmentation_factor=augmentation_factor)
-            elif dataset_name == EnumClassificationDataset.ClassificationPatch2:
+            elif dataset_name == EnumLabelModifier.ClassificationPatch2:
                 self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
@@ -127,7 +127,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 
 if __name__ == &#34;__main__&#34;:
     FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name=EnumClassificationDataset.ClassificationPatch,
+    dataset_factory = DatasetFactory(dataset_name=EnumLabelModifier.ClassificationPatch,
                                      usage_type=EnumUsage.Classification, patch_creator=EnumPatchAlgorithm.FixedPx,
                                      grid_size=1000, input_size=256)
 
@@ -146,7 +146,7 @@ if __name__ == &#34;__main__&#34;:
 <dl>
 <dt id="main.src.data.DatasetFactory.DatasetFactory"><code class="flex name class">
 <span>class <span class="ident">DatasetFactory</span></span>
-<span>(</span><span>dataset_name: <a title="main.src.data.classification.enums.EnumClassificationDataset" href="classification/enums.html#main.src.data.classification.enums.EnumClassificationDataset">EnumClassificationDataset</a> = EnumClassificationDataset.ClassificationPatch, usage_type: <a title="main.src.data.enums.EnumUsage" href="enums.html#main.src.data.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, patch_creator: <a title="main.src.data.patch_creator.enums.EnumPatchAlgorithm" href="patch_creator/enums.html#main.src.data.patch_creator.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a> = EnumPatchAlgorithm.FixedPx, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1)</span>
+<span>(</span><span>dataset_name: <a title="main.src.data.classification.enums.EnumLabelModifier" href="classification/enums.html#main.src.data.classification.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.ClassificationPatch, usage_type: <a title="main.src.data.enums.EnumUsage" href="enums.html#main.src.data.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, patch_creator: <a title="main.src.data.patch_creator.enums.EnumPatchAlgorithm" href="patch_creator/enums.html#main.src.data.patch_creator.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a> = EnumPatchAlgorithm.FixedPx, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the dataset creation and access with options of:
@@ -155,7 +155,7 @@ if __name__ == &#34;__main__&#34;:
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>dataset_name</code></strong></dt>
-<dd>EnumClassificationDataset,</dd>
+<dd>EnumLabelModifier,</dd>
 <dt><strong><code>usage_type</code></strong></dt>
 <dd>EnumUsage,</dd>
 <dt><strong><code>patch_creator</code></strong></dt>
@@ -195,7 +195,7 @@ if __name__ == &#34;__main__&#34;:
     - different patch creator possible
 
     Args:
-        dataset_name: EnumClassificationDataset,
+        dataset_name: EnumLabelModifier,
         usage_type: EnumUsage,
         patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
@@ -212,7 +212,7 @@ if __name__ == &#34;__main__&#34;:
         augmentation_factor: int, the number of times that the source image is augmented
     &#34;&#34;&#34;
 
-    def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
+    def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.ClassificationPatch,
                  usage_type: EnumUsage = EnumUsage.Classification,
                  patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=1000,
@@ -234,7 +234,7 @@ if __name__ == &#34;__main__&#34;:
             raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
 
         if usage_type == EnumUsage.Classification:
-            if dataset_name == EnumClassificationDataset.ClassificationPatch:
+            if dataset_name == EnumLabelModifier.ClassificationPatch:
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
                                                         balance=balance,
                                                         augmentations_img=augmentations_img,
@@ -242,7 +242,7 @@ if __name__ == &#34;__main__&#34;:
                                                         augmentations_patch=augmentations_patch,
                                                         augmenter_patch=augmenter_patch,
                                                         augmentation_factor=augmentation_factor)
-            elif dataset_name == EnumClassificationDataset.ClassificationPatch1:
+            elif dataset_name == EnumLabelModifier.ClassificationPatch1:
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
@@ -251,7 +251,7 @@ if __name__ == &#34;__main__&#34;:
                                                          augmentations_patch=augmentations_patch,
                                                          augmenter_patch=augmenter_patch,
                                                          augmentation_factor=augmentation_factor)
-            elif dataset_name == EnumClassificationDataset.ClassificationPatch2:
+            elif dataset_name == EnumLabelModifier.ClassificationPatch2:
                 self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,

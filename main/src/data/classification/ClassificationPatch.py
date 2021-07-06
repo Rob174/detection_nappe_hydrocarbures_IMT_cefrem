@@ -12,11 +12,18 @@ from main.src.data.TwoWayDict import  Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
+from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
+from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
+from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
+from main.src.data.classification.enums import EnumLabelModifier
+from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 import time
 from rasterio.transform import Affine,rowcol
+from typing import Tuple
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
@@ -33,23 +40,32 @@ class ClassificationPatch(DataSentinel1Segmentation):
         augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_patch: opt EnumAugmenter, name of the augmenter to use on patches
         augmentation_factor: the number of replicas of the original dataset to do
+        label_modifier: EnumLabelModifier
     """
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance    ,
                  augmentations_img="none",augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch="none",augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentation_factor: int=100,
+                 augmentation_factor: int=100,label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
+                 classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep,EnumClasses.Spill),
                  tr_percent=0.7):
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.patch_creator = patch_creator
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
-        self.attr_classes_to_use = "other,seep,spill"
         self.attr_augmentation_factor = augmentation_factor
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
         self.tr_keys = list(self.images.keys())[:int(len(self.images)*tr_percent)]
         self.valid_keys = list(self.images.keys())[int(len(self.images)*tr_percent):]
         self.attr_global_name = "dataset"
+        if label_modifier == EnumLabelModifier.NoLabelModifier:
+            self.attr_label_modifier = NoLabelModifier()
+        elif label_modifier == EnumLabelModifier.LabelModifier1:
+            self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use)
+        elif label_modifier == EnumLabelModifier.LabelModifier2:
+            self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,original_class_mapping=self.attr_original_class_mapping)
+        else:
+            raise NotImplementedError(f"{label_modifier} is not implemented")
         if balance == EnumBalance.BalanceClasses1:
             self.attr_balance = NoBalance()
         elif balance == EnumBalance.NoBalance:
@@ -223,6 +239,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
                 output[value] = 1.
         # Check if we need to reject the patch due to overrepresented class
         balance_reject = self.attr_balance.filter(output)
+        # Modify the label if require
+        output = self.attr_label_modifier.make_classification_label(annotations_patch)
         return output,balance_reject
     def __len__(self):
         return
