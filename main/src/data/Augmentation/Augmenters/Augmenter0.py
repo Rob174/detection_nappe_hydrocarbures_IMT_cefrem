@@ -18,19 +18,6 @@ class Augmenter0(BaseClass):
     def __init__(self,allowed_transformations="mirrors,rotations"):
         self.attr_allowed_transformations = allowed_transformations
         self.attr_transformations_classes =  []
-        self.add_transformation(allowed_transformations)
-    def add_transformation(self,allowed_transformations):
-        """Method that map transformation names with actual classes. Splited from the __init__ to be able to overload
-
-        Args:
-            allowed_transformations: str, list of augmentations to apply seprated by commas. Currently supported:
-            - mirrors
-            - rotations
-            - resize: provided as "resize_...range..._...shift..."
-
-        Returns:
-
-        """
         for transfo in self.attr_allowed_transformations.split(","):
             if transfo == "mirrors":
                 self.attr_transformations_classes.append(Mirrors())

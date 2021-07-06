@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class EnumModels(Enum):
-    GITSECURE = "gitsecure"
-    NOTGITSECURE = "notgitsecure"
+class EnumGitCheck(Enum):
+    GITCHECK = "gitcheck"
+    NOGITCHECK = "nogitcheck"

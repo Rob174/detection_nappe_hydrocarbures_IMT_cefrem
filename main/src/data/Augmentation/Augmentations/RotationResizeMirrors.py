@@ -1,9 +1,9 @@
-from main.src.param_savers.BaseClass import BaseClass
 import numpy as np
-from typing import Tuple, Sequence, Iterator, List
+from typing import Tuple, Sequence, Iterator, List, Any, Dict
 import cv2
 
-class RotationResizeMirrors(BaseClass):
+from main.src.data.Augmentation.Augmentations.AbstractAugmentationWithMatrix import AbstractAugmentationWithMatrix
+class RotationResizeMirrors(AbstractAugmentation):
     """Class computing random rotation along a vertical or horizontal axis
 
     Args:
@@ -79,7 +79,7 @@ class RotationResizeMirrors(BaseClass):
         coords = list(zip(*list(x.flat for x in np.meshgrid(rows_coords, cols_coords))))
         return coords
 
-    def choose_new_augmentation(self,image: np.ndarray):
+    def choose_new_augmentation(self,image: np.ndarray) -> Dict[str,Any]:
         """Method that allows to create a new augmentation dict containing
 
         Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch

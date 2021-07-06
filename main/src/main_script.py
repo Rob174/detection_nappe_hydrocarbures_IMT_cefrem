@@ -3,6 +3,9 @@
 import json
 import subprocess
 import os, sys
+
+from main.src.enums import EnumGitCheck
+
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src")
@@ -28,7 +31,7 @@ if __name__ == "__main__":
     arguments = Parser0()()
     saver["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
     changes = subprocess.check_output(['git', 'diff', '--name-only',"--","*.py"]).decode("ascii").split("\n")[:-1]
-    if arguments.no_security != "true" and len(changes):
+    if arguments.no_security == EnumGitCheck.GITCHECK and len(changes):
         changes_str = "\n".join(list(map(lambda x:'\t- '+x,changes)))
         input(f"There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?")
     dataset = DatasetFactory(dataset_name=arguments.dataset,
@@ -37,6 +40,7 @@ if __name__ == "__main__":
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
+                             patch_exclude_policy_threshold = arguments.patch_exclude_policy_threshold,
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
                              augmenter_img=arguments.augmenter_img,
