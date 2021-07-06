@@ -116,11 +116,18 @@ class Trainer0(BaseClass):
     def call(self):
         """Train the model"""
         with self.progress:
-            epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0., total=self.attr_num_epochs,
-                                               status=0)
+
             if self.length is not None:
-                global_iteration_progress = self.progress.add_task("epochs", name="[blue]Epochs", loss=0., total=self.length,
+                global_iteration_progress = self.progress.add_task("iterations", name="[blue]Global itérations", loss=0., total=self.length,
                                                status=0)
+                epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0.,
+                                                        total=self.attr_num_epochs,
+                                                        status=0)
+            else:
+
+                epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0.,
+                                                        total=self.attr_num_epochs,
+                                                        status=0,img_processed=0)
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.model.to(device)
