@@ -4,7 +4,7 @@ class TrValidSplit:
         self.name = name
     def __iter__(self):
         return self.dataset.__iter__(dataset=self.name)
-    def __len__(self):
+    def len(self):
         return self.dataset.__len__(dataset=self.name)
 
 def trvalidsplit(dataset):
