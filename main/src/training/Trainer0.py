@@ -176,21 +176,20 @@ class Trainer0(BaseClass):
                                     input, output,transformation_matrix,item = next(dataset_valid_iter)
                                 opt_valid_batch = self.add_to_batch_valid(input,output)
                                 it_val += 1
-                                input,output = opt_valid_batch
-                                input = torch.Tensor(input)
-                                output = torch.Tensor(output)
-                                prediction = self.model(input.to(device))
-                                loss = self.loss(prediction.float().to(device), output.float().to(device))
-                                current_loss = loss.item()
-                                self.attr_valid_loss.append(float(current_loss))
-                                self.saver(self.dataset)
-                                self.metrics(prediction.cpu(), output.cpu(), "valid")
-                                self.saver(self.metrics)
-                                self.saver(self).save()
+                            input,output = opt_valid_batch
+                            input = torch.Tensor(input)
+                            output = torch.Tensor(output)
+                            prediction = self.model(input.to(device))
+                            loss = self.loss(prediction.float().to(device), output.float().to(device))
+                            current_loss = loss.item()
+                            self.attr_valid_loss.append(float(current_loss))
+                            self.saver(self.dataset)
+                            self.metrics(prediction.cpu(), output.cpu(), "valid")
+                            self.saver(self.metrics)
+                            self.saver(self).save()
 
-                                if loss < np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
-                                    torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
-                                opt_valid_batch = None
+                            if loss < np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
+                                torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
                     if self.length is not None:
                         self.progress.update(global_iteration_progress,advance=0, loss=current_loss, status=it_tr)
                     else:

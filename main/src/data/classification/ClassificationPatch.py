@@ -241,7 +241,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         output = self.attr_label_modifier.make_classification_label(output)
         return output,balance_reject
     def __len__(self):
-        return
+        return None
 
     def make_patches_of_image(self, name: str):
         """Creates and returns all patches of an image
