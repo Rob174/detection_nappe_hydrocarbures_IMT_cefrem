@@ -71,6 +71,7 @@ class ClassificationCache(BaseClass):
                 for id in images_available:
                     image = np.array(images_cache[id])
                     annotation = np.array(annotations_cache[id])
+                    annotation = self.make_classification_label(annotation)
                     annotation = self.attr_label_modifier.make_classification_label(annotation)
                     source_img = self.dico_infos[id]["source_img"]
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
