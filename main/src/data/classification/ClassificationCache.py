@@ -70,6 +70,7 @@ class ClassificationCache(BaseClass):
                 random.shuffle(images_available)
                 for id in images_available:
                     image = np.array(images_cache[id])
+                    image = np.stack((image,)*3,axis=0)
                     annotation = np.array(annotations_cache[id])
                     annotation = self.make_classification_label(annotation)
                     annotation = self.attr_label_modifier.make_classification_label(annotation)
