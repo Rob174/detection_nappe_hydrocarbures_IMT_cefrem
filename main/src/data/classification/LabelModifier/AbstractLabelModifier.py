@@ -1,7 +1,10 @@
 from abc import ABC,abstractmethod
 import numpy as np
 
-class AbstractLabelModifier(ABC):
+from main.src.param_savers.BaseClass import BaseClass
+
+
+class AbstractLabelModifier(ABC, BaseClass):
     def __init__(self):
         pass
     @abstractmethod
