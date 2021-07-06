@@ -2,7 +2,7 @@ import json
 import random
 
 import numpy as np
-from typing import Tuple, Generator
+from typing import Tuple, Generator, Optional
 from h5py import File
 
 from main.FolderInfos import FolderInfos
@@ -26,10 +26,13 @@ class ClassificationCache(BaseClass):
     def __init__(self, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep,EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None):
+        print("Using ClassificationCache")
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
         with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5","r") as images_cache:
             self.tr_keys = list(images_cache.keys())[:int(len(images_cache)*tr_percent)]
+            if self.attr_limit_num_images is not None:
+                self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
             self.valid_keys = list(images_cache.keys())[int(len(images_cache)*tr_percent):]
         self.attr_global_name = "dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
@@ -61,8 +64,6 @@ class ClassificationCache(BaseClass):
                    item: str name of the source image
         """
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
-        if self.attr_limit_num_images is not None and dataset=="tr":
-            images_available = images_available[:self.attr_limit_num_images]
         with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5","r") as images_cache:
             with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as annotations_cache:
                 random.shuffle(images_available)
@@ -73,3 +74,8 @@ class ClassificationCache(BaseClass):
                     source_img = self.dico_infos[id]["source_img"]
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
                     yield image, annotation, transformation_matrix, source_img
+    def __len__(self,dataset) -> Optional[int]:
+        if dataset == "tr":
+            return len(self.tr_keys)
+        else:
+            return len(self.valid_keys)

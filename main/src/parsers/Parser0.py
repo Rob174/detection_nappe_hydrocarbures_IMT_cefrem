@@ -39,7 +39,7 @@ class Parser0(BaseClass):
                     '-grid_size':{"dest":'grid_size',"default":1000,"type":int,"help":"Indicate the grid size applied on the original image"},
                     '-in_size':{"dest":'input_size',"default":256,"type":int,"help":"Indicate the output size of the image obtained by resizing it after patches creation"},
                     '-bs':{"dest":'batch_size',"default":10,"type":int,"help":"Indique le nombre d'images par batch"},
-                    '-balance':{"dest":'balance',"default":"balanceclasses1","type":EnumBalance,"help":"Indicate the policy to balance classes","choices":list(EnumBalance)},
+                    '-balance':{"dest":'balance',"default":EnumBalance.BalanceClasses1,"type":EnumBalance,"help":"Indicate the policy to balance classes","choices":list(EnumBalance)},
                     # Augmentations
                     '-augmenter_img':{"dest":'augmenter_img',"default":EnumAugmenter.Augmenter1,"type":EnumAugmenter,"help":"Indicate which augmenter to use to apply transformations on source image","choices":list(EnumAugmenter)},
                     '-augmentations_img':{"dest":'augmentations_img',"default":"combinedRotResizeMir_10_0.25_4","type":str,"help":"Indicate the augmentations to apply to images in the order desired seprated by commas"},
