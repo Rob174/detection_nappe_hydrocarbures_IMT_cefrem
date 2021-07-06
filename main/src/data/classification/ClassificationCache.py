@@ -6,6 +6,7 @@ from typing import Tuple, Generator, Optional
 from h5py import File
 
 from main.FolderInfos import FolderInfos
+from main.src.data.TwoWayDict import Way
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
@@ -74,6 +75,28 @@ class ClassificationCache(BaseClass):
                     source_img = self.dico_infos[id]["source_img"]
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
                     yield image, annotation, transformation_matrix, source_img
+    def make_classification_label(self, annotations_patch):
+        """Creates the classification label based on the annotation patch image
+
+        Indicates if we need to reject the patch due to overrepresented class
+
+        Args:
+            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
+
+        Returns: the classification label
+
+        """
+
+        output = np.zeros((len(DataSentinel1Segmentation.attr_original_class_mapping),),dtype=np.float32)
+        for value in DataSentinel1Segmentation.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):
+            # for each class of the original dataset, we put a probability of presence of one if the class is in the patch
+            value = int(value)
+            #  if the class is in the patch
+            if value in annotations_patch:
+                output[value] = 1.
+        # Modify the label if require
+        output = self.attr_label_modifier.make_classification_label(output)
+        return output
     def __len__(self,dataset) -> Optional[int]:
         if dataset == "tr":
             return len(self.tr_keys)
