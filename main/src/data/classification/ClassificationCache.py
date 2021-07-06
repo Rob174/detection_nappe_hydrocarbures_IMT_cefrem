@@ -38,9 +38,9 @@ class ClassificationCache(BaseClass):
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = NoLabelModifier()
         elif label_modifier == EnumLabelModifier.LabelModifier1:
-            self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,original_class_mapping=DataSentinel1Segmentation.attr_class_mapping)
+            self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
-            self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,original_class_mapping=DataSentinel1Segmentation.attr_class_mapping)
+            self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
 
