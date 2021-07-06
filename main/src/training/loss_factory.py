@@ -17,8 +17,7 @@ class LossFactory(BaseClass):
 
     """
     def __init__(self, usage_type: EnumUsage, preference: Optional[EnumLoss]=None):
-        if preference is not None:
-            preference = preference.lower()
+
         self.attr_loss = preference
         if usage_type == EnumUsage.Classification:
             if preference is None or preference == EnumLoss.MulticlassnonExlusivCrossentropy:

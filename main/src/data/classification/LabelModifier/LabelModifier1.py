@@ -14,13 +14,13 @@ class LabelModifier1(AbstractLabelModifier):
         classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
     """
 
-    def __init__(self, classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
+    def __init__(self, original_class_mapping: TwoWayDict,classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
         self.attr_classes_to_use = classes_to_use
         for i, name in enumerate(classes_to_use):
-            tmp_mapping[self.attr_class_mapping[name.value], Way.ORIGINAL_WAY] = name.value, i
+            tmp_mapping[original_class_mapping[name.value], Way.ORIGINAL_WAY] = name.value, i
         self.attr_class_mapping = tmp_mapping
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:

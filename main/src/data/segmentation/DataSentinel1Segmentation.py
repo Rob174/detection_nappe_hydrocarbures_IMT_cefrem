@@ -14,12 +14,13 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DataSentinel1Segmentation(BaseClass):
-    attr_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
-        {  # Formatted in the following way: src_index in cache, name, the position encode destination index
-            0: "other",
-            1: "spill",
-            2: "seep",
-        })
+    attr_original_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
+    {  # Formatted in the following way: src_index in cache, name, the position encode destination index
+        0: "other",
+        1: "spill",
+        2: "seep",
+    })
+
     def __init__(self,limit_num_images=None,input_size=None):
         """Class giving access and managing the original dataset stored in the hdf5 and json files
 
@@ -40,7 +41,7 @@ class DataSentinel1Segmentation(BaseClass):
         #concretely we can ask:
         # - self.attr_class_mapping[0] -> returns "other" as a normal dict
         # - self.attr_class_mapping["other"] -> returns 0 with this new type of object
-        self.attr_original_class_mapping = TwoWayDict({k:v for k,v in self.attr_class_mapping.items()})
+        self.attr_class_mapping = TwoWayDict({k:v for k,v in DataSentinel1Segmentation.attr_original_class_mapping.items()})
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = "dataset"

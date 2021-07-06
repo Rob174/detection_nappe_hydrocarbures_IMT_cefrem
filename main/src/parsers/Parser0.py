@@ -29,10 +29,10 @@ class Parser0(BaseClass):
         self.parser = argparse.ArgumentParser()
         self.args = {
 
-                    '-no_security': {"dest":'no_security', "default":EnumGitCheck.NOGITCHECK, "type":EnumGitCheck,"help":"Indicate if you want to check if all python files have been commited before launching the training process true to disable the security","choices":list(EnumGitCheck)},
+                    '-no_security': {"dest":'no_security', "default":EnumGitCheck.GITCHECK, "type":EnumGitCheck,"help":"Indicate if you want to check if all python files have been commited before launching the training process true to disable the security","choices":list(EnumGitCheck)},
                     # Dataset
-                    '-dataset':{"dest":'dataset',"default":"classificationpatch1","type":EnumLabelModifier, "help": "Indicate the dataset used to constitue datasets", "choices":list(EnumLabelModifier)},
-                    '-usage_type':{"dest":'usage_type',"default":"classification","type":EnumUsage,"help":"Indicate the source dataset used to constitue datasets","choices":list(EnumUsage)},
+                    '-dataset':{"dest":'dataset',"default":EnumLabelModifier.LabelModifier1,"type":EnumLabelModifier, "help": "Indicate the dataset used to constitue datasets", "choices":list(EnumLabelModifier)},
+                    '-usage_type':{"dest":'usage_type',"default":EnumUsage.Classification,"type":EnumUsage,"help":"Indicate the source dataset used to constitue datasets","choices":list(EnumUsage)},
                     '-patch':{"dest":'patch',"default":"fixed_px","type":EnumPatchAlgorithm,"help":"Indicate the type of patch to create","choices":list(EnumPatchAlgorithm)},
                     '-patchExclPol': {"dest":"patch_exclude_policy", "default":EnumPatchExcludePolicy.MarginMoreThan, "type":EnumPatchExcludePolicy, "help":"Indicates the policy to exclude patches (especially patches containing margins)","choices":list(EnumPatchExcludePolicy)},
                     '-patchExclThreshold': {"dest":"patch_exclude_policy_threshold", "default":1000, "type":int, "help":"The threshold used for margin more than algorithm"},
@@ -48,7 +48,7 @@ class Parser0(BaseClass):
                     '-augmentation_factor':{"dest":'augmentation_factor',"default":100,"type":int,"help":"The number of times that the source image is augmented"},
                     # Model
                     '-model':{"dest":'model',"default":"resnet18","type":EnumModels,"help":"To choose the network architecture used","choices":list(EnumModels)},
-                    '-classes':{"dest":'classes',"default":[EnumClasses.Other,EnumClasses.Seep,EnumClasses.Spill],"type":EnumClasses,"help":"Indicate the class used for training separated by a comma","nargs":"+","choices":list(EnumClasses)},
+                    '-classes':{"dest":'classes',"default":[EnumClasses.Seep,EnumClasses.Spill],"type":EnumClasses,"help":"Indicate the class used for training separated by a comma","nargs":"+","choices":list(EnumClasses)},
                     # Training
                     '-num_epochs':{"dest":'num_epochs',"default":100,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
                     '-eval_step':{"dest":'eval_step',"default":10,"type":int,"help":"Number of training steps between two evaluation/validation steps"},
