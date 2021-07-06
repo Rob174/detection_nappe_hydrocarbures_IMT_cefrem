@@ -36,6 +36,8 @@ from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, Ti
 from rich.console import Console
 import numpy as np
 
+from main.src.training.TrValidSplit import TrValidSplit, trvalidsplit
+
 
 class Trainer0(BaseClass):
     &#34;&#34;&#34;Class managing the training process
@@ -73,25 +75,15 @@ class Trainer0(BaseClass):
         self.optimizer = optimizer
         self.loss = loss
         self.metrics = metrics
-        length_full_dataset = len(dataset)
-        self.tr_length = int(length_full_dataset * tr_prct)
         self.saver = saver
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
-        valid_length = length_full_dataset - self.tr_length
         self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
         # split the datasets into train and validation
-        [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
-                                                   generator=torch.Generator().manual_seed(42))
+        [dataset_tr, dataset_valid] = trvalidsplit(dataset)
         # create the dataloader classes to automatically generate the samples
-        self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
-                                # shuffle the dataset at the beginning of each epoch
-                                num_workers=0,  # num workers loading data into ram
-                                prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
-        self.dataset_valid = DataLoader(dataset_valid, batch_size=1, shuffle=True,
-                                   # shuffle the dataset at the beginning of each epoch
-                                   num_workers=0,  # num workers loading data into ram
-                                   prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
+        self.dataset_tr = dataset_tr  # there will be a total of 2 * num_workers samples prefetched across all workers
+        self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.model = model
 
         self.attr_tr_loss = []
@@ -114,30 +106,28 @@ class Trainer0(BaseClass):
             &#34;•&#34;,
             TextColumn(&#34;[bold blue]last_loss: {task.fields[loss]:.4e}&#34;, justify=&#34;right&#34;),
             &#34;•&#34;,
+            TextColumn(&#34;[bold blue]num_processed_img: {task.fields[img_processed]:.4e}&#34;, justify=&#34;right&#34;),
+            &#34;•&#34;,
             TimeElapsedColumn(),
             &#34;•&#34;,
             TimeRemainingColumn()
         )
-    def add_to_batch_tr(self,input,output,reject):
+    def add_to_batch_tr(self,input,output):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True or reject.cpu().detach().numpy()[0]:
-            return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
         if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-            full_batch = (np.concatenate(self.tr_batches[0],axis=0),np.concatenate(self.tr_batches[1],axis=0))
+            full_batch = (np.stack(self.tr_batches[0],axis=0),np.stack(self.tr_batches[1],axis=0))
             self.tr_batches = [[],[]]
             return full_batch
         else:
             return None
-    def add_to_batch_valid(self,input,output,reject):
+    def add_to_batch_valid(self,input,output):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True or reject.cpu().detach().numpy()[0]:
-            return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
         if len(self.valid_batches[0]) == self.attr_valid_batch_size:
-            full_batch = (np.concatenate(self.valid_batches[0], axis=0), np.concatenate(self.valid_batches[1], axis=0))
+            full_batch = (np.stack(self.valid_batches[0], axis=0), np.stack(self.valid_batches[1], axis=0))
             self.valid_batches = [[], []]
             return full_batch
         else:
@@ -148,9 +138,7 @@ class Trainer0(BaseClass):
         &#34;&#34;&#34;Train the model&#34;&#34;&#34;
         with self.progress:
             epoch_progress = self.progress.add_task(&#34;epochs&#34;, name=&#34;[red]Epochs&#34;, loss=0., total=self.attr_num_epochs,
-                                               status=0)
-            iterations_progress = self.progress.add_task(&#34;iterations&#34;, name=&#34;[bold blue]Total iterations&#34;, loss=0., status=0,
-                                                    total=self.attr_num_epochs * self.tr_length)
+                                               status=0,img_processed=0)
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device(&#34;cuda&#34;)
             self.model.to(device)
@@ -159,8 +147,8 @@ class Trainer0(BaseClass):
             it_val = 0
             opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
-                for i, [input, output,reject] in enumerate(self.dataset_tr):
-                    opt_tr_batch = self.add_to_batch_tr(input,output,reject)
+                for i, [input, output,transformation_matrix,item] in enumerate(self.dataset_tr):
+                    opt_tr_batch = self.add_to_batch_tr(input,output)
                     if opt_tr_batch is not None:
                         it_tr += 1
                         input,output = opt_tr_batch
@@ -189,13 +177,13 @@ class Trainer0(BaseClass):
 
                     if opt_valid_batch is None:
                         try:
-                            input, output,reject = next(dataset_valid_iter)
+                            input, output,transformation_matrix,item = next(dataset_valid_iter)
                         except StopIteration:
                             # StopIteration is thrown if dataset ends
                             # reinitialize data loader
                             dataset_valid_iter = iter(self.dataset_valid)
-                            input, output,reject = next(dataset_valid_iter)
-                        opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+                            input, output,transformation_matrix,item = next(dataset_valid_iter)
+                        opt_valid_batch = self.add_to_batch_valid(input,output)
 
                     else:
                         it_val += 1
@@ -214,12 +202,12 @@ class Trainer0(BaseClass):
                         if loss &lt; np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                             torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
                         opt_valid_batch = None
-                    self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
-                self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
-            self.saver(self.dataset)
-            self.saver(self.metrics)
-            self.saver(self).save()</code></pre>
+                    self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
+                self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch,img_processed=i)
+                torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+                self.saver(self.dataset)
+                self.saver(self.metrics)
+                self.saver(self).save()</code></pre>
 </details>
 </section>
 <section>
@@ -302,25 +290,15 @@ class Trainer0(BaseClass):
         self.optimizer = optimizer
         self.loss = loss
         self.metrics = metrics
-        length_full_dataset = len(dataset)
-        self.tr_length = int(length_full_dataset * tr_prct)
         self.saver = saver
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
-        valid_length = length_full_dataset - self.tr_length
         self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
         # split the datasets into train and validation
-        [dataset_tr, dataset_valid] = random_split(dataset, lengths=[self.tr_length, valid_length],
-                                                   generator=torch.Generator().manual_seed(42))
+        [dataset_tr, dataset_valid] = trvalidsplit(dataset)
         # create the dataloader classes to automatically generate the samples
-        self.dataset_tr = DataLoader(dataset_tr, batch_size=1, shuffle=True,
-                                # shuffle the dataset at the beginning of each epoch
-                                num_workers=0,  # num workers loading data into ram
-                                prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
-        self.dataset_valid = DataLoader(dataset_valid, batch_size=1, shuffle=True,
-                                   # shuffle the dataset at the beginning of each epoch
-                                   num_workers=0,  # num workers loading data into ram
-                                   prefetch_factor=self.attr_prefetch_factor)  # there will be a total of 2 * num_workers samples prefetched across all workers
+        self.dataset_tr = dataset_tr  # there will be a total of 2 * num_workers samples prefetched across all workers
+        self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.model = model
 
         self.attr_tr_loss = []
@@ -343,30 +321,28 @@ class Trainer0(BaseClass):
             &#34;•&#34;,
             TextColumn(&#34;[bold blue]last_loss: {task.fields[loss]:.4e}&#34;, justify=&#34;right&#34;),
             &#34;•&#34;,
+            TextColumn(&#34;[bold blue]num_processed_img: {task.fields[img_processed]:.4e}&#34;, justify=&#34;right&#34;),
+            &#34;•&#34;,
             TimeElapsedColumn(),
             &#34;•&#34;,
             TimeRemainingColumn()
         )
-    def add_to_batch_tr(self,input,output,reject):
+    def add_to_batch_tr(self,input,output):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True or reject.cpu().detach().numpy()[0]:
-            return None
         self.tr_batches[0].append(input)
         self.tr_batches[1].append(output)
         if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-            full_batch = (np.concatenate(self.tr_batches[0],axis=0),np.concatenate(self.tr_batches[1],axis=0))
+            full_batch = (np.stack(self.tr_batches[0],axis=0),np.stack(self.tr_batches[1],axis=0))
             self.tr_batches = [[],[]]
             return full_batch
         else:
             return None
-    def add_to_batch_valid(self,input,output,reject):
+    def add_to_batch_valid(self,input,output):
         &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-        if reject is True or reject.cpu().detach().numpy()[0]:
-            return None
         self.valid_batches[0].append(input)
         self.valid_batches[1].append(output)
         if len(self.valid_batches[0]) == self.attr_valid_batch_size:
-            full_batch = (np.concatenate(self.valid_batches[0], axis=0), np.concatenate(self.valid_batches[1], axis=0))
+            full_batch = (np.stack(self.valid_batches[0], axis=0), np.stack(self.valid_batches[1], axis=0))
             self.valid_batches = [[], []]
             return full_batch
         else:
@@ -377,9 +353,7 @@ class Trainer0(BaseClass):
         &#34;&#34;&#34;Train the model&#34;&#34;&#34;
         with self.progress:
             epoch_progress = self.progress.add_task(&#34;epochs&#34;, name=&#34;[red]Epochs&#34;, loss=0., total=self.attr_num_epochs,
-                                               status=0)
-            iterations_progress = self.progress.add_task(&#34;iterations&#34;, name=&#34;[bold blue]Total iterations&#34;, loss=0., status=0,
-                                                    total=self.attr_num_epochs * self.tr_length)
+                                               status=0,img_processed=0)
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device(&#34;cuda&#34;)
             self.model.to(device)
@@ -388,8 +362,8 @@ class Trainer0(BaseClass):
             it_val = 0
             opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
-                for i, [input, output,reject] in enumerate(self.dataset_tr):
-                    opt_tr_batch = self.add_to_batch_tr(input,output,reject)
+                for i, [input, output,transformation_matrix,item] in enumerate(self.dataset_tr):
+                    opt_tr_batch = self.add_to_batch_tr(input,output)
                     if opt_tr_batch is not None:
                         it_tr += 1
                         input,output = opt_tr_batch
@@ -418,13 +392,13 @@ class Trainer0(BaseClass):
 
                     if opt_valid_batch is None:
                         try:
-                            input, output,reject = next(dataset_valid_iter)
+                            input, output,transformation_matrix,item = next(dataset_valid_iter)
                         except StopIteration:
                             # StopIteration is thrown if dataset ends
                             # reinitialize data loader
                             dataset_valid_iter = iter(self.dataset_valid)
-                            input, output,reject = next(dataset_valid_iter)
-                        opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+                            input, output,transformation_matrix,item = next(dataset_valid_iter)
+                        opt_valid_batch = self.add_to_batch_valid(input,output)
 
                     else:
                         it_val += 1
@@ -443,12 +417,12 @@ class Trainer0(BaseClass):
                         if loss &lt; np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                             torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
                         opt_valid_batch = None
-                    self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
-                self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
-            self.saver(self.dataset)
-            self.saver(self.metrics)
-            self.saver(self).save()</code></pre>
+                    self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
+                self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch,img_processed=i)
+                torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+                self.saver(self.dataset)
+                self.saver(self.metrics)
+                self.saver(self).save()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -457,7 +431,7 @@ class Trainer0(BaseClass):
 <h3>Methods</h3>
 <dl>
 <dt id="main.src.training.Trainer0.Trainer0.add_to_batch_tr"><code class="name flex">
-<span>def <span class="ident">add_to_batch_tr</span></span>(<span>self, input, output, reject)</span>
+<span>def <span class="ident">add_to_batch_tr</span></span>(<span>self, input, output)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add a sample to the current batch if it is not rejected and return the batch if it is full</p></div>
@@ -465,14 +439,12 @@ class Trainer0(BaseClass):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_to_batch_tr(self,input,output,reject):
+<pre><code class="python">def add_to_batch_tr(self,input,output):
     &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-    if reject is True or reject.cpu().detach().numpy()[0]:
-        return None
     self.tr_batches[0].append(input)
     self.tr_batches[1].append(output)
     if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-        full_batch = (np.concatenate(self.tr_batches[0],axis=0),np.concatenate(self.tr_batches[1],axis=0))
+        full_batch = (np.stack(self.tr_batches[0],axis=0),np.stack(self.tr_batches[1],axis=0))
         self.tr_batches = [[],[]]
         return full_batch
     else:
@@ -480,7 +452,7 @@ class Trainer0(BaseClass):
 </details>
 </dd>
 <dt id="main.src.training.Trainer0.Trainer0.add_to_batch_valid"><code class="name flex">
-<span>def <span class="ident">add_to_batch_valid</span></span>(<span>self, input, output, reject)</span>
+<span>def <span class="ident">add_to_batch_valid</span></span>(<span>self, input, output)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add a sample to the current batch if it is not rejected and return the batch if it is full</p></div>
@@ -488,14 +460,12 @@ class Trainer0(BaseClass):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def add_to_batch_valid(self,input,output,reject):
+<pre><code class="python">def add_to_batch_valid(self,input,output):
     &#34;&#34;&#34;Add a sample to the current batch if it is not rejected and return the batch if it is full&#34;&#34;&#34;
-    if reject is True or reject.cpu().detach().numpy()[0]:
-        return None
     self.valid_batches[0].append(input)
     self.valid_batches[1].append(output)
     if len(self.valid_batches[0]) == self.attr_valid_batch_size:
-        full_batch = (np.concatenate(self.valid_batches[0], axis=0), np.concatenate(self.valid_batches[1], axis=0))
+        full_batch = (np.stack(self.valid_batches[0], axis=0), np.stack(self.valid_batches[1], axis=0))
         self.valid_batches = [[], []]
         return full_batch
     else:
@@ -515,9 +485,7 @@ class Trainer0(BaseClass):
     &#34;&#34;&#34;Train the model&#34;&#34;&#34;
     with self.progress:
         epoch_progress = self.progress.add_task(&#34;epochs&#34;, name=&#34;[red]Epochs&#34;, loss=0., total=self.attr_num_epochs,
-                                           status=0)
-        iterations_progress = self.progress.add_task(&#34;iterations&#34;, name=&#34;[bold blue]Total iterations&#34;, loss=0., status=0,
-                                                total=self.attr_num_epochs * self.tr_length)
+                                           status=0,img_processed=0)
         dataset_valid_iter = iter(self.dataset_valid)
         device = torch.device(&#34;cuda&#34;)
         self.model.to(device)
@@ -526,8 +494,8 @@ class Trainer0(BaseClass):
         it_val = 0
         opt_valid_batch = None
         for epoch in range(self.attr_num_epochs):
-            for i, [input, output,reject] in enumerate(self.dataset_tr):
-                opt_tr_batch = self.add_to_batch_tr(input,output,reject)
+            for i, [input, output,transformation_matrix,item] in enumerate(self.dataset_tr):
+                opt_tr_batch = self.add_to_batch_tr(input,output)
                 if opt_tr_batch is not None:
                     it_tr += 1
                     input,output = opt_tr_batch
@@ -556,13 +524,13 @@ class Trainer0(BaseClass):
 
                 if opt_valid_batch is None:
                     try:
-                        input, output,reject = next(dataset_valid_iter)
+                        input, output,transformation_matrix,item = next(dataset_valid_iter)
                     except StopIteration:
                         # StopIteration is thrown if dataset ends
                         # reinitialize data loader
                         dataset_valid_iter = iter(self.dataset_valid)
-                        input, output,reject = next(dataset_valid_iter)
-                    opt_valid_batch = self.add_to_batch_valid(input,output,reject)
+                        input, output,transformation_matrix,item = next(dataset_valid_iter)
+                    opt_valid_batch = self.add_to_batch_valid(input,output)
 
                 else:
                     it_val += 1
@@ -581,12 +549,12 @@ class Trainer0(BaseClass):
                     if loss &lt; np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                         torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
                     opt_valid_batch = None
-                self.progress.update(iterations_progress, advance=1, loss=current_loss, status=i)
-            self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-        torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
-        self.saver(self.dataset)
-        self.saver(self.metrics)
-        self.saver(self).save()</code></pre>
+                self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
+            self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch,img_processed=i)
+            torch.save(self.model.state_dict(), f&#34;{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt&#34;)
+            self.saver(self.dataset)
+            self.saver(self.metrics)
+            self.saver(self).save()</code></pre>
 </details>
 </dd>
 <dt id="main.src.training.Trainer0.Trainer0.progress_bar_creation"><code class="name flex">
@@ -608,6 +576,8 @@ class Trainer0(BaseClass):
         TextColumn(&#34;[bold blue]status: {task.fields[status]}&#34;, justify=&#34;right&#34;),
         &#34;•&#34;,
         TextColumn(&#34;[bold blue]last_loss: {task.fields[loss]:.4e}&#34;, justify=&#34;right&#34;),
+        &#34;•&#34;,
+        TextColumn(&#34;[bold blue]num_processed_img: {task.fields[img_processed]:.4e}&#34;, justify=&#34;right&#34;),
         &#34;•&#34;,
         TimeElapsedColumn(),
         &#34;•&#34;,

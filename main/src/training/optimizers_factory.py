@@ -1,6 +1,7 @@
 
 import torch.optim as optim
 
+from main.src.models.enums import EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -9,18 +10,16 @@ class OptimizersFactory(BaseClass):
 
     Args:
         model: model to optimize
-        name: str enum, optimizer to use. Currently supported:
-        - "adam"
-        - "sgd"
+        name: str EnumOptimizer, optimizer to use.
 
         params: other parameters for the optimizer
     """
-    def __init__(self,model,name="adam",**params):
+    def __init__(self,model,name: EnumOptimizer=EnumOptimizer.Adam,**params):
         self.attr_name = name
-        if name == "adam":
+        if name == EnumOptimizer.Adam:
             self.attr_params = {k:v for k,v in params.items() if k in ["lr","eps"]}
             self.optimizer = optim.Adam(model.parameters(),lr=params["lr"],eps=params["eps"])
-        elif name == "sgd":
+        elif name == EnumOptimizer.SGD:
             self.attr_params = {k:v for k,v in params.items() if k in ["lr"]}
             self.optimizer = optim.SGD(model.parameters(),lr=params["lr"])
         else:

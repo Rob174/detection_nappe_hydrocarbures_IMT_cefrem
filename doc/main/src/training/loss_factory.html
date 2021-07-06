@@ -26,43 +26,39 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import torch
+<pre><code class="python">from typing import Optional
 
+import torch
+
+from main.src.data.enums import EnumUsage
 from main.src.param_savers.BaseClass import BaseClass
+from main.src.training.enums import EnumLoss
 
 
 class LossFactory(BaseClass):
     &#34;&#34;&#34;Class managing possible losses
 
     Args:
-        usage_type: str enum, indicate for which purpose we want a loss. Currently supported:
-        - &#34;classification&#34;
-        - &#34;segmentation&#34;
+        usage_type: EnumUsage enum, indicate for which purpose we want a loss.
 
-        preference: optional str enum, indicate the preference for loss. Currently supported:
-        - &#34;multiclassnonexlusivcrossentropy&#34;
-        - &#34;binarycrossentropy&#34;
-        - &#34;mse&#34;
+        preference: optional EnumLoss, the loss to use. MulticlassnonExlusivCrossentropy by default
 
     &#34;&#34;&#34;
-    def __init__(self, usage_type, preference=None):
+    def __init__(self, usage_type: EnumUsage, preference: Optional[EnumLoss]=None):
         if preference is not None:
             preference = preference.lower()
         self.attr_loss = preference
-        if usage_type == &#34;classification&#34;:
-            if preference is None or preference == &#34;multiclassnonexlusivcrossentropy&#34;:
-                self.attr_loss = &#34;multiclassnonexlusivcrossentropy&#34;
+        if usage_type == EnumUsage.Classification:
+            if preference is None or preference == EnumLoss.MulticlassnonExlusivCrossentropy:
                 self.loss = lambda pred,target:torch.mean(torch.sum(-torch.log(pred+1e-7) * target,dim=1))
-            elif preference == &#34;binarycrossentropy&#34;:
-                self.attr_loss = &#34;binarycrossentropy&#34;
+            elif preference == EnumLoss.BinaryCrossentropy:
                 self.loss = torch.nn.BCELoss()
-            elif preference == &#34;mse&#34;:
-                self.attr_loss = &#34;mse&#34;
+            elif preference == EnumLoss.MSE:
                 self.loss = torch.nn.MSELoss()
             else:
                 raise NotImplementedError(f&#34;{preference} has not been implemented&#34;)
 
-        elif usage_type == &#34;segmentation&#34;:
+        elif usage_type == EnumUsage.Segmentation:
             raise NotImplementedError()
         else:
             raise NotImplementedError(f&#34;{usage_type} has not been implemented&#34;)
@@ -84,28 +80,17 @@ class LossFactory(BaseClass):
 <dl>
 <dt id="main.src.training.loss_factory.LossFactory"><code class="flex name class">
 <span>class <span class="ident">LossFactory</span></span>
-<span>(</span><span>usage_type, preference=None)</span>
+<span>(</span><span>usage_type: <a title="main.src.data.enums.EnumUsage" href="../data/enums.html#main.src.data.enums.EnumUsage">EnumUsage</a>, preference: Union[<a title="main.src.training.enums.EnumLoss" href="enums.html#main.src.training.enums.EnumLoss">EnumLoss</a>, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing possible losses</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>usage_type</code></strong></dt>
-<dd>str enum, indicate for which purpose we want a loss. Currently supported:</dd>
-</dl>
-<ul>
-<li>"classification"</li>
-<li>"segmentation"</li>
-</ul>
-<dl>
+<dd>EnumUsage enum, indicate for which purpose we want a loss.</dd>
 <dt><strong><code>preference</code></strong></dt>
-<dd>optional str enum, indicate the preference for loss. Currently supported:</dd>
-</dl>
-<ul>
-<li>"multiclassnonexlusivcrossentropy"</li>
-<li>"binarycrossentropy"</li>
-<li>"mse"</li>
-</ul></div>
+<dd>optional EnumLoss, the loss to use. MulticlassnonExlusivCrossentropy by default</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -114,34 +99,26 @@ class LossFactory(BaseClass):
     &#34;&#34;&#34;Class managing possible losses
 
     Args:
-        usage_type: str enum, indicate for which purpose we want a loss. Currently supported:
-        - &#34;classification&#34;
-        - &#34;segmentation&#34;
+        usage_type: EnumUsage enum, indicate for which purpose we want a loss.
 
-        preference: optional str enum, indicate the preference for loss. Currently supported:
-        - &#34;multiclassnonexlusivcrossentropy&#34;
-        - &#34;binarycrossentropy&#34;
-        - &#34;mse&#34;
+        preference: optional EnumLoss, the loss to use. MulticlassnonExlusivCrossentropy by default
 
     &#34;&#34;&#34;
-    def __init__(self, usage_type, preference=None):
+    def __init__(self, usage_type: EnumUsage, preference: Optional[EnumLoss]=None):
         if preference is not None:
             preference = preference.lower()
         self.attr_loss = preference
-        if usage_type == &#34;classification&#34;:
-            if preference is None or preference == &#34;multiclassnonexlusivcrossentropy&#34;:
-                self.attr_loss = &#34;multiclassnonexlusivcrossentropy&#34;
+        if usage_type == EnumUsage.Classification:
+            if preference is None or preference == EnumLoss.MulticlassnonExlusivCrossentropy:
                 self.loss = lambda pred,target:torch.mean(torch.sum(-torch.log(pred+1e-7) * target,dim=1))
-            elif preference == &#34;binarycrossentropy&#34;:
-                self.attr_loss = &#34;binarycrossentropy&#34;
+            elif preference == EnumLoss.BinaryCrossentropy:
                 self.loss = torch.nn.BCELoss()
-            elif preference == &#34;mse&#34;:
-                self.attr_loss = &#34;mse&#34;
+            elif preference == EnumLoss.MSE:
                 self.loss = torch.nn.MSELoss()
             else:
                 raise NotImplementedError(f&#34;{preference} has not been implemented&#34;)
 
-        elif usage_type == &#34;segmentation&#34;:
+        elif usage_type == EnumUsage.Segmentation:
             raise NotImplementedError()
         else:
             raise NotImplementedError(f&#34;{usage_type} has not been implemented&#34;)

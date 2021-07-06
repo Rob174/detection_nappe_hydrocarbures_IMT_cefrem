@@ -1,10 +1,10 @@
 import numpy as np
 from typing import Tuple
 
-from main.src.param_savers.BaseClass import BaseClass
+from main.src.data.Augmentation.Augmentations.AbstractAugmentation import AbstractAugmentation
 
 
-class Mirrors(BaseClass):
+class Mirrors(AbstractAugmentation):
     """Class computing random mirrors along a vertical or horizontal axis
     Usage:
 

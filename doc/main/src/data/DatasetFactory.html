@@ -27,115 +27,112 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from main.FolderInfos import FolderInfos
+from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
+from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.data.classification.ClassificationPatch1 import ClassificationPatch1
 from main.src.data.classification.ClassificationPatch2 import ClassificationPatch2
+from main.src.data.classification.enums import EnumClassificationDataset
+from main.src.data.enums import EnumUsage, EnumClasses
+from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
-import matplotlib.pyplot as plt
 import json
-import plotly.express as px
-import pandas as pd
 from main.src.param_savers.BaseClass import BaseClass
 import torch
-import time
+from typing import List, Tuple
 
 
-class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
+class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     &#34;&#34;&#34;Class managing the dataset creation and access with options of:
     - different dataset possible
     - different patch creator possible
 
     Args:
-        dataset_name: str, name of the dataset to build. Currently supported
-        - &#34;classificationpatch&#34;, dataset of classification on patches with original classes
-        - &#34;classificationpatch1&#34;, dataset of classification on patches with less classes than the original dataset
-        - &#34;classificationpatch2&#34;, dataset of classification on patches merging specified classes together to predict if there is something or not
-        usage_type: str,
-        - &#34;classification&#34;,  dataset to classify patches
-        - &#34;segmentation&#34;, dataset to segment an image
-        patch_creator: str for classification only, class to produce and manage patches:
-        - &#34;fixed_px&#34;: create the PatchCreator0 class which generate fixed px size patches
+        dataset_name: EnumClassificationDataset,
+        usage_type: EnumUsage,
+        patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the model
-        exclusion_policy: str, policy to exclude patches. See ClassificationPatch0
-        classes_to_use: str, classes names separated but commas to indicate the classes to use
-        balance: str, indicate which class to use to balance (or not) the dataset according to classes repartition (see ClassificationPatch)
+        exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [ClassificationPatch](./classification/ClassificationPatch.html)
+        exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
+        classes_to_use: Tuple[EnumClasses], the classes to use
+        balance: EnumBalance,
         margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
         augmentations_img: opt str, list of augmentations to apply seprated by commas
-        augmenter_img: opt str, name of the augmenter to use
+        augmenter_img: opt EnumAugmenter,
         augmentations_patch: opt str, list of augmentations to apply seprated by commas
-        augmenter_patch: opt str, name of the augmenter to use
+        augmenter_patch: opt EnumAugmenter,
+        augmentation_factor: int, the number of times that the source image is augmented
     &#34;&#34;&#34;
-    def __init__(self, dataset_name=&#34;classificationpatch&#34;, usage_type=&#34;classification&#34;, patch_creator=&#34;fixed_px&#34;,
-                 grid_size=1000, input_size=1000,exclusion_policy=&#34;marginmorethan_1000&#34;,classes_to_use=&#34;seep,spills&#34;,
-                 balance=&#34;nobalance&#34;,
-                 augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
-                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
+
+    def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
+                 usage_type: EnumUsage = EnumUsage.Classification,
+                 patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
+                 grid_size=1000, input_size=1000,
+                 exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,exclusion_policy_threshold:int=1000,
+                 classes_to_use: Tuple[EnumClasses]=(EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
+                 balance: EnumBalance = EnumBalance.NoBalance,
+                 augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentation_factor=1):
         self.attr_global_name = &#34;data&#34;
         with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;, &#34;r&#34;) as fp:
             dico_infos = json.load(fp)
-        if patch_creator == &#34;fixed_px&#34;:
+        if patch_creator == EnumPatchAlgorithm.FixedPx:
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
                                                      images_informations_preprocessed=dico_infos,
-                                                     exclusion_policy=exclusion_policy)
+                                                     exclusion_policy=exclusion_policy,
+                                                     exclusion_policy_threshold=exclusion_policy_threshold)
         else:
             raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
 
-        if usage_type == &#34;classification&#34;:
-            if dataset_name == &#34;classificationpatch&#34;:
+        if usage_type == EnumUsage.Classification:
+            if dataset_name == EnumClassificationDataset.ClassificationPatch:
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
                                                         balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
-            elif dataset_name == &#34;classificationpatch1&#34;:
+                                                        augmentations_img=augmentations_img,
+                                                        augmenter_img=augmenter_img,
+                                                        augmentations_patch=augmentations_patch,
+                                                        augmenter_patch=augmenter_patch,
+                                                        augmentation_factor=augmentation_factor)
+            elif dataset_name == EnumClassificationDataset.ClassificationPatch1:
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
-            elif dataset_name == &#34;classificationpatch2&#34;:
+                                                         augmentations_img=augmentations_img,
+                                                         augmenter_img=augmenter_img,
+                                                         augmentations_patch=augmentations_patch,
+                                                         augmenter_patch=augmenter_patch,
+                                                         augmentation_factor=augmentation_factor)
+            elif dataset_name == EnumClassificationDataset.ClassificationPatch2:
                 self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
+                                                         augmentations_img=augmentations_img,
+                                                         augmenter_img=augmenter_img,
+                                                         augmentations_patch=augmentations_patch,
+                                                         augmenter_patch=augmenter_patch,
+                                                         augmentation_factor=augmentation_factor)
 
-        elif usage_type == &#34;segmentation&#34;:
+        elif usage_type == EnumUsage.Segmentation:
             if dataset_name == &#34;sentinel1&#34;:
                 self.attr_dataset = DataSentinel1Segmentation()
         else:
             raise NotImplementedError()
-        self.attr_length_dataset = len(self.attr_dataset)
-    def getitem(self,id: int):
-        &#34;&#34;&#34;Magic method to get the input, output, and whether this sample is rejected or not of this id
 
-        Args:
-            id: int, global id of the item
-
-        Returns:
-            the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
-        &#34;&#34;&#34;
-        input, output, reject = self.attr_dataset.__getitem__(id)
-        return input, output, reject
-    def __getitem__(self, id: int):
-        return self.getitem(id)
-
-    def __len__(self):
-        return self.attr_dataset.__len__()
+    def __iter__(self, dataset):
+        return self.attr_dataset.__iter__(dataset)
 
 
 if __name__ == &#34;__main__&#34;:
     FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name=&#34;sentinel1&#34;, usage_type=&#34;classification&#34;, patch_creator=&#34;fixed_px&#34;,grid_size=1000, input_size=256)
-    length = len(dataset_factory)
-    print(f&#34;{length} items in this dataset&#34;)
-    for id in range(length):
-        input, output, reject = dataset_factory[id]
-        if id % int(length * 0.1) == 0:
-            print(f&#34;{id / length * 100:.2f} done&#34;)
-    dataset_factory.save_stats()
-    end = 0</code></pre>
+    dataset_factory = DatasetFactory(dataset_name=EnumClassificationDataset.ClassificationPatch,
+                                     usage_type=EnumUsage.Classification, patch_creator=EnumPatchAlgorithm.FixedPx,
+                                     grid_size=1000, input_size=256)
+
+    for input, output, transformation_matrix, name in dataset_factory:
+        print(&#34;done&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -149,7 +146,7 @@ if __name__ == &#34;__main__&#34;:
 <dl>
 <dt id="main.src.data.DatasetFactory.DatasetFactory"><code class="flex name class">
 <span>class <span class="ident">DatasetFactory</span></span>
-<span>(</span><span>dataset_name='classificationpatch', usage_type='classification', patch_creator='fixed_px', grid_size=1000, input_size=1000, exclusion_policy='marginmorethan_1000', classes_to_use='seep,spills', balance='nobalance', augmentations_img='none', augmenter_img='noaugmenter', augmentations_patch='none', augmenter_patch='noaugmenter')</span>
+<span>(</span><span>dataset_name: <a title="main.src.data.classification.enums.EnumClassificationDataset" href="classification/enums.html#main.src.data.classification.enums.EnumClassificationDataset">EnumClassificationDataset</a> = EnumClassificationDataset.ClassificationPatch, usage_type: <a title="main.src.data.enums.EnumUsage" href="enums.html#main.src.data.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, patch_creator: <a title="main.src.data.patch_creator.enums.EnumPatchAlgorithm" href="patch_creator/enums.html#main.src.data.patch_creator.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a> = EnumPatchAlgorithm.FixedPx, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the dataset creation and access with options of:
@@ -158,143 +155,120 @@ if __name__ == &#34;__main__&#34;:
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>dataset_name</code></strong></dt>
-<dd>str, name of the dataset to build. Currently supported</dd>
-</dl>
-<ul>
-<li>"classificationpatch", dataset of classification on patches with original classes</li>
-<li>"classificationpatch1", dataset of classification on patches with less classes than the original dataset</li>
-<li>
-<dl>
-<dt>"classificationpatch2", dataset of classification on patches merging specified classes together to predict if there is something or not</dt>
+<dd>EnumClassificationDataset,</dd>
 <dt><strong><code>usage_type</code></strong></dt>
-<dd>str,</dd>
-</dl>
-</li>
-<li>
-<p>"classification",
-dataset to classify patches</p>
-</li>
-<li>
-<dl>
-<dt>"segmentation", dataset to segment an image</dt>
+<dd>EnumUsage,</dd>
 <dt><strong><code>patch_creator</code></strong></dt>
-<dd>str for classification only, class to produce and manage patches:</dd>
-</dl>
-</li>
-<li>
-<dl>
-<dt>"fixed_px": create the PatchCreator0 class which generate fixed px size patches</dt>
+<dd>EnumPatchAlgorithm, for classification only</dd>
 <dt><strong><code>grid_size</code></strong></dt>
 <dd>int, classification only with fixed_px size. To specify the size of a patch</dd>
-</dl>
-</li>
-</ul>
-<dl>
 <dt><strong><code>input_size</code></strong></dt>
 <dd>int, size of the image given to the model</dd>
 <dt><strong><code>exclusion_policy</code></strong></dt>
-<dd>str, policy to exclude patches. See ClassificationPatch0</dd>
+<dd>EnumPatchExcludePolicy, policy to exclude patches. See <a href="./classification/ClassificationPatch.html">ClassificationPatch</a></dd>
+<dt><strong><code>exclusion_policy_threshold</code></strong></dt>
+<dd>int, parameter for EnumPatchExcludePolicy.MarginMoreThan</dd>
 <dt><strong><code>classes_to_use</code></strong></dt>
-<dd>str, classes names separated but commas to indicate the classes to use</dd>
+<dd>Tuple[EnumClasses], the classes to use</dd>
 <dt><strong><code>balance</code></strong></dt>
-<dd>str, indicate which class to use to balance (or not) the dataset according to classes repartition (see ClassificationPatch)</dd>
+<dd>EnumBalance,</dd>
 <dt><strong><code>margin</code></strong></dt>
 <dd>int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1</dd>
 <dt><strong><code>augmentations_img</code></strong></dt>
 <dd>opt str, list of augmentations to apply seprated by commas</dd>
 <dt><strong><code>augmenter_img</code></strong></dt>
-<dd>opt str, name of the augmenter to use</dd>
+<dd>opt EnumAugmenter,</dd>
 <dt><strong><code>augmentations_patch</code></strong></dt>
 <dd>opt str, list of augmentations to apply seprated by commas</dd>
 <dt><strong><code>augmenter_patch</code></strong></dt>
-<dd>opt str, name of the augmenter to use</dd>
+<dd>opt EnumAugmenter,</dd>
+<dt><strong><code>augmentation_factor</code></strong></dt>
+<dd>int, the number of times that the source image is augmented</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
+<pre><code class="python">class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     &#34;&#34;&#34;Class managing the dataset creation and access with options of:
     - different dataset possible
     - different patch creator possible
 
     Args:
-        dataset_name: str, name of the dataset to build. Currently supported
-        - &#34;classificationpatch&#34;, dataset of classification on patches with original classes
-        - &#34;classificationpatch1&#34;, dataset of classification on patches with less classes than the original dataset
-        - &#34;classificationpatch2&#34;, dataset of classification on patches merging specified classes together to predict if there is something or not
-        usage_type: str,
-        - &#34;classification&#34;,  dataset to classify patches
-        - &#34;segmentation&#34;, dataset to segment an image
-        patch_creator: str for classification only, class to produce and manage patches:
-        - &#34;fixed_px&#34;: create the PatchCreator0 class which generate fixed px size patches
+        dataset_name: EnumClassificationDataset,
+        usage_type: EnumUsage,
+        patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the model
-        exclusion_policy: str, policy to exclude patches. See ClassificationPatch0
-        classes_to_use: str, classes names separated but commas to indicate the classes to use
-        balance: str, indicate which class to use to balance (or not) the dataset according to classes repartition (see ClassificationPatch)
+        exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [ClassificationPatch](./classification/ClassificationPatch.html)
+        exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
+        classes_to_use: Tuple[EnumClasses], the classes to use
+        balance: EnumBalance,
         margin: int, additionnal parameter to balance classes, cf doc in ClassificationPatch or in BalanceClasses1
         augmentations_img: opt str, list of augmentations to apply seprated by commas
-        augmenter_img: opt str, name of the augmenter to use
+        augmenter_img: opt EnumAugmenter,
         augmentations_patch: opt str, list of augmentations to apply seprated by commas
-        augmenter_patch: opt str, name of the augmenter to use
+        augmenter_patch: opt EnumAugmenter,
+        augmentation_factor: int, the number of times that the source image is augmented
     &#34;&#34;&#34;
-    def __init__(self, dataset_name=&#34;classificationpatch&#34;, usage_type=&#34;classification&#34;, patch_creator=&#34;fixed_px&#34;,
-                 grid_size=1000, input_size=1000,exclusion_policy=&#34;marginmorethan_1000&#34;,classes_to_use=&#34;seep,spills&#34;,
-                 balance=&#34;nobalance&#34;,
-                 augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
-                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
+
+    def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
+                 usage_type: EnumUsage = EnumUsage.Classification,
+                 patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
+                 grid_size=1000, input_size=1000,
+                 exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,exclusion_policy_threshold:int=1000,
+                 classes_to_use: Tuple[EnumClasses]=(EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
+                 balance: EnumBalance = EnumBalance.NoBalance,
+                 augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentation_factor=1):
         self.attr_global_name = &#34;data&#34;
         with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;, &#34;r&#34;) as fp:
             dico_infos = json.load(fp)
-        if patch_creator == &#34;fixed_px&#34;:
+        if patch_creator == EnumPatchAlgorithm.FixedPx:
             self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
                                                      images_informations_preprocessed=dico_infos,
-                                                     exclusion_policy=exclusion_policy)
+                                                     exclusion_policy=exclusion_policy,
+                                                     exclusion_policy_threshold=exclusion_policy_threshold)
         else:
             raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
 
-        if usage_type == &#34;classification&#34;:
-            if dataset_name == &#34;classificationpatch&#34;:
+        if usage_type == EnumUsage.Classification:
+            if dataset_name == EnumClassificationDataset.ClassificationPatch:
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
                                                         balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
-            elif dataset_name == &#34;classificationpatch1&#34;:
+                                                        augmentations_img=augmentations_img,
+                                                        augmenter_img=augmenter_img,
+                                                        augmentations_patch=augmentations_patch,
+                                                        augmenter_patch=augmenter_patch,
+                                                        augmentation_factor=augmentation_factor)
+            elif dataset_name == EnumClassificationDataset.ClassificationPatch1:
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
-            elif dataset_name == &#34;classificationpatch2&#34;:
+                                                         augmentations_img=augmentations_img,
+                                                         augmenter_img=augmenter_img,
+                                                         augmentations_patch=augmentations_patch,
+                                                         augmenter_patch=augmenter_patch,
+                                                         augmentation_factor=augmentation_factor)
+            elif dataset_name == EnumClassificationDataset.ClassificationPatch2:
                 self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch)
+                                                         augmentations_img=augmentations_img,
+                                                         augmenter_img=augmenter_img,
+                                                         augmentations_patch=augmentations_patch,
+                                                         augmenter_patch=augmenter_patch,
+                                                         augmentation_factor=augmentation_factor)
 
-        elif usage_type == &#34;segmentation&#34;:
+        elif usage_type == EnumUsage.Segmentation:
             if dataset_name == &#34;sentinel1&#34;:
                 self.attr_dataset = DataSentinel1Segmentation()
         else:
             raise NotImplementedError()
-        self.attr_length_dataset = len(self.attr_dataset)
-    def getitem(self,id: int):
-        &#34;&#34;&#34;Magic method to get the input, output, and whether this sample is rejected or not of this id
 
-        Args:
-            id: int, global id of the item
-
-        Returns:
-            the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
-        &#34;&#34;&#34;
-        input, output, reject = self.attr_dataset.__getitem__(id)
-        return input, output, reject
-    def __getitem__(self, id: int):
-        return self.getitem(id)
-
-    def __len__(self):
-        return self.attr_dataset.__len__()</code></pre>
+    def __iter__(self, dataset):
+        return self.attr_dataset.__iter__(dataset)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -303,38 +277,6 @@ dataset to classify patches</p>
 <li>torch.utils.data.dataset.Dataset</li>
 <li>typing.Generic</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="main.src.data.DatasetFactory.DatasetFactory.getitem"><code class="name flex">
-<span>def <span class="ident">getitem</span></span>(<span>self, id: int)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Magic method to get the input, output, and whether this sample is rejected or not of this id</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>id</code></strong></dt>
-<dd>int, global id of the item</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getitem(self,id: int):
-    &#34;&#34;&#34;Magic method to get the input, output, and whether this sample is rejected or not of this id
-
-    Args:
-        id: int, global id of the item
-
-    Returns:
-        the tuple input, output, reject respectively 2 2d np.ndarray and one boolean indicating if the sample is rejected or not
-    &#34;&#34;&#34;
-    input, output, reject = self.attr_dataset.__getitem__(id)
-    return input, output, reject</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -354,9 +296,6 @@ dataset to classify patches</p>
 <ul>
 <li>
 <h4><code><a title="main.src.data.DatasetFactory.DatasetFactory" href="#main.src.data.DatasetFactory.DatasetFactory">DatasetFactory</a></code></h4>
-<ul class="">
-<li><code><a title="main.src.data.DatasetFactory.DatasetFactory.getitem" href="#main.src.data.DatasetFactory.DatasetFactory.getitem">getitem</a></code></li>
-</ul>
 </li>
 </ul>
 </li>

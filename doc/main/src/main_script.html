@@ -32,6 +32,9 @@
 import json
 import subprocess
 import os, sys
+
+from main.src.enums import EnumGitCheck
+
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src&#34;)
@@ -48,11 +51,6 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
-import numpy as np
-
-import torch
-from rich.progress import Progress, TextColumn, BarColumn, DownloadColumn, TimeElapsedColumn, TimeRemainingColumn
-from git import Repo
 
 if __name__ == &#34;__main__&#34;:
     FolderInfos.init()
@@ -62,7 +60,7 @@ if __name__ == &#34;__main__&#34;:
     arguments = Parser0()()
     saver[&#34;commit&#34;] = subprocess.check_output([&#39;git&#39;, &#39;rev-parse&#39;, &#39;HEAD&#39;]).decode(&#34;utf-8&#34;).strip()
     changes = subprocess.check_output([&#39;git&#39;, &#39;diff&#39;, &#39;--name-only&#39;,&#34;--&#34;,&#34;*.py&#34;]).decode(&#34;ascii&#34;).split(&#34;\n&#34;)[:-1]
-    if arguments.no_security != &#34;true&#34; and len(changes):
+    if arguments.no_security == EnumGitCheck.GITCHECK and len(changes):
         changes_str = &#34;\n&#34;.join(list(map(lambda x:&#39;\t- &#39;+x,changes)))
         input(f&#34;There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?&#34;)
     dataset = DatasetFactory(dataset_name=arguments.dataset,
@@ -71,12 +69,15 @@ if __name__ == &#34;__main__&#34;:
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
+                             exclusion_policy_threshold = arguments.patch_exclude_policy_threshold,
                              classes_to_use=arguments.classes,
                              balance=arguments.balance,
                              augmenter_img=arguments.augmenter_img,
                              augmentations_img=arguments.augmentations_img,
                              augmenter_patch=arguments.augmenter_patch,
-                             augmentations_patch=arguments.augmentations_patch)
+                             augmentations_patch=arguments.augmentations_patch,
+                             augmentation_factor=arguments.augmentation_factor
+                             )
     saver[&#34;date&#34;] = FolderInfos.id
     saver(dataset)
 

@@ -26,32 +26,43 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from main.src.data.TwoWayDict import TwoWayDict, Way
+<pre><code class="python">from typing import Tuple
+
+from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
+from main.src.data.TwoWayDict import TwoWayDict, Way
+from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
+from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 import numpy as np
 
 
 class ClassificationPatch2(ClassificationPatch):
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
-                 classes_to_use=&#34;spill,seep&#34;, balance=&#34;nobalance&#34;,margin=None,
-                 augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
-                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
-        &#34;&#34;&#34;Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
+    &#34;&#34;&#34;Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
 
-        Args:
-            patch_creator: the object of PatchCreator0 class managing patches
-            input_size: the size of the image provided as input to the model ⚠️
-            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
-            classes_to_use: indicates the classes to use in the final classification label
-            balance: str enum {nobalance,balance} indicating the class used to balance images
-            augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
-            augmenter_img: opt str, name of the augmenter to use on source image
-            augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
-            augmenter_patch: opt str, name of the augmenter to use on patches
-        &#34;&#34;&#34;
+    Args:
+        patch_creator: the object of PatchCreator0 class managing patches
+        input_size: the size of the image provided as input to the model ⚠️
+        limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+        classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
+        balance: EnumBalance indicating the class used to balance images
+        augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
+        augmenter_img: EnumAugmenter, name of the augmenter to use on source image
+        augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
+        augmenter_patch: EnumAugmenter, name of the augmenter to use on patches
+    &#34;&#34;&#34;
+    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
+                 classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
+                 balance: EnumBalance = EnumBalance.NoBalance,
+                 augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentation_factor: int = 100,
+                 tr_percent=0.7,
+                 margin=None):
+
         super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,
-                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch,
+                                                   augmentation_factor=augmentation_factor,tr_percent=tr_percent)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
@@ -59,10 +70,10 @@ class ClassificationPatch2(ClassificationPatch):
         lvalue = []
         lname = []
         # merge classes in the dict
-        for i, name in enumerate(classes_to_use.split(&#34;,&#34;)):
+        for i, name in enumerate(classes_to_use):
             lkey.append(str(self.attr_class_mapping[name]))
             lvalue.append(str(i))
-            lname.append(name)
+            lname.append(name.value)
         tmp_mapping[&#34;|&#34;.join(lkey), Way.ORIGINAL_WAY] = &#34;|&#34;.join(lname),&#34;|&#34;.join(lvalue)
         self.attr_class_mapping_merged = tmp_mapping
         self.attr_global_name = &#34;dataset&#34;
@@ -102,11 +113,10 @@ class ClassificationPatch2(ClassificationPatch):
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch2.ClassificationPatch2"><code class="flex name class">
 <span>class <span class="ident">ClassificationPatch2</span></span>
-<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use='spill,seep', balance='nobalance', margin=None, augmentations_img='none', augmenter_img='noaugmenter', augmentations_patch='none', augmenter_patch='noaugmenter')</span>
+<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="../enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="../balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, tr_percent=0.7, margin=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
-filteer them.</p>
+<div class="desc"><p>Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>patch_creator</code></strong></dt>
@@ -115,63 +125,57 @@ filteer them.</p>
 <dd>the size of the image provided as input to the model ⚠️</dd>
 <dt><strong><code>limit_num_images</code></strong></dt>
 <dd>limit the number of image in the dataset per epoch (before filtering)</dd>
+<dt><strong><code>classes_to_use</code></strong></dt>
+<dd>Tuple[EnumClasses], indicates the classes to use in the final classification label</dd>
 <dt><strong><code>balance</code></strong></dt>
-<dd>str enum {nobalance,balance} indicating the class used to balance images</dd>
+<dd>EnumBalance indicating the class used to balance images</dd>
 <dt><strong><code>augmentations_img</code></strong></dt>
 <dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
 <dt><strong><code>augmenter_img</code></strong></dt>
-<dd>opt str, name of the augmenter to use on source image</dd>
+<dd>EnumAugmenter, name of the augmenter to use on source image</dd>
 <dt><strong><code>augmentations_patch</code></strong></dt>
 <dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
 <dt><strong><code>augmenter_patch</code></strong></dt>
-<dd>opt str, name of the augmenter to use on patches</dd>
+<dd>EnumAugmenter, name of the augmenter to use on patches</dd>
 </dl>
-<p>Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not</p>
+<p>Class giving access and managing the original dataset stored in the hdf5 and json files</p>
 <h2 id="args_1">Args</h2>
 <dl>
-<dt><strong><code>patch_creator</code></strong></dt>
-<dd>the object of PatchCreator0 class managing patches</dd>
-<dt><strong><code>input_size</code></strong></dt>
-<dd>the size of the image provided as input to the model ⚠️</dd>
 <dt><strong><code>limit_num_images</code></strong></dt>
 <dd>limit the number of image in the dataset per epoch (before filtering)</dd>
-<dt><strong><code>classes_to_use</code></strong></dt>
-<dd>indicates the classes to use in the final classification label</dd>
-<dt><strong><code>balance</code></strong></dt>
-<dd>str enum {nobalance,balance} indicating the class used to balance images</dd>
-<dt><strong><code>augmentations_img</code></strong></dt>
-<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
-<dt><strong><code>augmenter_img</code></strong></dt>
-<dd>opt str, name of the augmenter to use on source image</dd>
-<dt><strong><code>augmentations_patch</code></strong></dt>
-<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
-<dt><strong><code>augmenter_patch</code></strong></dt>
-<dd>opt str, name of the augmenter to use on patches</dd>
+<dt><strong><code>input_size</code></strong></dt>
+<dd>the size of the image provided as input to the model ⚠️</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ClassificationPatch2(ClassificationPatch):
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
-                 classes_to_use=&#34;spill,seep&#34;, balance=&#34;nobalance&#34;,margin=None,
-                 augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
-                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
-        &#34;&#34;&#34;Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
+    &#34;&#34;&#34;Creates and manage patches adding the possibility to merge a group of classes as one class telling there is something or not
 
-        Args:
-            patch_creator: the object of PatchCreator0 class managing patches
-            input_size: the size of the image provided as input to the model ⚠️
-            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
-            classes_to_use: indicates the classes to use in the final classification label
-            balance: str enum {nobalance,balance} indicating the class used to balance images
-            augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
-            augmenter_img: opt str, name of the augmenter to use on source image
-            augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
-            augmenter_patch: opt str, name of the augmenter to use on patches
-        &#34;&#34;&#34;
+    Args:
+        patch_creator: the object of PatchCreator0 class managing patches
+        input_size: the size of the image provided as input to the model ⚠️
+        limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+        classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
+        balance: EnumBalance indicating the class used to balance images
+        augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
+        augmenter_img: EnumAugmenter, name of the augmenter to use on source image
+        augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
+        augmenter_patch: EnumAugmenter, name of the augmenter to use on patches
+    &#34;&#34;&#34;
+    def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
+                 classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
+                 balance: EnumBalance = EnumBalance.NoBalance,
+                 augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentation_factor: int = 100,
+                 tr_percent=0.7,
+                 margin=None):
+
         super(ClassificationPatch2, self).__init__(patch_creator, input_size, limit_num_images,balance,
-                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch,
+                                                   augmentation_factor=augmentation_factor,tr_percent=tr_percent)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
@@ -179,10 +183,10 @@ filteer them.</p>
         lvalue = []
         lname = []
         # merge classes in the dict
-        for i, name in enumerate(classes_to_use.split(&#34;,&#34;)):
+        for i, name in enumerate(classes_to_use):
             lkey.append(str(self.attr_class_mapping[name]))
             lvalue.append(str(i))
-            lname.append(name)
+            lname.append(name.value)
         tmp_mapping[&#34;|&#34;.join(lkey), Way.ORIGINAL_WAY] = &#34;|&#34;.join(lname),&#34;|&#34;.join(lvalue)
         self.attr_class_mapping_merged = tmp_mapping
         self.attr_global_name = &#34;dataset&#34;
@@ -269,9 +273,11 @@ filteer them.</p>
 <li><code><b><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationPatch</a></b></code>:
 <ul class="hlist">
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.close" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close">close</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items">get_all_items</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step">generate_item_step_by_step</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once">generate_item_with_augmentation_at_once</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items">get_all_items</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch">get_geographic_coords_of_patch</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem">getitem</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem">getitem</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image">make_patches_of_image</a></code></li>
 </ul>
 </li>

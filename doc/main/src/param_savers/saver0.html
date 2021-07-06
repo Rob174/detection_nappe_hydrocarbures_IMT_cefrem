@@ -57,6 +57,8 @@ class Saver0:
             the value of the attribute (if it is a simple value) or a dict of values
 
         &#34;&#34;&#34;
+        if isinstance(object,list) and (len(object) &gt;0 and isinstance(object[0],BaseClass)):
+            return [self.recursive_dict(o) for o in object]
         if isinstance(object,BaseClass) is False:
             return object
         else:
@@ -169,6 +171,8 @@ if an object has an attr_ attribute and this attribute is a class inherited from
             the value of the attribute (if it is a simple value) or a dict of values
 
         &#34;&#34;&#34;
+        if isinstance(object,list) and (len(object) &gt;0 and isinstance(object[0],BaseClass)):
+            return [self.recursive_dict(o) for o in object]
         if isinstance(object,BaseClass) is False:
             return object
         else:
@@ -277,6 +281,8 @@ it put all attr_&hellip; attributes in a dict by recursively calling recursive_d
         the value of the attribute (if it is a simple value) or a dict of values
 
     &#34;&#34;&#34;
+    if isinstance(object,list) and (len(object) &gt;0 and isinstance(object[0],BaseClass)):
+        return [self.recursive_dict(o) for o in object]
     if isinstance(object,BaseClass) is False:
         return object
     else:

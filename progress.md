@@ -162,6 +162,13 @@ As no parameters produces better performances, we will investigate:
     - ✔️ profiling to check bottlenecks
 - ⏲️ Create a new hdf5 file with balanced augmented dataset of fixed patches ready to use
 
+## 05-07-2021
+- Diapo 
+
+## 06-07-2021
+- Diapo
+- In parallel we clone another time the repo to continue to work on the code
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
@@ -170,5 +177,7 @@ Priorities 1️⃣: high priority ; 9️⃣low priority
 
 - Training to launch:
   - unfreeze all layers of the pretrained model
-- 1️⃣ Optimize rotation algorithm for big images with inverse transformation
-- 2️⃣ Create a new hdf5 file with balanced augmented dataset of fixed patches ready to use
+- Use composition not inheritance
+- Support multiple functions in json extract_data
+- Get a patch for diapo with not only other category
+- Question : convert predicted annotated image back to raster ?

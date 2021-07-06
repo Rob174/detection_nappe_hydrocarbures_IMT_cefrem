@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import torch.optim as optim
 
+from main.src.models.enums import EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -36,18 +37,16 @@ class OptimizersFactory(BaseClass):
 
     Args:
         model: model to optimize
-        name: str enum, optimizer to use. Currently supported:
-        - &#34;adam&#34;
-        - &#34;sgd&#34;
+        name: str EnumOptimizer, optimizer to use.
 
         params: other parameters for the optimizer
     &#34;&#34;&#34;
-    def __init__(self,model,name=&#34;adam&#34;,**params):
+    def __init__(self,model,name: EnumOptimizer=EnumOptimizer.Adam,**params):
         self.attr_name = name
-        if name == &#34;adam&#34;:
+        if name == EnumOptimizer.Adam:
             self.attr_params = {k:v for k,v in params.items() if k in [&#34;lr&#34;,&#34;eps&#34;]}
             self.optimizer = optim.Adam(model.parameters(),lr=params[&#34;lr&#34;],eps=params[&#34;eps&#34;])
-        elif name == &#34;sgd&#34;:
+        elif name == EnumOptimizer.SGD:
             self.attr_params = {k:v for k,v in params.items() if k in [&#34;lr&#34;]}
             self.optimizer = optim.SGD(model.parameters(),lr=params[&#34;lr&#34;])
         else:
@@ -70,7 +69,7 @@ class OptimizersFactory(BaseClass):
 <dl>
 <dt id="main.src.training.optimizers_factory.OptimizersFactory"><code class="flex name class">
 <span>class <span class="ident">OptimizersFactory</span></span>
-<span>(</span><span>model, name='adam', **params)</span>
+<span>(</span><span>model, name: <a title="main.src.models.enums.EnumOptimizer" href="../models/enums.html#main.src.models.enums.EnumOptimizer">EnumOptimizer</a> = EnumOptimizer.Adam, **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the optimizers</p>
@@ -79,13 +78,7 @@ class OptimizersFactory(BaseClass):
 <dt><strong><code>model</code></strong></dt>
 <dd>model to optimize</dd>
 <dt><strong><code>name</code></strong></dt>
-<dd>str enum, optimizer to use. Currently supported:</dd>
-</dl>
-<ul>
-<li>"adam"</li>
-<li>"sgd"</li>
-</ul>
-<dl>
+<dd>str EnumOptimizer, optimizer to use.</dd>
 <dt><strong><code>params</code></strong></dt>
 <dd>other parameters for the optimizer</dd>
 </dl></div>
@@ -98,18 +91,16 @@ class OptimizersFactory(BaseClass):
 
     Args:
         model: model to optimize
-        name: str enum, optimizer to use. Currently supported:
-        - &#34;adam&#34;
-        - &#34;sgd&#34;
+        name: str EnumOptimizer, optimizer to use.
 
         params: other parameters for the optimizer
     &#34;&#34;&#34;
-    def __init__(self,model,name=&#34;adam&#34;,**params):
+    def __init__(self,model,name: EnumOptimizer=EnumOptimizer.Adam,**params):
         self.attr_name = name
-        if name == &#34;adam&#34;:
+        if name == EnumOptimizer.Adam:
             self.attr_params = {k:v for k,v in params.items() if k in [&#34;lr&#34;,&#34;eps&#34;]}
             self.optimizer = optim.Adam(model.parameters(),lr=params[&#34;lr&#34;],eps=params[&#34;eps&#34;])
-        elif name == &#34;sgd&#34;:
+        elif name == EnumOptimizer.SGD:
             self.attr_params = {k:v for k,v in params.items() if k in [&#34;lr&#34;]}
             self.optimizer = optim.SGD(model.parameters(),lr=params[&#34;lr&#34;])
         else:

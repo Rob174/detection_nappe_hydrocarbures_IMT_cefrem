@@ -7,8 +7,10 @@ from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.TwoWayDict import  Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
+from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
@@ -25,17 +27,17 @@ class ClassificationPatch(DataSentinel1Segmentation):
         patch_creator: the object of PatchCreator0 class managing patches
         input_size: the size of the image provided as input to the model ⚠️
         limit_num_images: limit the number of image in the dataset per epoch (before filtering)
-        balance: str enum {nobalance,balance} indicating the class used to balance images
+        balance: EnumBalance indicating the class used to balance images
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
-        augmenter_img: opt str, name of the augmenter to use on source image
+        augmenter_img: opt EnumAugmenter, name of the augmenter to use on source image
         augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
-        augmenter_patch: opt str, name of the augmenter to use on patches
+        augmenter_patch: opt EnumAugmenter, name of the augmenter to use on patches
         augmentation_factor: the number of replicas of the original dataset to do
     """
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
-                 limit_num_images: int = None, balance="nobalance",
-                 augmentations_img="none",augmenter_img="noaugmenter",
-                 augmentations_patch="none",augmenter_patch="noaugmenter",
+                 limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance    ,
+                 augmentations_img="none",augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_patch="none",augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int=100,
                  tr_percent=0.7):
         self.attr_name = self.__class__.__name__ # save the name of the class used for reproductibility purposes
@@ -48,16 +50,16 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.tr_keys = list(self.images.keys())[:int(len(self.images)*tr_percent)]
         self.valid_keys = list(self.images.keys())[int(len(self.images)*tr_percent):]
         self.attr_global_name = "dataset"
-        if balance == "nobalance":
+        if balance == EnumBalance.BalanceClasses1:
             self.attr_balance = NoBalance()
-        elif balance == "balanceclasses1":
+        elif balance == EnumBalance.NoBalance:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
             self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping["other"])
         if augmentations_img != "none":
-            if augmenter_img == "augmenter0":
+            if augmenter_img == EnumAugmenter.Augmenter0:
                 self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
                 self.generator = self.generate_item_step_by_step
-            elif augmenter_img == "augmenter1":
+            elif augmenter_img == EnumAugmenter.Augmenter1:
                 self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
                                                      patch_size_before_final_resize=
                                                      self.patch_creator.attr_grid_size_px,
@@ -72,7 +74,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             self.generator = self.generate_item_step_by_step
             self.attr_img_augmenter = NoAugmenter()
         if augmentations_patch != "none":
-            if augmenter_patch == "augmenter0":
+            if augmenter_patch == EnumAugmenter.Augmenter0:
                 self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmentations_patch)
             else:
                 raise NotImplementedError(f"{augmenter_patch} is not implemented")

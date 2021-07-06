@@ -32,6 +32,7 @@ from typing import Tuple
 import numpy as np
 
 from main.FolderInfos import FolderInfos
+from main.src.data.patch_creator.enums import EnumPatchExcludePolicy
 from main.test.test_images import Test_images
 from main.src.param_savers.BaseClass import BaseClass
 import time
@@ -43,10 +44,12 @@ class Patch_creator0(BaseClass):
         grid_size_px: size of the patch extracted from the original image
         images_informations_preprocessed: dict from the json file containing images dataset informations
         test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
-        exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
-            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+        exclusion_policy: EnumPatchExcludePolicy, policy used to exclude patches based on their apearence.
+        exclusion_policy_threshold: for EnumPatchExcludePolicy.MarginMoreThan number of pixels at 0 exactly after which a patch is excluded
     &#34;&#34;&#34;
-    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False,
+                 exclusion_policy: EnumPatchExcludePolicy = EnumPatchExcludePolicy.MarginMoreThan,
+                 exclusion_policy_threshold: int = 1000):
         self.attr_description = &#34;Create a grid by taking a square of a constant pixel size.&#34;+\
                                 &#34; It does not consider the resolution of each image.&#34;+\
                                 &#34; It rejects a patch if it is not fully included in the original image&#34;
@@ -56,6 +59,7 @@ class Patch_creator0(BaseClass):
         self.images_informations_preprocessed: dict = images_informations_preprocessed
         self.attr_resolution_used = {&#34;x&#34;:{}, &#34;y&#34;:{}} # dict of dict to count the number of uniq resolution seen
         self.attr_exclusion_policy = exclusion_policy
+        self.attr_exclusion_policy_threshold = exclusion_policy_threshold
         self.reject = {}
         self.attr_num_rejected = 0
         self.attr_name = self.__class__.__name__
@@ -111,11 +115,16 @@ class Patch_creator0(BaseClass):
         patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
         # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
         # with x the threshold provided in the attr_exclusion_policy after the &#34;_&#34;
-        if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+        if Patch_creator0.check_reject(patch,self.attr_exclusion_policy_threshold) is True : # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
         else:
             return patch, False
+    @staticmethod
+    def check_reject(patch: np.ndarray,threshold_px: int):
+        if len(patch[patch == 0]) &gt; threshold_px:  # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+            return True
+        return False
     def get_position_patch(self,patch_id: int, input_shape):
         &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
 
@@ -190,7 +199,7 @@ if __name__ == &#34;__main__&#34;:
 <dl>
 <dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0"><code class="flex name class">
 <span>class <span class="ident">Patch_creator0</span></span>
-<span>(</span><span>grid_size_px, images_informations_preprocessed, test=False, exclusion_policy='marginmorethan_1000')</span>
+<span>(</span><span>grid_size_px, images_informations_preprocessed, test=False, exclusion_policy: <a title="main.src.data.patch_creator.enums.EnumPatchExcludePolicy" href="enums.html#main.src.data.patch_creator.enums.EnumPatchExcludePolicy">EnumPatchExcludePolicy</a> = EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class creating and managing patches</p>
@@ -203,8 +212,9 @@ if __name__ == &#34;__main__&#34;:
 <dt><strong><code>test</code></strong></dt>
 <dd>bool, indicate if we need to keep track of the coordinates (in px) of the patch computed</dd>
 <dt><strong><code>exclusion_policy</code></strong></dt>
-<dd>str, policy used to exclude patches based on their apearence. Currently supported
-- marginmorethan_..int.. : exclude a patch if it contains more than &hellip; pixels having the margin value (= 0 exactly)</dd>
+<dd>EnumPatchExcludePolicy, policy used to exclude patches based on their apearence.</dd>
+<dt><strong><code>exclusion_policy_threshold</code></strong></dt>
+<dd>for EnumPatchExcludePolicy.MarginMoreThan number of pixels at 0 exactly after which a patch is excluded</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -217,10 +227,12 @@ if __name__ == &#34;__main__&#34;:
         grid_size_px: size of the patch extracted from the original image
         images_informations_preprocessed: dict from the json file containing images dataset informations
         test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
-        exclusion_policy: str, policy used to exclude patches based on their apearence. Currently supported
-            - marginmorethan_..int.. : exclude a patch if it contains more than ... pixels having the margin value (= 0 exactly)
+        exclusion_policy: EnumPatchExcludePolicy, policy used to exclude patches based on their apearence.
+        exclusion_policy_threshold: for EnumPatchExcludePolicy.MarginMoreThan number of pixels at 0 exactly after which a patch is excluded
     &#34;&#34;&#34;
-    def __init__(self, grid_size_px, images_informations_preprocessed, test=False, exclusion_policy=&#34;marginmorethan_1000&#34;):
+    def __init__(self, grid_size_px, images_informations_preprocessed, test=False,
+                 exclusion_policy: EnumPatchExcludePolicy = EnumPatchExcludePolicy.MarginMoreThan,
+                 exclusion_policy_threshold: int = 1000):
         self.attr_description = &#34;Create a grid by taking a square of a constant pixel size.&#34;+\
                                 &#34; It does not consider the resolution of each image.&#34;+\
                                 &#34; It rejects a patch if it is not fully included in the original image&#34;
@@ -230,6 +242,7 @@ if __name__ == &#34;__main__&#34;:
         self.images_informations_preprocessed: dict = images_informations_preprocessed
         self.attr_resolution_used = {&#34;x&#34;:{}, &#34;y&#34;:{}} # dict of dict to count the number of uniq resolution seen
         self.attr_exclusion_policy = exclusion_policy
+        self.attr_exclusion_policy_threshold = exclusion_policy_threshold
         self.reject = {}
         self.attr_num_rejected = 0
         self.attr_name = self.__class__.__name__
@@ -285,11 +298,16 @@ if __name__ == &#34;__main__&#34;:
         patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
         # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
         # with x the threshold provided in the attr_exclusion_policy after the &#34;_&#34;
-        if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+        if Patch_creator0.check_reject(patch,self.attr_exclusion_policy_threshold) is True : # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             self.attr_num_rejected += 1
             return patch, True
         else:
             return patch, False
+    @staticmethod
+    def check_reject(patch: np.ndarray,threshold_px: int):
+        if len(patch[patch == 0]) &gt; threshold_px:  # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+            return True
+        return False
     def get_position_patch(self,patch_id: int, input_shape):
         &#34;&#34;&#34;Compute the position of the patch with respect to the parameters
 
@@ -314,6 +332,25 @@ if __name__ == &#34;__main__&#34;:
 <ul class="hlist">
 <li><a title="main.src.param_savers.BaseClass.BaseClass" href="../../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.check_reject"><code class="name flex">
+<span>def <span class="ident">check_reject</span></span>(<span>patch: numpy.ndarray, threshold_px: int)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def check_reject(patch: np.ndarray,threshold_px: int):
+    if len(patch[patch == 0]) &gt; threshold_px:  # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+        return True
+    return False</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="main.src.data.patch_creator.patch_creator0.Patch_creator0.call"><code class="name flex">
@@ -377,7 +414,7 @@ if __name__ == &#34;__main__&#34;:
     patch = image[pos_x:pos_x+self.attr_grid_size_px,pos_y:pos_y+self.attr_grid_size_px] # btwn 8 ms and 26 ms
     # if there are more than x pixels of the patch with the corner value (=0 exactly in float) reject the patch
     # with x the threshold provided in the attr_exclusion_policy after the &#34;_&#34;
-    if len(patch[patch == 0]) &gt; int(self.attr_exclusion_policy.split(&#34;_&#34;)[1]): # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+    if Patch_creator0.check_reject(patch,self.attr_exclusion_policy_threshold) is True : # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
         self.attr_num_rejected += 1
         return patch, True
     else:
@@ -476,6 +513,7 @@ if __name__ == &#34;__main__&#34;:
 <h4><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a></code></h4>
 <ul class="">
 <li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.call" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.call">call</a></code></li>
+<li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.check_reject" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.check_reject">check_reject</a></code></li>
 <li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.get_position_patch">get_position_patch</a></code></li>
 <li><code><a title="main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches" href="#main.src.data.patch_creator.patch_creator0.Patch_creator0.num_available_patches">num_available_patches</a></code></li>
 </ul>

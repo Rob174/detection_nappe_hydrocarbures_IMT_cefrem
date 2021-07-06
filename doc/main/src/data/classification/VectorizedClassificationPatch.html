@@ -66,6 +66,7 @@ class VectorizzedClassificationPatch(ClassificationPatch):
             - rejects:  bool, indicate if we need to reject this sample
 
         &#34;&#34;&#34;
+        raise Exception(&#34;Not adapted&#34;)
         all_items = self.get_all_items()
         dico_item_patches = {}
         for index_orig, i in enumerate(id):
@@ -182,6 +183,7 @@ filter them.</p>
             - rejects:  bool, indicate if we need to reject this sample
 
         &#34;&#34;&#34;
+        raise Exception(&#34;Not adapted&#34;)
         all_items = self.get_all_items()
         dico_item_patches = {}
         for index_orig, i in enumerate(id):
@@ -260,6 +262,7 @@ bool, indicate if we need to reject this sample</li>
         - rejects:  bool, indicate if we need to reject this sample
 
     &#34;&#34;&#34;
+    raise Exception(&#34;Not adapted&#34;)
     all_items = self.get_all_items()
     dico_item_patches = {}
     for index_orig, i in enumerate(id):
@@ -297,7 +300,9 @@ bool, indicate if we need to reject this sample</li>
 <li><code><b><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationPatch</a></b></code>:
 <ul class="hlist">
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.close" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close">close</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items">get_all_items</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step">generate_item_step_by_step</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once">generate_item_with_augmentation_at_once</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items">get_all_items</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch">get_geographic_coords_of_patch</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label">make_classification_label</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image">make_patches_of_image</a></code></li>
