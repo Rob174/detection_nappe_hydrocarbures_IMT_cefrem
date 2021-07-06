@@ -65,8 +65,8 @@ class ClassificationCache(BaseClass):
                    item: str name of the source image
         """
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
-        with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5","r") as images_cache:
-            with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as annotations_cache:
+        with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5","r") as annotations_cache:
+            with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as images_cache:
                 random.shuffle(images_available)
                 for id in images_available:
                     image = np.array(images_cache[id])
