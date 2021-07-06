@@ -18,7 +18,7 @@ import torch
 import time
 
 
-class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
+class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     """Class managing the dataset creation and access with options of:
     - different dataset possible
     - different patch creator possible
@@ -39,12 +39,14 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
         augmenter_patch: opt EnumAugmenter,
         augmentation_factor: int, the number of times that the source image is augmented
     """
-    def __init__(self, dataset_name: EnumClassificationDataset=EnumClassificationDataset.ClassificationPatch, usage_type: EnumUsage=EnumUsage.Classification,
-                 patch_creator: EnumPatchAlgorithm=EnumPatchAlgorithm.FixedPx,
-                 grid_size=1000, input_size=1000,exclusion_policy="marginmorethan_1000",classes_to_use="seep,spills",
-                 balance: EnumBalance=EnumBalance.NoBalance,
-                 augmentations_img="none",augmenter_img:EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch="none",augmenter_patch:EnumAugmenter = EnumAugmenter.NoAugmenter,
+
+    def __init__(self, dataset_name: EnumClassificationDataset = EnumClassificationDataset.ClassificationPatch,
+                 usage_type: EnumUsage = EnumUsage.Classification,
+                 patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
+                 grid_size=1000, input_size=1000, exclusion_policy="marginmorethan_1000", classes_to_use="seep,spills",
+                 balance: EnumBalance = EnumBalance.NoBalance,
+                 augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1):
         self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
@@ -60,32 +62,38 @@ class DatasetFactory(BaseClass,torch.utils.data.IterableDataset):
             if dataset_name == EnumClassificationDataset.ClassificationPatch:
                 self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
                                                         balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch,
+                                                        augmentations_img=augmentations_img,
+                                                        augmenter_img=augmenter_img,
+                                                        augmentations_patch=augmentations_patch,
+                                                        augmenter_patch=augmenter_patch,
                                                         augmentation_factor=augmentation_factor)
             elif dataset_name == EnumClassificationDataset.ClassificationPatch1:
                 self.attr_dataset = ClassificationPatch1(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch,
-                                                        augmentation_factor=augmentation_factor)
+                                                         augmentations_img=augmentations_img,
+                                                         augmenter_img=augmenter_img,
+                                                         augmentations_patch=augmentations_patch,
+                                                         augmenter_patch=augmenter_patch,
+                                                         augmentation_factor=augmentation_factor)
             elif dataset_name == EnumClassificationDataset.ClassificationPatch2:
                 self.attr_dataset = ClassificationPatch2(self.attr_patch_creator, input_size=input_size,
                                                          classes_to_use=classes_to_use,
                                                          balance=balance,
-                                                         augmentations_img=augmentations_img,augmenter_img=augmenter_img,
-                                                         augmentations_patch=augmentations_patch,augmenter_patch=augmenter_patch,
-                                                        augmentation_factor=augmentation_factor)
+                                                         augmentations_img=augmentations_img,
+                                                         augmenter_img=augmenter_img,
+                                                         augmentations_patch=augmentations_patch,
+                                                         augmenter_patch=augmenter_patch,
+                                                         augmentation_factor=augmentation_factor)
 
         elif usage_type == EnumUsage.Segmentation:
             if dataset_name == "sentinel1":
                 self.attr_dataset = DataSentinel1Segmentation()
         else:
             raise NotImplementedError()
-    def __iter__(self,dataset):
-        return self.attr_dataset.__iter__(dataset)
 
+    def __iter__(self, dataset):
+        return self.attr_dataset.__iter__(dataset)
 
 
 if __name__ == "__main__":
@@ -95,4 +103,4 @@ if __name__ == "__main__":
                                      grid_size=1000, input_size=256)
 
     for input, output, transformation_matrix, name in dataset_factory:
-         print("done")
+        print("done")

@@ -48,11 +48,14 @@ class ClassificationPatch1(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use=&#34;spill,seep&#34;, balance=&#34;nobalance&#34;,
                  augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
-                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
+                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;,
+                 augmentation_factor: int=100,
+                 tr_percent=0.7):
 
         self.attr_name = self.__class__.__name__
         super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,
-                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch,
+                                                   augmentation_factor,tr_percent=tr_percent)
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
         self.attr_classes_to_use = classes_to_use
@@ -95,7 +98,7 @@ class ClassificationPatch1(ClassificationPatch):
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch1.ClassificationPatch1"><code class="flex name class">
 <span>class <span class="ident">ClassificationPatch1</span></span>
-<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use='spill,seep', balance='nobalance', augmentations_img='none', augmenter_img='noaugmenter', augmentations_patch='none', augmenter_patch='noaugmenter')</span>
+<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, classes_to_use='spill,seep', balance='nobalance', augmentations_img='none', augmenter_img='noaugmenter', augmentations_patch='none', augmenter_patch='noaugmenter', augmentation_factor: int = 100, tr_percent=0.7)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create and manage patches adding the possibility to use less classes than originally provided</p>
@@ -149,11 +152,14 @@ class ClassificationPatch1(ClassificationPatch):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None, limit_num_images: int = None,
                  classes_to_use=&#34;spill,seep&#34;, balance=&#34;nobalance&#34;,
                  augmentations_img=&#34;none&#34;,augmenter_img=&#34;noaugmenter&#34;,
-                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;):
+                 augmentations_patch=&#34;none&#34;,augmenter_patch=&#34;noaugmenter&#34;,
+                 augmentation_factor: int=100,
+                 tr_percent=0.7):
 
         self.attr_name = self.__class__.__name__
         super(ClassificationPatch1, self).__init__(patch_creator,input_size,limit_num_images,balance,
-                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch)
+                                                   augmentations_img,augmenter_img,augmentations_patch,augmenter_patch,
+                                                   augmentation_factor,tr_percent=tr_percent)
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
         self.attr_classes_to_use = classes_to_use
@@ -241,9 +247,11 @@ class ClassificationPatch1(ClassificationPatch):
 <li><code><b><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationPatch</a></b></code>:
 <ul class="hlist">
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.close" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.close">close</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items">get_all_items</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step">generate_item_step_by_step</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once">generate_item_with_augmentation_at_once</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_all_items" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.get_all_items">get_all_items</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch">get_geographic_coords_of_patch</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem">getitem</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.getitem" href="../segmentation/DataSentinel1Segmentation.html#main.src.data.segmentation.DataSentinel1Segmentation.DataSentinel1Segmentation.getitem">getitem</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image" href="ClassificationPatch.html#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image">make_patches_of_image</a></code></li>
 </ul>
 </li>

@@ -48,11 +48,6 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
-import numpy as np
-
-import torch
-from rich.progress import Progress, TextColumn, BarColumn, DownloadColumn, TimeElapsedColumn, TimeRemainingColumn
-from git import Repo
 
 if __name__ == &#34;__main__&#34;:
     FolderInfos.init()
@@ -76,7 +71,9 @@ if __name__ == &#34;__main__&#34;:
                              augmenter_img=arguments.augmenter_img,
                              augmentations_img=arguments.augmentations_img,
                              augmenter_patch=arguments.augmenter_patch,
-                             augmentations_patch=arguments.augmentations_patch)
+                             augmentations_patch=arguments.augmentations_patch,
+                             augmentation_factor=arguments.augmentation_factor
+                             )
     saver[&#34;date&#34;] = FolderInfos.id
     saver(dataset)
 

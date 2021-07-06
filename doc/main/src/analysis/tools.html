@@ -41,13 +41,12 @@ from main.src.data.DatasetFactory import DatasetFactory
 class RGB_Overlay_Patch:
     def __init__(self,dataset_name=&#34;classificationpatch&#34;,usage_type=&#34;classification&#34;,patch_creator=&#34;fixed_px&#34;,
                  grid_size=1000,input_size=256,classes_to_use=&#34;other,seep,spill&#34;):
-        FolderInfos.init(test_without_data=False)
         self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,
                                       grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None):
         return self.call(name_img,model,blending_factor,device)
-    def call(self,name_img,model,blending_factor=0.5,device=None):
+    def call(self,name_img,model,blending_factor=0.25,device=None):
         &#34;&#34;&#34;In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:
@@ -100,6 +99,10 @@ class RGB_Overlay_Patch:
                 color_pred = np.ones((resized_grid_size,resized_grid_size,3))
                 for i,c in enumerate(output):
                     color_true[:,:,i] *= c
+                if id == 94:
+                    b=0
+                if output[1] &gt; 0 or output[2] &gt; 0:
+                    b = 0
                 if device is not None:
                     prediction = prediction.cpu().detach().numpy()
                 for i,c in enumerate(prediction[0]):
@@ -121,9 +124,8 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == &#34;__main__&#34;:
-    choice_folder1 = &#39;2021-06-24_13h22min03s_&#39;
+    choice_folder1 = &#39;2021-06-27_10h27min05s_&#39;
     from main.src.models.ModelFactory import ModelFactory
-    from main.src.analysis.tools import RGB_Overlay_Patch
     import json, os
 
     name = &#34;027481_0319CB_0EB7&#34;
@@ -202,13 +204,12 @@ if __name__ == &#34;__main__&#34;:
 <pre><code class="python">class RGB_Overlay_Patch:
     def __init__(self,dataset_name=&#34;classificationpatch&#34;,usage_type=&#34;classification&#34;,patch_creator=&#34;fixed_px&#34;,
                  grid_size=1000,input_size=256,classes_to_use=&#34;other,seep,spill&#34;):
-        FolderInfos.init(test_without_data=False)
         self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,
                                       grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None):
         return self.call(name_img,model,blending_factor,device)
-    def call(self,name_img,model,blending_factor=0.5,device=None):
+    def call(self,name_img,model,blending_factor=0.25,device=None):
         &#34;&#34;&#34;In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:
@@ -261,6 +262,10 @@ if __name__ == &#34;__main__&#34;:
                 color_pred = np.ones((resized_grid_size,resized_grid_size,3))
                 for i,c in enumerate(output):
                     color_true[:,:,i] *= c
+                if id == 94:
+                    b=0
+                if output[1] &gt; 0 or output[2] &gt; 0:
+                    b = 0
                 if device is not None:
                     prediction = prediction.cpu().detach().numpy()
                 for i,c in enumerate(prediction[0]):
@@ -284,7 +289,7 @@ if __name__ == &#34;__main__&#34;:
 <h3>Methods</h3>
 <dl>
 <dt id="main.src.analysis.tools.RGB_Overlay_Patch.call"><code class="name flex">
-<span>def <span class="ident">call</span></span>(<span>self, name_img, model, blending_factor=0.5, device=None)</span>
+<span>def <span class="ident">call</span></span>(<span>self, name_img, model, blending_factor=0.25, device=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches</p>
@@ -305,7 +310,7 @@ overlay_true,overlay_pred,original_img as np arrays</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def call(self,name_img,model,blending_factor=0.5,device=None):
+<pre><code class="python">def call(self,name_img,model,blending_factor=0.25,device=None):
     &#34;&#34;&#34;In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
     Args:
@@ -358,6 +363,10 @@ overlay_true,overlay_pred,original_img as np arrays</p></div>
             color_pred = np.ones((resized_grid_size,resized_grid_size,3))
             for i,c in enumerate(output):
                 color_true[:,:,i] *= c
+            if id == 94:
+                b=0
+            if output[1] &gt; 0 or output[2] &gt; 0:
+                b = 0
             if device is not None:
                 prediction = prediction.cpu().detach().numpy()
             for i,c in enumerate(prediction[0]):
