@@ -4,7 +4,6 @@ import json
 import subprocess
 import os, sys
 
-from main.src.enums import EnumGitCheck
 
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
@@ -22,6 +21,8 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
+from main.src.data.classification.enums import EnumLabelModifier
+from main.src.enums import EnumGitCheck
 
 if __name__ == "__main__":
     FolderInfos.init()
@@ -52,7 +53,7 @@ if __name__ == "__main__":
     saver["date"] = FolderInfos.id
     saver(dataset)
 
-    num_classes = len(arguments.classes.split(",")) if dataset.attr_dataset.__class__.__name__ != "LabelModifier2" else 1
+    num_classes = len(arguments.classes) if arguments.dataset != EnumLabelModifier.LabelModifier2 else 1
     model = ModelFactory(model_name=arguments.model, num_classes=num_classes)
     saver(model)
     model = model()
