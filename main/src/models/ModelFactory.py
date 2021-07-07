@@ -18,6 +18,7 @@ class ModelFactory(BaseClass):
     def __init__(self, model_name: EnumModels, num_classes: int = 2,
                  freeze: EnumFreeze = EnumFreeze.AllExceptLastDense):
         self.attr_global_name = "model"
+        self.attr_freeze = freeze
         if model_name == EnumModels.Efficientnetv4:
             self.model = EfficientNet.from_pretrained('efficientnet-b0', num_classes=num_classes)
         elif model_name == EnumModels.Resnet18:
