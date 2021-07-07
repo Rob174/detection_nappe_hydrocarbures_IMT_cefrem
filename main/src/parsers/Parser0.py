@@ -53,7 +53,7 @@ class Parser0(BaseClass):
                                  "help": "Choose whcih layers to freeze in the original model",
                                  "choices": list(EnumFreeze)},
                     # Training
-                    '-num_epochs':{"dest":'num_epochs',"default":5,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
+                    '-num_epochs':{"dest":'num_epochs',"default":10,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
                     '-eval_step':{"dest":'eval_step',"default":10,"type":int,"help":"Number of training steps between two evaluation/validation steps"},
                     '-loss':{"dest":'loss_preference',"default":"binarycrossentropy","type":EnumLoss,"help":"Loss prefered for training","choices":list(EnumLoss)},
 
