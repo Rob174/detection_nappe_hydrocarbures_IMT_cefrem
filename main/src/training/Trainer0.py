@@ -118,7 +118,7 @@ class Trainer0(BaseClass):
         with self.progress:
 
             if self.length is not None:
-                global_iteration_progress = self.progress.add_task("iterations", name="[blue]Global iterations", loss=0., total=self.length,
+                global_iteration_progress = self.progress.add_task("iterations", name="[blue]Global iterations", loss=0., total=self.length*self.attr_num_epochs,
                                                status=0)
                 epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0.,
                                                         total=self.attr_num_epochs,
