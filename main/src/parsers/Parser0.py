@@ -47,7 +47,7 @@ class Parser0(BaseClass):
                     '-augmentations_patch':{"dest":'augmentations_patch',"default":"none","type":str,"help":"Indicate the augmentations to apply to patches in the order desired seprated by commas"},
                     '-augmentation_factor':{"dest":'augmentation_factor',"default":100,"type":int,"help":"The number of times that the source image is augmented"},
                     # Model
-                    '-model':{"dest":'model',"default":"resnet18","type":EnumModels,"help":"To choose the network architecture used","choices":list(EnumModels)},
+                    '-model':{"dest":'model',"default":EnumModels.Vgg16,"type":EnumModels,"help":"To choose the network architecture used","choices":list(EnumModels)},
                     '-classes':{"dest":'classes',"default":[EnumClasses.Seep,EnumClasses.Spill],"type":EnumClasses,"help":"Indicate the class used for training separated by a comma","nargs":"+","choices":list(EnumClasses)},
                     # Training
                     '-num_epochs':{"dest":'num_epochs',"default":10,"type":int,"help":"Number of epochs / repetitions of the training dataset"},

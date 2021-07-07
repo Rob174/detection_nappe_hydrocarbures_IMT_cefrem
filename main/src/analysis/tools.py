@@ -94,7 +94,7 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-07_01h47min15s_'
+    choice_folder1 = '2021-07-07_01h03min20s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                                         input_size=256,
                                         classes_to_use=[EnumClasses.Seep,EnumClasses.Spill]
                                         )
-        epoch = 9
+        epoch = 0
         iteration = 11562
         import torch
 
