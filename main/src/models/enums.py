@@ -11,3 +11,7 @@ class EnumModels(str,Enum):
 class EnumOptimizer(str,Enum):
     Adam = "adam"
     SGD = "sgd"
+
+class EnumFreeze(str,Enum):
+    AllExceptLastDense = "allexceptlastdense"
+    NoFreeze = "nofreeze"

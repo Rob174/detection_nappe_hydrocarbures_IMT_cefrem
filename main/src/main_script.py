@@ -54,7 +54,7 @@ if __name__ == "__main__":
     saver(dataset)
 
     num_classes = len(arguments.classes) if arguments.dataset != EnumLabelModifier.LabelModifier2 else 1
-    model = ModelFactory(model_name=arguments.model, num_classes=num_classes)
+    model = ModelFactory(model_name=arguments.model, num_classes=num_classes, freeze=arguments.freeze)
     saver(model)
     model = model()
     criterion = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference)

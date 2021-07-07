@@ -2,7 +2,7 @@ import argparse
 
 from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.enums import EnumGitCheck
-from main.src.models.enums import EnumModels, EnumOptimizer
+from main.src.models.enums import EnumModels, EnumOptimizer, EnumFreeze
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumUsage, EnumClasses
@@ -49,6 +49,9 @@ class Parser0(BaseClass):
                     # Model
                     '-model':{"dest":'model',"default":EnumModels.Vgg16,"type":EnumModels,"help":"To choose the network architecture used","choices":list(EnumModels)},
                     '-classes':{"dest":'classes',"default":[EnumClasses.Seep,EnumClasses.Spill],"type":EnumClasses,"help":"Indicate the class used for training separated by a comma","nargs":"+","choices":list(EnumClasses)},
+                    '-freeze': {"dest": 'freeze', "default": EnumFreeze.NoFreeze, "type": EnumFreeze,
+                                 "help": "Choose whcih layers to freeze in the original model",
+                                 "choices": list(EnumFreeze)},
                     # Training
                     '-num_epochs':{"dest":'num_epochs',"default":5,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
                     '-eval_step':{"dest":'eval_step',"default":10,"type":int,"help":"Number of training steps between two evaluation/validation steps"},
