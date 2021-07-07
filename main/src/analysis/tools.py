@@ -7,14 +7,16 @@ from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, Ti
 
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
-
+from main.src.data.classification.enums import EnumLabelModifier
+from main.src.data.enums import EnumClasses, EnumUsage
+from main.src.data.patch_creator.enums import EnumPatchAlgorithm
 
 
 class RGB_Overlay_Patch:
-    def __init__(self,dataset_name="classificationpatch",usage_type="classification",patch_creator="fixed_px",
-                 grid_size=1000,input_size=256,classes_to_use="other,seep,spill"):
+    def __init__(self,dataset_name=EnumLabelModifier.LabelModifier1,usage_type=EnumUsage.Classification,patch_creator=EnumPatchAlgorithm.FixedPx,
+                 grid_size=1000,input_size=256,classes_to_use=(EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
         self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,
-                                      grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use)
+                                      grid_size=grid_size , input_size=input_size,classes_to_use=classes_to_use,force_classifpatch=True)
 
     def __call__(self,name_img,model,blending_factor=0.5,device=None):
         return self.call(name_img,model,blending_factor,device)
@@ -71,10 +73,6 @@ class RGB_Overlay_Patch:
                 color_pred = np.ones((resized_grid_size,resized_grid_size,3))
                 for i,c in enumerate(output):
                     color_true[:,:,i] *= c
-                if id == 94:
-                    b=0
-                if output[1] > 0 or output[2] > 0:
-                    b = 0
                 if device is not None:
                     prediction = prediction.cpu().detach().numpy()
                 for i,c in enumerate(prediction[0]):
@@ -96,7 +94,7 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-06-27_10h27min05s_'
+    choice_folder1 = '2021-07-07_01h47min15s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
@@ -121,15 +119,14 @@ if __name__ == "__main__":
         with open(folder + choice_folder1 + "parameters.json", "r") as fp:
             dico = json.load(fp)
 
-        rgb_overlay = RGB_Overlay_Patch(dataset_name="classificationpatch1", usage_type="classification",
-                                        patch_creator="fixed_px",
-                                        grid_size=dico["data"]["attr_patch_creator"]["attr_grid_size_px"],
-                                        input_size=dico["data"]["attr_dataset"]["attr_resizer"][
-                                            "attr_out_size_w"],
-                                        classes_to_use=dico["data"]["attr_dataset"]["attr_classes_to_use"]
+        rgb_overlay = RGB_Overlay_Patch(dataset_name=EnumLabelModifier.LabelModifier1, usage_type=EnumUsage.Classification,
+                                        patch_creator=EnumPatchAlgorithm.FixedPx,
+                                        grid_size=1000,
+                                        input_size=256,
+                                        classes_to_use=[EnumClasses.Seep,EnumClasses.Spill]
                                         )
-        epoch = 0
-        iteration = 60835
+        epoch = 9
+        iteration = 11562
         import torch
 
         device = torch.device("cuda")
@@ -143,11 +140,11 @@ if __name__ == "__main__":
 
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[0])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {dico['data']['attr_dataset']['attr_classes_to_use']}", fontsize=14)
+        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Seep,EnumClasses.Spill]}", fontsize=14)
         plt.savefig(f"{folder}{choice_folder1}_{name}_rgb_overlay_true.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[1])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {dico['data']['attr_dataset']['attr_classes_to_use']}", fontsize=14)
+        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Seep,EnumClasses.Spill]}", fontsize=14)
         plt.savefig(f"{folder}{choice_folder1}_{name}_rgb_overlay_pred.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[2], cmap="gray")

@@ -37,6 +37,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         augmentations_patch: opt str, list of augmentations to apply seprated by commas
         augmenter_patch: opt EnumAugmenter,
         augmentation_factor: int, the number of times that the source image is augmented
+        force_classifpatch: bool, force to use the class classificattionpatch
     """
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
@@ -48,7 +49,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentation_factor=1):
+                 augmentation_factor=1,force_classifpatch=False):
         self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
@@ -57,7 +58,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
             if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
                 and augmentations_img == "combinedRotResizeMir_10_0.25_4" and augmenter_patch == EnumAugmenter.NoAugmenter \
                 and augmentations_patch == "none" and exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 1000 \
-                    and grid_size == 1000:
+                    and grid_size == 1000 and not force_classifpatch:
                 self.attr_dataset = ClassificationCache(label_modifier=dataset_name,classes_to_use=classes_to_use)
             else:
                 if patch_creator == EnumPatchAlgorithm.FixedPx:
