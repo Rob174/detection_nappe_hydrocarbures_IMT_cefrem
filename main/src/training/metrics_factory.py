@@ -33,7 +33,7 @@ class MetricsFactory(BaseClass):
                 raise NotImplementedError(f"{metric} has not been implemented")
         self.attr_global_name = "metrics"
     def __call__(self, prediction,true_value,dataset_type):
-        prediction = prediction.detach().numpy()
-        true_value = true_value.detach().numpy()
+        prediction = prediction
+        true_value = true_value
         for name,function in zip(self.attr_list_metrics.keys(),self.functions_metrics):
             self.attr_list_metrics[name][dataset_type+"_values"].append(float(function(prediction,true_value)))

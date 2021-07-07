@@ -140,28 +140,29 @@ class Trainer0(BaseClass):
                     opt_tr_batch = self.add_to_batch_tr(input,output)
                     if opt_tr_batch is not None:
                         it_tr += 1
-                        input,output = opt_tr_batch
-                        input = torch.Tensor(input)
-                        output = torch.Tensor(output)
+                        input_npy,output_npy = opt_tr_batch
+                        input_gpu = torch.Tensor(input_npy).to(device)
                         # zero the parameter gradients
                         self.optimizer.zero_grad()
 
                         # forward + backward + optimize
-                        prediction = self.model(input.to(device))
-                        loss = self.loss(prediction.float().to(device), output.float().to(device))
+                        prediction_gpu = self.model(input_gpu)
+                        del input_gpu
+                        output_gpu = torch.Tensor(output_npy).float().to(device)
+                        loss = self.loss(prediction_gpu, output_gpu)
                         loss.backward()
                         self.optimizer.step()
                         current_loss = loss.item()
+                        del output_gpu
 
                         self.attr_tr_loss.append(float(current_loss))
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
-                        prediction: torch.Tensor = prediction.cpu()
-                        output: torch.Tensor = output.cpu()
+                        prediction: torch.Tensor = prediction_gpu.cpu()
                         if self.attr_debug == "true":
-                            self.attr_tr_vals_true.append(output.detach().numpy().tolist())
+                            self.attr_tr_vals_true.append(output_npy.tolist())
                             self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
-                        self.metrics(prediction, output, "tr")
+                        self.metrics(prediction.detach().numpy(), output_npy, "tr")
                         self.saver(self.metrics)
 
                         if self.length is not None:
@@ -181,15 +182,17 @@ class Trainer0(BaseClass):
                                     input, output,transformation_matrix,item = next(dataset_valid_iter)
                                 opt_valid_batch = self.add_to_batch_valid(input,output)
                                 it_val += 1
-                            input,output = opt_valid_batch
-                            input = torch.Tensor(input)
-                            output = torch.Tensor(output)
-                            prediction = self.model(input.to(device))
-                            loss = self.loss(prediction.float().to(device), output.float().to(device))
+                            input_npy,output_npy = opt_tr_batch
+                            input_gpu = torch.Tensor(input_npy).to(device)
+                            prediction = self.model(input_gpu)
+                            del input_gpu
+                            output_gpu = torch.Tensor(output_npy).float().to(device)
+                            loss = self.loss(prediction, output_gpu)
                             current_loss = loss.item()
+                            prediction: torch.Tensor = prediction.cpu().detach().numpy()
                             self.attr_valid_loss.append(float(current_loss))
                             self.saver(self.dataset)
-                            self.metrics(prediction.cpu(), output.cpu(), "valid")
+                            self.metrics(prediction, output_npy, "valid")
                             self.saver(self.metrics)
                             self.saver(self).save()
 
