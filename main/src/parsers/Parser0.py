@@ -50,7 +50,7 @@ class Parser0(BaseClass):
                     '-model':{"dest":'model',"default":EnumModels.Vgg16,"type":EnumModels,"help":"To choose the network architecture used","choices":list(EnumModels)},
                     '-classes':{"dest":'classes',"default":[EnumClasses.Seep,EnumClasses.Spill],"type":EnumClasses,"help":"Indicate the class used for training separated by a comma","nargs":"+","choices":list(EnumClasses)},
                     # Training
-                    '-num_epochs':{"dest":'num_epochs',"default":10,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
+                    '-num_epochs':{"dest":'num_epochs',"default":5,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
                     '-eval_step':{"dest":'eval_step',"default":10,"type":int,"help":"Number of training steps between two evaluation/validation steps"},
                     '-loss':{"dest":'loss_preference',"default":"binarycrossentropy","type":EnumLoss,"help":"Loss prefered for training","choices":list(EnumLoss)},
 

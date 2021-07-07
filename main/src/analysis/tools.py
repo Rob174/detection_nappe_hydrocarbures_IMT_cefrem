@@ -60,7 +60,9 @@ class RGB_Overlay_Patch:
                 #shape : (1, img_width, img_height, 3)
                 input_adapted = input_adapted.reshape((1,*input_adapted.shape))
                 # predict output with cpu if no device (gpu) is provided else predict with gpu and ransfer the result on cpu
-                prediction = model(input) if device is None else model(torch.tensor(input_adapted).to(device)).cpu()
+
+                with torch.no_grad():
+                    prediction = model(input) if device is None else model(torch.tensor(input_adapted).to(device)).cpu().detach().numpy()
                 # get the pixel position of the patch
                 pos_x,pos_y = self.dataset.attr_patch_creator.get_position_patch(id,original_img.shape)
                 if len(output) > 3:
@@ -73,8 +75,6 @@ class RGB_Overlay_Patch:
                 color_pred = np.ones((resized_grid_size,resized_grid_size,3))
                 for i,c in enumerate(output):
                     color_true[:,:,i] *= c
-                if device is not None:
-                    prediction = prediction.cpu().detach().numpy()
                 for i,c in enumerate(prediction[0]):
 
                     color_pred[:,:,i] *= c
