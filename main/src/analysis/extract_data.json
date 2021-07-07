@@ -39,6 +39,10 @@
       "access": "lambda dico:dico[\"data\"][\"attr_patch_creator\"][\"attr_grid_size_px\"]",
       "default": "1000"
     },
+    "dataset": {
+      "access": "lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_name\"]",
+      "default": "\"ClassificationPatch\""
+    },
     "limit_num_images": {
       "access": "lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_limit_num_images\"]",
       "default": "None"
