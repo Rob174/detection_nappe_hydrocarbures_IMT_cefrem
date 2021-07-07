@@ -163,6 +163,11 @@ class Trainer0(BaseClass):
                             self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
                         self.metrics(prediction, output, "tr")
                         self.saver(self.metrics)
+
+                        if self.length is not None:
+                            self.progress.update(global_iteration_progress, advance=1, loss=current_loss, status=it_tr)
+                        if self.length is None:
+                            self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
                         # Validation step
                         if it_tr % self.attr_eval_step == 0:
                             opt_valid_batch = None
@@ -190,10 +195,6 @@ class Trainer0(BaseClass):
 
                             if loss < np.mean(self.attr_valid_loss) and it_tr % 10 == 0:
                                 torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
-                    if self.length is not None:
-                        self.progress.update(global_iteration_progress,advance=0, loss=current_loss, status=it_tr)
-                    else:
-                        self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
 
                 if self.length is not None:
                     self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
