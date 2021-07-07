@@ -168,6 +168,9 @@ As no parameters produces better performances, we will investigate:
 ## 06-07-2021
 - Diapo
 - In parallel we clone another time the repo to continue to work on the code
+- ✔️ Use composition not inheritance
+- ✔️ Get a patch for diapo with not only other category
+- ✔️ unfreeze all layers of the pretrained model
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
@@ -175,9 +178,5 @@ As no parameters produces better performances, we will investigate:
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
 
-- Training to launch:
-  - unfreeze all layers of the pretrained model
-- Use composition not inheritance
 - Support multiple functions in json extract_data
-- Get a patch for diapo with not only other category
 - Question : convert predicted annotated image back to raster ?
