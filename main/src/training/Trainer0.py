@@ -165,7 +165,7 @@ class Trainer0(BaseClass):
                         self.saver(self.metrics)
 
                         if self.length is not None:
-                            self.progress.update(global_iteration_progress, advance=1, loss=current_loss, status=it_tr)
+                            self.progress.update(global_iteration_progress, advance=self.attr_tr_batch_size, loss=current_loss, status=it_tr)
                         if self.length is None:
                             self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
                         # Validation step
