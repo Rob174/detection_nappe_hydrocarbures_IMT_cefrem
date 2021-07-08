@@ -176,12 +176,12 @@ As no parameters produces better performances, we will investigate:
 - Diapo...
 - ✔️ Adapting training attributes extraction code to take into account preprocessing used to compute the cache
 - ✔️ Allowing to try multiple fonction to retrieve training attribute extraction
-- 
+
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
 
-- Support multiple functions in json extract_data
 - Question : convert predicted annotated image back to raster ?
