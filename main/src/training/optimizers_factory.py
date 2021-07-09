@@ -18,10 +18,10 @@ class OptimizersFactory(BaseClass):
         self.attr_name = name
         if name == EnumOptimizer.Adam:
             self.attr_params = {k: v for k, v in params.items() if k in ["lr", "eps"]}
-            self.optimizer = optim.Adam(model.parameters(), lr=params["lr"], eps=params["eps"])
+            self.optimizer = optim.Adam(model.model.parameters(), lr=params["lr"], eps=params["eps"])
         elif name == EnumOptimizer.SGD:
             self.attr_params = {k: v for k, v in params.items() if k in ["lr"]}
-            self.optimizer = optim.SGD(model.parameters(), lr=params["lr"])
+            self.optimizer = optim.SGD(model.model.parameters(), lr=params["lr"])
         else:
             raise NotImplementedError(f"{name} has not been implemented")
         self.attr_global_name = "optimizer"
