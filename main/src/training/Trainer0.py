@@ -110,7 +110,6 @@ class Trainer0(BaseClass):
             current_loss = -1
             it_tr = 0
             it_val = 0
-            opt_valid_batch = None
             for epoch in range(self.attr_num_epochs):
                 for i, [input, output, transformation_matrix, item] in enumerate(self.dataset_tr):
                     opt_tr_batch = self.add_to_batch_tr(input, output)
