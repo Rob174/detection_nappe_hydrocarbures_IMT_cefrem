@@ -52,6 +52,7 @@ class Trainer0(BaseClass):
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size * self.attr_eval_step
         self.attr_prefetch_factor = 2  # only value possible with hdf5 files currently
+        self.attr_save_step = self.attr_eval_step * 10
 
         self.attr_dataset = dataset
         self.attr_optimizer: OptimizersFactory = optimizer
@@ -161,7 +162,6 @@ class Trainer0(BaseClass):
                                 prediction: torch.Tensor = prediction.cpu().detach().numpy()
                             self.attr_metrics(prediction, output_npy, EnumDataset.Valid)
                             self.attr_model_saver.save_model_if_required(self.model, epoch, i)
-                            self.saver(self).save()
 
                 self.attr_progress.end_epoch(loss=current_loss, epoch=epoch, img_processed=i)
                 self.attr_model_saver.save_model(self.model, epoch, i)
