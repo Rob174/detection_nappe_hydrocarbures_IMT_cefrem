@@ -88,8 +88,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def __iter__(self, dataset):
         return self.attr_dataset.__iter__(dataset)
 
-    def __len__(self, dataset):
-        return self.attr_dataset.__len__(dataset)
+    def len(self, dataset):
+        return self.attr_dataset.len(dataset)
 
 
 if __name__ == "__main__":

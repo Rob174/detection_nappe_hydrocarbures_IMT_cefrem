@@ -279,6 +279,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
             liste_patches[id].insert(1, classif[0])
         return liste_patches
 
-    def __len__(self, dataset: str) -> Optional[int]:
+    def len(self, dataset: str) -> Optional[int]:
         return None
 # Tests in DatasetFactory

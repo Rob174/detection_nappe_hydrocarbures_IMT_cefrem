@@ -102,7 +102,7 @@ class ClassificationCache(BaseClass):
                 output[value] = 1.
         return output
 
-    def __len__(self, dataset) -> Optional[int]:
+    def len(self, dataset) -> Optional[int]:
         if dataset == "tr":
             return len(self.tr_keys)
         else:
