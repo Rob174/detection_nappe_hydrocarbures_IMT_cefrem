@@ -177,11 +177,14 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Adapting training attributes extraction code to take into account preprocessing used to compute the cache
 - ✔️ Allowing to try multiple fonction to retrieve training attribute extraction
 
+## 09-07-2021
+- 
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
-
+- Profiling code
+- Hyperparameters optimization
 - Question : convert predicted annotated image back to raster ?
