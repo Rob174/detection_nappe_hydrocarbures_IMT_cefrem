@@ -60,7 +60,7 @@ if __name__ == "__main__":
     optimizer = OptimizersFactory(model, name=arguments.optimizer,
                                   lr=arguments.lr, eps=arguments.eps)
     metrics = MetricsFactory("accuracy_classification-0.25","accuracy_classification-0.1","mae")
-    modelsaver = ModelSaver1(metrics,loss.attr_loss)
+    model_saver = ModelSaver1(metrics,loss.attr_loss)
     early_stopping = EarlyStopping(loss,name_metric_chosen=loss.attr_loss,patience=3)
     saver.save()
 
@@ -69,6 +69,7 @@ if __name__ == "__main__":
 
     Trainer0(batch_size=arguments.batch_size,num_epochs=arguments.num_epochs,tr_prct=0.7,
              dataset=dataset,model=model,
-             optimizer=optimizer,loss=loss,metrics=metrics,early_stopping=early_stopping,saver=saver,
+             optimizer=optimizer,loss=loss,metrics=metrics,early_stopping=early_stopping,model_saver=model_saver,
+             saver=saver,
              eval_step=arguments.eval_step,debug=arguments.debug)()
     print("end")

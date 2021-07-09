@@ -1,4 +1,6 @@
 from main.FolderInfos import FolderInfos
+from main.src.data.DatasetFactory import DatasetFactory
+from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass
 import torch
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
@@ -10,7 +12,11 @@ from main.src.training.enums import EnumDataset
 from main.src.training.metrics.loss_factory import LossFactory
 from main.src.training.metrics.metrics_factory import MetricsFactory
 from main.src.training.optimizers_factory import OptimizersFactory
+from main.src.training.periodic_model_saver.AbstractModelSaver import AbstractModelSaver
 from main.src.training.progress_bar.ProgressBarFactory import ProgressBarFactory
+
+
+
 
 
 class Trainer0(BaseClass):
@@ -30,12 +36,13 @@ class Trainer0(BaseClass):
         debug: str enum ("true" or "false") if "true", save prediction and annotation during training process. ⚠️ can slow down the training process
     """
     def __init__(self ,batch_size,num_epochs,tr_prct,
-                 dataset,
-                 model,
+                 dataset: DatasetFactory,
+                 model: ModelFactory,
                  optimizer: OptimizersFactory,
                  loss: LossFactory,
                  metrics: MetricsFactory,
                  early_stopping: AbstractEarlyStopping,
+                 model_saver: AbstractModelSaver,
                  saver,
                  eval_step,debug="false"):
 
@@ -57,6 +64,7 @@ class Trainer0(BaseClass):
         self.saver = saver
         self.attr_early_stopping: AbstractEarlyStopping = early_stopping
         self.attr_progress = ProgressBarFactory(self.attr_dataset.len(),num_epochs=num_epochs)
+        self.attr_model_saver = model_saver
 
         # split the datasets into train and validation
         [dataset_tr, dataset_valid] = trvalidsplit(dataset)
@@ -99,7 +107,7 @@ class Trainer0(BaseClass):
         with self.attr_progress:
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
-            self.model.to(device)
+            self.model.model.to(device)
             current_loss = -1
             it_tr = 0
             it_val = 0
@@ -118,7 +126,7 @@ class Trainer0(BaseClass):
                         self.attr_optimizer.zero_grad()
 
                         # forward + backward + optimize
-                        prediction_gpu = self.model(input_gpu)
+                        prediction_gpu = self.model.model(input_gpu)
                         del input_gpu
                         output_gpu = torch.Tensor(output_npy).float().to(device)
                         self.attr_loss(prediction_gpu,output_gpu,EnumDataset.Train)
@@ -148,17 +156,18 @@ class Trainer0(BaseClass):
                             input_npy,output_npy = opt_tr_batch
                             with torch.no_grad():
                                 input_gpu = torch.Tensor(input_npy).to(device)
-                                prediction = self.model(input_gpu)
+                                prediction = self.model.model(input_gpu)
                                 del input_gpu
                                 output_gpu = torch.Tensor(output_npy).float().to(device)
                                 self.attr_loss(prediction, output_gpu,EnumDataset.Valid)
                                 prediction: torch.Tensor = prediction.cpu().detach().numpy()
                             self.attr_metrics(prediction, output_npy, EnumDataset.Valid)
+                            self.attr_model_saver.save_model_if_required(self.model,epoch,i)
                             self.saver(self).save()
 
 
                 self.attr_progress.end_epoch(loss=current_loss,epoch=epoch,img_processed=i)
-                torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
+                self.attr_model_saver.save_model(self.model,epoch,i)
                 self.saver(self).save()
                 if self.attr_early_stopping.stop_training():
                     break

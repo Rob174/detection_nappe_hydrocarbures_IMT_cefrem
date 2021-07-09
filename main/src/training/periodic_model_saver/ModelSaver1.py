@@ -16,4 +16,4 @@ class ModelSaver1(BaseClass,AbstractModelSaver):
         self.attr_step = 100
     def save_model_if_required(self,model,epoch,iteration):
         if self.metric_used.get_last_metric(self.attr_metric_name) and self.it_call % self.attr_step == 0:
-            torch.save(model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{iteration}.pt")
+            self.save_model(model,epoch,iteration)
