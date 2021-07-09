@@ -1,15 +1,17 @@
+import json
+import re
 from typing import Tuple, List
 
-from h5py import File
 import dbf
 import geopandas as gpd
 import numpy as np
-import re
-import json
 from PIL import Image, ImageDraw
-from rasterio.transform import Affine,rowcol
+from h5py import File
+from rasterio.transform import Affine, rowcol
 
 from main.FolderInfos import FolderInfos
+
+
 def get_annotations():
     """ Extract annotation from the dbf table
 
@@ -20,7 +22,7 @@ def get_annotations():
 
     """
     FolderInfos.init(test_without_data=True)
-    dbffile_path = FolderInfos.input_data_folder +"originals" +FolderInfos.separator +"Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
+    dbffile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
     annotations = {}
     name_to_annotations = {}
     with dbf.Table(dbffile_path) as table:  # Table containing the class and the index of the polygon
@@ -36,8 +38,10 @@ def get_annotations():
             if uniq_id not in name_to_annotations:
                 name_to_annotations[uniq_id] = []
             name_to_annotations[uniq_id].append(id)
-    return annotations,name_to_annotations
-def get_annotations_points(annotations,name_to_annotations):
+    return annotations, name_to_annotations
+
+
+def get_annotations_points(annotations, name_to_annotations):
     """
 
     Args:
@@ -51,7 +55,7 @@ def get_annotations_points(annotations,name_to_annotations):
 
     """
     ## Open the shapefile
-    shapefile_path = FolderInfos.input_data_folder +"originals" +FolderInfos.separator +"Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
+    shapefile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
     shapefile = gpd.read_file(shapefile_path)
     with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", 'r') as fp:
         dico_informations = json.load(fp)
@@ -81,13 +85,16 @@ def get_annotations_points(annotations,name_to_annotations):
                 px, py = get_px_coord(point[0], point[1])
                 liste_points_shape.append(tuple([int(py), int(px)]))
         annotations[id_shape]["points"] = liste_points_shape
-    return annotations,name_to_annotations
+    return annotations, name_to_annotations
+
+
 if __name__ == "__main__":
 
     annotations, name_to_annotations = get_annotations_points(*get_annotations())
 
-    with File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5" ,"r") as images_hdf5:
-        with File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5" ,"w") as annotations_labels_hdf5:
+    with File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r") as images_hdf5:
+        with File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5",
+                  "w") as annotations_labels_hdf5:
 
             for name in images_hdf5.keys():
                 image_array = np.array(images_hdf5[name])
@@ -111,5 +118,6 @@ if __name__ == "__main__":
                     print(f"{name} has no annotation")
                     # Extract
                 segmentation_map = np.array(segmentation_map, dtype=np.uint8)
-                annotations_labels_hdf5.create_dataset(name, shape=segmentation_map.shape, dtype='i', data=segmentation_map,
+                annotations_labels_hdf5.create_dataset(name, shape=segmentation_map.shape, dtype='i',
+                                                       data=segmentation_map,
                                                        compression='gzip', compression_opts=9)

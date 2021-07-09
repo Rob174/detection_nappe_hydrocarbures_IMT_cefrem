@@ -1,5 +1,6 @@
-import numpy as np
 from typing import Tuple
+
+import numpy as np
 
 from main.src.data.Augmentation.Augmentations.AbstractAugmentation import AbstractAugmentation
 
@@ -13,7 +14,8 @@ class Mirrors(AbstractAugmentation):
         >>> transformed_array, transformed_annotation = Mirrors().compute_random_augment(array,annotation)
         ... # Compute the random transformation with the static class
     """
-    def compute_random_augment(self,image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
+
+    def compute_random_augment(self, image: np.ndarray, annotation: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations
 
         Args:
@@ -25,11 +27,11 @@ class Mirrors(AbstractAugmentation):
 
         """
         # Choose if compute lr mirror (mirror allong an vertical axis)
-        if np.random.choice([True,False]) is True:
+        if np.random.choice([True, False]) is True:
             image = np.fliplr(image)
             annotation = np.fliplr(annotation)
         # Choose if compute ud mirror (mirror allong an horizontal axis)
-        if np.random.choice([True,False]) is True:
+        if np.random.choice([True, False]) is True:
             image = np.flipud(image)
             annotation = np.flipud(annotation)
-        return image,annotation
+        return image, annotation

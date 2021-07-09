@@ -2,9 +2,12 @@ from enum import Enum
 
 from main.src.param_savers.BaseClass import BaseClass
 
+
 class Way(Enum):
     ORIGINAL_WAY = "original_way"
     OTHER_WAY = "other_way"
+
+
 class TwoWayDict(BaseClass):
     """
     An object allowing to map two values together and access to them directly as in a dict. It can contains additionnal informations linked to pairs
@@ -47,25 +50,27 @@ class TwoWayDict(BaseClass):
             >>> dico[4,Way.OTHER_WAY] = "d","info4"
 
     """
-    def __init__(self,attr_dico_one_way):
+
+    def __init__(self, attr_dico_one_way):
         self.attr_global_name = "two_way_dict"
         if attr_dico_one_way == {}:
             self.attr_dico_one_way = {}
             self.dico_other_way = {}
         else:
             first_key = attr_dico_one_way[list(attr_dico_one_way.keys())[0]]
-            if isinstance(first_key,tuple):
+            if isinstance(first_key, tuple):
                 self.attr_dico_one_way = {}
                 self.dico_other_way = {}
-                for k,v in attr_dico_one_way.items():
+                for k, v in attr_dico_one_way.items():
                     self.attr_dico_one_way[k] = v
-                    self.dico_other_way[v[0]] = k,*v[1:]
+                    self.dico_other_way[v[0]] = k, *v[1:]
             else:
                 self.attr_dico_one_way = attr_dico_one_way
-                self.dico_other_way = {v:k for k,v in attr_dico_one_way.items()}
+                self.dico_other_way = {v: k for k, v in attr_dico_one_way.items()}
 
     def __getitem__(self, item):
         return self.getitem(item)
+
     def getitem(self, item):
         """Get an item in the TwoWayDict trying first in the first provided way and then in the reverse way
 
@@ -81,7 +86,8 @@ class TwoWayDict(BaseClass):
             return self.dico_other_way[item]
 
     def __setitem__(self, key, value):
-        return self.setitem(key,value)
+        return self.setitem(key, value)
+
     def setitem(self, key, value):
         """Add a new value or change the value of key provided.
 
@@ -93,19 +99,20 @@ class TwoWayDict(BaseClass):
 
         """
         value_key = value
-        real_key,dico_chosen = key
+        real_key, dico_chosen = key
         value1 = real_key
-        if isinstance(value,tuple):
+        if isinstance(value, tuple):
             value_key = value[0]
             additionnal_info = value[1:]
-            value1 = real_key,*additionnal_info
+            value1 = real_key, *additionnal_info
         if dico_chosen == Way.ORIGINAL_WAY:
             self.attr_dico_one_way[real_key] = value
             self.dico_other_way[value_key] = value1
         else:
             self.attr_dico_one_way[value_key] = value1
             self.dico_other_way[real_key] = value
-    def keys(self,dico_chosen=Way.ORIGINAL_WAY):
+
+    def keys(self, dico_chosen=Way.ORIGINAL_WAY):
         """The keys of the object in the way asked
 
         Args:
@@ -118,7 +125,8 @@ class TwoWayDict(BaseClass):
             return list(self.attr_dico_one_way.keys())
         else:
             return list(self.dico_other_way.keys())
-    def values(self,dico_chosen=Way.ORIGINAL_WAY):
+
+    def values(self, dico_chosen=Way.ORIGINAL_WAY):
         """The values of the object in the way asked
 
         Args:
@@ -131,7 +139,8 @@ class TwoWayDict(BaseClass):
             return list(self.attr_dico_one_way.values())
         else:
             return list(self.dico_other_way.values())
-    def items(self,dico_chosen=Way.ORIGINAL_WAY):
+
+    def items(self, dico_chosen=Way.ORIGINAL_WAY):
         """The items of the object in the way asked
 
         Args:
@@ -144,5 +153,6 @@ class TwoWayDict(BaseClass):
             return list(self.attr_dico_one_way.items())
         else:
             return list(self.dico_other_way.items())
+
     def __len__(self):
         return len(list(self.attr_dico_one_way.keys()))

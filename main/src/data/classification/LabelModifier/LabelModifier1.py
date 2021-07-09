@@ -14,7 +14,8 @@ class LabelModifier1(AbstractLabelModifier):
         classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
     """
 
-    def __init__(self, original_class_mapping: TwoWayDict,classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
+    def __init__(self, original_class_mapping: TwoWayDict,
+                 classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided

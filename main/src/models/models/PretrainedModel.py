@@ -1,10 +1,10 @@
 import torch.nn as nn
-import torch
 
 from main.src.models.enums import EnumFreeze
 from main.src.param_savers.BaseClass import BaseClass
 
-class PretrainedModel(nn.Module,BaseClass):
+
+class PretrainedModel(nn.Module, BaseClass):
     """Pretrained version of resnet with an additional layer to output the correct number of classes
     Done thanks to https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3
 
@@ -17,16 +17,19 @@ class PretrainedModel(nn.Module,BaseClass):
         - sigmoid
         freeze: EnumFreeze
     """
-    def __init__(self,original_model,original_num_classes=1000,num_classes=3,out_activation="sigmoid", freeze: EnumFreeze = EnumFreeze.AllExceptLastDense):
+
+    def __init__(self, original_model, original_num_classes=1000, num_classes=3, out_activation="sigmoid",
+                 freeze: EnumFreeze = EnumFreeze.AllExceptLastDense):
         super(PretrainedModel, self).__init__()
         self.net = original_model
         if out_activation == "sigmoid":
             self.activation = nn.Sigmoid()
-        self.layer1 = nn.Linear(original_num_classes, num_classes) # convert from the original_num_classes classes from the original model pretrained on a attr_dataset to num_classes classes
+        self.layer1 = nn.Linear(original_num_classes,
+                                num_classes)  # convert from the original_num_classes classes from the original model pretrained on a attr_dataset to num_classes classes
 
         for p in self.net.parameters():
             if freeze == EnumFreeze.AllExceptLastDense:
-                p.requires_grad = False # Freeze all weights of the original model
+                p.requires_grad = False  # Freeze all weights of the original model
             elif freeze == EnumFreeze.NoFreeze:
                 p.requires_grad = True
 

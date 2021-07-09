@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-import numpy as np
 from typing import Tuple, Dict, Any
+
+import numpy as np
 
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -13,6 +14,6 @@ class AbstractAugmentationWithMatrix(ABC, BaseClass):
         """Make the transformation on the image and annotation and returns the results with the affine transformation matrix"""
         pass
 
-    def choose_new_augmentation(self, image: np.ndarray) -> Dict[str,Any]:
+    def choose_new_augmentation(self, image: np.ndarray) -> Dict[str, Any]:
         """Method that allows to create a new augmentation dict containing augmentation informations"""
         pass

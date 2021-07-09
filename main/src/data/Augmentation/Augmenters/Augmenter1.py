@@ -1,12 +1,9 @@
-from main.src.data.Augmentation.Augmentations.Mirrors import Mirrors
-from main.src.data.Augmentation.Augmentations.Resize import Resize
-from main.src.data.Augmentation.Augmentations.RotationResizeMirrors import RotationResizeMirrors
-from main.src.data.Augmentation.Augmentations.Rotations import Rotations
-from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
-from main.src.param_savers.BaseClass import BaseClass
+from typing import Tuple, List
 
 import numpy as np
-from typing import Tuple, List, Any, Dict, Iterator
+
+from main.src.data.Augmentation.Augmentations.RotationResizeMirrors import RotationResizeMirrors
+from main.src.param_savers.BaseClass import BaseClass
 
 
 class Augmenter1(BaseClass):

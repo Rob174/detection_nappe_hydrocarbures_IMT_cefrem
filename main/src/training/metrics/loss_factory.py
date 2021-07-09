@@ -5,8 +5,8 @@ import torch
 
 from main.src.data.enums import EnumUsage
 from main.src.param_savers.BaseClass import BaseClass
-from main.src.training.metrics.AbstractMetricManager import AbstractMetricManager
 from main.src.training.enums import EnumLoss, EnumDataset
+from main.src.training.metrics.AbstractMetricManager import AbstractMetricManager
 from main.src.training.optimizers_factory import OptimizersFactory
 
 

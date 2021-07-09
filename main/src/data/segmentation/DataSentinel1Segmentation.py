@@ -5,23 +5,21 @@ from typing import Tuple
 import numpy as np
 from h5py import File
 
-from main.FolderInfos import FolderInfos
 import main.src.data.resizer as resizer
-import copy
-
+from main.FolderInfos import FolderInfos
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.param_savers.BaseClass import BaseClass
 
 
 class DataSentinel1Segmentation(BaseClass):
     attr_original_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
-    {  # Formatted in the following way: src_index in cache, name, the position encode destination index
-        0: "other",
-        1: "spill",
-        2: "seep",
-    })
+        {  # Formatted in the following way: src_index in cache, name, the position encode destination index
+            0: "other",
+            1: "spill",
+            2: "seep",
+        })
 
-    def __init__(self,limit_num_images=None,input_size=None):
+    def __init__(self, limit_num_images=None, input_size=None):
         """Class giving access and managing the original attr_dataset stored in the hdf5 and json files
 
         Args:
@@ -31,26 +29,31 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_with_normalization = True
         self.attr_name = self.__class__.__name__
         # Opening the cache
-        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json","r") as fp:
+        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             self.images_infos = json.load(fp)
-        with open(f"{FolderInfos.input_data_folder}pixel_stats.json","r") as fp:
+        with open(f"{FolderInfos.input_data_folder}pixel_stats.json", "r") as fp:
             self.pixel_stats = json.load(fp)
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
         self.attr_limit_num_images = limit_num_images
-        #concretely we can ask:
+        # concretely we can ask:
         # - self.attr_class_mapping[0] -> returns "other" as a normal dict
         # - self.attr_class_mapping["other"] -> returns 0 with this new type of object
-        self.attr_class_mapping = TwoWayDict({k:v for k,v in DataSentinel1Segmentation.attr_original_class_mapping.items()})
-        self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
+        self.attr_class_mapping = TwoWayDict(
+            {k: v for k, v in DataSentinel1Segmentation.attr_original_class_mapping.items()})
+        self.attr_resizer = resizer.Resizer(
+            out_size_w=input_size)  # resize object used to resize the image to the final size for the network
 
         self.attr_global_name = "attr_dataset"
+
     def __get__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
-    def getimage(self,name: str) -> np.ndarray:
+
+    def getimage(self, name: str) -> np.ndarray:
         img = np.array(self.images[name])
-        img = (img-self.pixel_stats["mean"])/self.pixel_stats["std"]
+        img = (img - self.pixel_stats["mean"]) / self.pixel_stats["std"]
         return img
+
     def getitem(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         """Magic python method to get the item of global id asked
 
@@ -65,8 +68,9 @@ class DataSentinel1Segmentation(BaseClass):
 
         item = self.get_all_items()[id]
         img = self.getimage(item)
-        self.current_name = item # for tests if we need access to the last image processed
+        self.current_name = item  # for tests if we need access to the last image processed
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
+
     @lru_cache(maxsize=1)
     def get_all_items(self):
         """List available original images available in the attr_dataset (hdf5 file)

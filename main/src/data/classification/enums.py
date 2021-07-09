@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class EnumLabelModifier(str,Enum):
+class EnumLabelModifier(str, Enum):
     NoLabelModifier = "nolabelmodifier"
     """class other,seep,spill label"""
     LabelModifier1 = "labelmodifier1"

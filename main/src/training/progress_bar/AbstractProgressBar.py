@@ -1,11 +1,11 @@
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, TaskID
 
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class AbstractProgressBar(BaseClass,ABC):
+class AbstractProgressBar(BaseClass, ABC):
     def __init__(self):
         self.columns = [
             TextColumn("{task.fields[name]}", justify="right"),
@@ -20,22 +20,29 @@ class AbstractProgressBar(BaseClass,ABC):
             "•",
             TimeRemainingColumn()
         ]
+
     @property
     def progress_bar_iterations(self) -> TaskID:
         raise NotImplementedError
+
     @property
     def progress_bar_epochs(self) -> TaskID:
         raise NotImplementedError
+
     @property
     def progress_bar(self) -> Progress:
         raise NotImplementedError
-    def __enter__(self,*args,**kwargs):
-        return self.progress_bar.__enter__(*args,**kwargs)
-    def __exit__(self, *args,**kwargs):
-        return self.progress_bar.__exit__(*args,**kwargs)
+
+    def __enter__(self, *args, **kwargs):
+        return self.progress_bar.__enter__(*args, **kwargs)
+
+    def __exit__(self, *args, **kwargs):
+        return self.progress_bar.__exit__(*args, **kwargs)
+
     @abstractmethod
-    def end_epoch(self,loss: int,epoch: int, **kwargs):
+    def end_epoch(self, loss: int, epoch: int, **kwargs):
         return NotImplementedError
+
     @abstractmethod
-    def end_iteration(self,loss:float,status:int,**kargs):
+    def end_iteration(self, loss: float, status: int, **kargs):
         return NotImplementedError

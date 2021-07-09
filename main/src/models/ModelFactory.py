@@ -1,7 +1,7 @@
-from efficientnet_pytorch import EfficientNet
 import torchvision.models as models
-from main.src.models.enums import *
+from efficientnet_pytorch import EfficientNet
 
+from main.src.models.enums import *
 from main.src.models.models.PretrainedModel import PretrainedModel
 from main.src.param_savers.BaseClass import BaseClass
 
