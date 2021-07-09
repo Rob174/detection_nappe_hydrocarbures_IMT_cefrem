@@ -178,7 +178,10 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Allowing to try multiple fonction to retrieve training attribute extraction
 
 ## 09-07-2021
-- 
+- 🔨 Spliting in objects training options (progressbar, model backup)
+- 🔨 Adding abstract classes to improve typing hints possibilities
+- 🔨 Adding EarlyStopping
+- 🔨 Adding missing enums
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
@@ -186,6 +189,8 @@ As no parameters produces better performances, we will investigate:
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
 - Profiling code
+- Update the documentation
+- Update attributes mapping for analysis
+- Find a way not to write all the dict of preprocessings/metrics at each save step
 - Hyperparameters optimization
-- Early stopping
 - Question : convert predicted annotated image back to raster ?
