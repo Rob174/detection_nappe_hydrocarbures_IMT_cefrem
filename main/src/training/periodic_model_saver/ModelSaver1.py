@@ -11,7 +11,9 @@ class ModelSaver1(BaseClass, AbstractModelSaver):
         self.metric_used = metric_used
         self.attr_metric_name = metric_name
         self.attr_step = 100
+        self.it_call = 0
 
     def save_model_if_required(self, model, epoch, iteration):
         if self.metric_used.get_last_metric(self.attr_metric_name) and self.it_call % self.attr_step == 0:
             self.save_model(model, epoch, iteration)
+        self.it_call += 1
