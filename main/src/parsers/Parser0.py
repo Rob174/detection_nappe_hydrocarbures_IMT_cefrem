@@ -93,7 +93,7 @@ class Parser0(BaseClass):
 
             '-nbImg': {"dest": 'nb_images', "default": -1, "type": int,
                        "help": "Limit the number of images of the training attr_dataset"},
-            '-debug': {"dest": 'debug', "default": "true", "type": str,
+            '-debug': {"dest": 'debug', "default": "false", "type": str,
                        "help": "Indicate if we want to save reference and predictions for each iteration"}
         }
 
