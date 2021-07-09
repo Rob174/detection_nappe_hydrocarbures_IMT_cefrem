@@ -136,7 +136,6 @@ class Trainer0(BaseClass):
                             self.attr_tr_vals_true.append(output_npy.tolist())
                             self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
                         self.attr_metrics(prediction.detach().numpy(), output_npy, "tr")
-                        self.saver(self)
 
                         self.attr_progress.end_iteration(loss=current_loss, tr_batch_size=self.attr_tr_batch_size,
                                                          it_tr=it_tr, img_processed=i)
