@@ -5,7 +5,7 @@ from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, Ti
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class AbstractProgressBar(BaseClass, ABC):
+class AbstractProgressBar( ABC):
     def __init__(self):
         self.columns = [
             TextColumn("{task.fields[name]}", justify="right"),

@@ -4,7 +4,7 @@ from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.metrics.AbstractMetricManager import AbstractMetricManager
 
 
-class AbstractEarlyStopping(ABC, BaseClass):
+class AbstractEarlyStopping(ABC):
     def __init__(self, metric: AbstractMetricManager, name_metric_chosen):
         self.epochs_metric_values = []
         self.attr_metric: AbstractMetricManager = metric

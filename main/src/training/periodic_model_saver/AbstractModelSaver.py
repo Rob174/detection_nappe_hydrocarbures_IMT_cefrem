@@ -9,7 +9,7 @@ from main.src.training.metrics.loss_factory import LossFactory
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 
-class AbstractModelSaver(BaseClass, ABC):
+class AbstractModelSaver( ABC):
     def __init__(self, loss: LossFactory, metrics: MetricsFactory):
         pass
 
