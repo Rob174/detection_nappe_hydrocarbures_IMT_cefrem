@@ -190,5 +190,7 @@ As no parameters produces better performances, we will investigate:
 Priorities 1️⃣: high priority ; 9️⃣low priority
 - Profiling code
 - Update the documentation
+- Update attributes mapping for analysis
+- Find a way not to write all the dict of preprocessings/metrics at each save step
 - Hyperparameters optimization
 - Question : convert predicted annotated image back to raster ?
