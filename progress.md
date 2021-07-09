@@ -187,4 +187,5 @@ As no parameters produces better performances, we will investigate:
 Priorities 1️⃣: high priority ; 9️⃣low priority
 - Profiling code
 - Hyperparameters optimization
+- Early stopping
 - Question : convert predicted annotated image back to raster ?
