@@ -44,8 +44,9 @@ class LossFactory(BaseClass, AbstractMetricManager):
 
     def call(self, prediction_gpu, output_gpu, dataset: EnumDataset = EnumDataset.Train) -> float:
         loss = self.loss(prediction_gpu, output_gpu)
-        loss.backward()
-        self.optimizer().step()
+        if dataset == EnumDataset.Train:
+            loss.backward()
+            self.optimizer().step()
         current_loss = loss.item()
         self.attr_loss_values[dataset].append(current_loss)
         return current_loss

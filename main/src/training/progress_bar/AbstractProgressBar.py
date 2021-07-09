@@ -34,7 +34,7 @@ class AbstractProgressBar( ABC):
         raise NotImplementedError
 
     def __enter__(self, *args, **kwargs):
-        return self.progress_bar.__enter__(*args, **kwargs)
+        return self.progress_bar.__enter__()
 
     def __exit__(self, *args, **kwargs):
         return self.progress_bar.__exit__(*args, **kwargs)

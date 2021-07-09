@@ -7,11 +7,7 @@ from main.src.training.progress_bar.AbstractProgressBar import AbstractProgressB
 class ProgressBar0(BaseClass, AbstractProgressBar):
     def __init__(self, length: int, num_epochs: int):
         super(ProgressBar0, self).__init__()
-        self.columns.insert(8, TextColumn("[bold blue]num_processed_img: {task.fields[img_processed]:.4e}",
-                                          justify="right"))
-        self.columns.insert(9, "•")
-        columns = self.columns
-        self._progress_bar = Progress(*columns)
+        self._progress_bar = Progress(*self.columns)
         self._progress_bar_epochs = self._progress_bar.add_task("epochs", name="[red]Epochs", loss=0.,
                                                               total=num_epochs,
                                                               status=0)
@@ -24,3 +20,7 @@ class ProgressBar0(BaseClass, AbstractProgressBar):
 
     def end_epoch(self, loss: int, epoch: int, **kwargs):
         self._progress_bar.update(self._progress_bar_epochs, advance=1, loss=loss, status=epoch)
+
+    @property
+    def progress_bar(self) -> Progress:
+        return self._progress_bar
