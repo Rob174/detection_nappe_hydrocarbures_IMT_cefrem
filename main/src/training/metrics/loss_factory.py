@@ -47,7 +47,7 @@ class LossFactory(BaseClass, AbstractMetricManager):
         if dataset == EnumDataset.Train:
             loss.backward()
             self.optimizer().step()
-        current_loss = loss.item()
+        current_loss = loss.detach().item()
         self.attr_loss_values[dataset].append(current_loss)
         return current_loss
 
