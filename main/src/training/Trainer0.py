@@ -157,7 +157,7 @@ class Trainer0(BaseClass):
                                 prediction = self.model.model(input_gpu)
                                 del input_gpu
                                 output_gpu = torch.Tensor(output_npy).float().to(device)
-                                self.attr_loss(prediction, output_gpu, EnumDataset.Valid)
+                                self.attr_loss(prediction, output_gpu, output_npy, EnumDataset.Valid)
                                 prediction: torch.Tensor = prediction.cpu().detach().numpy()
                             self.attr_metrics(prediction, output_npy, EnumDataset.Valid)
                             self.attr_model_saver.save_model_if_required(self.model, epoch, i)
