@@ -59,7 +59,7 @@ class Trainer0(BaseClass):
         self.attr_metrics: MetricsFactory = metrics
         self.saver = saver
         self.attr_early_stopping: AbstractEarlyStopping = early_stopping
-        self.attr_progress = ProgressBarFactory(self.attr_dataset.len(), num_epochs=num_epochs)
+        self.attr_progress = ProgressBarFactory(self.attr_dataset.len("tr"), num_epochs=num_epochs)
         self.attr_model_saver = model_saver
 
         # split the datasets into train and validation
