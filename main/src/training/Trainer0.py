@@ -77,7 +77,6 @@ class Trainer0(BaseClass):
         self.attr_last_epoch = -1
         self.tr_batches = [[],[]]
         self.valid_batches = [[],[]]
-        self.progress_bar_creation()
         self.attr_global_name = "trainer"
         self.saver(self).save()
     def add_to_batch_tr(self,input,output):
