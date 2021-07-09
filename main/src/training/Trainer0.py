@@ -127,15 +127,15 @@ class Trainer0(BaseClass):
                         # forward + backward + optimize
                         prediction_gpu = self.model.model(input_gpu)
                         del input_gpu
+                        prediction_npy = prediction_gpu.cpu().detach().numpy()
                         output_gpu = torch.Tensor(output_npy).float().to(device)
-                        self.attr_loss(prediction_gpu, output_gpu, EnumDataset.Train)
+                        self.attr_loss(prediction_gpu, output_gpu, prediction_npy,output_npy,EnumDataset.Train)
                         del output_gpu
 
-                        prediction: torch.Tensor = prediction_gpu.cpu()
                         if self.attr_debug == "true":
                             self.attr_tr_vals_true.append(output_npy.tolist())
-                            self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
-                        self.attr_metrics(prediction.detach().numpy(), output_npy, "tr")
+                            self.attr_tr_vals_pred.append(prediction_npy.tolist())
+                        self.attr_metrics(prediction_npy, output_npy, "tr")
 
                         self.attr_progress.end_iteration(loss=current_loss, tr_batch_size=self.attr_tr_batch_size,
                                                          it_tr=it_tr, img_processed=i)
