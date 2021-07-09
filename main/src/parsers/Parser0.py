@@ -20,7 +20,7 @@ class Parser0(BaseClass):
 
             >>> parser = Parser0() # initialize the parser (constructor)
             >>> arguments = parser() # parse arguments (by calling __call__ method)
-            >>> arguments.dataset # example of access to one of the possible argument
+            >>> arguments.attr_dataset # example of access to one of the possible argument
             "classificationpatch1"
     """
     def __init__(self):
@@ -31,8 +31,8 @@ class Parser0(BaseClass):
 
                     '-no_security': {"dest":'no_security', "default":EnumGitCheck.GITCHECK, "type":EnumGitCheck,"help":"Indicate if you want to check if all python files have been commited before launching the training process true to disable the security","choices":list(EnumGitCheck)},
                     # Dataset
-                    '-dataset':{"dest":'dataset',"default":EnumLabelModifier.LabelModifier1,"type":EnumLabelModifier, "help": "Indicate the dataset used to constitue datasets", "choices":list(EnumLabelModifier)},
-                    '-usage_type':{"dest":'usage_type',"default":EnumUsage.Classification,"type":EnumUsage,"help":"Indicate the source dataset used to constitue datasets","choices":list(EnumUsage)},
+                    '-attr_dataset':{"dest":'attr_dataset',"default":EnumLabelModifier.LabelModifier1,"type":EnumLabelModifier, "help": "Indicate the attr_dataset used to constitue datasets", "choices":list(EnumLabelModifier)},
+                    '-usage_type':{"dest":'usage_type',"default":EnumUsage.Classification,"type":EnumUsage,"help":"Indicate the source attr_dataset used to constitue datasets","choices":list(EnumUsage)},
                     '-patch':{"dest":'patch',"default":"fixed_px","type":EnumPatchAlgorithm,"help":"Indicate the type of patch to create","choices":list(EnumPatchAlgorithm)},
                     '-patchExclPol': {"dest":"patch_exclude_policy", "default":EnumPatchExcludePolicy.MarginMoreThan, "type":EnumPatchExcludePolicy, "help":"Indicates the policy to exclude patches (especially patches containing margins)","choices":list(EnumPatchExcludePolicy)},
                     '-patchExclThreshold': {"dest":"patch_exclude_policy_threshold", "default":1000, "type":int, "help":"The threshold used for margin more than algorithm"},
@@ -53,7 +53,7 @@ class Parser0(BaseClass):
                                  "help": "Choose whcih layers to freeze in the original model",
                                  "choices": list(EnumFreeze)},
                     # Training
-                    '-num_epochs':{"dest":'num_epochs',"default":70,"type":int,"help":"Number of epochs / repetitions of the training dataset"},
+                    '-num_epochs':{"dest":'num_epochs',"default":70,"type":int,"help":"Number of epochs / repetitions of the training attr_dataset"},
                     '-eval_step':{"dest":'eval_step',"default":10,"type":int,"help":"Number of training steps between two evaluation/validation steps"},
                     '-loss':{"dest":'loss_preference',"default":"binarycrossentropy","type":EnumLoss,"help":"Loss prefered for training","choices":list(EnumLoss)},
 
@@ -61,7 +61,7 @@ class Parser0(BaseClass):
                     '-eps':{"dest":'eps',"default":1e-7,"type":float,"help":"Epsilon of the optimizer if it is Adam"},
                     '-opti':{"dest":'optimizer',"default":"adam","type":EnumOptimizer,"help":"Optimizer algorithm","choices":list(EnumOptimizer)},
 
-                    '-nbImg':{"dest":'nb_images',"default":-1,"type":int,"help":"Limit the number of images of the training dataset"},
+                    '-nbImg':{"dest":'nb_images',"default":-1,"type":int,"help":"Limit the number of images of the training attr_dataset"},
                     '-debug':{"dest":'debug',"default":"true","type":str,"help":"Indicate if we want to save reference and predictions for each iteration"}
         }
 

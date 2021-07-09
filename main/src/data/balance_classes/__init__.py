@@ -1,5 +1,5 @@
 """
-Classes that manage the dataset class balancing.
+Classes that manage the attr_dataset class balancing.
 
 Currently one balancing type is supported:
 - BalanceClasses1: balance classes by excluding patches where there is only the other class

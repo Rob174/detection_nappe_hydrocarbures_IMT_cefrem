@@ -52,7 +52,7 @@ class RGB_Overlay_Patch:
             progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
             skipped = 0
             for id,[input,output,filter] in enumerate(patches):
-                if filter is True: # skip the image if the dataset ask to skip this patch (can be for multiple reasons -> see DatasetFactory parameters supplied)
+                if filter is True: # skip the image if the attr_dataset ask to skip this patch (can be for multiple reasons -> see DatasetFactory parameters supplied)
                     skipped += 1
                     continue
                 input_adapted = np.stack((input,input,input),axis=0) # convert patch to rgb
@@ -94,7 +94,7 @@ class RGB_Overlay_Patch:
         return overlay_true,overlay_pred,original_img
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-07_11h33min59s_'
+    choice_folder1 = '2021-07-07_15h44min40s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 

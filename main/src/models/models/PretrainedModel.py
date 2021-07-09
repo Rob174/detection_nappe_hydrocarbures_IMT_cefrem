@@ -22,7 +22,7 @@ class PretrainedModel(nn.Module,BaseClass):
         self.net = original_model
         if out_activation == "sigmoid":
             self.activation = nn.Sigmoid()
-        self.layer1 = nn.Linear(original_num_classes, num_classes) # convert from the original_num_classes classes from the original model pretrained on a dataset to num_classes classes
+        self.layer1 = nn.Linear(original_num_classes, num_classes) # convert from the original_num_classes classes from the original model pretrained on a attr_dataset to num_classes classes
 
         for p in self.net.parameters():
             if freeze == EnumFreeze.AllExceptLastDense:

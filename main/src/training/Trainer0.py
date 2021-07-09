@@ -1,14 +1,16 @@
-import json
-
 from main.FolderInfos import FolderInfos
 from main.src.param_savers.BaseClass import BaseClass
-from torch.utils.data import random_split, DataLoader
 import torch
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
-from rich.console import Console
 import numpy as np
 
-from main.src.training.TrValidSplit import TrValidSplit, trvalidsplit
+from main.src.training.TrValidSplit import trvalidsplit
+from main.src.training.early_stopping.AbstractEarlyStopping import AbstractEarlyStopping
+from main.src.training.enums import EnumDataset
+from main.src.training.metrics.loss_factory import LossFactory
+from main.src.training.metrics.metrics_factory import MetricsFactory
+from main.src.training.optimizers_factory import OptimizersFactory
+from main.src.training.progress_bar.ProgressBarFactory import ProgressBarFactory
 
 
 class Trainer0(BaseClass):
@@ -16,13 +18,13 @@ class Trainer0(BaseClass):
 
     Args:
         batch_size: int, the training batch size: number of sample passed together to the model
-        num_epochs: int, number of complete processing of the dataset by the model
-        tr_prct: float ∈ [0.,1.], percentage of the full dataset dedicated to training
+        num_epochs: int, number of complete processing of the attr_dataset by the model
+        tr_prct: float ∈ [0.,1.], percentage of the full attr_dataset dedicated to training
         dataset: DatasetFactory object to access data
         model: pytorch model to train
-        optimizer: pyrtoch optimizer to use
-        loss: pytorch loss to use
-        metrics: pytorch metrics to use
+        optimizer: optimizer factory
+        loss: loss factory
+        metrics: metrics factory
         saver: Saver0 object (see its documentation)
         eval_step: number of training batches between two validation steps
         debug: str enum ("true" or "false") if "true", save prediction and annotation during training process. ⚠️ can slow down the training process
@@ -30,9 +32,10 @@ class Trainer0(BaseClass):
     def __init__(self ,batch_size,num_epochs,tr_prct,
                  dataset,
                  model,
-                 optimizer,
-                 loss,
-                 metrics,
+                 optimizer: OptimizersFactory,
+                 loss: LossFactory,
+                 metrics: MetricsFactory,
+                 early_stopping: AbstractEarlyStopping,
                  saver,
                  eval_step,debug="false"):
 
@@ -43,14 +46,18 @@ class Trainer0(BaseClass):
         self.attr_tr_batch_size = batch_size
         self.attr_tr_size = tr_prct
         self.attr_num_epochs = num_epochs
-        self.dataset = dataset
-        self.optimizer = optimizer
-        self.loss = loss
-        self.metrics = metrics
-        self.saver = saver
         self.attr_eval_step = eval_step
         self.attr_valid_batch_size = self.attr_tr_batch_size*self.attr_eval_step
         self.attr_prefetch_factor = 2 # only value possible with hdf5 files currently
+
+        self.attr_dataset = dataset
+        self.attr_optimizer: OptimizersFactory = optimizer
+        self.attr_loss: LossFactory = loss
+        self.attr_metrics: MetricsFactory = metrics
+        self.saver = saver
+        self.attr_early_stopping: AbstractEarlyStopping = early_stopping
+        self.attr_progress = ProgressBarFactory(self.attr_dataset.len(),num_epochs=num_epochs)
+
         # split the datasets into train and validation
         [dataset_tr, dataset_valid] = trvalidsplit(dataset)
         # create the dataloader classes to automatically generate the samples
@@ -58,8 +65,6 @@ class Trainer0(BaseClass):
         self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.model = model
 
-        self.attr_tr_loss = []
-        self.attr_valid_loss = []
         self.attr_last_iter = -1
         self.attr_last_epoch = -1
         self.tr_batches = [[],[]]
@@ -67,30 +72,6 @@ class Trainer0(BaseClass):
         self.progress_bar_creation()
         self.attr_global_name = "trainer"
         self.saver(self).save()
-    def progress_bar_creation(self):
-        """method to create the columns of the progressbar"""
-        colums = [
-            TextColumn("{task.fields[name]}", justify="right"),
-            BarColumn(bar_width=None),
-            "[progress.percentage]{task.percentage:>3.1f}%",
-            "•",
-            TextColumn("[bold blue]status: {task.fields[status]}", justify="right"),
-            "•",
-            TextColumn("[bold blue]last_loss: {task.fields[loss]:.4e}", justify="right"),
-            "•"
-        ]
-        self.length = self.dataset_tr.len()
-        if self.length is None:
-            colums.extend([
-                TextColumn("[bold blue]num_processed_img: {task.fields[img_processed]:.4e}", justify="right"),
-                "•"
-            ])
-        colums.extend([
-            TimeElapsedColumn(),
-            "•",
-            TimeRemainingColumn()
-        ])
-        self.progress = Progress(*colums)
     def add_to_batch_tr(self,input,output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
         self.tr_batches[0].append(input)
@@ -115,19 +96,7 @@ class Trainer0(BaseClass):
         return self.call()
     def call(self):
         """Train the model"""
-        with self.progress:
-
-            if self.length is not None:
-                global_iteration_progress = self.progress.add_task("iterations", name="[blue]Global iterations", loss=0., total=self.length*self.attr_num_epochs,
-                                               status=0)
-                epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0.,
-                                                        total=self.attr_num_epochs,
-                                                        status=0)
-            else:
-
-                epoch_progress = self.progress.add_task("epochs", name="[red]Epochs", loss=0.,
-                                                        total=self.attr_num_epochs,
-                                                        status=0,img_processed=0)
+        with self.attr_progress:
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.model.to(device)
@@ -140,35 +109,30 @@ class Trainer0(BaseClass):
                     opt_tr_batch = self.add_to_batch_tr(input,output)
                     if opt_tr_batch is not None:
                         it_tr += 1
+                        self.attr_last_iter = i
+                        self.attr_last_epoch = epoch
+
                         input_npy,output_npy = opt_tr_batch
                         input_gpu = torch.Tensor(input_npy).to(device)
                         # zero the parameter gradients
-                        self.optimizer.zero_grad()
+                        self.attr_optimizer.zero_grad()
 
                         # forward + backward + optimize
                         prediction_gpu = self.model(input_gpu)
                         del input_gpu
                         output_gpu = torch.Tensor(output_npy).float().to(device)
-                        loss = self.loss(prediction_gpu, output_gpu)
-                        loss.backward()
-                        self.optimizer.step()
-                        current_loss = loss.item()
+                        self.attr_loss(prediction_gpu,output_gpu,EnumDataset.Train)
                         del output_gpu
 
-                        self.attr_tr_loss.append(float(current_loss))
-                        self.attr_last_iter = i
-                        self.attr_last_epoch = epoch
                         prediction: torch.Tensor = prediction_gpu.cpu()
                         if self.attr_debug == "true":
                             self.attr_tr_vals_true.append(output_npy.tolist())
                             self.attr_tr_vals_pred.append(prediction.detach().numpy().tolist())
-                        self.metrics(prediction.detach().numpy(), output_npy, "tr")
-                        self.saver(self.metrics)
+                        self.attr_metrics(prediction.detach().numpy(), output_npy, "tr")
+                        self.saver(self)
 
-                        if self.length is not None:
-                            self.progress.update(global_iteration_progress, advance=self.attr_tr_batch_size, loss=current_loss, status=it_tr)
-                        if self.length is None:
-                            self.progress.update(epoch_progress, advance=0, loss=current_loss, status=epoch,img_processed=i)
+                        self.attr_progress.end_iteration(loss=current_loss,tr_batch_size=self.attr_tr_batch_size,
+                                                         it_tr=it_tr,img_processed=i)
                         # Validation step
                         if it_tr % self.attr_eval_step == 0:
                             opt_valid_batch = None
@@ -176,34 +140,25 @@ class Trainer0(BaseClass):
                                 try:
                                     input, output,transformation_matrix,item = next(dataset_valid_iter)
                                 except StopIteration:
-                                    # StopIteration is thrown if dataset ends
                                     # reinitialize data loader
                                     dataset_valid_iter = iter(self.dataset_valid)
                                     input, output,transformation_matrix,item = next(dataset_valid_iter)
                                 opt_valid_batch = self.add_to_batch_valid(input,output)
-                                it_val += 1
+                            it_val += 1
                             input_npy,output_npy = opt_tr_batch
-                            input_gpu = torch.Tensor(input_npy).to(device)
-                            prediction = self.model(input_gpu)
-                            del input_gpu
-                            output_gpu = torch.Tensor(output_npy).float().to(device)
-                            loss = self.loss(prediction, output_gpu)
-                            current_loss = loss.item()
-                            prediction: torch.Tensor = prediction.cpu().detach().numpy()
-                            self.attr_valid_loss.append(float(current_loss))
-                            self.saver(self.dataset)
-                            self.metrics(prediction, output_npy, "valid")
-                            self.saver(self.metrics)
+                            with torch.no_grad():
+                                input_gpu = torch.Tensor(input_npy).to(device)
+                                prediction = self.model(input_gpu)
+                                del input_gpu
+                                output_gpu = torch.Tensor(output_npy).float().to(device)
+                                self.attr_loss(prediction, output_gpu,EnumDataset.Valid)
+                                prediction: torch.Tensor = prediction.cpu().detach().numpy()
+                            self.attr_metrics(prediction, output_npy, EnumDataset.Valid)
                             self.saver(self).save()
 
-                            if loss < np.min(self.attr_valid_loss) and it_tr % 100 == 0:
-                                torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
 
-                if self.length is not None:
-                    self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch)
-                else:
-                    self.progress.update(epoch_progress, advance=1, loss=current_loss, status=epoch,img_processed=i)
+                self.attr_progress.end_epoch(loss=current_loss,epoch=epoch,img_processed=i)
                 torch.save(self.model.state_dict(), f"{FolderInfos.base_filename}_model_epoch-{epoch}_it-{i}.pt")
-                self.saver(self.dataset)
-                self.saver(self.metrics)
                 self.saver(self).save()
+                if self.attr_early_stopping.stop_training():
+                    break

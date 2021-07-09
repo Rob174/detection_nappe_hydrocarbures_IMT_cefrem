@@ -31,13 +31,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
     Args:
         patch_creator: the object of PatchCreator0 class managing patches
         input_size: the size of the image provided as input to the model ⚠️
-        limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+        limit_num_images: limit the number of image in the attr_dataset per epoch (before filtering)
         balance: EnumBalance indicating the class used to balance images
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_img: opt EnumAugmenter, name of the augmenter to use on source image
         augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_patch: opt EnumAugmenter, name of the augmenter to use on patches
-        augmentation_factor: the number of replicas of the original dataset to do
+        augmentation_factor: the number of replicas of the original attr_dataset to do
         label_modifier: EnumLabelModifier
     """
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
@@ -55,7 +55,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
         self.tr_keys = list(self.images.keys())[:int(len(self.images)*tr_percent)]
         self.valid_keys = list(self.images.keys())[int(len(self.images)*tr_percent):]
-        self.attr_global_name = "dataset"
+        self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = NoLabelModifier()
         elif label_modifier == EnumLabelModifier.LabelModifier1:
@@ -124,17 +124,17 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """
 
         Args:
-            dataset: str, tr or valid to choose source images for tr or valid dataset
+            dataset: str, tr or valid to choose source images for tr or valid attr_dataset
 
         Returns:
-            generator of the dataset (object that support __iter__ and __next__ magic methods)
+            generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
             tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
         if isinstance(self.attr_img_augmenter,Augmenter1) is False:
-            raise Exception("Only augmenter1 is supported with this method of dataset generation")
+            raise Exception("Only augmenter1 is supported with this method of attr_dataset generation")
         if isinstance(self.attr_patch_augmenter,NoAugmenter) is False:
             raise Exception("The patch augmenter is not supported when you choose augmenter1 for image augmenter")
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
@@ -171,14 +171,14 @@ class ClassificationPatch(DataSentinel1Segmentation):
             dataset:
 
         Returns:
-            generator of the dataset (object that support __iter__ and __next__ magic methods)
+            generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
             tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
                    None:  no transformation matrix is available for this method
                    item: str name of the source image
         """
         if isinstance(self.attr_img_augmenter,Augmenter1) is True:
-            raise Exception("Augmenter1 is not supported with this method of dataset generation. Use Augmenter0")
+            raise Exception("Augmenter1 is not supported with this method of attr_dataset generation. Use Augmenter0")
         images_available = self.tr_keys if dataset=="tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
@@ -230,7 +230,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
         output = np.zeros((len(self.attr_original_class_mapping),),dtype=np.float32) # 0 ns
         for value in self.attr_original_class_mapping.keys(Way.ORIGINAL_WAY): # btwn 1 and 2 ms for the for loop
-            # for each class of the original dataset, we put a probability of presence of one if the class is in the patch
+            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
             value = int(value)
             #  if the class is in the patch
             if value in annotations_patch:

@@ -22,10 +22,10 @@ class DataSentinel1Segmentation(BaseClass):
     })
 
     def __init__(self,limit_num_images=None,input_size=None):
-        """Class giving access and managing the original dataset stored in the hdf5 and json files
+        """Class giving access and managing the original attr_dataset stored in the hdf5 and json files
 
         Args:
-            limit_num_images: limit the number of image in the dataset per epoch (before filtering)
+            limit_num_images: limit the number of image in the attr_dataset per epoch (before filtering)
             input_size: the size of the image provided as input to the model ⚠️
         """
         self.attr_with_normalization = True
@@ -44,7 +44,7 @@ class DataSentinel1Segmentation(BaseClass):
         self.attr_class_mapping = TwoWayDict({k:v for k,v in DataSentinel1Segmentation.attr_original_class_mapping.items()})
         self.attr_resizer = resizer.Resizer(out_size_w=input_size) # resize object used to resize the image to the final size for the network
 
-        self.attr_global_name = "dataset"
+        self.attr_global_name = "attr_dataset"
     def __get__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
     def getimage(self,name: str) -> np.ndarray:
@@ -69,10 +69,10 @@ class DataSentinel1Segmentation(BaseClass):
         return self.attr_resizer(img), self.attr_resizer(self.annotations_labels[item])
     @lru_cache(maxsize=1)
     def get_all_items(self):
-        """List available original images available in the dataset (hdf5 file)
+        """List available original images available in the attr_dataset (hdf5 file)
         the :lru_cache(maxsize=1) allow to compute it only one time and store the result in a cache
 
-        Allow to limit the number of original image used in the dataset
+        Allow to limit the number of original image used in the attr_dataset
 
         Returns:
             list of str: [img_uniq_id0,...]

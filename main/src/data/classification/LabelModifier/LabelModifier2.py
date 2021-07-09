@@ -30,7 +30,7 @@ class LabelModifier2(AbstractLabelModifier):
             lname.append(name.value)
         tmp_mapping["|".join(lkey), Way.ORIGINAL_WAY] = "|".join(lname), "|".join(lvalue)
         self.attr_class_mapping_merged = tmp_mapping
-        self.attr_global_name = "dataset"
+        self.attr_global_name = "attr_dataset"
 
     def make_classification_label(self, annotation: np.ndarray):
         """Creates the classification label based on the annotation patch image

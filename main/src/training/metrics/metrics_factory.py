@@ -1,8 +1,13 @@
+from enum import Enum
+
 from main.src.param_savers.BaseClass import BaseClass
 import re
 import numpy as np
 
-class MetricsFactory(BaseClass):
+from main.src.training.metrics.AbstractMetricManager import AbstractMetricManager
+
+
+class MetricsFactory(BaseClass,AbstractMetricManager):
     """Class managing metrics
 
     Args:
@@ -17,6 +22,7 @@ class MetricsFactory(BaseClass):
         ...                # this is the way to provide the iterable of metrics
     """
     def __init__(self,*metrics_names):
+        super(MetricsFactory, self).__init__()
         self.attr_list_metrics = {}
         self.functions_metrics = []
         for metric in metrics_names:
@@ -37,3 +43,5 @@ class MetricsFactory(BaseClass):
         true_value = true_value
         for name,function in zip(self.attr_list_metrics.keys(),self.functions_metrics):
             self.attr_list_metrics[name][dataset_type+"_values"].append(float(function(prediction,true_value)))
+    def get_last_metric(self,name: Enum) -> float:
+        return self.attr_list_metrics[name]["valid_values"][-1]

@@ -25,6 +25,8 @@ class OptimizersFactory(BaseClass):
         else:
             raise NotImplementedError(f"{name} has not been implemented")
         self.attr_global_name = "optimizer"
+    def zero_grad(self):
+        self.optimizer.zero_grad()
     def call(self):
         return self.optimizer
     def __call__(self):

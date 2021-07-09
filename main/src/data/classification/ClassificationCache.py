@@ -35,7 +35,7 @@ class ClassificationCache(BaseClass):
             if self.attr_limit_num_images is not None:
                 self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
             self.valid_keys = list(images_cache.keys())[int(len(images_cache)*tr_percent):]
-        self.attr_global_name = "dataset"
+        self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = NoLabelModifier()
         elif label_modifier == EnumLabelModifier.LabelModifier1:
@@ -55,10 +55,10 @@ class ClassificationCache(BaseClass):
         """Generator that generates data for the trainer
 
         Args:
-            dataset: str, tr or valid to choose source images for tr or valid dataset
+            dataset: str, tr or valid to choose source images for tr or valid attr_dataset
 
         Returns:
-            generator of the dataset (object that support __iter__ and __next__ magic methods)
+            generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
             tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
                    transformation_matrix:  the transformation matrix to transform the source image
@@ -91,7 +91,7 @@ class ClassificationCache(BaseClass):
 
         output = np.zeros((len(DataSentinel1Segmentation.attr_original_class_mapping),),dtype=np.float32)
         for value in DataSentinel1Segmentation.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):
-            # for each class of the original dataset, we put a probability of presence of one if the class is in the patch
+            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
             value = int(value)
             #  if the class is in the patch
             if value in annotations_patch:

@@ -9,7 +9,7 @@ if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
     with h5py.File(FolderInfos.input_data_folder+"images_preprocessed.hdf5","r") as cache:
         dico_stats = {'sum_all_vals': -1055176831312.0, 'total_num_px': 94929199354}
-        # Compute the mean of all the dataset
+        # Compute the mean of all the attr_dataset
         progress = Progress(
             TextColumn("{task.fields[name]}", justify="right"),
             BarColumn(bar_width=None),

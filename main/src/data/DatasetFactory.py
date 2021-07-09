@@ -17,8 +17,8 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
-    """Class managing the dataset creation and access with options of:
-    - different dataset possible
+    """Class managing the attr_dataset creation and access with options of:
+    - different attr_dataset possible
     - different patch creator possible
 
     Args:

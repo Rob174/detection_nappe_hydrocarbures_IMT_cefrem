@@ -112,7 +112,7 @@ if __name__ == "__main__":
         ## Open the raster
         with rasterio.open(pathImg) as raster: ## (NB: with keyword allows to manage files (properly open and close them)
             image_array: np.ndarray = raster.read(1) # Get the image array
-            # Then, we create a "dataset" to be able to access the data by calling hdf5_object[name]. It is not a real dataset as we commonly think as only one image is in it.
+            # Then, we create a "attr_dataset" to be able to access the data by calling hdf5_object[name]. It is not a real attr_dataset as we commonly think as only one image is in it.
             images_hdf5.create_dataset(name ,shape=image_array.shape ,dtype='f',
                                        data=image_array, compression='gzip', compression_opts=9)
             # Properties computation

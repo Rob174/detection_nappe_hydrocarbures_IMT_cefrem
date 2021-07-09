@@ -14,7 +14,7 @@ class Patch_creator0(BaseClass):
 
     Args:
         grid_size_px: size of the patch extracted from the original image
-        images_informations_preprocessed: dict from the json file containing images dataset informations
+        images_informations_preprocessed: dict from the json file containing images attr_dataset informations
         test: bool, indicate if we need to keep track of the coordinates (in px) of the patch computed
         exclusion_policy: EnumPatchExcludePolicy, policy used to exclude patches based on their apearence.
         exclusion_policy_threshold: for EnumPatchExcludePolicy.MarginMoreThan number of pixels at 0 exactly after which a patch is excluded
