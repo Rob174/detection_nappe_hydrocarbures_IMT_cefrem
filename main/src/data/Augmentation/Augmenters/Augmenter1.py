@@ -9,14 +9,14 @@ from main.src.param_savers.BaseClass import BaseClass
 class Augmenter1(BaseClass):
     """Manage and keep track of augmentations to apply on source images only to directly extract patches
 
-    With this class, only one augmentation is supported combinedRotResizeMir which allows to commpute the final patch to be provided to the model after
+    With this class, only one augmentation is supported combinedRotResizeMir which allows to commpute the final patch to be provided to the attr_model after
     rotation, mirrors, resizes (one for augmentation and another to resize the patch to a smaller version)
 
         Args:
             allowed_transformations: str, augmentations to apply. Currently supported:
             - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
-            patch_size_final_resize: int, size in px of the output patch provided to the model
+            patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 
     """
 
@@ -36,7 +36,7 @@ class Augmenter1(BaseClass):
             allowed_transformations: str, list of augmentations to apply. Currently supported:
             - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
-            patch_size_final_resize: int, size in px of the output patch provided to the model
+            patch_size_final_resize: int, size in px of the output patch provided to the attr_model
         Returns:
 
         """

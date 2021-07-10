@@ -10,8 +10,8 @@ class PretrainedModel(nn.Module, BaseClass):
 
 
     Args:
-        original_model: the original pretrained model ⚠️ with weights loaded
-        original_num_classes: int, the number of classes given as output by the original pretrained model
+        original_model: the original pretrained attr_model ⚠️ with weights loaded
+        original_num_classes: int, the number of classes given as output by the original pretrained attr_model
         num_classes: int, number of desired number of classes
         out_activation: str, activation to add at the end of the network. Currently supported:
         - sigmoid
@@ -25,11 +25,11 @@ class PretrainedModel(nn.Module, BaseClass):
         if out_activation == "sigmoid":
             self.activation = nn.Sigmoid()
         self.layer1 = nn.Linear(original_num_classes,
-                                num_classes)  # convert from the original_num_classes classes from the original model pretrained on a attr_dataset to num_classes classes
+                                num_classes)  # convert from the original_num_classes classes from the original attr_model pretrained on a attr_dataset to num_classes classes
 
         for p in self.net.parameters():
             if freeze == EnumFreeze.AllExceptLastDense:
-                p.requires_grad = False  # Freeze all weights of the original model
+                p.requires_grad = False  # Freeze all weights of the original attr_model
             elif freeze == EnumFreeze.NoFreeze:
                 p.requires_grad = True
 

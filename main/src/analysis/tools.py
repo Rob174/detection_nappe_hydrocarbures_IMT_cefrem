@@ -25,7 +25,7 @@ class RGB_Overlay_Patch:
 
         Args:
             name_img: id / name of the image as shown in images_informations_preprocessed.json (better to vizualize but the "official" keys are in the images_preprocessed.hdf5 file)
-            model: a created model with pretrained weights already loaded ⚠️
+            model: a created attr_model with pretrained weights already loaded ⚠️
             blending_factor: the percentage (∈ [0.,1.]) of importance given to the color
             device: a pytorch device (gpu)
 
@@ -135,8 +135,8 @@ if __name__ == "__main__":
         import torch
 
         device = torch.device("cuda")
-        model = ModelFactory(model_name=dico["model"]["attr_model_name"],
-                             num_classes=dico["model"]["attr_num_classes"])()
+        model = ModelFactory(model_name=dico["attr_model"]["attr_model_name"],
+                             num_classes=dico["attr_model"]["attr_num_classes"])()
         model.to(device)
         model.load_state_dict(torch.load(f"{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt"))
         array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device)

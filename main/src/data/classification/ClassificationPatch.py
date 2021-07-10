@@ -29,7 +29,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     Args:
         patch_creator: the object of PatchCreator0 class managing patches
-        input_size: the size of the image provided as input to the model ⚠️
+        input_size: the size of the image provided as input to the attr_model ⚠️
         limit_num_images: limit the number of image in the attr_dataset per epoch (before filtering)
         balance: EnumBalance indicating the class used to balance images
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
@@ -131,7 +131,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
         Returns:
             generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
-            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
@@ -177,7 +177,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
         Returns:
             generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
-            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
                    None:  no transformation matrix is available for this method
                    item: str name of the source image

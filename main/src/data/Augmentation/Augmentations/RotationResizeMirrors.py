@@ -14,7 +14,7 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         resize_lower_fact_float: float, minimal resize factor to resize the original image
         resize_upper_fact_float: float, maximal resize factor to resize the original image
         patch_size_before_final_resize: int, size in px of the output patch to extract
-        patch_size_final_resize: int, size in px of the output patch provided to the model
+        patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 
     Usage:
 

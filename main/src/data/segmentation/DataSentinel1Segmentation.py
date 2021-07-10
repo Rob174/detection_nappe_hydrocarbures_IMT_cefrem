@@ -24,7 +24,7 @@ class DataSentinel1Segmentation(BaseClass):
 
         Args:
             limit_num_images: limit the number of image in the attr_dataset per epoch (before filtering)
-            input_size: the size of the image provided as input to the model ⚠️
+            input_size: the size of the image provided as input to the attr_model ⚠️
         """
         self.attr_with_normalization = True
         self.attr_name = self.__class__.__name__

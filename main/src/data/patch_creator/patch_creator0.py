@@ -70,7 +70,7 @@ class Patch_creator0(BaseClass):
             tuple of np.ndarray, the patch and a boolean indicating if the patch is rejected
 
         """
-        # computing resolution statistics taking a model where the earth is a sphere
+        # computing resolution statistics taking a attr_model where the earth is a sphere
         if count_reso is True:  # skiping these lines: 0 ns
             radius_earth_meters = 6371e3
             reso_x = self.images_informations_preprocessed[image_name]["resolution"][

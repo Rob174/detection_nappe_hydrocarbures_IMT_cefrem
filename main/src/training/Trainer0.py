@@ -18,11 +18,11 @@ class Trainer0(BaseClass):
     """Class managing the training process
 
     Args:
-        batch_size: int, the training batch size: number of sample passed together to the model
-        num_epochs: int, number of complete processing of the attr_dataset by the model
+        batch_size: int, the training batch size: number of sample passed together to the attr_model
+        num_epochs: int, number of complete processing of the attr_dataset by the attr_model
         tr_prct: float ∈ [0.,1.], percentage of the full attr_dataset dedicated to training
         dataset: DatasetFactory object to access data
-        model: pytorch model to train
+        model: pytorch attr_model to train
         optimizer: optimizer factory
         loss: loss factory
         metrics: metrics factory
@@ -62,13 +62,13 @@ class Trainer0(BaseClass):
         self.attr_early_stopping: AbstractEarlyStopping = early_stopping
         self.attr_progress = ProgressBarFactory(self.attr_dataset.len("tr"), num_epochs=num_epochs)
         self.attr_model_saver = model_saver
+        self.attr_model = model
 
         # split the datasets into train and validation
         [dataset_tr, dataset_valid] = trvalidsplit(dataset)
         # create the dataloader classes to automatically generate the samples
         self.dataset_tr = dataset_tr  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
-        self.model = model
 
         self.attr_last_iter = -1
         self.attr_last_epoch = -1
@@ -103,11 +103,11 @@ class Trainer0(BaseClass):
         return self.call()
 
     def call(self):
-        """Train the model"""
+        """Train the attr_model"""
         with self.attr_progress:
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
-            self.model.model.to(device)
+            self.attr_model.model.to(device)
             current_loss = -1
             it_tr = 0
             it_val = 0
@@ -125,7 +125,7 @@ class Trainer0(BaseClass):
                         self.attr_optimizer.zero_grad()
 
                         # forward + backward + optimize
-                        prediction_gpu = self.model.model(input_gpu)
+                        prediction_gpu = self.attr_model.model(input_gpu)
                         del input_gpu
                         prediction_npy = prediction_gpu.cpu().detach().numpy()
                         output_gpu = torch.Tensor(output_npy).float().to(device)
@@ -154,16 +154,16 @@ class Trainer0(BaseClass):
                             input_npy, output_npy = opt_tr_batch
                             with torch.no_grad():
                                 input_gpu = torch.Tensor(input_npy).to(device)
-                                prediction = self.model.model(input_gpu)
+                                prediction = self.attr_model.model(input_gpu)
                                 del input_gpu
                                 output_gpu = torch.Tensor(output_npy).float().to(device)
                                 prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
                                 self.attr_loss(prediction, output_gpu, prediction_npy,output_npy, EnumDataset.Valid)
                             self.attr_metrics(prediction_npy, output_npy, EnumDataset.Valid)
-                            self.attr_model_saver.save_model_if_required(self.model, epoch, i)
+                            self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
 
                 self.attr_progress.end_epoch(loss=current_loss, epoch=epoch, img_processed=i)
-                self.attr_model_saver.save_model(self.model, epoch, i)
+                self.attr_model_saver.save_model(self.attr_model, epoch, i)
                 self.saver(self).save()
                 if self.attr_early_stopping.stop_training():
                     break

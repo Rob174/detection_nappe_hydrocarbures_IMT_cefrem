@@ -69,13 +69,13 @@ class Parser0(BaseClass):
             '-augmentation_factor': {"dest": 'augmentation_factor', "default": 100, "type": int,
                                      "help": "The number of times that the source image is augmented"},
             # Model
-            '-model': {"dest": 'model', "default": EnumModels.Vgg16, "type": EnumModels,
+            '-attr_model': {"dest": 'attr_model', "default": EnumModels.Vgg16, "type": EnumModels,
                        "help": "To choose the network architecture used", "choices": list(EnumModels)},
             '-classes': {"dest": 'classes', "default": [EnumClasses.Seep, EnumClasses.Spill], "type": EnumClasses,
                          "help": "Indicate the class used for training separated by a comma", "nargs": "+",
                          "choices": list(EnumClasses)},
             '-freeze': {"dest": 'freeze', "default": EnumFreeze.NoFreeze, "type": EnumFreeze,
-                        "help": "Choose whcih layers to freeze in the original model",
+                        "help": "Choose whcih layers to freeze in the original attr_model",
                         "choices": list(EnumFreeze)},
             # Training
             '-num_epochs': {"dest": 'num_epochs', "default": 70,

@@ -1,4 +1,4 @@
-"""Script to launch with(out) arguments to train the model and save the results"""
+"""Script to launch with(out) arguments to train the attr_model and save the results"""
 
 import subprocess
 import sys
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     saver["date"] = FolderInfos.id
 
     num_classes = len(arguments.classes) if arguments.attr_dataset != EnumLabelModifier.LabelModifier2 else 1
-    model = ModelFactory(model_name=arguments.model, num_classes=num_classes, freeze=arguments.freeze)
+    model = ModelFactory(model_name=arguments.attr_model, num_classes=num_classes, freeze=arguments.freeze)
     optimizer = OptimizersFactory(model, name=arguments.optimizer,
                                   lr=arguments.lr, eps=arguments.eps)
     loss = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference,optimizer=optimizer)

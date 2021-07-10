@@ -7,17 +7,17 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class ModelFactory(BaseClass):
-    """Object creating desired model
+    """Object creating desired attr_model
 
     Args:
-            model_name: EnumModels, model to create
+            model_name: EnumModels, attr_model to create
             num_classes: int, number of output classes desired
             freeze: EnumFreeze
     """
 
     def __init__(self, model_name: EnumModels, num_classes: int = 2,
                  freeze: EnumFreeze = EnumFreeze.AllExceptLastDense):
-        self.attr_global_name = "model"
+        self.attr_global_name = "attr_model"
         self.attr_freeze = freeze
         if model_name == EnumModels.Efficientnetv4:
             self.model = EfficientNet.from_pretrained('efficientnet-b0', num_classes=num_classes)
@@ -37,7 +37,7 @@ class ModelFactory(BaseClass):
         self.attr_num_classes = num_classes
 
     def call(self):
-        """Returns the pytorch model"""
+        """Returns the pytorch attr_model"""
         return self.model
 
     def __call__(self):

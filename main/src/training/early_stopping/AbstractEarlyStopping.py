@@ -7,7 +7,7 @@ from main.src.training.metrics.AbstractMetricManager import AbstractMetricManage
 class AbstractEarlyStopping(ABC):
     def __init__(self, metric: AbstractMetricManager, name_metric_chosen):
         self.epochs_metric_values = []
-        self.attr_metric: AbstractMetricManager = metric
+        self.metric: AbstractMetricManager = metric
         self.attr_name_metric_chosen = name_metric_chosen
 
     @abstractmethod

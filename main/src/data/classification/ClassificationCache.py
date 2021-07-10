@@ -62,7 +62,7 @@ class ClassificationCache(BaseClass):
 
         Returns:
             generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
-            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the model ;
+            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
                    classif: np.ndarray (shape (num_classes,), classification patch ;
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
