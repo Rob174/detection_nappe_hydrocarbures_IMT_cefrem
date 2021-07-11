@@ -41,6 +41,21 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
                     "description": "Indicate the mean mean absolute error accross batches", "tr_values": [],
                     "valid_values": []}
                 self.functions_metrics.append(lambda pred, true: np.mean(np.mean(np.abs(pred - true), axis=1)))
+            elif re.match("^accuracy_threshold-[0-9]\\.[0-9]+$", metric):
+                self.attr_list_metrics[metric] = {
+                    "description": "Indicate the mean mean absolute error accross batches",
+                    "tr_values": [],
+                    "valid_values": []
+                }
+                threshold = float(re.sub("^accuracy_threshold-([0-9]\\.[0-9]+)$", "\\1", metric))
+                def f(pred,true):
+                    pred[pred > threshold] = 1.
+                    pred[pred <= threshold] = 0.
+                    true[true > threshold] = 1.
+                    true[true <= threshold] = 0.
+                    return np.sum(np.abs(pred-true))
+                self.functions_metrics.append(f)
+                # si proba > 0.5 compte comme présent sinon non présent
             else:
                 raise NotImplementedError(f"{metric} has not been implemented")
         self.attr_global_name = "metrics"

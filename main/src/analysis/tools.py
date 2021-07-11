@@ -20,7 +20,7 @@ class RGB_Overlay_Patch:
     def __call__(self, name_img, model, blending_factor=0.5, device=None):
         return self.call(name_img, model, blending_factor, device)
 
-    def call(self, name_img, model, blending_factor=0.25, device=None):
+    def call(self, name_img, model, blending_factor=0.25, device=None, threshold=False):
         """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:
@@ -80,8 +80,12 @@ class RGB_Overlay_Patch:
                 color_pred = np.ones((resized_grid_size, resized_grid_size, 3))
                 for i, c in enumerate(output):
                     color_true[:, :, i] *= c
-                for i, c in enumerate(prediction[0]):
-                    color_pred[:, :, i] *= c
+                if threshold is True:
+                    for i, c in enumerate(prediction[0]):
+                        color_pred[:, :, i] *= 0 if c <= 0.5 else 1
+                else:
+                    for i, c in enumerate(prediction[0]):
+                        color_pred[:, :, i] *= c
                 coordx1_not_resize = pos_x
                 coordx2_not_resize = coordx1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
                 coordy1_not_resize = pos_y
@@ -103,10 +107,10 @@ if __name__ == "__main__":
     name = "027481_0319CB_0EB7"
     FolderInfos.init(test_without_data=True)
     folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
-    epoch = 51
+    epoch = 69
     iteration = 11562
 
-    if os.path.exists(f"{folder}{choice_folder1}_{name}_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
+    if os.path.exists(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
         print("loading from cache")
         import matplotlib.pyplot as plt
         from PIL import Image
