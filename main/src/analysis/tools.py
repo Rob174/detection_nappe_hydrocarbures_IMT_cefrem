@@ -32,11 +32,16 @@ class RGB_Overlay_Patch:
         Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
 
         """
-        original_img = np.array(self.dataset.attr_dataset.images[name_img])  # radar image input (1 channel only)
-        overlay_true = np.zeros((*original_img.shape, 3),
-                                dtype=np.float32)  # prepare the overlays with 3 channels for colors
-        overlay_pred = np.zeros((*original_img.shape, 3), dtype=np.float32)
-        normalize = lambda x: (x - np.min(original_img)) / (np.max(original_img) - np.min(original_img))
+        def normalize(input):
+            max = np.max(input)
+            min = np.min(input)
+            if max-min == 0:
+                return input-min+1
+            else:
+                return (input-min)/(max-min)
+        original_img = normalize(np.array(self.dataset.attr_dataset.images[name_img]))*blending_factor  # radar image input (1 channel only)
+        overlay_true = np.stack((original_img,)*3,axis=-1)  # prepare the overlays with 3 channels for colors
+        overlay_pred = np.stack((original_img,)*3,axis=-1)
         # get the list of patches organized as follows [[input_patch0,output_patch0,filter_patch0],....
         patches = self.dataset.attr_dataset.make_patches_of_image(name_img)
 
@@ -69,9 +74,7 @@ class RGB_Overlay_Patch:
                 pos_x, pos_y = self.dataset.attr_patch_creator.get_position_patch(id, original_img.shape)
                 if len(output) > 3:
                     raise Exception(f"{len(output)} classes : Too much : cannot use this vizualization technic")
-                input = normalize(input)
                 resized_grid_size = self.dataset.attr_patch_creator.attr_grid_size_px
-                input = np.stack((input,) * 3, axis=-1)  # convert in rgb. NB: (input,)*3 <=> (input,input,input)
                 # initialize the overlay for the patch
                 color_true = np.ones((resized_grid_size, resized_grid_size, 3))
                 color_pred = np.ones((resized_grid_size, resized_grid_size, 3))
@@ -79,34 +82,31 @@ class RGB_Overlay_Patch:
                     color_true[:, :, i] *= c
                 for i, c in enumerate(prediction[0]):
                     color_pred[:, :, i] *= c
-
                 coordx1_not_resize = pos_x
-                # coordx1 = int(transformation_matrix.dot(np.array([coordx1_not_resize,0,1]))[0])
                 coordx2_not_resize = coordx1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
-                # coordx2 = int(transformation_matrix.dot(np.array([coordx2_not_resize,0,1]))[0])
                 coordy1_not_resize = pos_y
-                # coordy1 = int(transformation_matrix.dot(np.array([0,coordy1_not_resize,1]))[1])
                 coordy2_not_resize = coordy1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
-                # coordy2 = int(transformation_matrix.dot(np.array([0,coordy2_not_resize,1]))[1])
                 overlay_true[coordx1_not_resize:coordx2_not_resize, coordy1_not_resize:coordy2_not_resize,
-                :] = input * (1 - blending_factor) + color_true * blending_factor
+                :] += color_true * (1-blending_factor)
                 overlay_pred[coordx1_not_resize:coordx2_not_resize, coordy1_not_resize:coordy2_not_resize,
-                :] = input * (1 - blending_factor) + color_pred * blending_factor
+                :] += color_pred * (1-blending_factor)
                 progress.update(progression, advance=1)
         print(f"skipped {skipped}")
         return overlay_true, overlay_pred, original_img
 
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-07_15h44min40s_'
+    choice_folder1 = '2021-07-10_00h54min52s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
     name = "027481_0319CB_0EB7"
     FolderInfos.init(test_without_data=True)
     folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
+    epoch = 51
+    iteration = 11562
 
-    if os.path.exists(folder + choice_folder1 + "_" + name + "_rgb_overlay_pred.png") is True:
+    if os.path.exists(f"{folder}{choice_folder1}_{name}_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
         print("loading from cache")
         import matplotlib.pyplot as plt
         from PIL import Image
@@ -130,13 +130,12 @@ if __name__ == "__main__":
                                         input_size=256,
                                         classes_to_use=[EnumClasses.Seep, EnumClasses.Spill]
                                         )
-        epoch = 4
-        iteration = 11562
+
         import torch
 
         device = torch.device("cuda")
-        model = ModelFactory(model_name=dico["attr_model"]["attr_model_name"],
-                             num_classes=dico["attr_model"]["attr_num_classes"])()
+        model = ModelFactory(model_name=dico["trainer"]["attr_model"]["attr_model_name"],
+                             num_classes=dico["trainer"]["attr_model"]["attr_num_classes"])()
         model.to(device)
         model.load_state_dict(torch.load(f"{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt"))
         array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device)
@@ -146,11 +145,10 @@ if __name__ == "__main__":
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[0])
         plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Seep, EnumClasses.Spill]}", fontsize=14)
-        plt.savefig(f"{folder}{choice_folder1}_{name}_rgb_overlay_true.png")
+        plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[1])
         plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Seep, EnumClasses.Spill]}", fontsize=14)
-        plt.savefig(f"{folder}{choice_folder1}_{name}_rgb_overlay_pred.png")
+        plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[2], cmap="gray")
-        plt.show()
