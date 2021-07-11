@@ -198,6 +198,7 @@ As no parameters produces better performances, we will investigate:
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
 - 1️⃣Create an other cache with only background (other class)
+- 1️⃣Confusion matrix
 - 1️⃣Create a dataset to add more or less other class
 - 2️⃣ Update the documentation
 - 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
