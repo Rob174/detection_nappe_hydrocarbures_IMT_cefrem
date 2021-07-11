@@ -9,6 +9,7 @@ if __name__ == "__main__":
     with File(FolderInfos.input_data_folder+"images_preprocessed.hdf5","r") as cache:
         images = list(cache.keys())
     extract = lambda x:"_".join(x.split("_")[6:9])
+    # Open files made with qgis sql requests db manager on the dbf file
     with open(FolderInfos.input_data_folder+"images_stat_seep.txt","r") as fp:
         seeps = {extract(l.strip().split("\t")[0]):l.strip().split("\t")[1] for l in fp.readlines()[1:]}
     with open(FolderInfos.input_data_folder+"images_stat_spill.txt","r") as fp:
