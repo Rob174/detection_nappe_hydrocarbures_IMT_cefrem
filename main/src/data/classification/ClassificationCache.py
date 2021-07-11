@@ -29,6 +29,7 @@ class ClassificationCache(BaseClass):
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None):
         print("Using ClassificationCache")
+        self.attr_standardization = False
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
         with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5", "r") as images_cache:
