@@ -190,6 +190,7 @@ As no parameters produces better performances, we will investigate:
 # 11-07-2021
 - ✔️ Make statistics of classes in cache 
 - ✔️ Make mean std of images in cache
+- ✔️ Comparing wwith sql request on qgis -> to further explore
 
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
