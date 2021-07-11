@@ -190,12 +190,14 @@ As no parameters produces better performances, we will investigate:
 # 11-07-2021
 - ✔️ Make statistics of classes in cache 
 - ✔️ Make mean std of images in cache
+
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
-- 1️⃣Create another cache with only background (other class)
+- 1️⃣Create an other cache with only background (other class)
 - 1️⃣Create a dataset to add more or less other class
 - 2️⃣ Update the documentation
 - 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
