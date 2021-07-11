@@ -178,19 +178,23 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Allowing to try multiple fonction to retrieve training attribute extraction
 
 ## 09-07-2021
-- 🔨 Spliting in objects training options (progressbar, model backup)
-- 🔨 Adding abstract classes to improve typing hints possibilities
-- 🔨 Adding EarlyStopping
-- 🔨 Adding missing enums
+- ✔️ Spliting in objects training options (progressbar, model backup)
+- ✔️ Adding abstract classes to improve typing hints possibilities
+- ✔️ Adding EarlyStopping
+- ✔️ Adding missing enums
 
+## 10-07-2021
+- Profiling code
+- Update attributes mapping for analysis
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
-- Profiling code
-- Update the documentation
-- Update attributes mapping for analysis
-- Find a way not to write all the dict of preprocessings/metrics at each save step
-- Hyperparameters optimization
+- 1️⃣Make statistics of classes in cache 
+- 1️⃣Create another cache with only background (other class)
+- 1️⃣Create a dataset to add more or less other class
+- 2️⃣ Update the documentation
+- 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
+- 9️⃣ Hyperparameters optimization
 - Question : convert predicted annotated image back to raster ?
