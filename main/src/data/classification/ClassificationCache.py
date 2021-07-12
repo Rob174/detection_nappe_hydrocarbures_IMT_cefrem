@@ -32,7 +32,7 @@ class ClassificationCache(BaseClass):
     def __init__(self, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None,
-                 other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.OtherClassPatchAdder,
+                 other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
         print("Using ClassificationCache")
         self.attr_standardization = False
@@ -54,7 +54,7 @@ class ClassificationCache(BaseClass):
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
-        if other_class_adder == EnumClassPatchAdder.EnumOtherClassPatchAdder:
+        if other_class_adder == EnumClassPatchAdder.OtherClassPatchAdder:
             self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
         elif other_class_adder == EnumClassPatchAdder.NoClassPatchAdder:
             self.attr_other_class_adder = NoClassPatchAdder()

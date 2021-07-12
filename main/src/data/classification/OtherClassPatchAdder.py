@@ -3,7 +3,7 @@ import json, random
 import numpy as np
 
 from h5py import File
-from typing import Optional
+from typing import Optional, Tuple
 
 from main.FolderInfos import FolderInfos
 from main.src.param_savers.BaseClass import BaseClass
@@ -36,7 +36,7 @@ class OtherClassPatchAdder(BaseClass):
         return id
 
 
-    def generate_if_required(self) -> Optional[np.ndarray,np.ndarray,np.ndarray]:
+    def generate_if_required(self) -> Optional[Tuple[np.ndarray,np.ndarray,np.ndarray,str]]:
         if self.num_annotated_btwn == self.attr_interval:
             self.num_annotated_btwn = 0
             id = self.next_index()

@@ -8,6 +8,8 @@ class EnumLabelModifier(str, Enum):
     """classes constructed to allow to choose classes to use"""
     LabelModifier2 = "labelmodifier2"
     """1 class constructed to allow to search if a combination of classes is present"""
+
+
 class EnumClassPatchAdder(str, Enum):
     OtherClassPatchAdder = "other_class_patch_adder"
     NoClassPatchAdder = "no_class_patch_adder"

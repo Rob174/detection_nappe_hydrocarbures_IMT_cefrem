@@ -52,7 +52,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
-                 other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.OtherClassPatchAdder,
+                 other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
         self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
