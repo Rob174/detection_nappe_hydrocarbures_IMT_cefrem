@@ -43,6 +43,7 @@ class RGB_Overlay_Patch:
         overlay_true = np.stack((original_img,)*3,axis=-1)  # prepare the overlays with 3 channels for colors
         overlay_pred = np.stack((original_img,)*3,axis=-1)
         # get the list of patches organized as follows [[input_patch0,output_patch0,filter_patch0],....
+        self.dataset.attr_dataset
         patches = self.dataset.attr_dataset.make_patches_of_image(name_img)
 
         progress = Progress(
@@ -100,7 +101,7 @@ class RGB_Overlay_Patch:
 
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-11_23h21min20s_'
+    choice_folder1 = '2021-07-12_11h01min03s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
@@ -126,7 +127,7 @@ if __name__ == "__main__":
         print("not already computed, processing...")
         with open(folder + choice_folder1 + "parameters.json", "r") as fp:
             dico = json.load(fp)
-        classes_to_use = [EnumClasses.Spill, EnumClasses.Seep]
+        classes_to_use = [EnumClasses.Seep, EnumClasses.Spill]
         rgb_overlay = RGB_Overlay_Patch(dataset_name=EnumLabelModifier.LabelModifier1,
                                         usage_type=EnumUsage.Classification,
                                         patch_creator=EnumPatchAlgorithm.FixedPx,
