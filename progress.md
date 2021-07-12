@@ -192,6 +192,9 @@ As no parameters produces better performances, we will investigate:
 - ✔️ Make mean std of images in cache
 - ✔️ Comparing wwith sql request on qgis -> to further explore
 
+# 12-07-2021
+- ✔️🐛 Correction class index
+- Create an other cache with only background (other class)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
@@ -200,7 +203,6 @@ As no parameters produces better performances, we will investigate:
 Priorities 1️⃣: high priority ; 9️⃣low priority
 - 1️⃣Create an other cache with only background (other class)
 - 1️⃣Confusion matrix
-- 1️⃣Create a dataset to add more or less other class
 - 2️⃣ Update the documentation
 - 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
 - 9️⃣ Hyperparameters optimization
