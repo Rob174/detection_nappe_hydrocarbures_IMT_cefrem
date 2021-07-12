@@ -196,7 +196,7 @@ As no parameters produces better performances, we will investigate:
 - ✔️🐛 Correction class index
   - ⏳ Computing 70 epoch cache training
 - 🔨 Create an other cache with only background (other class)
-  - ✔️ Generating new hdf5 cache
+  - ✔️🐛 Generating new hdf5 cache
   - 🔨 Adding interface to add determined amount of "other" patches
 - ✔️ Debug class name ↔️ class value : solved: coherent predictions: the model put all patches in the predominant category (seep for the moment cf issue 29)
 - 1️⃣ Debug cache
