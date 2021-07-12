@@ -148,11 +148,11 @@ if __name__ == "__main__":
 
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[0])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Seep, EnumClasses.Spill]}", fontsize=14)
+        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Spill,EnumClasses.Seep]}", fontsize=14)
         plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[1])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Seep, EnumClasses.Spill]}", fontsize=14)
+        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Spill,EnumClasses.Seep]}", fontsize=14)
         plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[2], cmap="gray")

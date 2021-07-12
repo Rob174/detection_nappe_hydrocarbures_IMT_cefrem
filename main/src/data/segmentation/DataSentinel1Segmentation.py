@@ -15,8 +15,8 @@ class DataSentinel1Segmentation(BaseClass):
     attr_original_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
         {  # Formatted in the following way: src_index in cache, name, the position encode destination index
             0: "other",
-            1: "spill",
-            2: "seep",
+            1: "seep",
+            2: "spill",
         })
 
     def __init__(self, limit_num_images=None, input_size=None):
