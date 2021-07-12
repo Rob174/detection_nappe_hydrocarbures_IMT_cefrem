@@ -194,10 +194,12 @@ As no parameters produces better performances, we will investigate:
 
 # 12-07-2021
 - ✔️🐛 Correction class index
-  - ⏳ Computing 70 epoch cache training
-- ⏲️ Create an other cache with only background (other class)
+- ✔️🐛 Debug class name ↔️ class value : solved: coherent predictions: the model put all patches in the predominant category (seep for the moment cf issue 30)
+  - ✔️ Computing 70 epoch cache training
+- 🔨 Create an other cache with only background (other class)
   - ✔️ Generating new hdf5 cache
-  - ⏲️ Adding interface to add determined amount of "other" patches
+  - 🔨 Adding interface to add determined amount of "other" patches
+- 1️⃣ Debug cache
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
