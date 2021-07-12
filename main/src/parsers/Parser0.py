@@ -33,7 +33,7 @@ class Parser0(BaseClass):
                              "help": "Indicate if you want to check if all python files have been commited before launching the training process true to disable the security",
                              "choices": list(EnumGitCheck)},
             # Dataset
-            '-attr_dataset': {"dest": 'attr_dataset', "default": EnumLabelModifier.LabelModifier0,
+            '-attr_dataset': {"dest": 'attr_dataset', "default": EnumLabelModifier.NoLabelModifier,
                               "type": EnumLabelModifier, "help": "Indicate the attr_dataset used to constitue datasets",
                               "choices": list(EnumLabelModifier)},
             '-usage_type': {"dest": 'usage_type', "default": EnumUsage.Classification, "type": EnumUsage,
