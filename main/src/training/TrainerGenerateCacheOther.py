@@ -39,6 +39,7 @@ class Trainer0(BaseClass):
                 dico_info[str(i)] = {"source_img": item, "transformation_matrix": transformation_matrix.tolist()}
                 cache_images.create_dataset(str(i), shape=input.shape, dtype='f', data=input)
                 if i % 100 == 0:
+                    print(f"i={i}")
                     with open(FolderInfos.input_data_folder + "filtered_other_img_infos.json", "w") as fp:
                         json.dump(dico_info, fp)
                 if i > 16519:
