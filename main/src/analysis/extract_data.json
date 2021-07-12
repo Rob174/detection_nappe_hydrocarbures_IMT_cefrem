@@ -173,7 +173,7 @@
       "lambda dico:dico[\"trainer\"][\"attr_loss\"][\"attr_loss_values\"]",
       "lambda dico:dico[\"trainer\"]"
     ],
-    "accuracy_threshold0.5": [
+    "error_threshold0.5": [
       "lambda dico:dico[\"trainer\"][\"attr_metrics\"][\"attr_list_metrics\"][\"accuracy_threshold-0.5\"]"
     ]
   }

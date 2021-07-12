@@ -115,8 +115,8 @@ if __name__ == "__main__":
         import matplotlib.pyplot as plt
         from PIL import Image
 
-        image_true = Image.open(folder + choice_folder1 + "_" + name + "_rgb_overlay_true.png")
-        image_pred = Image.open(folder + choice_folder1 + "_" + name + "_rgb_overlay_pred.png")
+        image_true = Image.open(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
+        image_pred = Image.open(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(image_true)
         plt.figure(figsize=(10, 10))
@@ -126,13 +126,13 @@ if __name__ == "__main__":
         print("not already computed, processing...")
         with open(folder + choice_folder1 + "parameters.json", "r") as fp:
             dico = json.load(fp)
-
+        classes_to_use = [EnumClasses.Spill, EnumClasses.Seep]
         rgb_overlay = RGB_Overlay_Patch(dataset_name=EnumLabelModifier.LabelModifier1,
                                         usage_type=EnumUsage.Classification,
                                         patch_creator=EnumPatchAlgorithm.FixedPx,
                                         grid_size=1000,
                                         input_size=256,
-                                        classes_to_use=[EnumClasses.Seep, EnumClasses.Spill]
+                                        classes_to_use=classes_to_use
                                         )
 
         import torch
@@ -148,11 +148,11 @@ if __name__ == "__main__":
 
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[0])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Spill,EnumClasses.Seep]}", fontsize=14)
+        plt.gcf().text(0.02, 0.75, f"RGB with order {classes_to_use}", fontsize=14)
         plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[1])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {[EnumClasses.Spill,EnumClasses.Seep]}", fontsize=14)
+        plt.gcf().text(0.02, 0.75, f"RGB with order {classes_to_use}", fontsize=14)
         plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
         plt.figure(figsize=(10, 10))
         plt.imshow(array_overlay[2], cmap="gray")
