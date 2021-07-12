@@ -198,7 +198,7 @@ As no parameters produces better performances, we will investigate:
 - 🔨 Create an other cache with only background (other class)
   - ✔️ Generating new hdf5 cache
   - 🔨 Adding interface to add determined amount of "other" patches
-- 0️⃣ Debug class name ↔️ class value
+- ✔️ Debug class name ↔️ class value : solved: coherent predictions: the model put all patches in the predominant category (seep for the moment cf issue 29)
 - 1️⃣ Debug cache
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
