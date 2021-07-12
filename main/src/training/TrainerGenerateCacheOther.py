@@ -35,7 +35,14 @@ class Trainer0(BaseClass):
         with h5py.File(FolderInfos.input_data_folder + "filtered_other_cache_images.hdf5", "w") as cache_images:
             dico_info = {}
             cache_filtered_cache_annotation_num_patches = 16519
-            for i, [input, output, transformation_matrix, item] in enumerate(self.dataset.__iter__(name="tr")):
+            class IterWrapper:
+                def __init__(self,dataset_factory,dataset):
+                    self.dataset = dataset
+                    self.dataset_factory = dataset_factory
+                def __iter__(self):
+                    return self.dataset_factory.__iter__(self.dataset)
+            data = IterWrapper(self.dataset,"tr")
+            for i, [input, output, transformation_matrix, item] in enumerate(data):
                 dico_info[str(i)] = {"source_img": item, "transformation_matrix": transformation_matrix.tolist()}
                 cache_images.create_dataset(str(i), shape=input.shape, dtype='f', data=input)
                 if i % 100 == 0:

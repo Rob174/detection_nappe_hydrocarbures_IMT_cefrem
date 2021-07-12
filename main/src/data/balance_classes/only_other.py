@@ -3,7 +3,7 @@ import numpy as np
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class BalanceClass2(BaseClass):
+class BalanceClasses2(BaseClass):
     def __init__(self, other_index):
         """Balance classes by excluding patches where there is only the other class
 

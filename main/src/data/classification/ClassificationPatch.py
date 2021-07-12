@@ -13,6 +13,7 @@ from main.src.data.TwoWayDict import Way
 from main.src.data.balance_classes.balance_classes import BalanceClasses1
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
+from main.src.data.balance_classes.only_other import BalanceClasses2
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
@@ -71,6 +72,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         elif balance == EnumBalance.NoBalance:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
             self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping["other"])
+        elif balance == EnumBalance.NoBalance:
+            self.attr_balance = BalanceClasses2(other_index=self.attr_original_class_mapping["other"])
         if augmentations_img != "none":
             if augmenter_img == EnumAugmenter.Augmenter0:
                 self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
@@ -166,7 +169,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
-                    yield image_patch, classification, transformation_matrix, item
+                    yield image_patch, annotations, transformation_matrix, item
 
     def generate_item_step_by_step(self, dataset="tr"):  # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
