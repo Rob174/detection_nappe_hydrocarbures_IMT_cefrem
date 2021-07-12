@@ -67,12 +67,12 @@ class ClassificationPatch(DataSentinel1Segmentation):
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
-        if balance == EnumBalance.BalanceClasses1:
+        if balance == EnumBalance.NoBalance:
             self.attr_balance = NoBalance()
-        elif balance == EnumBalance.NoBalance:
+        elif balance == EnumBalance.BalanceClasses1:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
             self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping["other"])
-        elif balance == EnumBalance.NoBalance:
+        elif balance == EnumBalance.BalanceClasses2:
             self.attr_balance = BalanceClasses2(other_index=self.attr_original_class_mapping["other"])
         if augmentations_img != "none":
             if augmenter_img == EnumAugmenter.Augmenter0:
