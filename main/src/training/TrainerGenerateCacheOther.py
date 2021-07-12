@@ -49,8 +49,6 @@ class Trainer0(BaseClass):
                     print(f"i={i}")
                     with open(FolderInfos.input_data_folder + "filtered_other_img_infos.json", "w") as fp:
                         json.dump(dico_info, fp)
-                if i > 16519:
-                    break
 
             with open(FolderInfos.input_data_folder + "filtered_img_infos.json", "w") as fp:
                 json.dump(dico_info, fp)
