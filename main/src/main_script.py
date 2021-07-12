@@ -50,7 +50,9 @@ if __name__ == "__main__":
                              augmentations_img=arguments.augmentations_img,
                              augmenter_patch=arguments.augmenter_patch,
                              augmentations_patch=arguments.augmentations_patch,
-                             augmentation_factor=arguments.augmentation_factor
+                             augmentation_factor=arguments.augmentation_factor,
+                             other_class_adder=arguments.other_class_adder,
+                             interval=arguments.interval
                              )
     saver["date"] = FolderInfos.id
 

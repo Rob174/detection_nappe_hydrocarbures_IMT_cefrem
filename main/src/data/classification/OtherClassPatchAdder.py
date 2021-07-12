@@ -49,3 +49,4 @@ class OtherClassPatchAdder(BaseClass):
             return None
 
 
+

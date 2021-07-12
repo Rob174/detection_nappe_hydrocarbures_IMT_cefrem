@@ -2,7 +2,7 @@ import argparse
 
 from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.balance_classes.enums import *
-from main.src.data.classification.enums import EnumLabelModifier
+from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import *
 from main.src.enums import EnumGitCheck
@@ -54,6 +54,11 @@ class Parser0(BaseClass):
             '-bs': {"dest": 'batch_size', "default": 10, "type": int, "help": "Indique le nombre d'images par batch"},
             '-balance': {"dest": 'balance', "default": EnumBalance.BalanceClasses1, "type": EnumBalance,
                          "help": "Indicate the policy to balance classes", "choices": list(EnumBalance)},
+            '-classAdder':{"dest": 'other_class_adder', "default": EnumClassPatchAdder.OtherClassPatchAdder,
+                           "type": EnumClassPatchAdder, "help": "Allow to add other patches in dataset (especially for the moment with only other class)"},
+            '-interval': {"dest": 'interval', "default": 1,
+                            "type": int,
+                            "help": "Argument for OtherClassPatchAdder"},
             # Augmentations
             '-augmenter_img': {"dest": 'augmenter_img', "default": EnumAugmenter.Augmenter1, "type": EnumAugmenter,
                                "help": "Indicate which augmenter to use to apply transformations on source image",

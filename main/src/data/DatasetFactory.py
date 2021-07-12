@@ -8,7 +8,7 @@ from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.classification.ClassificationCache import ClassificationCache
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
-from main.src.data.classification.enums import EnumLabelModifier
+from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
@@ -38,6 +38,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         augmenter_patch: opt EnumAugmenter,
         augmentation_factor: int, the number of times that the source image is augmented
         force_classifpatch: bool, force to use the class classificattionpatch
+        other_class_adder: EnumClassPatchAdder to select classadder object
+        interval: int, interval between two un annotated patches
     """
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
@@ -49,7 +51,9 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentation_factor=1, force_classifpatch=False):
+                 augmentation_factor=1, force_classifpatch=False,
+                 other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.OtherClassPatchAdder,
+                 interval: int = 1):
         self.attr_global_name = "data"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             dico_infos = json.load(fp)
@@ -59,7 +63,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                     and augmentations_img == "combinedRotResizeMir_10_0.25_4" and augmenter_patch == EnumAugmenter.NoAugmenter \
                     and augmentations_patch == "none" and exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 1000 \
                     and grid_size == 1000 and not force_classifpatch:
-                self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use)
+                self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
+                                                        other_class_adder=other_class_adder,interval=interval)
             else:
                 if patch_creator == EnumPatchAlgorithm.FixedPx:
                     self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
