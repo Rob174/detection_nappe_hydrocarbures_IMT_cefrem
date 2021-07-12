@@ -189,7 +189,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """
         if isinstance(self.attr_img_augmenter, Augmenter1) is True:
             raise Exception("Augmenter1 is not supported with this method of attr_dataset generation. Use Augmenter0")
-        images_available = self.tr_keys if dataset == "tr" else self.valid_keys
+        # images_available = self.tr_keys if dataset == "tr" else self.valid_keys
+        images_available = list(self.images.keys())
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
             for item in images_available:
