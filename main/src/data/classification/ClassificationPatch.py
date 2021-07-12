@@ -74,6 +74,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
             self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping["other"])
         elif balance == EnumBalance.BalanceClasses2:
             self.attr_balance = BalanceClasses2(other_index=self.attr_original_class_mapping["other"])
+        else:
+            raise NotImplementedError
         if augmentations_img != "none":
             if augmenter_img == EnumAugmenter.Augmenter0:
                 self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
