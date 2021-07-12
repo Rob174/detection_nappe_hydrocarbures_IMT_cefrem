@@ -33,7 +33,7 @@ class Parser0(BaseClass):
                              "help": "Indicate if you want to check if all python files have been commited before launching the training process true to disable the security",
                              "choices": list(EnumGitCheck)},
             # Dataset
-            '-attr_dataset': {"dest": 'attr_dataset', "default": EnumLabelModifier.LabelModifier1,
+            '-attr_dataset': {"dest": 'attr_dataset', "default": EnumLabelModifier.LabelModifier0,
                               "type": EnumLabelModifier, "help": "Indicate the attr_dataset used to constitue datasets",
                               "choices": list(EnumLabelModifier)},
             '-usage_type': {"dest": 'usage_type', "default": EnumUsage.Classification, "type": EnumUsage,
@@ -45,14 +45,14 @@ class Parser0(BaseClass):
                               "type": EnumPatchExcludePolicy,
                               "help": "Indicates the policy to exclude patches (especially patches containing margins)",
                               "choices": list(EnumPatchExcludePolicy)},
-            '-patchExclThreshold': {"dest": "patch_exclude_policy_threshold", "default": 1000, "type": int,
+            '-patchExclThreshold': {"dest": "patch_exclude_policy_threshold", "default": 100, "type": int,
                                     "help": "The threshold used for margin more than algorithm"},
             '-grid_size': {"dest": 'grid_size', "default": 1000, "type": int,
                            "help": "Indicate the grid size applied on the original image"},
             '-in_size': {"dest": 'input_size', "default": 256, "type": int,
                          "help": "Indicate the output size of the image obtained by resizing it after patches creation"},
             '-bs': {"dest": 'batch_size', "default": 10, "type": int, "help": "Indique le nombre d'images par batch"},
-            '-balance': {"dest": 'balance', "default": EnumBalance.BalanceClasses1, "type": EnumBalance,
+            '-balance': {"dest": 'balance', "default": EnumBalance.BalanceClasses2, "type": EnumBalance,
                          "help": "Indicate the policy to balance classes", "choices": list(EnumBalance)},
             # Augmentations
             '-augmenter_img': {"dest": 'augmenter_img', "default": EnumAugmenter.Augmenter1, "type": EnumAugmenter,
@@ -66,7 +66,7 @@ class Parser0(BaseClass):
                                  "choices": list(EnumAugmenter)},
             '-augmentations_patch': {"dest": 'augmentations_patch', "default": "none", "type": str,
                                      "help": "Indicate the augmentations to apply to patches in the order desired seprated by commas"},
-            '-augmentation_factor': {"dest": 'augmentation_factor', "default": 100, "type": int,
+            '-augmentation_factor': {"dest": 'augmentation_factor', "default": 1, "type": int,
                                      "help": "The number of times that the source image is augmented"},
             # Model
             '-attr_model': {"dest": 'attr_model', "default": EnumModels.Vgg16, "type": EnumModels,
@@ -78,7 +78,7 @@ class Parser0(BaseClass):
                         "help": "Choose whcih layers to freeze in the original attr_model",
                         "choices": list(EnumFreeze)},
             # Training
-            '-num_epochs': {"dest": 'num_epochs', "default": 70,
+            '-num_epochs': {"dest": 'num_epochs', "default": 1,
                             "type": int,
                             "help": "Number of epochs / repetitions of the training attr_dataset"},
             '-eval_step': {"dest": 'eval_step', "default": 10, "type": int,
