@@ -100,7 +100,7 @@ class RGB_Overlay_Patch:
 
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-10_00h54min52s_'
+    choice_folder1 = '2021-07-11_23h21min20s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
