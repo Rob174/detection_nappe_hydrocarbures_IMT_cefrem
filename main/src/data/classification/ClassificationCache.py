@@ -10,6 +10,7 @@ from main.src.data.TwoWayDict import Way
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
+from main.src.data.classification.OtherClassPatchAdder import OtherClassPatchAdder
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
@@ -48,6 +49,8 @@ class ClassificationCache(BaseClass):
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
+        if other_class_adder == EnumOtherClassPatchAdder.EnumOtherClassPatchAdder:
+            self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
 
         with open(f"{FolderInfos.input_data_folder}filtered_img_infos.json", "r") as fp:
             self.dico_infos = json.load(fp)
@@ -73,15 +76,22 @@ class ClassificationCache(BaseClass):
             with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as images_cache:
                 random.shuffle(images_available)
                 for id in images_available:
-                    image = np.array(images_cache[id])
-                    image = np.stack((image,) * 3, axis=0)
-                    annotation = np.array(annotations_cache[id])
-                    annotation = self.make_classification_label(annotation)
-                    annotation = self.attr_label_modifier.make_classification_label(annotation)
-                    source_img = self.dico_infos[id]["source_img"]
-                    transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
+                    data = self.attr_other_class_adder.generate_if_required()
+                    if data is not None:
+                        image,annotation,transformation_matrix,source_img = data
+                        image,annotation = self.process_infos(image,annotation)
+                    else:
+                        image = np.array(images_cache[id])
+                        annotation = np.array(annotations_cache[id])
+                        source_img = self.dico_infos[id]["source_img"]
+                        transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
+                        image,annotation = self.process_infos(image,annotation)
                     yield image, annotation, transformation_matrix, source_img
-
+    def process_infos(self,image,annotation):
+        image = np.stack((image,) * 3, axis=0)
+        annotation = self.make_classification_label(annotation)
+        annotation = self.attr_label_modifier.make_classification_label(annotation)
+        return image,annotation
     def make_classification_label(self, annotations_patch):
         """Creates the classification label based on the annotation patch image
 
