@@ -34,7 +34,7 @@ class DataSentinel1Segmentation(BaseClass):
         with open(f"{FolderInfos.input_data_folder}pixel_stats.json", "r") as fp:
             self.pixel_stats = json.load(fp)
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
-        self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
+        self.annotations_labels = None
         self.attr_limit_num_images = limit_num_images
         # concretely we can ask:
         # - self.attr_class_mapping[0] -> returns "other" as a normal dict

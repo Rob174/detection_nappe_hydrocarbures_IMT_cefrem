@@ -15,19 +15,12 @@ class PointAnnotations(BaseClass):
 
     def __getitem__(self,item: str,transformation_matrix: np.ndarray,array_size: int = 256):
         assert transformation_matrix.shape == (3,3), f"Invalid shape {transformation_matrix.shape} for transformation_matrix"
-        transformed_coords = []
-        for shape_dico in self.dico[item]:
-            points = [transformation_matrix.dot([*shape_dico[EnumShapeCategories.Points],1])[:2]]
-            transformed_coords.append({
-                EnumShapeCategories.Label: shape_dico[EnumShapeCategories.Label],
-                EnumShapeCategories.Points: points,
-            })
-    def draw(self,points_shapes,array):
+        array = np.zeros((array_size,array_size))
         segmentation_map = Image.fromarray(array)
         draw = ImageDraw.ImageDraw(segmentation_map)  # draw the base image
-        for dico in points_shapes:
-            label = dico[EnumShapeCategories.Label]
-            liste_points_shape = dico[EnumShapeCategories.Points]
+        for shape_dico in self.dico[item]:
+            liste_points_shape = [transformation_matrix.dot([*shape_dico[EnumShapeCategories.Points],1])[:2]]
+            label = shape_dico[EnumShapeCategories.Label]
             if label == "seep":  # Change color and so the value put in the array to create the label
                 color = "#010101"
             elif label == "spill":
@@ -35,8 +28,8 @@ class PointAnnotations(BaseClass):
             else:
                 color = "#000000"
             draw.polygon(liste_points_shape, fill=color)
-        segmentation_map = np.array(segmentation_map, dtype=np.uint8)
-        return segmentation_map
+        array = np.array(array, dtype=np.uint8)
+        return array
 
     def __len__(self):
         return len(self.dico)

@@ -23,6 +23,9 @@ from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 
+from main.src.data.segmentation.NumpyAnnotations import NumpyAnnotations
+from main.src.data.segmentation.PointAnnotations import PointAnnotations
+
 
 class ClassificationPatch(DataSentinel1Segmentation):
     """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
@@ -53,7 +56,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
         self.attr_augmentation_factor = augmentation_factor
-        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size)
+        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size,)
         self.tr_keys = list(self.images.keys())[:int(len(self.images) * tr_percent)]
         self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
         self.attr_global_name = "attr_dataset"
@@ -80,6 +83,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             if augmenter_img == EnumAugmenter.Augmenter0:
                 self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
                 self.generator = self.generate_item_step_by_step
+                self.annotations_labels = NumpyAnnotations()
             elif augmenter_img == EnumAugmenter.Augmenter1:
                 self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
                                                      patch_size_before_final_resize=
@@ -87,6 +91,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                                                      patch_size_final_resize=input_size
                                                      )
                 self.generator = self.generate_item_with_augmentation_at_once
+                self.annotations_labels = PointAnnotations()
 
             else:
                 self.generator = self.generate_item_step_by_step
