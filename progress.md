@@ -199,7 +199,8 @@ As no parameters produces better performances, we will investigate:
 - 🔨 Create an other cache with only background (other class)
   - ✔️ Generating new hdf5 cache
   - 🔨 Adding interface to add determined amount of "other" patches
-- 1️⃣ Debug cache
+# 13-07-2021
+- ⏲️ Add annotations dataset with points
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
