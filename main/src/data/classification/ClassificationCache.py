@@ -10,8 +10,8 @@ from main.src.data.TwoWayDict import Way
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
-from main.src.data.classification.NoClassPatchAdder import NoClassPatchAdder
-from main.src.data.classification.OtherClassPatchAdder import OtherClassPatchAdder
+from main.src.data.classification.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
+from main.src.data.classification.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
 from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.data.enums import EnumClasses
 from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation

@@ -46,7 +46,7 @@ class DataSentinel1Segmentation(BaseClass):
 
         self.attr_global_name = "attr_dataset"
 
-    def __get__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
+    def __getitem__(self, id: int) -> Tuple[np.ndarray, np.ndarray]:
         return self.getitem(id)
 
     def getimage(self, name: str) -> np.ndarray:
