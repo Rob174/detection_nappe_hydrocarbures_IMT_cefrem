@@ -204,6 +204,8 @@ As no parameters produces better performances, we will investigate:
 
 # 15-07-2021
 - 🔨⏳ Script to correct dataset with transformation matrix
+- debugging annotations
+- setting up tests
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
