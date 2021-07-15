@@ -14,7 +14,7 @@ from main.src.data.classification.PatchAdder.NoClassPatchAdder import NoClassPat
 from main.src.data.classification.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
 from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.data.enums import EnumClasses
-from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
+from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 from main.src.param_savers.BaseClass import BaseClass
 
 
