@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-import main.src.data.segmentation.DataSentinel1Segmentation as data
+import main.src.data.segmentation.DataSegmentation as data
 from main.FolderInfos import FolderInfos
 from main.src.param_savers.BaseClass import BaseClass
 
