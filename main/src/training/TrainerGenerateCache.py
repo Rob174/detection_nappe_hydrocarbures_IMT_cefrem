@@ -39,9 +39,10 @@ class Trainer0(BaseClass):
                     dico_info[str(i)] = {"source_img": item, "transformation_matrix": transformation_matrix.tolist()}
                     cache_images.create_dataset(str(i), shape=input.shape, dtype='f', data=input)
                     cache_annotations.create_dataset(str(i), shape=output.shape, dtype='i', data=output)
-                    if i % 100 == 0:
+                    if i % 10 == 0:
                         with open(FolderInfos.input_data_folder + "filtered_img_infos.json", "w") as fp:
                             json.dump(dico_info, fp)
+                            break
 
                 with open(FolderInfos.input_data_folder + "filtered_img_infos.json", "w") as fp:
                     json.dump(dico_info, fp)

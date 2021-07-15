@@ -12,7 +12,6 @@ from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatch
 from main.src.data.enums import EnumUsage, EnumClasses
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
-from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -86,7 +85,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 
         elif usage_type == EnumUsage.Segmentation:
             if dataset_name == "sentinel1":
-                self.attr_dataset = DataSentinel1Segmentation()
+                raise NotImplementedError()
         else:
             raise NotImplementedError()
 

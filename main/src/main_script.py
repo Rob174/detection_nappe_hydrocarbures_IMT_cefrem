@@ -11,8 +11,9 @@ sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src")
 sys.path.append(r"C:\Users\robin\Documents\projets")
 
-from main.src.training.Trainer0 import Trainer0
+# from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
+from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory

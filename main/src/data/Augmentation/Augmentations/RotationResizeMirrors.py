@@ -1,4 +1,4 @@
-from typing import Tuple, List, Any, Dict
+from typing import Tuple, List, Any, Dict, Callable
 
 import cv2
 import numpy as np
@@ -43,9 +43,9 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         self.attr_resize_upper_fact_float = resize_upper_fact_float
         self.attr_resize_lower_fact_float = resize_lower_fact_float
 
-    def compute_random_augment(self, image: np.ndarray, annotation: np.ndarray,
+    def compute_image_augment(self, image: np.ndarray,
                                partial_transformation_matrix: np.ndarray,
-                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations
 
         Args:
@@ -68,10 +68,18 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         patch_image = cv2.warpAffine(image, transformation_matrix[:-1, :],
                                           dsize=(self.attr_patch_size_final_resize, self.attr_patch_size_final_resize),
                                           flags=cv2.INTER_LANCZOS4)
-        patch_annotation = cv2.warpAffine(annotation, transformation_matrix[:-1, :],
-                                     dsize=(self.attr_patch_size_final_resize, self.attr_patch_size_final_resize),flags=cv2.INTER_NEAREST)
+        return patch_image, transformation_matrix
+    def compute_label_augment(self,annotation_function: Callable,image_name: str,
+                               partial_transformation_matrix: np.ndarray,
+                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
 
-        return patch_image, patch_annotation, transformation_matrix
+        shift_patch_into_position_matrix = np.array([[1, 0, -coord_patch[1]],
+                                                     [0, 1, -coord_patch[0]],
+                                                     [0, 0, 1]])
+        transformation_matrix = shift_patch_into_position_matrix.dot(partial_transformation_matrix)
+        annotation = annotation_function(image_name,transformation_matrix,self.attr_patch_size_final_resize)
+        return annotation, transformation_matrix
+
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.

@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import Tuple, List, Callable
 
 import numpy as np
 
@@ -55,8 +55,8 @@ class Augmenter1(BaseClass):
         else:
             raise NotImplementedError(f"{allowed_transformations} is not implemented")
 
-    def transform(self, image: np.ndarray, annotation: np.ndarray, partial_transformation_matrix: np.ndarray,
-                  patch_upper_left_corner_coords: Tuple[int, int], ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def transform_image(self, image: np.ndarray, partial_transformation_matrix: np.ndarray,
+                  patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random augmentations in the order in which they have been supplied.
 
                 Apply the same augmentations to the image and to the annotation
@@ -74,11 +74,33 @@ class Augmenter1(BaseClass):
                     - the transformation matrix
 
                 """
-        image, annotation, partial_transformation_matrix = self.attr_transformations_classes.compute_random_augment(
-            image, annotation, partial_transformation_matrix,
+        image, partial_transformation_matrix = self.attr_transformations_classes.compute_image_augment(
+            image, partial_transformation_matrix,
             coord_patch=patch_upper_left_corner_coords)
-        return image, annotation, partial_transformation_matrix
+        return image, partial_transformation_matrix
+    def transform_label(self, annotation_function: Callable,image_name: str, partial_transformation_matrix: np.ndarray,
+                  patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+        """Compute the random augmentations in the order in which they have been supplied.
 
+                Apply the same augmentations to the image and to the annotation
+
+                Args:
+                    image: np.ndarray, the input image to transform
+                    annotation: np.array, the corresponding annotation
+                    partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
+                    patch_upper_left_corner_coords: tuple of int, coordinates of the upperleft corner of the patch in the transformed image
+
+                Returns:
+                    tuple of 3 np.ndarray
+                    - the transformed image patch
+                    - the transformed annotation patch
+                    - the transformation matrix
+
+                """
+        label, partial_transformation_matrix = self.attr_transformations_classes.compute_label_augment(
+            annotation_function,image_name, partial_transformation_matrix,
+            coord_patch=patch_upper_left_corner_coords)
+        return label, partial_transformation_matrix
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
 

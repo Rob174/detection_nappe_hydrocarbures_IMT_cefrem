@@ -45,7 +45,7 @@ class Parser0(BaseClass):
                               "type": EnumPatchExcludePolicy,
                               "help": "Indicates the policy to exclude patches (especially patches containing margins)",
                               "choices": list(EnumPatchExcludePolicy)},
-            '-patchExclThreshold': {"dest": "patch_exclude_policy_threshold", "default": 1000, "type": int,
+            '-patchExclThreshold': {"dest": "patch_exclude_policy_threshold", "default": 10, "type": int,
                                     "help": "The threshold used for margin more than algorithm"},
             '-grid_size': {"dest": 'grid_size', "default": 1000, "type": int,
                            "help": "Indicate the grid size applied on the original image"},

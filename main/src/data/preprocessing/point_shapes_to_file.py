@@ -8,7 +8,7 @@ from main.src.data.preprocessing.correct_overlap_annotations import get_annotati
 
 class EnumShapeCategories(str,Enum):
     Label = "label"
-    Points = "poitns"
+    Points = "points"
 
 if __name__ == "__main__":
 

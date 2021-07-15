@@ -150,32 +150,34 @@ class ClassificationPatch(DataSentinel1Segmentation):
             raise Exception("Only augmenter1 is supported with this method of attr_dataset generation")
         if isinstance(self.attr_patch_augmenter, NoAugmenter) is False:
             raise Exception("The patch augmenter is not supported when you choose augmenter1 for image augmenter")
-        images_available = self.tr_keys if dataset == "tr" else self.valid_keys
+        images_available = list(self.images.keys())
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
             for item in images_available:
-                image = np.array(self.images[item])
+                image = self.images[item]
                 annotations = np.array(self.annotations_labels[item], dtype=np.float32)
                 partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
                 for patch_upper_left_corner_coords in np.random.permutation(
                         self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                    image_patch, annotations_patch, transformation_matrix = self.attr_img_augmenter.transform(
+                    annotations_patch,transformation_matrix = self.attr_img_augmenter.transform_label(self.annotations_labels.__getitem__,item,
+                                                                                partial_transformation_matrix,patch_upper_left_corner_coords)
+                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
+                    classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
+                    if balance_reject is True:
+                        continue
+                    image = np.array(image,dtype=np.float32)
+                    image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
                         image=image,
-                        annotation=annotations,
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                         )
                     reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
                     if reject is True:
                         continue
-                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                    if balance_reject is True:
-                        continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     # yield image_patch, annotations, transformation_matrix, item
-                    yield image_patch, classification, transformation_matrix, item
+                    yield image_patch, annotations_patch, transformation_matrix, item
 
     def generate_item_step_by_step(self, dataset="tr"):  # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
