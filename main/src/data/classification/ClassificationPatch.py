@@ -21,7 +21,7 @@ from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
-from main.src.data.segmentation.DataSentinel1Segmentation import DataSentinel1Segmentation
+from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 
 from main.src.data.segmentation.NumpyAnnotations import NumpyAnnotations
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
