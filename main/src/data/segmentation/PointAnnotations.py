@@ -12,8 +12,7 @@ class PointAnnotations(BaseClass):
         with open(FolderInfos.input_data_folder+"images_preprocessed_points.pkl","rb") as fp:
             self.dico = pickle.load(fp)
 
-    def __getitem__(self,data):
-        item, transformation_matrix, array_size = data
+    def get(self,item, transformation_matrix, array_size):
         assert transformation_matrix.shape == (3,3), f"Invalid shape {transformation_matrix.shape} for transformation_matrix"
         array = np.zeros((array_size,array_size))
         segmentation_map = Image.fromarray(array)
