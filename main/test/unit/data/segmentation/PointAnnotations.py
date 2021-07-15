@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 from main.FolderInfos import FolderInfos
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
 
-def plot_difference(array1,array2,cmap1="gray",cmap2="gray"):
-    print("test failed")
+def plot_differences(array1, array2, cmap1="gray", cmap2="gray"):
     fig1 = plt.figure(1)
     fig1.canvas.manager.window.move(0, 0)
     plt.imshow(array1,cmap=cmap1)
@@ -34,7 +33,7 @@ class TestPointAnnotations(unittest.TestCase):
         try:
             np.testing.assert_array_equal(originale,annotation)
         except AssertionError:
-            plot_difference(originale,annotation)
+            plot_differences(originale, annotation)
             raise AssertionError
 if __name__ == "__main__":
     unittest.main()
