@@ -202,6 +202,9 @@ As no parameters produces better performances, we will investigate:
 # 13-07-2021
 - ⏲️ Add annotations dataset with points
 
+# 15-07-2021
+- 🔨⏳ Script to correct dataset with transformation matrix
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
