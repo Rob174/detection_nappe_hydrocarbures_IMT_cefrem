@@ -114,7 +114,8 @@ class Augmenter1(BaseClass):
         """
 
         return self.attr_transformations_classes.get_grid(img_shape, partial_transformation_matrix)
-
+    def compute_transformation_matrix(self,rows, cols,angle,resize_factor,mirror):
+        return self.attr_transformations_classes.compute_transformation_matrix(rows, cols,angle,resize_factor,mirror)
     def choose_new_augmentations(self, image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
 

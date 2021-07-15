@@ -93,32 +93,23 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
             iterator that produces tuples with coordinates of each upper left corner of each patch
         """
         rows, cols = img_shape[:2]
-        original_mapped_corner = partial_transformation_matrix.dot([cols, rows, 1])
-        cols_coords = np.arange(0, original_mapped_corner[0], self.attr_patch_size_final_resize)
-        rows_coords = np.arange(0, original_mapped_corner[1], self.attr_patch_size_final_resize)
+        original_mapped_corner1 = partial_transformation_matrix.dot([cols, rows, 1])
+        original_mapped_corner2 = partial_transformation_matrix.dot([cols, rows, 1])
+        max_rows = max(original_mapped_corner1[1],original_mapped_corner2[1]) - self.attr_patch_size_final_resize
+        max_cols = max(original_mapped_corner1[0],original_mapped_corner2[0]) - self.attr_patch_size_final_resize
+        cols_coords = np.arange(0, max_cols, self.attr_patch_size_final_resize)
+        rows_coords = np.arange(0, max_rows, self.attr_patch_size_final_resize)
         coords = list(zip(*list(x.flat for x in np.meshgrid(rows_coords, cols_coords))))
         return coords
-
-    def choose_new_augmentation(self, image: np.ndarray) -> Dict[str, Any]:
-        """Method that allows to create a new augmentation dict containing
-
-        Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
-            ⚠️⚠️⚠️⚠️️ coordinates in OPENCV are in the opposite way of the normal row,cols way ⚠️⚠️⚠️⚠
-            Internally this matrix include the following transformations:
-            - angle
-            - resize_factor
-            - mirrorlr
-            - mirrorud
-        """
-        # Choose parameters of transformation if not already chosen for epoch item
-        rows, cols = image.shape[:2]
-        ## Individual parameters
+    def choose_parameters(self):
         angle = np.random.choice(np.arange(0, 361, self.attr_rotation_step))
         resize_factor = np.random.rand() * (
                 self.attr_resize_upper_fact_float - self.attr_resize_lower_fact_float) + self.attr_resize_lower_fact_float
         resize_factor *= self.attr_patch_size_final_resize / self.attr_patch_size_before_final_resize
 
         mirror = np.random.choice([0, 1, -1])
+        return angle,resize_factor,mirror
+    def compute_transformation_matrix(self,rows, cols,angle,resize_factor,mirror):
         # Transformation matrix construction  ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️ coordinates in OPENCV are in the opposite way of the normal row,cols way
         partial_transformation_matrix = np.identity(3)
 
@@ -143,5 +134,19 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
              [0, 1, -min(0, partial_transformation_matrix.dot([cols - 1, rows - 1, 1])[1])],
              [0, 0, 1]])
         partial_transformation_matrix = adjusted_translation.dot(partial_transformation_matrix)
-
         return partial_transformation_matrix
+    def choose_new_augmentation(self, image: np.ndarray) -> Dict[str, Any]:
+        """Method that allows to create a new augmentation dict containing
+
+        Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
+            ⚠️⚠️⚠️⚠️️ coordinates in OPENCV are in the opposite way of the normal row,cols way ⚠️⚠️⚠️⚠
+            Internally this matrix include the following transformations:
+            - angle
+            - resize_factor
+            - mirrorlr
+            - mirrorud
+        """
+        # Choose parameters of transformation if not already chosen for epoch item
+        rows, cols = image.shape[:2]
+
+        return self.compute_transformation_matrix(rows,cols,*self.choose_parameters())

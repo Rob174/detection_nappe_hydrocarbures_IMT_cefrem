@@ -14,11 +14,11 @@ class PointAnnotations(BaseClass):
 
     def get(self,item, transformation_matrix, array_size):
         assert transformation_matrix.shape == (3,3), f"Invalid shape {transformation_matrix.shape} for transformation_matrix"
-        array = np.zeros((array_size,array_size))
-        segmentation_map = Image.fromarray(array)
+        segmentation_map = np.zeros((array_size,array_size),dtype=np.uint8)
+        segmentation_map = Image.fromarray(segmentation_map)
         draw = ImageDraw.ImageDraw(segmentation_map)  # draw the base image
         for shape_dico in self.dico[item]:
-            liste_points_shape = [tuple(transformation_matrix.dot([*point[::-1],1])[:2]) for point in shape_dico[EnumShapeCategories.Points]]
+            liste_points_shape = [tuple(transformation_matrix.dot([*point,1])[:2]) for point in shape_dico[EnumShapeCategories.Points]]
             label = shape_dico[EnumShapeCategories.Label]
             if label == "seep":  # Change color and so the value put in the array to create the label
                 color = "#010101"
@@ -27,8 +27,8 @@ class PointAnnotations(BaseClass):
             else:
                 color = "#000000"
             draw.polygon(liste_points_shape, fill=color)
-        array = np.array(array, dtype=np.uint8)
-        return array
+        segmentation_map = np.array(segmentation_map, dtype=np.uint8)
+        return segmentation_map
 
     def __len__(self):
         return len(self.dico)

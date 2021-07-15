@@ -133,11 +133,10 @@ class ClassificationPatch(DataSentinel1Segmentation):
     def __iter__(self, dataset="tr"):
         return iter(self.generator(dataset))
 
-    def generate_item_with_augmentation_at_once(self, dataset="tr"):
+    def generate_item_with_augmentation_at_once(self):
         """
 
         Args:
-            dataset: str, tr or valid to choose source images for tr or valid attr_dataset
 
         Returns:
             generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
@@ -163,6 +162,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
                     classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
                     if balance_reject is True:
+                        print("skip1")
                         continue
                     image = np.array(image,dtype=np.float32)
                     image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
@@ -172,6 +172,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         )
                     reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
                     if reject is True:
+                        print("skip2")
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
