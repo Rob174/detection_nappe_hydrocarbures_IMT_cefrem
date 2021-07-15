@@ -133,7 +133,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
     def __iter__(self, dataset="tr"):
         return iter(self.generator(dataset))
 
-    def generate_item_with_augmentation_at_once(self):
+    def generate_item_with_augmentation_at_once(self,dataset="tr"):
         """
 
         Args:

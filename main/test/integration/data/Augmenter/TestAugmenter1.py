@@ -47,7 +47,7 @@ class TestAugmenter1(unittest.TestCase):
             self.assertTrue(np.count_nonzero(patch) > 0)
             np.testing.assert_array_equal(augmenter.transform_image(self.originale,np.identity(3),coord)[0],
                                           patch)
-A
+
 
 
 
