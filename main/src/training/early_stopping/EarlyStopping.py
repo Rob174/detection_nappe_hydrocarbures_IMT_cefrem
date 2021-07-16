@@ -6,7 +6,7 @@ from main.src.training.metrics.AbstractMetricManager import AbstractMetricManage
 
 
 class EarlyStopping(BaseClass, AbstractEarlyStopping):
-    def __init__(self, metric: AbstractMetricManager, name_metric_chosen: Enum, patience: int = 3, min_delta: float = 0.1):
+    def __init__(self, metric: AbstractMetricManager, name_metric_chosen: Enum, patience: int = 10, min_delta: float = 0.1):
         super(EarlyStopping, self).__init__(metric, name_metric_chosen)
         self.attr_name = self.__class__.__name__
         self.metric: AbstractMetricManager = metric
