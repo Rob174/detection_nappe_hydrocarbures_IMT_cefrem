@@ -4,7 +4,7 @@ import numpy as np
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class AbstractStandardizer(BaseClass):
+class AbstractStandardizer:
     def __init__(self,*args,**kwargs):
         pass
     @property

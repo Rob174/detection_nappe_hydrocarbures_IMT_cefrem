@@ -6,6 +6,7 @@ from main.src.data.classification.Standardizer.AbstractStandardizer import Abstr
 from main.src.param_savers.BaseClass import BaseClass
 
 
+
 class StandardizerCacheOther(BaseClass,AbstractStandardizer):
     def __init__(self):
         with open(FolderInfos.input_data_folder+"filtered_cache_other_pixels_stats.json","r") as fp:
