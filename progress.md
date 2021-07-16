@@ -215,14 +215,21 @@ As no parameters produces better performances, we will investigate:
 - ✔️recomputing stats classes
 - ✔️recomputing stats pixels for other cache
 - ✔️compositing stats for other seepSpill balance control [#33](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/33)
-- ⏳ training cache with other (interval 1) 70 epochs
 - ⏲️ Documentation
+- ✔️ training cache with other (interval 1) 70 epochs
+  - no significant results : same prediction for each patch
+  - curves coherent with prediction (does not learn after 1st epoch flobally)
+- train with lr 100 times smaller
+
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
+- progressively add other patches
+- solve bug progress bar
+- doc
 - 1️⃣Confusion matrix
 - 2️⃣ Update the documentation
 - 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
