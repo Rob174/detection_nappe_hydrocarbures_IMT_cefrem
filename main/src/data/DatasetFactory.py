@@ -60,7 +60,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         if usage_type == EnumUsage.Classification:
             if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
                     and augmentations_img == "combinedRotResizeMir_10_0.25_4" and augmenter_patch == EnumAugmenter.NoAugmenter \
-                    and augmentations_patch == "none" and exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 1000 \
+                    and augmentations_patch == "none" and \
+                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
                     and grid_size == 1000 and not force_classifpatch:
                 self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                         other_class_adder=other_class_adder,interval=interval)
