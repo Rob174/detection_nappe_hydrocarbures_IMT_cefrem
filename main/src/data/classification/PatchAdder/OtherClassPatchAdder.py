@@ -22,7 +22,7 @@ class OtherClassPatchAdder(BaseClass):
             self.cache_infos = json.load(fp)
         self.num_annotated_btwn = 0
 
-        self.ordered_keys = list(self.cache_img.keys())
+        self.ordered_keys = list(set(self.cache_img.keys()).intersection(set(self.cache_infos.keys())))
         self.keys_iterator = None
     def reinitialize_iter(self):
         random.shuffle(self.ordered_keys)
