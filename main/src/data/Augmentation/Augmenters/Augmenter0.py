@@ -1,3 +1,5 @@
+"""Apply augmentations step after step in the order provided"""
+
 from typing import Tuple
 
 import numpy as np
@@ -9,7 +11,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class Augmenter0(BaseClass):
-    """Manage and keep track of augmentations to apply
+    """Manage and keep track of augmentations to apply. Apply augmentations step after step in the order provided
 
         Args:
             allowed_transformations: str, list of augmentations to apply seprated by commas. Currently supported:

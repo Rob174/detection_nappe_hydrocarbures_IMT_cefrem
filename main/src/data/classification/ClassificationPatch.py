@@ -13,10 +13,10 @@ from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
 from main.src.data.TwoWayDict import Way
-from main.src.data.balance_classes.balance_classes import BalanceClasses1
+from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
-from main.src.data.balance_classes.only_other import BalanceClasses2
+from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier

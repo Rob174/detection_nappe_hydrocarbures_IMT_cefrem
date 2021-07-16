@@ -29,19 +29,18 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Base class to construct a new standardizer&#34;&#34;&#34;
 
-
 import numpy as np
-
-from main.src.param_savers.BaseClass import BaseClass
 
 
 class AbstractStandardizer:
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         pass
+
     @property
     def mean(self):
         &#34;&#34;&#34;Mean of the dataset&#34;&#34;&#34;
         raise NotImplementedError
+
     @property
     def std(self):
         &#34;&#34;&#34;Standard deviation of the dataset&#34;&#34;&#34;
@@ -51,7 +50,8 @@ class AbstractStandardizer:
     def n(self) -&gt; int:
         &#34;&#34;&#34;Number of samples in dataset&#34;&#34;&#34;
         raise NotImplementedError
-    def standardize(self,image: np.ndarray):
+
+    def standardize(self, image: np.ndarray):
         &#34;&#34;&#34;Standardize the input array&#34;&#34;&#34;
         raise NotImplementedError</code></pre>
 </details>
@@ -76,12 +76,14 @@ class AbstractStandardizer:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AbstractStandardizer:
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs):
         pass
+
     @property
     def mean(self):
         &#34;&#34;&#34;Mean of the dataset&#34;&#34;&#34;
         raise NotImplementedError
+
     @property
     def std(self):
         &#34;&#34;&#34;Standard deviation of the dataset&#34;&#34;&#34;
@@ -91,7 +93,8 @@ class AbstractStandardizer:
     def n(self) -&gt; int:
         &#34;&#34;&#34;Number of samples in dataset&#34;&#34;&#34;
         raise NotImplementedError
-    def standardize(self,image: np.ndarray):
+
+    def standardize(self, image: np.ndarray):
         &#34;&#34;&#34;Standardize the input array&#34;&#34;&#34;
         raise NotImplementedError</code></pre>
 </details>
@@ -154,7 +157,7 @@ def std(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def standardize(self,image: np.ndarray):
+<pre><code class="python">def standardize(self, image: np.ndarray):
     &#34;&#34;&#34;Standardize the input array&#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>

@@ -30,6 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34;Standardizer to use with the filtered_cache_images.hdf5 ... dataset&#34;&#34;&#34;
 
 import json
+
 import numpy as np
 
 from main.FolderInfos import FolderInfos
@@ -37,25 +38,30 @@ from main.src.data.classification.Standardizer.AbstractStandardizer import Abstr
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class StandardizerCacheSeepSpill(BaseClass,AbstractStandardizer):
+class StandardizerCacheSeepSpill(BaseClass, AbstractStandardizer):
     &#34;&#34;&#34;
     Standardizer to use with the filtered_cache_images.hdf5 ... dataset
     &#34;&#34;&#34;
+
     def __init__(self):
         super().__init__()
-        with open(FolderInfos.input_data_folder+&#34;filtered_cache_pixels_stats.json&#34;,&#34;r&#34;) as fp:
+        with open(FolderInfos.input_data_folder + &#34;filtered_cache_pixels_stats.json&#34;, &#34;r&#34;) as fp:
             self.stat_dico = json.load(fp)
+
     @property
     def mean(self):
         return self.stat_dico[&#34;mean&#34;]
+
     @property
     def std(self):
         return self.stat_dico[&#34;std&#34;]
+
     @property
     def n(self) -&gt; int:
         return self.stat_dico[&#34;total_num_px&#34;]
-    def standardize(self,image: np.ndarray):
-        return (image-self.mean)/self.std</code></pre>
+
+    def standardize(self, image: np.ndarray):
+        return (image - self.mean) / self.std</code></pre>
 </details>
 </section>
 <section>
@@ -76,25 +82,30 @@ class StandardizerCacheSeepSpill(BaseClass,AbstractStandardizer):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class StandardizerCacheSeepSpill(BaseClass,AbstractStandardizer):
+<pre><code class="python">class StandardizerCacheSeepSpill(BaseClass, AbstractStandardizer):
     &#34;&#34;&#34;
     Standardizer to use with the filtered_cache_images.hdf5 ... dataset
     &#34;&#34;&#34;
+
     def __init__(self):
         super().__init__()
-        with open(FolderInfos.input_data_folder+&#34;filtered_cache_pixels_stats.json&#34;,&#34;r&#34;) as fp:
+        with open(FolderInfos.input_data_folder + &#34;filtered_cache_pixels_stats.json&#34;, &#34;r&#34;) as fp:
             self.stat_dico = json.load(fp)
+
     @property
     def mean(self):
         return self.stat_dico[&#34;mean&#34;]
+
     @property
     def std(self):
         return self.stat_dico[&#34;std&#34;]
+
     @property
     def n(self) -&gt; int:
         return self.stat_dico[&#34;total_num_px&#34;]
-    def standardize(self,image: np.ndarray):
-        return (image-self.mean)/self.std</code></pre>
+
+    def standardize(self, image: np.ndarray):
+        return (image - self.mean) / self.std</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

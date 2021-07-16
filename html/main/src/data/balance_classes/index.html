@@ -23,12 +23,7 @@
 </header>
 <section id="section-intro">
 <p>Classes that manage the attr_dataset class balancing.</p>
-<p>Currently one balancing type is supported:</p>
-<ul>
-<li>BalanceClasses1: balance classes by excluding patches where there is only the other class</li>
-<li>BalanceClasses2: let only the class with other categorie (no annotation) pass</li>
-<li>NoBalance: give access to a similar interface even if we do not want to make any balancing step</li>
-</ul>
+<p>Currently 3 balancing type are supported</p>
 <p>The filter method of this class is called on the original classification patch label (see NoLabelModifier class) once they are generated.</p>
 <p>We do not know in advance the repartition of each class at this time</p>
 <details class="source">
@@ -38,11 +33,7 @@
 <pre><code class="python">&#34;&#34;&#34;
 Classes that manage the attr_dataset class balancing.
 
-Currently one balancing type is supported:
-
-- BalanceClasses1: balance classes by excluding patches where there is only the other class
-- BalanceClasses2: let only the class with other categorie (no annotation) pass
-- NoBalance: give access to a similar interface even if we do not want to make any balancing step
+Currently 3 balancing type are supported
 
 The filter method of this class is called on the original classification patch label (see NoLabelModifier class) once they are generated.
 
@@ -56,11 +47,15 @@ We do not know in advance the repartition of each class at this time
 <dl>
 <dt><code class="name"><a title="main.src.data.balance_classes.AbstractBalance" href="AbstractBalance.html">main.src.data.balance_classes.AbstractBalance</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Base class to build a balancing operation</p></div>
 </dd>
-<dt><code class="name"><a title="main.src.data.balance_classes.balance_classes" href="balance_classes.html">main.src.data.balance_classes.balance_classes</a></code></dt>
+<dt><code class="name"><a title="main.src.data.balance_classes.BalanceClasses1" href="BalanceClasses1.html">main.src.data.balance_classes.BalanceClasses1</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Balance classes by excluding patches where there is only the other class</p></div>
+</dd>
+<dt><code class="name"><a title="main.src.data.balance_classes.BalanceClasses2" href="BalanceClasses2.html">main.src.data.balance_classes.BalanceClasses2</a></code></dt>
+<dd>
+<div class="desc"><p>Balance classes by excluding patches where there is only the other class</p></div>
 </dd>
 <dt><code class="name"><a title="main.src.data.balance_classes.enums" href="enums.html">main.src.data.balance_classes.enums</a></code></dt>
 <dd>
@@ -68,11 +63,7 @@ We do not know in advance the repartition of each class at this time
 </dd>
 <dt><code class="name"><a title="main.src.data.balance_classes.no_balance" href="no_balance.html">main.src.data.balance_classes.no_balance</a></code></dt>
 <dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="main.src.data.balance_classes.only_other" href="only_other.html">main.src.data.balance_classes.only_other</a></code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>Class used to indicate that no balancing operation has been applied</p></div>
 </dd>
 </dl>
 </section>
@@ -97,10 +88,10 @@ We do not know in advance the repartition of each class at this time
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="main.src.data.balance_classes.AbstractBalance" href="AbstractBalance.html">main.src.data.balance_classes.AbstractBalance</a></code></li>
-<li><code><a title="main.src.data.balance_classes.balance_classes" href="balance_classes.html">main.src.data.balance_classes.balance_classes</a></code></li>
+<li><code><a title="main.src.data.balance_classes.BalanceClasses1" href="BalanceClasses1.html">main.src.data.balance_classes.BalanceClasses1</a></code></li>
+<li><code><a title="main.src.data.balance_classes.BalanceClasses2" href="BalanceClasses2.html">main.src.data.balance_classes.BalanceClasses2</a></code></li>
 <li><code><a title="main.src.data.balance_classes.enums" href="enums.html">main.src.data.balance_classes.enums</a></code></li>
 <li><code><a title="main.src.data.balance_classes.no_balance" href="no_balance.html">main.src.data.balance_classes.no_balance</a></code></li>
-<li><code><a title="main.src.data.balance_classes.only_other" href="only_other.html">main.src.data.balance_classes.only_other</a></code></li>
 </ul>
 </li>
 </ul>

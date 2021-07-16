@@ -37,6 +37,7 @@ from main.src.data.enums import EnumClasses
 
 class NoLabelModifier(AbstractLabelModifier):
     &#34;&#34;&#34;Class use to have the same interface. Makes no modifications&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super(NoLabelModifier, self).__init__()
         self.attr_classes_to_use = [EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill]
@@ -68,6 +69,7 @@ class NoLabelModifier(AbstractLabelModifier):
 </summary>
 <pre><code class="python">class NoLabelModifier(AbstractLabelModifier):
     &#34;&#34;&#34;Class use to have the same interface. Makes no modifications&#34;&#34;&#34;
+
     def __init__(self, *args, **kwargs):
         super(NoLabelModifier, self).__init__()
         self.attr_classes_to_use = [EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill]

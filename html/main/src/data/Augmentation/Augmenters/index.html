@@ -23,16 +23,9 @@
 </header>
 <section id="section-intro">
 <p>Augmenters classes which manage and apply augmentations.</p>
-<p>For good practices purposes, these classes have to store informations about which augmentations are applied,
-eventually how these augmentation are applied.... with the attribute attr_ syntax (cf saver class)</p>
-<p>They have to provide at least the following interface:</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; class MyAugmenter(BaseClass):
-...     def __init__(self,*args,**kargs):
-...         # store informations about transformations in attr_... attributes
-...     def transform(self,image: np.ndarray, annotation: np.ndarray) -&gt; Tuple[np.ndarray,np.ndarray]:
-...         # ...Apply the same transformation to the image and annotation...
-...         return image,annotation
-</code></pre>
+<p>There are two variants of the augmenters applying respectively the augmentation step after step for Augmenter0
+and all at once for Augmenter1. Augmenter1 is an optimized version of Augmenter0. That is why it provides a different interface
+than Augmenter0 (cf respective docs)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -40,17 +33,9 @@ eventually how these augmentation are applied.... with the attribute attr_ synta
 <pre><code class="python">&#34;&#34;&#34;
 Augmenters classes which manage and apply augmentations.
 
-For good practices purposes, these classes have to store informations about which augmentations are applied,
-eventually how these augmentation are applied.... with the attribute attr_ syntax (cf saver class)
-
-They have to provide at least the following interface:
-
-&gt;&gt;&gt; class MyAugmenter(BaseClass):
-...     def __init__(self,*args,**kargs):
-...         # store informations about transformations in attr_... attributes
-...     def transform(self,image: np.ndarray, annotation: np.ndarray) -&gt; Tuple[np.ndarray,np.ndarray]:
-...         # ...Apply the same transformation to the image and annotation...
-...         return image,annotation
+There are two variants of the augmenters applying respectively the augmentation step after step for Augmenter0
+and all at once for Augmenter1. Augmenter1 is an optimized version of Augmenter0. That is why it provides a different interface
+than Augmenter0 (cf respective docs)
 &#34;&#34;&#34;</code></pre>
 </details>
 </section>
@@ -59,15 +44,15 @@ They have to provide at least the following interface:
 <dl>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmenters.Augmenter0" href="Augmenter0.html">main.src.data.Augmentation.Augmenters.Augmenter0</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Apply augmentations step after step in the order provided</p></div>
 </dd>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmenters.Augmenter1" href="Augmenter1.html">main.src.data.Augmentation.Augmenters.Augmenter1</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Apply all transformations at once thanks to the transformation matrix and warpAffine. Optimized version of Augmenter0</p></div>
 </dd>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmenters.NoAugmenter" href="NoAugmenter.html">main.src.data.Augmentation.Augmenters.NoAugmenter</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Apply no augmentations in the case of step by step augmentations (same procedure as Augmenter0 not Augmenter1)</p></div>
 </dd>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmenters.enums" href="enums.html">main.src.data.Augmentation.Augmenters.enums</a></code></dt>
 <dd>

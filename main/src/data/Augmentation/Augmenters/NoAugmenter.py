@@ -1,3 +1,5 @@
+"""Apply no augmentations in the case of step by step augmentations (same procedure as Augmenter0 not Augmenter1)"""
+
 from typing import Tuple
 
 import numpy as np

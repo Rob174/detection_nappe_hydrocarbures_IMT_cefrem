@@ -1,3 +1,5 @@
+"""Apply all transformations at once thanks to the transformation matrix and warpAffine. Optimized version of Augmenter0"""
+
 from typing import Tuple, List, Callable
 
 import numpy as np
@@ -11,6 +13,9 @@ class Augmenter1(BaseClass):
 
     With this class, only one augmentation is supported combinedRotResizeMir which allows to commpute the final patch to be provided to the attr_model after
     rotation, mirrors, resizes (one for augmentation and another to resize the patch to a smaller version)
+
+    This class splits annotation generation and image generation.
+    It allows to filter the global sample on the label as it costs less to generate it
 
         Args:
             allowed_transformations: str, augmentations to apply. Currently supported:
