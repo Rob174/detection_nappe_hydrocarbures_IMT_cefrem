@@ -68,9 +68,8 @@ class Augmenter1(BaseClass):
                     patch_upper_left_corner_coords: tuple of int, coordinates of the upperleft corner of the patch in the transformed image
 
                 Returns:
-                    tuple of 3 np.ndarray
-                    - the transformed image patch
-                    - the transformed annotation patch
+                    tuple of 2 np.ndarray
+                    - the transformed image patch*
                     - the transformation matrix
 
                 """
@@ -80,23 +79,21 @@ class Augmenter1(BaseClass):
         return image, partial_transformation_matrix
     def transform_label(self, annotation_function: Callable,image_name: str, partial_transformation_matrix: np.ndarray,
                   patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
-        """Compute the random augmentations in the order in which they have been supplied.
+        """Compute the random mirrors transformations at once on the annotation **points** directly
 
-                Apply the same augmentations to the image and to the annotation
+        It is indeed the only way to avoid new classes introductionn due to interpolation
 
-                Args:
-                    image: np.ndarray, the input image to transform
-                    annotation: np.array, the corresponding annotation
-                    partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
-                    patch_upper_left_corner_coords: tuple of int, coordinates of the upperleft corner of the patch in the transformed image
+        Args:
+            annotation_function: Callable that can generate the patch with the given parameters
+            image_name: str, the name of the original image
+            partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
+            coord_patch: coordinates of the output patch in the augmented image
 
-                Returns:
-                    tuple of 3 np.ndarray
-                    - the transformed image patch
-                    - the transformed annotation patch
-                    - the transformation matrix
-
-                """
+        Returns:
+            tuple of np.ndarray
+            - the transformed annotation patch
+            - the transformation matrix used
+        """
         label, partial_transformation_matrix = self.attr_transformations_classes.compute_label_augment(
             annotation_function,image_name, partial_transformation_matrix,
             coord_patch=patch_upper_left_corner_coords)
@@ -115,6 +112,18 @@ class Augmenter1(BaseClass):
 
         return self.attr_transformations_classes.get_grid(img_shape, partial_transformation_matrix)
     def compute_transformation_matrix(self,rows, cols,angle,resize_factor,mirror):
+        """ Compute the transformation matrix corresponding to the parameters supplied
+
+            Args:
+                rows: number of rows of the input image
+                cols: number of cols of the input image
+                angle, float angle of rotation
+                resize_factor, float resize factor taking into account the final resize to get the input image for the model
+                mirror, int 0 = fliplr ; 1 = flipud ; -1 = noflip
+
+            Returns:
+                np.ndarray, the transformation matrix
+            """
         return self.attr_transformations_classes.compute_transformation_matrix(rows, cols,angle,resize_factor,mirror)
     def choose_new_augmentations(self, image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
