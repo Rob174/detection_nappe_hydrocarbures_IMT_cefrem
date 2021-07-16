@@ -1,3 +1,4 @@
+"""Standardizer to apply when we use the OtherClassPatchAdder class"""
 
 import numpy as np
 
@@ -8,7 +9,13 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class StandardizerCacheMixed(BaseClass,AbstractStandardizer):
-    def __init__(self,interval):
+    """Standardizer to apply when we use the OtherClassPatchAdder class
+
+    Args:
+        interval: interval between two patches with only the other class
+    """
+    def __init__(self, interval):
+        super().__init__()
         self.ratio = interval
         self.stats_seep_spill = StandardizerCacheSeepSpill()
         self.stats_other = StandardizerCacheOther()

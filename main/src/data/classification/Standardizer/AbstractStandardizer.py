@@ -1,3 +1,5 @@
+"""Base class to construct a new standardizer"""
+
 
 import numpy as np
 

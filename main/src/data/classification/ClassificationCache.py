@@ -1,3 +1,5 @@
+"""Class that takes inputs from the filtered hdf5 file to create a new dataset. Far quicker than the original ClassificationCache."""
+
 import json
 import random
 from typing import Tuple, Generator, Optional
@@ -21,12 +23,14 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class ClassificationCache(BaseClass):
-    """Class that takes inputs from the filtered hdf5 file and
-    filter them.
+    """Class that takes inputs from the filtered hdf5 file to create a new dataset
 
     Args:
 
         label_modifier: EnumLabelModifier
+        classes_to_use: Tuple[EnumClasses] classes to supply to the LabelModifier
+        tr_percent: float percentage of images allocated to training
+        limit_num_images: int limit the number of images for the training dataset
         other_class_adder: EnumClassPatchAdder to select classadder object
         interval: int, interval between two un annotated patches
     """

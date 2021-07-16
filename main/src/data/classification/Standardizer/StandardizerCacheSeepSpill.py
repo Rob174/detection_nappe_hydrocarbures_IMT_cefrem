@@ -1,3 +1,5 @@
+"""Standardizer to use with the filtered_cache_images.hdf5 ... dataset"""
+
 import json
 import numpy as np
 
@@ -7,7 +9,11 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class StandardizerCacheSeepSpill(BaseClass,AbstractStandardizer):
+    """
+    Standardizer to use with the filtered_cache_images.hdf5 ... dataset
+    """
     def __init__(self):
+        super().__init__()
         with open(FolderInfos.input_data_folder+"filtered_cache_pixels_stats.json","r") as fp:
             self.stat_dico = json.load(fp)
     @property
