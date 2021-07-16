@@ -1,7 +1,8 @@
+from main.src.data.balance_classes.AbstractBalance import AbstractBalance
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class NoBalance(BaseClass):
+class NoBalance(BaseClass,AbstractBalance):
     def __init__(self):
         """
         Class used to indicate that no balancing operation has been applied

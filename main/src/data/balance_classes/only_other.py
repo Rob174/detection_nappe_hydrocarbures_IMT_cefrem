@@ -1,15 +1,17 @@
 import numpy as np
 
+from main.src.data.balance_classes.AbstractBalance import AbstractBalance
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class BalanceClasses2(BaseClass):
+class BalanceClasses2(BaseClass,AbstractBalance):
     def __init__(self, other_index):
         """Balance classes by excluding patches where there is only the other class
 
         Args:
             other_index: index of the class other
         """
+        super().__init__()
         self.attr_other_index = other_index
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_global_name = "balance"  # save a more compehensible name
