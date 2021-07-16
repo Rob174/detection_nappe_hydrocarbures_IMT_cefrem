@@ -19,10 +19,11 @@ class EarlyStopping(BaseClass, AbstractEarlyStopping):
 
     def stop_training(self) -> bool:
         metric_value = self.metric.get_last_metric(self.attr_name_metric_chosen)
-        if self.last_epoch_metric_value != -1 and self.last_epoch_metric_value+self.attr_min_delta <= metric_value:
+        if self.last_epoch_metric_value != -1 and (self.last_epoch_metric_value-metric_value) <= self.attr_min_delta:
             self.status += 1
         else:
             self.status = 0
+        self.last_epoch_metric_value = metric_value
         if self.status > self.attr_patience_threshold:
             return True
         else:
