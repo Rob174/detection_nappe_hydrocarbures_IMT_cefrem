@@ -211,7 +211,10 @@ As no parameters produces better performances, we will investigate:
 - ✔️ cache generation algorithm checked [aee9eab](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/tree/aee9eab67b673dfe01176e02168483e7954d1b51)
 - ✔️ add tests for cache
 - ✔️ correct empty annotations
-- ✔️recomputing stats
+- ✔️recomputing stats pixels
+- ✔️recomputing stats classes
+- ✔️recomputing stats pixels for other cache
+- ✔️compositing stats for other seepSpill balance control [#33](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/33)
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
