@@ -162,7 +162,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
                     classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
                     if balance_reject is True:
-                        print("skip1")
                         continue
                     image = np.array(image,dtype=np.float32)
                     image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
@@ -172,7 +171,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         )
                     reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
                     if reject is True:
-                        print("skip2")
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time

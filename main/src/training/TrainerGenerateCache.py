@@ -43,12 +43,12 @@ class Trainer0(BaseClass):
                     def __iter__(self):
                         return self.data.__iter__(self.dataset)
                 for i, [input, output, transformation_matrix, item] in enumerate(Wrapper(self.dataset,"tr")):
-                    print(i,end="\r")
                     input = input[0]
                     dico_info[str(i)] = {"source_img": item, "transformation_matrix": transformation_matrix.tolist()}
                     cache_images.create_dataset(str(i), shape=input.shape, dtype='f', data=input)
                     cache_annotations.create_dataset(str(i), shape=output.shape, dtype='i', data=output)
-                    if i % 10 == 0:
+                    if i % 1000 == 0:
+                        print(i,end="\r")
                         with open(FolderInfos.input_data_folder + "filtered_img_infos.json", "w") as fp:
                             json.dump(dico_info, fp)
 
