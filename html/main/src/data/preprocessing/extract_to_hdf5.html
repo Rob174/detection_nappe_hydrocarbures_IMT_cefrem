@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>main.src.data.preprocessing.extract_to_hdf5 API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>main.src.data.preprocessing.extract_to_hdf5</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Extract file names under the following structure
+
+# {&#34;shp&#34;:{&#34;id&#34;:fullpath,...}, &#34;img&#34;:, {&#34;id&#34;:fullpath,...}}
+
+import os
+import re
+
+from main.FolderInfos import FolderInfos
+
+if __name__ == &#34;__main__&#34;:
+    FolderInfos.init(test_without_data=True)
+    shapefile_path = FolderInfos.input_data_folder + &#34;originals&#34; + FolderInfos.separator + &#34;Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp&#34;
+    dbffile_path = FolderInfos.input_data_folder + &#34;originals&#34; + FolderInfos.separator + &#34;Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf&#34;
+    images_path_folder = FolderInfos.input_data_folder + &#34;originals&#34; + FolderInfos.separator + FolderInfos.separator.join \
+        (&#34;Sentinel1\\TraitementSnap&#34;.split(&#34;\\&#34;)) + FolderInfos.separator
+    shapefile_earth = FolderInfos.input_data_folder + &#34;World map_Bufd.shp&#34;
+
+    dico_by_extensions = {&#34;img&#34;: {}}
+    dico_infos_img = {}
+
+    for folder in os.listdir(images_path_folder):
+        img_file_path = images_path_folder + folder + FolderInfos.separator + &#34;Sigma0_VV_db.img&#34;
+        # Extract the name of the file
+        [_, t_init, t_end, uniq_id, preprocessing] = re.sub(
+            &#34;^(([0-9A-Za-z]+_){4})(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(([0-9A-Za-z]+_[0-9A-Za-z]+_[0-9A-Za-z]+))_([^\\.]+)\\.data$&#34;,
+            &#34;\\1,\\3,\\4,\\5,\\7&#34;,
+            folder
+        ).split(&#34;,&#34;)
+        dico_by_extensions[&#34;img&#34;][uniq_id] = img_file_path
+        dico_infos_img[uniq_id] = {&#34;t_init&#34;: t_init, &#34;t_end&#34;: t_end, &#34;uniq_id&#34;: uniq_id, &#34;preprocessing&#34;: preprocessing}
+
+    # Write the following files:
+
+    &#34;&#34;&#34;
+    - images.hdf5: future main inputs of the network, numpy arrays of shape (height,width,1) dtype = np.float32
+    - annotations_labels.hdf5: reference for the output of the segmentation network: numpy array of shape (height,width,3) dtype = np.uint8 !.
+    
+    The value 3 correspond respectively (in this order) to oil seep, oil spill and others.
+    - class_mappings.json: will store mapping between class names (oil seep, oil spill and others) and index in the array of the annotations_labels.hdf5 file (this file is created manually in the data_in folder)
+    - images_informations.json: will store
+        - coord_upperleft and coord_lowerright: floats tuples. Coordinates of the upper left and lower right corners in degrees
+        - resolution: floats tuple: Its resolution in px/meters
+        - tinit,tend: initial and ending time when satelite start to capture
+        - preprocessing: code of preprocessing steps
+    
+    All data will be accessible by calling object[image_id]
+    &#34;&#34;&#34;
+    from typing import Tuple, List
+
+    from h5py import File
+    import json
+
+    FolderInfos.init(test_without_data=True)
+
+
+    def get_mode(path):
+        mode = &#34;r+&#34;
+        if os.path.exists(path) is False:
+            mode = &#34;w&#34;
+        return mode
+
+
+    already_done = None
+    ## Create objects hdf5 and container for th images informations
+    if os.path.exists(f&#34;{FolderInfos.input_data_folder}images_preprocessed.hdf5&#34;) is True:
+        with File(f&#34;{FolderInfos.input_data_folder}images_preprocessed.hdf5&#34;, &#34;r&#34;) as images_hdf5:
+            already_done = list(images_hdf5.keys())
+    path_img = f&#34;{FolderInfos.input_data_folder}images_preprocessed.hdf5&#34;
+    mode = get_mode(path_img)
+    images_hdf5 = File(path_img, mode)
+    annotations_labels_hdf5 = File(f&#34;{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5&#34;, mode)
+    images_informations = {}
+
+    import geopandas as gpd
+    from shapely import speedups
+    import rasterio
+    import numpy as np
+    from PIL import Image, ImageDraw  # PIL = pillow
+    import dbf
+
+    speedups.disable()  # To avoid errors
+    #
+    # # Extract earth land points
+    # land_point_list = []
+    # shapefile_land = gpd.read_file(shapefile_earth)
+    # for shape in shapefile_land.geometry:
+    #     liste_points_shape: List[Tuple[int ,int]] = [] # will contain the list of point of this shape
+    #     elem = shape.boundary # extract the boundary of the object shape (with other properties)
+    #     if elem.geom_type != &#34;LineString&#34;  :# the polygon is defined by a group of lines defines the polygon : https://help.arcgis.com/en/geodatabase/10.0/sdk/arcsde/concepts/geometry/shapes/types.htm
+    #         # Utiliser le numéro de vertice pr éviter les croisements
+    #         for line in elem: # Loop through lines of the &#34;Multi&#34; - LineString
+    #             coords = np.dstack(line.coords.xy).tolist()[0] # get the list of points
+    #             for point in coords: # Extract the point of the polygon
+    #                 land_point_list.append(tuple([point[0], point[1]]))
+    #
+    #     else: # the polygon is defined one line which creates a closed shape
+    #         coords = np.dstack(elem.coords.xy).tolist()[0]
+    #         for point in coords: # Extract the point of the polygon
+    #             # Convert point coordinates from degrees to corresponding px coordinates
+    #             px, py = raster.index(point[0], point[1])
+    #             liste_points_shape.append(tuple([int(py), int(px)]))
+
+    ## Open the shapefile
+    shapefile = gpd.read_file(shapefile_path)
+    ## Open corresponding database storing
+    table = dbf.Table(dbffile_path)  # Table containing the class and the index of the polygon
+    table.open()
+    ## Loop through images, open them and add their informations to the correspinding objects
+    nb_elems = len(dico_by_extensions[&#34;img&#34;])
+    for i, [name, pathImg] in enumerate(dico_by_extensions[&#34;img&#34;].items()):
+        print(f&#34;Progress {(i + 1) / nb_elems * 100:.2f}%&#34;)
+        if already_done is not None and name in already_done:
+            print(f&#34;{name} has already been done&#34;)
+            continue  # We skip this image
+        # We loop through raster images and shapefiles
+        ## Open the raster
+        with rasterio.open(
+                pathImg) as raster:  ## (NB: with keyword allows to manage files (properly open and close them)
+            image_array: np.ndarray = raster.read(1)  # Get the image array
+            # Then, we create a &#34;attr_dataset&#34; to be able to access the data by calling hdf5_object[name]. It is not a real attr_dataset as we commonly think as only one image is in it.
+            images_hdf5.create_dataset(name, shape=image_array.shape, dtype=&#39;f&#39;,
+                                       data=image_array, compression=&#39;gzip&#39;, compression_opts=9)
+            # Properties computation
+            ## Resolution computation
+            # From https://gis.stackexchange.com/questions/311063/extract-raster-information-using-python
+            radius_earth_meters = 6371e3
+            # raster.transform is the transformation matrix between the spatial coordinates and the pixels # https://en.wikipedia.org/wiki/Transformation_matrix#:~:text=eigenbases-,examples%20in%202%20dimensions,-edit
+            xres: float = abs \
+                (raster.transform.a * np.pi / 180. * radius_earth_meters)  # We consider that the earth is a sphere
+            yres: float = abs \
+                (raster.transform.e * np.pi / 180. * radius_earth_meters)  # abs in case of a reflexion transformation
+            ## Coordinates
+            coord_upperleft: Tuple[float, float] = raster.transform * (0, 0)
+            coord_lowerright: Tuple[float, float] = raster.transform * (raster.width, raster.height)
+            images_informations[name] = {&#34;resolution&#34;: (xres, yres), &#34;coord_upperleft&#34;: coord_upperleft
+                , &#34;coord_lowerright&#34;: coord_lowerright,
+                                         **dico_infos_img[
+                                             name]}  # **dictionary = dictionnary unpacking: we add the content of the dict to the other dict
+
+        # Shapefile segmentation map computation
+        ## Create empty array with the same shape as the original image
+        segmentation_map = np.zeros(shape=image_array.shape, dtype=np.uint8)
+        segmentation_map = Image.fromarray(segmentation_map)
+        draw = ImageDraw.ImageDraw(segmentation_map)  # draw the base image
+        for i_shape, shape in enumerate(shapefile.geometry):
+            id_shape = shapefile.id[i_shape]
+            metadata = list(filter(lambda x: x[0] == id_shape, table))[0]
+            id_img = re.sub(
+                &#34;^(([0-9A-Za-z]+_){4})(\\d{8}T\\d{6})_(\\d{8}T\\d{6})_(([0-9A-Za-z]+_[0-9A-Za-z]+_[0-9A-Za-z]+))_([^\\.]+)\\.data$&#34;,
+                &#34;\\1,\\3,\\4,\\5,\\7&#34;,
+                metadata[8].strip()  # extract the name of the image corresponding
+            ).split(&#34;,&#34;)[3]
+            if name != id_img:
+                continue
+            liste_points_shape: List[Tuple[int, int]] = []  # will contain the list of point of this shape
+            elem = shape.boundary  # extract the boundary of the object shape (with other properties)
+            if elem.geom_type != &#34;LineString&#34;:  # the polygon is defined by a group of lines defines the polygon : https://help.arcgis.com/en/geodatabase/10.0/sdk/arcsde/concepts/geometry/shapes/types.htm
+                # Utiliser le numéro de vertice pr éviter les croisements
+                for line in elem:  # Loop through lines of the &#34;Multi&#34; - LineString
+                    coords = np.dstack(line.coords.xy).tolist()[0]  # get the list of points
+                    for point in coords:  # Extract the point of the polygon
+                        px, py = raster.index(point[0], point
+                        [1])  # Convert point coordinates from degrees to corresponding px coordinates
+                        liste_points_shape.append(tuple([int(py), int(px)]))
+
+            else:  # the polygon is defined one line which creates a closed shape
+                coords = np.dstack(elem.coords.xy).tolist()[0]
+                for point in coords:  # Extract the point of the polygon
+                    # Convert point coordinates from degrees to corresponding px coordinates
+                    px, py = raster.index(point[0], point[1])
+                    liste_points_shape.append(tuple([int(py), int(px)]))
+            label = metadata[4].strip()  # strip cut all space, back to line
+            if label == &#34;seep&#34;:  # Change color and so the value put in the array to create the label
+                color = &#34;#010101&#34;
+            elif label == &#34;spill&#34;:
+                color = &#34;#020202&#34;
+            else:
+                color = &#34;#000000&#34;
+            draw.polygon(liste_points_shape, fill=color)
+            # Extract
+        segmentation_map = np.array(segmentation_map, dtype=np.uint8)
+        annotations_labels_hdf5.create_dataset(name, shape=segmentation_map.shape, dtype=&#39;i&#39;, data=segmentation_map,
+                                               compression=&#39;gzip&#39;, compression_opts=9)
+
+    # Write the image informations to the corresponding file
+    with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;,
+              mode) as fp:  # NB: fp = filepointer
+        previous_images_informations = json.load(fp) if mode != &#34;w&#34; else {}
+        previous_images_informations.update(images_informations)
+        fp.seek(0)
+        json.dump(previous_images_informations, fp, indent=4)
+    table.close()
+    images_hdf5.close()
+    annotations_labels_hdf5.close()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="main.src.data.preprocessing" href="index.html">main.src.data.preprocessing</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
