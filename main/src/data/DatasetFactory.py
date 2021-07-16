@@ -58,29 +58,29 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
             dico_infos = json.load(fp)
 
         if usage_type == EnumUsage.Classification:
-            # if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-            #         and augmentations_img == "combinedRotResizeMir_10_0.25_4" and augmenter_patch == EnumAugmenter.NoAugmenter \
-            #         and augmentations_patch == "none" and exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 1000 \
-            #         and grid_size == 1000 and not force_classifpatch:
-            #     self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
-            #                                             other_class_adder=other_class_adder,interval=interval)
-            # else:
-            if patch_creator == EnumPatchAlgorithm.FixedPx:
-                self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
-                                                         images_informations_preprocessed=dico_infos,
-                                                         exclusion_policy=exclusion_policy,
-                                                         exclusion_policy_threshold=exclusion_policy_threshold)
+            if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
+                    and augmentations_img == "combinedRotResizeMir_10_0.25_4" and augmenter_patch == EnumAugmenter.NoAugmenter \
+                    and augmentations_patch == "none" and exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 1000 \
+                    and grid_size == 1000 and not force_classifpatch:
+                self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
+                                                        other_class_adder=other_class_adder,interval=interval)
             else:
-                raise NotImplementedError(f"{patch_creator} is not implemented")
-            self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
-                                                    classes_to_use=classes_to_use,
-                                                    balance=balance,
-                                                    augmentations_img=augmentations_img,
-                                                    augmenter_img=augmenter_img,
-                                                    augmentations_patch=augmentations_patch,
-                                                    augmenter_patch=augmenter_patch,
-                                                    augmentation_factor=augmentation_factor,
-                                                    label_modifier=dataset_name)
+                if patch_creator == EnumPatchAlgorithm.FixedPx:
+                    self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
+                                                             images_informations_preprocessed=dico_infos,
+                                                             exclusion_policy=exclusion_policy,
+                                                             exclusion_policy_threshold=exclusion_policy_threshold)
+                else:
+                    raise NotImplementedError(f"{patch_creator} is not implemented")
+                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
+                                                        classes_to_use=classes_to_use,
+                                                        balance=balance,
+                                                        augmentations_img=augmentations_img,
+                                                        augmenter_img=augmenter_img,
+                                                        augmentations_patch=augmentations_patch,
+                                                        augmenter_patch=augmenter_patch,
+                                                        augmentation_factor=augmentation_factor,
+                                                        label_modifier=dataset_name)
 
 
         elif usage_type == EnumUsage.Segmentation:

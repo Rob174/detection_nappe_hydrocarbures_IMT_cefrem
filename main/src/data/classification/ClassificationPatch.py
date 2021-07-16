@@ -149,7 +149,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             raise Exception("Only augmenter1 is supported with this method of attr_dataset generation")
         if isinstance(self.attr_patch_augmenter, NoAugmenter) is False:
             raise Exception("The patch augmenter is not supported when you choose augmenter1 for image augmenter")
-        images_available = list(self.images.keys())
+        images_available = self.tr_keys if dataset == "tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
             for item in images_available:
@@ -175,7 +175,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     # yield image_patch, annotations, transformation_matrix, item
-                    yield image_patch, annotations_patch, transformation_matrix, item
+                    yield image_patch, classification, transformation_matrix, item
 
     def generate_item_step_by_step(self, dataset="tr"):  # btwn 25 and 50 ms
         """Magic method of python called by the object[id] syntax.
