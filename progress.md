@@ -215,6 +215,8 @@ As no parameters produces better performances, we will investigate:
 - ✔️recomputing stats classes
 - ✔️recomputing stats pixels for other cache
 - ✔️compositing stats for other seepSpill balance control [#33](https://github.com/Rob174/detection_nappe_hydrocarbures_IMT_cefrem/issues/33)
+- ⏳ training cache with other (interval 1) 70 epochs
+- ⏲️ Documentation
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
