@@ -18,7 +18,7 @@ class OtherClassPatchAdder(BaseClass):
     def __init__(self,interval):
         self.attr_interval = interval
         self.cache_img = File(FolderInfos.input_data_folder+"filtered_other_cache_images.hdf5","r")
-        with open(FolderInfos.input_data_folder+"filtered_other_cache_images.hdf5","r") as fp:
+        with open(FolderInfos.input_data_folder+"filtered_other_img_infos.json","r") as fp:
             self.cache_infos = json.load(fp)
         self.num_annotated_btwn = 0
 
