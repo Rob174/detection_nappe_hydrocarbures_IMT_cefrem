@@ -1,9 +1,10 @@
-from typing import Tuple, List, Any, Dict, Callable
+from typing import Tuple, List, Callable
 
 import cv2
 import numpy as np
 
-from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.AbstractAugmentationWithMatrix import AbstractAugmentationWithMatrix
+from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.AbstractAugmentationWithMatrix import \
+    AbstractAugmentationWithMatrix
 
 
 class RotationResizeMirrors(AbstractAugmentationWithMatrix):
@@ -45,8 +46,8 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         self.attr_resize_lower_fact_float = resize_lower_fact_float
 
     def compute_image_augment(self, image: np.ndarray,
-                               partial_transformation_matrix: np.ndarray,
-                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+                              partial_transformation_matrix: np.ndarray,
+                              coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random transformations at once on the image
 
         Args:
@@ -65,12 +66,13 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
                                                      [0, 0, 1]])
         transformation_matrix = shift_patch_into_position_matrix.dot(partial_transformation_matrix)
         patch_image = cv2.warpAffine(image, transformation_matrix[:-1, :],
-                                          dsize=(self.attr_patch_size_final_resize, self.attr_patch_size_final_resize),
-                                          flags=cv2.INTER_LANCZOS4)
+                                     dsize=(self.attr_patch_size_final_resize, self.attr_patch_size_final_resize),
+                                     flags=cv2.INTER_LANCZOS4)
         return patch_image, transformation_matrix
-    def compute_label_augment(self,annotation_function: Callable,image_name: str,
-                               partial_transformation_matrix: np.ndarray,
-                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+
+    def compute_label_augment(self, annotation_function: Callable, image_name: str,
+                              partial_transformation_matrix: np.ndarray,
+                              coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations at once on the annotation **points** directly
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
@@ -91,9 +93,8 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
                                                      [0, 1, -coord_patch[0]],
                                                      [0, 0, 1]])
         transformation_matrix = shift_patch_into_position_matrix.dot(partial_transformation_matrix)
-        annotation = annotation_function(image_name,transformation_matrix,self.attr_patch_size_final_resize)
+        annotation = annotation_function(image_name, transformation_matrix, self.attr_patch_size_final_resize)
         return annotation, transformation_matrix
-
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
@@ -109,13 +110,14 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         rows, cols = img_shape[:2]
         original_mapped_corner1 = partial_transformation_matrix.dot([cols, rows, 1])
         original_mapped_corner2 = partial_transformation_matrix.dot([cols, rows, 1])
-        max_rows = max(original_mapped_corner1[1],original_mapped_corner2[1]) - self.attr_patch_size_final_resize
-        max_cols = max(original_mapped_corner1[0],original_mapped_corner2[0]) - self.attr_patch_size_final_resize
+        max_rows = max(original_mapped_corner1[1], original_mapped_corner2[1]) - self.attr_patch_size_final_resize
+        max_cols = max(original_mapped_corner1[0], original_mapped_corner2[0]) - self.attr_patch_size_final_resize
         cols_coords = np.arange(0, max_cols, self.attr_patch_size_final_resize)
         rows_coords = np.arange(0, max_rows, self.attr_patch_size_final_resize)
         coords = list(zip(*list(x.flat for x in np.meshgrid(rows_coords, cols_coords))))
         return coords
-    def choose_parameters(self) -> Tuple[float,float,int]:
+
+    def choose_parameters(self) -> Tuple[float, float, int]:
         """Choose random parameters for augmentations
 
         Returns: tuple (angle,resize_factor,mirror)
@@ -130,8 +132,10 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         resize_factor *= self.attr_patch_size_final_resize / self.attr_patch_size_before_final_resize
 
         mirror = np.random.choice([0, 1, -1])
-        return angle,resize_factor,mirror
-    def compute_transformation_matrix(self,rows: int, cols: int,angle: float,resize_factor: float,mirror: int) -> np.ndarray:
+        return angle, resize_factor, mirror
+
+    def compute_transformation_matrix(self, rows: int, cols: int, angle: float, resize_factor: float,
+                                      mirror: int) -> np.ndarray:
         """ Compute the transformation matrix corresponding to the parameters supplied
 
         Args:
@@ -169,6 +173,7 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
              [0, 0, 1]])
         partial_transformation_matrix = adjusted_translation.dot(partial_transformation_matrix)
         return partial_transformation_matrix
+
     def choose_new_augmentation(self, image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
 
@@ -183,4 +188,4 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         # Choose parameters of transformation if not already chosen for epoch item
         rows, cols = image.shape[:2]
 
-        return self.compute_transformation_matrix(rows,cols,*self.choose_parameters())
+        return self.compute_transformation_matrix(rows, cols, *self.choose_parameters())

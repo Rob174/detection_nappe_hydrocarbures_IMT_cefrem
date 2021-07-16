@@ -56,7 +56,7 @@ class Augmenter1(BaseClass):
             raise NotImplementedError(f"{allowed_transformations} is not implemented")
 
     def transform_image(self, image: np.ndarray, partial_transformation_matrix: np.ndarray,
-                  patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+                        patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random augmentations in the order in which they have been supplied.
 
                 Apply the same augmentations to the image and to the annotation
@@ -77,8 +77,9 @@ class Augmenter1(BaseClass):
             image, partial_transformation_matrix,
             coord_patch=patch_upper_left_corner_coords)
         return image, partial_transformation_matrix
-    def transform_label(self, annotation_function: Callable,image_name: str, partial_transformation_matrix: np.ndarray,
-                  patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+
+    def transform_label(self, annotation_function: Callable, image_name: str, partial_transformation_matrix: np.ndarray,
+                        patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations at once on the annotation **points** directly
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
@@ -95,9 +96,10 @@ class Augmenter1(BaseClass):
             - the transformation matrix used
         """
         label, partial_transformation_matrix = self.attr_transformations_classes.compute_label_augment(
-            annotation_function,image_name, partial_transformation_matrix,
+            annotation_function, image_name, partial_transformation_matrix,
             coord_patch=patch_upper_left_corner_coords)
         return label, partial_transformation_matrix
+
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
 
@@ -111,7 +113,8 @@ class Augmenter1(BaseClass):
         """
 
         return self.attr_transformations_classes.get_grid(img_shape, partial_transformation_matrix)
-    def compute_transformation_matrix(self,rows, cols,angle,resize_factor,mirror):
+
+    def compute_transformation_matrix(self, rows, cols, angle, resize_factor, mirror):
         """ Compute the transformation matrix corresponding to the parameters supplied
 
             Args:
@@ -124,7 +127,8 @@ class Augmenter1(BaseClass):
             Returns:
                 np.ndarray, the transformation matrix
             """
-        return self.attr_transformations_classes.compute_transformation_matrix(rows, cols,angle,resize_factor,mirror)
+        return self.attr_transformations_classes.compute_transformation_matrix(rows, cols, angle, resize_factor, mirror)
+
     def choose_new_augmentations(self, image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
 

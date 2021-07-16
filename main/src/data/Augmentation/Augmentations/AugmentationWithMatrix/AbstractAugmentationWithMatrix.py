@@ -9,14 +9,15 @@ from main.src.param_savers.BaseClass import BaseClass
 class AbstractAugmentationWithMatrix(ABC, BaseClass):
     @abstractmethod
     def compute_image_augment(self, image: np.ndarray,
-                               partial_transformation_matrix: np.ndarray,
-                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+                              partial_transformation_matrix: np.ndarray,
+                              coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Make the transformation on the annotation and returns the results with the affine transformation matrix"""
         pass
+
     @abstractmethod
-    def compute_label_augment(self,annotation_function: Callable,image_name: str,
-                               partial_transformation_matrix: np.ndarray,
-                               coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+    def compute_label_augment(self, annotation_function: Callable, image_name: str,
+                              partial_transformation_matrix: np.ndarray,
+                              coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Make the transformation on the annotation and returns the results with the affine transformation matrix"""
         pass
 
