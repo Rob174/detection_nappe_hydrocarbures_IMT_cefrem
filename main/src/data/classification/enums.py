@@ -1,3 +1,5 @@
+"""Contains enumerations EnumLabelModifier, EnumClassPatchAdder"""
+
 from enum import Enum
 
 

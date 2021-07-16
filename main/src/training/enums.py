@@ -1,3 +1,5 @@
+"""Contains enumerations EnumLoss and EnumDataset"""
+
 from enum import Enum
 
 

@@ -1,3 +1,5 @@
+"""Contains enumerations EnumModels, EnumOptimizer and EnumFreeze"""
+
 from enum import Enum
 
 

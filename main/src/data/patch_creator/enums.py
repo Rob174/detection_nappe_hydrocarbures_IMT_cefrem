@@ -1,3 +1,5 @@
+"""Contains enumerations EnumPatchAlgorithm and EnumPatchExcludePolicy"""
+
 from enum import Enum
 
 

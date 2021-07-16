@@ -1,3 +1,5 @@
+"""Contains enumeration EnumAugmenter"""
+
 from enum import Enum
 
 

@@ -1,3 +1,5 @@
+"""Contains enumerations EnumGitCheck"""
+
 from enum import Enum
 
 

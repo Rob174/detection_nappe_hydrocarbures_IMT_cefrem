@@ -1,3 +1,5 @@
+"""Contains enumeration EnumBalance"""
+
 from enum import Enum
 
 

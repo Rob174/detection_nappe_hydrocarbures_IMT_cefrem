@@ -1,3 +1,5 @@
+"""Contains enums EnumUsage and EnumClasses"""
+
 from enum import Enum
 
 

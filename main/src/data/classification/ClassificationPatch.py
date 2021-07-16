@@ -1,3 +1,6 @@
+"""Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
+filter them"""
+
 import random
 from typing import Optional
 from typing import Tuple
@@ -28,8 +31,8 @@ from main.src.data.segmentation.PointAnnotations import PointAnnotations
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
-    """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches,
-    filteer them.
+    """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
+    filter them.
 
     Args:
         patch_creator: the object of PatchCreator0 class managing patches
