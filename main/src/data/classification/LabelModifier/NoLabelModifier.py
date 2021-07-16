@@ -5,10 +5,12 @@ from main.src.data.enums import EnumClasses
 
 
 class NoLabelModifier(AbstractLabelModifier):
+    """Class use to have the same interface"""
     def __init__(self, *args, **kwargs):
         super(NoLabelModifier, self).__init__()
         self.attr_classes_to_use = [EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill]
         pass
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
+        """Make no modifications to the annotation"""
         return annotation

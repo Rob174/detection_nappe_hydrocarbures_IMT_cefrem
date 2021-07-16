@@ -8,7 +8,8 @@ from main.src.data.enums import EnumClasses
 
 
 class LabelModifier2(AbstractLabelModifier):
-    """Modify the source label provided by the source class inheriting from AbstractClassificationDataset
+    """Modify the source label provided by the source class inheriting from AbstractClassificationDataset.
+    Merge multiple labels the classes to use and indicate the presence or absence of one of these classes
 
     Args:
         original_class_mapping: TwoWayDict mapping other, seep, spill... categories to their ids in the original 1d classification label
@@ -17,6 +18,7 @@ class LabelModifier2(AbstractLabelModifier):
 
     def __init__(self, original_class_mapping: TwoWayDict,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
+        super().__init__()
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use

@@ -8,7 +8,8 @@ from main.src.data.enums import EnumClasses
 
 
 class LabelModifier1(AbstractLabelModifier):
-    """Modify the source label provided by the source class inheriting from AbstractClassificationDataset
+    """Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
+    and to change their order.
 
     Args:
         classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
@@ -16,6 +17,7 @@ class LabelModifier1(AbstractLabelModifier):
 
     def __init__(self, original_class_mapping: TwoWayDict,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
+        super().__init__()
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         # modifying the class mappings according to attributes provided
@@ -34,7 +36,6 @@ class LabelModifier1(AbstractLabelModifier):
             annotation_modified: the classification label modified
 
         """
-        # of shape (val_0-1_class_other,val_0-1_class_1,val_0-1_class_2...)
         # Create a classification label with less classes
         annotation_modified = np.zeros((len(self.attr_class_mapping.keys()),))
         # {index_src_0:(class0,index_dest0),index_src_1:(class1,index_dest1),....}
