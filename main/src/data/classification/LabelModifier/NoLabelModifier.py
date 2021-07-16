@@ -1,3 +1,5 @@
+"""Class use to have the same interface. Makes no modifications"""
+
 import numpy as np
 
 from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
@@ -5,7 +7,8 @@ from main.src.data.enums import EnumClasses
 
 
 class NoLabelModifier(AbstractLabelModifier):
-    """Class use to have the same interface"""
+    """Class use to have the same interface. Makes no modifications"""
+
     def __init__(self, *args, **kwargs):
         super(NoLabelModifier, self).__init__()
         self.attr_classes_to_use = [EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill]

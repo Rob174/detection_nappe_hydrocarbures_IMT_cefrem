@@ -1,3 +1,5 @@
+"""Base class to create label modifier"""
+
 from abc import ABC, abstractmethod
 
 import numpy as np

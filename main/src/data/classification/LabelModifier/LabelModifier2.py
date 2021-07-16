@@ -1,3 +1,5 @@
+"""Merge multiple labels the classes to use and indicate the presence or absence of one of these classes"""
+
 from typing import Tuple
 
 import numpy as np

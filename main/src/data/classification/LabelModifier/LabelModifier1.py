@@ -1,3 +1,6 @@
+"""Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
+and to change their order."""
+
 from typing import Tuple
 
 import numpy as np

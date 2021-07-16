@@ -25,7 +25,6 @@ from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
-
 from main.src.data.segmentation.NumpyAnnotations import NumpyAnnotations
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
 
@@ -59,7 +58,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_limit_num_images = limit_num_images
         self.attr_resizer = Resizer(out_size_w=input_size)
         self.attr_augmentation_factor = augmentation_factor
-        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size,)
+        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
         self.tr_keys = list(self.images.keys())[:int(len(self.images) * tr_percent)]
         self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
         self.attr_global_name = "attr_dataset"
@@ -136,7 +135,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
     def __iter__(self, dataset="tr"):
         return iter(self.generator(dataset))
 
-    def generate_item_with_augmentation_at_once(self,dataset="tr"):
+    def generate_item_with_augmentation_at_once(self, dataset="tr"):
         """
 
         Args:
@@ -160,18 +159,19 @@ class ClassificationPatch(DataSentinel1Segmentation):
                 partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
                 for patch_upper_left_corner_coords in np.random.permutation(
                         self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                    annotations_patch,transformation_matrix = self.attr_img_augmenter.transform_label(self.annotations_labels.get,item,
-                                                                                partial_transformation_matrix,patch_upper_left_corner_coords)
+                    annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
+                        self.annotations_labels.get, item,
+                        partial_transformation_matrix, patch_upper_left_corner_coords)
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
                     classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
                     if balance_reject is True:
                         continue
-                    image = np.array(image,dtype=np.float32)
+                    image = np.array(image, dtype=np.float32)
                     image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
                         image=image,
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                        )
+                    )
                     reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
                     if reject is True:
                         continue
@@ -294,4 +294,3 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     def len(self, dataset: str) -> Optional[int]:
         return None
-# Tests in DatasetFactory

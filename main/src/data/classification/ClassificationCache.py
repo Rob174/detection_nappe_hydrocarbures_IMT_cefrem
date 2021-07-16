@@ -94,21 +94,23 @@ class ClassificationCache(BaseClass):
                 for id in images_available:
                     data = self.attr_other_class_adder.generate_if_required()
                     if data is not None:
-                        image,annotation,transformation_matrix,source_img = data
-                        image,annotation = self.process_infos(image,annotation)
+                        image, annotation, transformation_matrix, source_img = data
+                        image, annotation = self.process_infos(image, annotation)
                         yield image, annotation, transformation_matrix, source_img
                     image = np.array(images_cache[id])
                     annotation = np.array(annotations_cache[id])
                     source_img = self.dico_infos[id]["source_img"]
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
-                    image,annotation = self.process_infos(image,annotation)
+                    image, annotation = self.process_infos(image, annotation)
                     yield image, annotation, transformation_matrix, source_img
-    def process_infos(self,image,annotation):
+
+    def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)
         annotation = self.make_classification_label(annotation)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
-        return image,annotation
+        return image, annotation
+
     def make_classification_label(self, annotations_patch):
         """Creates the classification label based on the annotation patch image
 
