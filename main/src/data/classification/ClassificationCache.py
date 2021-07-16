@@ -14,6 +14,7 @@ from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModif
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
 from main.src.data.classification.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
 from main.src.data.classification.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
+from main.src.data.classification.PatchAdder.PatchAdderCallback import PatchAdderCallback
 from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.data.classification.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
 from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
@@ -60,13 +61,14 @@ class ClassificationCache(BaseClass):
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
+
         if other_class_adder == EnumClassPatchAdder.OtherClassPatchAdder:
             self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheMixed(interval=interval)
         elif other_class_adder == EnumClassPatchAdder.NoClassPatchAdder:
-            self.attr_other_class_adder = NoClassPatchAdder()
+            self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
-
+        self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
         with open(f"{FolderInfos.input_data_folder}filtered_img_infos.json", "r") as fp:
             self.dico_infos = json.load(fp)
 
@@ -90,7 +92,7 @@ class ClassificationCache(BaseClass):
         with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5", "r") as annotations_cache:
             with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as images_cache:
                 random.shuffle(images_available)
-
+                self.attr_patch_adder_callback.on_epoch_start()
                 for id in images_available:
                     data = self.attr_other_class_adder.generate_if_required()
                     if data is not None:
