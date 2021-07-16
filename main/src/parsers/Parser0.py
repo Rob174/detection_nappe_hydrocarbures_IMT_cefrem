@@ -91,7 +91,7 @@ class Parser0(BaseClass):
             '-loss': {"dest": 'loss_preference', "default": "binarycrossentropy", "type": EnumLoss,
                       "help": "Loss prefered for training", "choices": list(EnumLoss)},
 
-            '-lr': {"dest": 'lr', "default": 1e-8, "type": float, "help": "Learning rate of the optimizer"},
+            '-lr': {"dest": 'lr', "default": 1e-10, "type": float, "help": "Learning rate of the optimizer"},
             '-eps': {"dest": 'eps', "default": 1e-7, "type": float, "help": "Epsilon of the optimizer if it is Adam"},
             '-opti': {"dest": 'optimizer', "default": "adam", "type": EnumOptimizer, "help": "Optimizer algorithm",
                       "choices": list(EnumOptimizer)},
