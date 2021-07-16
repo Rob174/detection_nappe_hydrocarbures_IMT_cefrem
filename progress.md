@@ -213,6 +213,7 @@ As no parameters produces better performances, we will investigate:
 - ✔️ correct empty annotations
 - ✔️recomputing stats pixels
 - ✔️recomputing stats classes
+- ✔️recomputing stats pixels for other cache
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
