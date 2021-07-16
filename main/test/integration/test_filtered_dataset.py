@@ -21,6 +21,15 @@ class TestCache(unittest.TestCase):
         self.path_infos = FolderInfos.input_data_folder+"filtered_img_infos.json"
         self.margin_threshold = 100
         self.size = 256
+    def test_same_keys(self):
+        with File(self.path_images,"r") as cache:
+            keys_images = set(cache.keys())
+        with File(self.path_annotations,"r") as cache:
+            keys_annot = set(cache.keys())
+        with open(self.path_infos,"r") as fp:
+            keys_infos = set(json.load(fp).keys())
+        self.assertTrue(keys_images==keys_annot,msg=f"images contains \n{keys_images.difference(keys_annot)} \nnot in annotations" if len(keys_images) > len(keys_annot) else f"annotations contains \n{keys_annot.difference(keys_images)} \nnot in images")
+        self.assertTrue(keys_images==keys_infos,msg=f"images contains \n{keys_images.difference(keys_infos)} \nnot in infos" if len(keys_images) > len(keys_infos) else f"infos contains \n{keys_infos.difference(keys_images)} \nnot in images")
     def test_shape(self):
         with File(self.path_images,"r") as images:
             for image in images.values():
@@ -38,18 +47,17 @@ class TestCache(unittest.TestCase):
     def test_contains_annotations(self):
         threshold = 10
         with File(self.path_annotations,"r") as annotations:
-            with File(self.path_images,"r") as images:
-                nb = 0
-                for name,annotation in annotations.items():
-                    annotation = np.array(annotation)
-                    non_zeros = np.count_nonzero(annotation)
-                    try:
-                        self.assertTrue(non_zeros > threshold)
-                    except AssertionError:
-                        nb += 1
-                        # plot_differences(images[name],annotation)
-
-                raise AssertionError(f"{nb} images have no annotations")
+            nb = 0
+            for name,annotation in annotations.items():
+                annotation = np.array(annotation)
+                non_zeros = np.count_nonzero(annotation)
+                try:
+                    self.assertTrue(non_zeros > threshold)
+                except AssertionError:
+                    nb += 1
+                    # plot_differences(images[name],annotation)
+            if nb > 0:
+                raise AssertionError(f"{nb} over {len(annotations)} images have no annotations")
     def test_visual(self):
         nb_random_keys = 5
         with File(self.path_annotations,"r") as annotations:
@@ -61,23 +69,8 @@ class TestCache(unittest.TestCase):
                 for key in keys:
                     image = images[key]
                     annotation = annotations[key]
-                    plot_differences(image,annotation)
-                    self.assertTrue(input("OK label? ") != "f")
-    # def test_confusion_matrix(self):
-    #     out_size = 10000
-    #     nb_random_keys = 5
-    #     with File(self.path_images,"r") as images:
-    #         with open(self.path_infos,"r") as fp:
-    #             infos = json.load(fp)
-    #         keys = list(images.keys())
-    #         random.shuffle(keys)
-    #         keys = keys[:nb_random_keys]
-    #         for key in keys:
-    #             image = images[key]
-    #             matrix = np.array(infos[key]["transformation_matrix"],dtype=np.float32)
-    #             image = np.array(image,dtype=np.float32)
-    #             plot_differences(image,cv2.warpAffine(image,matrix[:-1,:],flags=cv2.WARP_INVERSE_MAP,dsize=(out_size,out_size)))
-    #             self.assertTrue(input("OK transformed_back? ") != "f")
+                    # plot_differences(image,annotation)
+                    # self.assertTrue(input("OK label? ") != "f")
 
 
 
