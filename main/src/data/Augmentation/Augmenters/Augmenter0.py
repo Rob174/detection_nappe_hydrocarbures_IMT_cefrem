@@ -2,9 +2,9 @@ from typing import Tuple
 
 import numpy as np
 
-from main.src.data.Augmentation.Augmentations.Mirrors import Mirrors
-from main.src.data.Augmentation.Augmentations.Resize import Resize
-from main.src.data.Augmentation.Augmentations.Rotations import Rotations
+from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Mirrors import Mirrors
+from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Resize import Resize
+from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Rotations import Rotations
 from main.src.param_savers.BaseClass import BaseClass
 
 

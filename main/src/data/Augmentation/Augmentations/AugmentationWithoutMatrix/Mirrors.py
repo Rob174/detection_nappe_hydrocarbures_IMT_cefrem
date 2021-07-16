@@ -2,7 +2,7 @@ from typing import Tuple
 
 import numpy as np
 
-from main.src.data.Augmentation.Augmentations.AbstractAugmentation import AbstractAugmentation
+from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.AbstractAugmentation import AbstractAugmentation
 
 
 class Mirrors(AbstractAugmentation):

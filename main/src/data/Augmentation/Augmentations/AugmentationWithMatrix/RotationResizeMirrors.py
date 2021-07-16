@@ -2,9 +2,8 @@ from typing import Tuple, List, Any, Dict, Callable
 
 import cv2
 import numpy as np
-import torch
 
-from main.src.data.Augmentation.Augmentations.AbstractAugmentationWithMatrix import AbstractAugmentationWithMatrix
+from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.AbstractAugmentationWithMatrix import AbstractAugmentationWithMatrix
 
 
 class RotationResizeMirrors(AbstractAugmentationWithMatrix):

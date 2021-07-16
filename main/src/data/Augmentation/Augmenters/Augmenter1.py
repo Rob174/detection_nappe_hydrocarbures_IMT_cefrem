@@ -2,7 +2,7 @@ from typing import Tuple, List, Callable
 
 import numpy as np
 
-from main.src.data.Augmentation.Augmentations.RotationResizeMirrors import RotationResizeMirrors
+from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.RotationResizeMirrors import RotationResizeMirrors
 from main.src.param_savers.BaseClass import BaseClass
 
 
