@@ -1,12 +1,13 @@
 
 import numpy as np
 
+from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.classification.Standardizer.StandardizerCacheOther import StandardizerCacheOther
 from main.src.data.classification.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class StandardizerCacheMixed(BaseClass):
+class StandardizerCacheMixed(BaseClass,AbstractStandardizer):
     def __init__(self,interval):
         self.ratio = interval
         self.stats_seep_spill = StandardizerCacheSeepSpill()
