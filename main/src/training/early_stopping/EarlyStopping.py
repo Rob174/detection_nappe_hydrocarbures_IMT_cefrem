@@ -6,19 +6,20 @@ from main.src.training.metrics.AbstractMetricManager import AbstractMetricManage
 
 
 class EarlyStopping(BaseClass, AbstractEarlyStopping):
-    def __init__(self, metric: AbstractMetricManager, name_metric_chosen: Enum, patience: int = 3):
+    def __init__(self, metric: AbstractMetricManager, name_metric_chosen: Enum, patience: int = 3, min_delta: float = 0.1):
         super(EarlyStopping, self).__init__(metric, name_metric_chosen)
         self.attr_name = self.__class__.__name__
         self.metric: AbstractMetricManager = metric
         self.attr_name_metric_chosen: Enum = name_metric_chosen
         self.attr_patience_threshold = patience
+        self.attr_min_delta = abs(min_delta)
 
         self.last_epoch_metric_value = -1
         self.status = 0
 
     def stop_training(self) -> bool:
         metric_value = self.metric.get_last_metric(self.attr_name_metric_chosen)
-        if self.last_epoch_metric_value != -1 and self.last_epoch_metric_value <= metric_value:
+        if self.last_epoch_metric_value != -1 and self.last_epoch_metric_value+self.attr_min_delta <= metric_value:
             self.status += 1
         else:
             self.status = 0
