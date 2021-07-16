@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Resize API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Apply random resize operation according to parameters" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,14 @@
 <h1 class="title">Module <code>main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Resize</code></h1>
 </header>
 <section id="section-intro">
+<p>Apply random resize operation according to parameters</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Tuple
+<pre><code class="python">&#34;&#34;&#34;Apply random resize operation according to parameters&#34;&#34;&#34;
+
+from typing import Tuple
 
 import cv2
 import numpy as np
@@ -35,6 +38,12 @@ from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Abstract
 
 
 class Resize(AbstractAugmentation):
+    &#34;&#34;&#34;Apply random resize operation according to parameters
+
+    Args:
+        range: float, range of resize factor possible
+        shift: float, minimal value for resize factor
+    &#34;&#34;&#34;
     def __init__(self, range: float, shift: float):
         self.attr_range = range
         self.attr_shift = shift
@@ -62,13 +71,25 @@ class Resize(AbstractAugmentation):
 <span>(</span><span>range: float, shift: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>Apply random resize operation according to parameters</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>range</code></strong></dt>
+<dd>float, range of resize factor possible</dd>
+<dt><strong><code>shift</code></strong></dt>
+<dd>float, minimal value for resize factor</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Resize(AbstractAugmentation):
+    &#34;&#34;&#34;Apply random resize operation according to parameters
+
+    Args:
+        range: float, range of resize factor possible
+        shift: float, minimal value for resize factor
+    &#34;&#34;&#34;
     def __init__(self, range: float, shift: float):
         self.attr_range = range
         self.attr_shift = shift

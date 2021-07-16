@@ -1,3 +1,5 @@
+"""Class computing random rotations of attr_angle_step steps"""
+
 from typing import Tuple
 
 import cv2
@@ -7,7 +9,7 @@ from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Abstract
 
 
 class Rotations(AbstractAugmentation):
-    """Class computing random rotations of 15° steps
+    """Class computing random rotations of attr_angle_step steps
     Usage:
 
         >>> array = ...

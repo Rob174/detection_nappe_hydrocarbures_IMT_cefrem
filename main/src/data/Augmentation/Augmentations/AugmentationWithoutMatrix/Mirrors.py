@@ -1,3 +1,5 @@
+"""Class computing random mirrors along a vertical or horizontal axis"""
+
 from typing import Tuple
 
 import numpy as np

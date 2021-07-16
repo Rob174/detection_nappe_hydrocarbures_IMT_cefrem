@@ -1,3 +1,5 @@
+"""Apply random resize operation according to parameters"""
+
 from typing import Tuple
 
 import cv2
@@ -7,6 +9,12 @@ from main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix.Abstract
 
 
 class Resize(AbstractAugmentation):
+    """Apply random resize operation according to parameters
+
+    Args:
+        range: float, range of resize factor possible
+        shift: float, minimal value for resize factor
+    """
     def __init__(self, range: float, shift: float):
         self.attr_range = range
         self.attr_shift = shift

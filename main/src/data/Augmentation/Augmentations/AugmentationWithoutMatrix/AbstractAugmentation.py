@@ -1,3 +1,5 @@
+"""Base class for augmentations based on a step by step approach"""
+
 from abc import ABC, abstractmethod
 from typing import Tuple
 

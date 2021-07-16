@@ -1,3 +1,5 @@
+"""Class computing random rotation mirrors resize at once"""
+
 from typing import Tuple, List, Callable
 
 import cv2
@@ -8,7 +10,7 @@ from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.AbstractAug
 
 
 class RotationResizeMirrors(AbstractAugmentationWithMatrix):
-    """Class computing random rotation along a vertical or horizontal axis
+    """Class computing random rotation mirrors resize
 
     Args:
         rotation_step: float, rotation step to take angle between angle 0 and 360° with a ... angle step
