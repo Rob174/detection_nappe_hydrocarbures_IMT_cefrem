@@ -100,6 +100,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                 raise NotImplementedError(f"{augmenter_img} is not implemented")
         else:
             self.generator = self.generate_item_step_by_step
+            self.annotations_labels = NumpyAnnotations()
             self.attr_img_augmenter = NoAugmenter()
         if augmentations_patch != "none":
             if augmenter_patch == EnumAugmenter.Augmenter0:

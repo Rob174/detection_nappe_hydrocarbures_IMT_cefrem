@@ -43,7 +43,6 @@ class RGB_Overlay_Patch:
         overlay_true = np.stack((original_img,)*3,axis=-1)  # prepare the overlays with 3 channels for colors
         overlay_pred = np.stack((original_img,)*3,axis=-1)
         # get the list of patches organized as follows [[input_patch0,output_patch0,filter_patch0],....
-        self.dataset.attr_dataset
         patches = self.dataset.attr_dataset.make_patches_of_image(name_img)
 
         progress = Progress(
@@ -101,7 +100,7 @@ class RGB_Overlay_Patch:
 
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-12_11h01min03s_'
+    choice_folder1 = '2021-07-16_11h46min59s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
@@ -109,7 +108,7 @@ if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
     folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
     epoch = 69
-    iteration = 11562
+    iteration = 15923
 
     if os.path.exists(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
         print("loading from cache")
