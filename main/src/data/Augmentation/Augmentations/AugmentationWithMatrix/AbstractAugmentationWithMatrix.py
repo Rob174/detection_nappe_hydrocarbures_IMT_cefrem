@@ -11,13 +11,13 @@ class AbstractAugmentationWithMatrix(ABC, BaseClass):
     def compute_image_augment(self, image: np.ndarray,
                                partial_transformation_matrix: np.ndarray,
                                coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
-        """Make the transformation on the image and annotation and returns the results with the affine transformation matrix"""
+        """Make the transformation on the annotation and returns the results with the affine transformation matrix"""
         pass
     @abstractmethod
     def compute_label_augment(self,annotation_function: Callable,image_name: str,
                                partial_transformation_matrix: np.ndarray,
                                coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
-        """Make the transformation on the image and annotation and returns the results with the affine transformation matrix"""
+        """Make the transformation on the annotation and returns the results with the affine transformation matrix"""
         pass
 
     def choose_new_augmentation(self, image: np.ndarray) -> Dict[str, Any]:

@@ -26,9 +26,11 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         ...                                      resize_upper_fact_float=4)
         >>> partial_transformation_matrix = augmentation.choose_new_augmentation(image.shape)
         >>> for coord in augmentation.get_grid(image.shape,partial_transformation_matrix):
-        ...     patch_array, patch_annotation, transformation_matrix = augmentation.compute_random_augment(image,annotation,
-        ...                                                                                                partial_transformation_matrix,
-        ...                                                                                                coord)
+        ...     patch_array, transformation_matrix = augmentation.compute_image_augment(image,
+        ...                                                                              partial_transformation_matrix,
+        ...                                                                              coord)
+        ...     patch_annotation, _ = augmentation.compute_image_augment(image, partial_transformation_matrix,
+        ...                                                              coord)
         ... # Compute the random transformation with the static class
         >>> patch_array.shape
         (256,256)
@@ -45,19 +47,17 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
     def compute_image_augment(self, image: np.ndarray,
                                partial_transformation_matrix: np.ndarray,
                                coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
-        """Compute the random mirrors transformations
+        """Compute the random transformations at once on the image
 
         Args:
-            image: np.ndarray, the original image to transform (
-            annotation: np.array, the corresponding annotation
+            image: np.ndarray, the original image to transform
             partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
             coord_patch: coordinates of the output patch in the augmented image
 
         Returns:
-            tuple of 3 np.ndarray
+            tuple of 2 np.ndarray
             - the transformed image patch
-            - the transformed annotation patch
-            - the transformation matrix
+            - the transformation matrix used
         """
 
         shift_patch_into_position_matrix = np.array([[1, 0, -coord_patch[1]],
@@ -71,6 +71,21 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
     def compute_label_augment(self,annotation_function: Callable,image_name: str,
                                partial_transformation_matrix: np.ndarray,
                                coord_patch: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
+        """Compute the random mirrors transformations at once on the annotation **points** directly
+
+        It is indeed the only way to avoid new classes introductionn due to interpolation
+
+        Args:
+            annotation_function: Callable that can generate the patch with the given parameters
+            image_name: str, the name of the original image
+            partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
+            coord_patch: coordinates of the output patch in the augmented image
+
+        Returns:
+            tuple of np.ndarray
+            - the transformed annotation patch
+            - the transformation matrix used
+        """
 
         shift_patch_into_position_matrix = np.array([[1, 0, -coord_patch[1]],
                                                      [0, 1, -coord_patch[0]],
@@ -100,7 +115,15 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         rows_coords = np.arange(0, max_rows, self.attr_patch_size_final_resize)
         coords = list(zip(*list(x.flat for x in np.meshgrid(rows_coords, cols_coords))))
         return coords
-    def choose_parameters(self):
+    def choose_parameters(self) -> Tuple[float,float,int]:
+        """Choose random parameters for augmentations
+
+        Returns: tuple (angle,resize_factor,mirror)
+            angle, float angle of rotation
+            resize_factor, float resize factor taking into account the final resize to get the input image for the model
+            mirror, int 0 = fliplr ; 1 = flipud ; -1 = noflip
+
+        """
         angle = np.random.choice(np.arange(0, 361, self.attr_rotation_step))
         resize_factor = np.random.rand() * (
                 self.attr_resize_upper_fact_float - self.attr_resize_lower_fact_float) + self.attr_resize_lower_fact_float
@@ -108,7 +131,19 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
 
         mirror = np.random.choice([0, 1, -1])
         return angle,resize_factor,mirror
-    def compute_transformation_matrix(self,rows, cols,angle,resize_factor,mirror):
+    def compute_transformation_matrix(self,rows: int, cols: int,angle: float,resize_factor: float,mirror: int) -> np.ndarray:
+        """ Compute the transformation matrix corresponding to the parameters supplied
+
+        Args:
+            rows: number of rows of the input image
+            cols: number of cols of the input image
+            angle, float angle of rotation
+            resize_factor, float resize factor taking into account the final resize to get the input image for the model
+            mirror, int 0 = fliplr ; 1 = flipud ; -1 = noflip
+
+        Returns:
+            np.ndarray, the transformation matrix
+        """
         # Transformation matrix construction  ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️ coordinates in OPENCV are in the opposite way of the normal row,cols way
         partial_transformation_matrix = np.identity(3)
 
@@ -134,7 +169,7 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
              [0, 0, 1]])
         partial_transformation_matrix = adjusted_translation.dot(partial_transformation_matrix)
         return partial_transformation_matrix
-    def choose_new_augmentation(self, image: np.ndarray) -> Dict[str, Any]:
+    def choose_new_augmentation(self, image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
 
         Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
