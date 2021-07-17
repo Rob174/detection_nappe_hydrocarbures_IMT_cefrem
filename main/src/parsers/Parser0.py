@@ -93,7 +93,7 @@ class Parser0(BaseClass):
 
             '-lr': {"dest": 'lr', "default": 1e-6, "type": float, "help": "Learning rate of the optimizer"},
             '-eps': {"dest": 'eps', "default": 1e-4, "type": float, "help": "Epsilon of the optimizer if it is Adam"},
-            '-opti': {"dest": 'optimizer', "default": "adam", "type": EnumOptimizer, "help": "Optimizer algorithm",
+            '-opti': {"dest": 'optimizer', "default": EnumOptimizer.SGD, "type": EnumOptimizer, "help": "Optimizer algorithm",
                       "choices": list(EnumOptimizer)},
 
             '-nbImg': {"dest": 'nb_images', "default": -1, "type": int,
