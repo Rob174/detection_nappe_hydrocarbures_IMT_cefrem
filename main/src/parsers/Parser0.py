@@ -74,7 +74,7 @@ class Parser0(BaseClass):
             '-augmentation_factor': {"dest": 'augmentation_factor', "default": 100, "type": int,
                                      "help": "The number of times that the source image is augmented"},
             # Model
-            '-attr_model': {"dest": 'attr_model', "default": EnumModels.Vgg16, "type": EnumModels,
+            '-attr_model': {"dest": 'attr_model', "default": EnumModels.Resnet18, "type": EnumModels,
                        "help": "To choose the network architecture used", "choices": list(EnumModels)},
             '-classes': {"dest": 'classes', "default": [EnumClasses.Seep, EnumClasses.Spill], "type": EnumClasses,
                          "help": "Indicate the class used for training separated by a comma", "nargs": "+",
@@ -93,7 +93,7 @@ class Parser0(BaseClass):
 
             '-lr': {"dest": 'lr', "default": 1e-6, "type": float, "help": "Learning rate of the optimizer"},
             '-eps': {"dest": 'eps', "default": 1e-4, "type": float, "help": "Epsilon of the optimizer if it is Adam"},
-            '-opti': {"dest": 'optimizer', "default": EnumOptimizer.SGD, "type": EnumOptimizer, "help": "Optimizer algorithm",
+            '-opti': {"dest": 'optimizer', "default": EnumOptimizer.Adam, "type": EnumOptimizer, "help": "Optimizer algorithm",
                       "choices": list(EnumOptimizer)},
 
             '-nbImg': {"dest": 'nb_images', "default": -1, "type": int,
