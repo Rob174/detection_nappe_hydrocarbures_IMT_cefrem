@@ -1,5 +1,6 @@
 import re
 from enum import Enum
+from functools import partial
 
 import numpy as np
 
@@ -48,13 +49,15 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
                     "valid_values": []
                 }
                 threshold = float(re.sub("^accuracy_threshold-([0-9]\\.[0-9]+)$", "\\1", metric))
-                def f(pred,true):
+                def f(pred,true,threshold):
                     pred[pred > threshold] = 1.
                     pred[pred <= threshold] = 0.
                     true[true > threshold] = 1.
                     true[true <= threshold] = 0.
                     return np.sum(np.abs(pred-true))
-                self.functions_metrics.append(f)
+
+                function = partial(f,threshold=threshold)
+                self.functions_metrics.append(function)
                 # si proba > 0.5 compte comme présent sinon non présent
             else:
                 raise NotImplementedError(f"{metric} has not been implemented")

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<meta charset="UTF-8">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        table {
+            overflow: hidden;
+        }
+
+        tr:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        td,
+        th {
+            position: relative;
+            padding: 2em;
+            text-align: center;
+            background-color: transparent;
+        }
+
+        td:hover::after{
+            content: "";
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            left: 0;
+            top: -5000px;
+            height: 10000px;
+            width: 100%;
+            z-index: -1;
+        }
+        thead tr:last-child th:last-child, tbody th:last-child, tbody tr:last-child th {
+            background-color: #ff9a03;
+        }
+        thead tr:last-child th div,tbody tr:last-child th:nth-child(2) div,tbody tr:last-child th:last-child div {
+            font-weight: bold;
+            color:white
+        }
+        thead tr:last-child th:last-child {
+            border-top: 1px solid white;
+            border-left: 1px solid white;
+        }
+        tbody tr:last-child th:nth-child(2) {
+            border-left: 1px solid white;
+
+        }
+        tbody tr th:last-child {
+            border-left: 1px solid white;
+        }
+        tbody tr:last-child th {
+            border-top: 1px solid white;
+            border-left: none;
+
+        }
+        thead th, tr th:nth-child(1),tr th:nth-child(2), tbody tr:last-child th:first-child {
+            color:white;
+            background-color: #0366FF;
+            border: none
+        }
+        tbody tr:last-child th:last-child {
+            border-top: 1px solid white;
+            border-left: 1px solid white;
+        }
+    </style>
+</head>
+
+<body>
+    <table cellspacing="0" cellpadding="0">
+        <thead>
+
+            <tr>
+                <th></th>
+                <th></th>
+                <th colspan="3"> <div>True classes</div> </th>
+                <th></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Class1</th>
+                <th>Class2</th>
+                <th>Class3</th>
+                <th><div>Totals <br> predictions</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th rowspan="3" style="padding-left: 0;padding-right: 0;"><div style="transform: rotate(-90deg);">Predicted classes</div></th>
+                <th>Class1</th>
+                <td>43<br>43%</td>
+                <td>28<br>28%</td>
+                <td>91<br>91%</td>
+                <th>102<br>10%</td>
+            </tr>
+            <tr>
+                <th>Class1</th>
+                <td>32<br>32%</td>
+                <td>44<br>44%</td>
+                <td>62<br>62%</td>
+                <th>40<br>10%</td>
+            </tr>
+            <tr>
+                <th>Class1</th>
+                <td>46<br>46%</td>
+                <td>24<br>24%</td>
+                <td>35<br>35%</td>
+                <th>40<br>10%</td>
+            </tr>
+            <tr>
+                <th></th>
+                <th><div>Totals <br> true</div></th>
+                <th>40<br>40%</th>
+                <th>40<br>40%</th>
+                <th>40<br>40%</th>
+                <th><div>Correct</div><div>40<br>10%</div></td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        $(document).ready(function () {
+            $("table tr td").each(function () {
+                let [value, percent] = $(this).html().split("<br>");
+                let value_color = parseInt(percent)/100;
+                $(this).css("background-color", `rgba(255, 0, 0, ${value_color})`);
+                console.log('Value ' + value + " with " + percent);
+            });
+        });
+    </script>
+</body>
+
+</html>
