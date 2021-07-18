@@ -9,6 +9,7 @@ class EnumModels(str, Enum):
     Resnet18 = "resnet18"
     Vgg16 = "vgg16"
     Deeplabv3 = "deeplabv3"
+    Resnet152 = "resnet152"
 
 
 class EnumOptimizer(str, Enum):

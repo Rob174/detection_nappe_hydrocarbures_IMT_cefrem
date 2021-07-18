@@ -74,7 +74,7 @@ class Parser0(BaseClass):
             '-augmentation_factor': {"dest": 'augmentation_factor', "default": 100, "type": int,
                                      "help": "The number of times that the source image is augmented"},
             # Model
-            '-attr_model': {"dest": 'attr_model', "default": EnumModels.Resnet18, "type": EnumModels,
+            '-attr_model': {"dest": 'attr_model', "default": EnumModels.Resnet152, "type": EnumModels,
                        "help": "To choose the network architecture used", "choices": list(EnumModels)},
             '-classes': {"dest": 'classes', "default": [EnumClasses.Seep, EnumClasses.Spill], "type": EnumClasses,
                          "help": "Indicate the class used for training separated by a comma", "nargs": "+",

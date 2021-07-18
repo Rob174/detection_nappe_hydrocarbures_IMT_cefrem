@@ -25,6 +25,10 @@ class ModelFactory(BaseClass):
             self.model = PretrainedModel(original_model=models.resnet18(pretrained=True),
                                          original_num_classes=1000,
                                          num_classes=num_classes, out_activation="sigmoid", freeze=freeze)
+        elif model_name == EnumModels.Resnet152:
+            self.model = PretrainedModel(original_model=models.resnet152(pretrained=True),
+                                         original_num_classes=1000,
+                                         num_classes=num_classes, out_activation="sigmoid", freeze=freeze)
         elif model_name == EnumModels.Vgg16:
             self.model = PretrainedModel(original_model=models.vgg16(pretrained=True),
                                          original_num_classes=1000,
