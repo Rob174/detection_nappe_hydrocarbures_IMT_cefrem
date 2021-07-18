@@ -100,14 +100,14 @@ class RGB_Overlay_Patch:
 
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-17_20h17min48s_'
+    choice_folder1 = '2021-07-18_08h14min45s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
     name = "027481_0319CB_0EB7"
     FolderInfos.init(test_without_data=True)
     folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
-    epoch = 69
+    epoch = 63
     iteration = 10615
 
     if os.path.exists(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
