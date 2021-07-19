@@ -64,7 +64,7 @@ if __name__ == "__main__":
     loss = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference,optimizer=optimizer)
     metrics = MetricsFactory("accuracy_classification-0.25", "accuracy_classification-0.1", "mae", "accuracy_threshold-0.5")
     model_saver = ModelSaver1(loss, loss.attr_loss)
-    early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=10)
+    early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
 
     print("start")

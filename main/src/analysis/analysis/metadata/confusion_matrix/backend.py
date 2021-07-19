@@ -122,5 +122,4 @@ class ConfusionMatrixBackend:
             th.append(ppercent)
 
             footer_tr.append(th)
-            clipboard.copy(str(soup))
             return str(soup)
