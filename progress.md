@@ -224,10 +224,10 @@ As no parameters produces better performances, we will investigate:
 # 19-07-2021
 - ✔️ progressively add other patches
 - ✔️ Debugging metadata mapping 
-- ⏲️ Confusion matrix
+- ✔️ Confusion matrix
   - ✔️ Backend code 
   - ✔️ Tests
-  - ⏲️ Frontend code
+  - ✔️ Frontend code
 
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
