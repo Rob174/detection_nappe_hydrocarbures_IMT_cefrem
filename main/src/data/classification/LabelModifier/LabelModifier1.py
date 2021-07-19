@@ -31,7 +31,7 @@ class LabelModifier1(AbstractLabelModifier):
     def get_final_class_mapping(self):
         dico = TwoWayDict({})
         for original_id,(name,dest_id) in self.attr_class_mapping.items(dico_chosen=Way.ORIGINAL_WAY):
-            dico[dest_id] = name
+            dico[dest_id, Way.ORIGINAL_WAY] = name
         return dico
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
