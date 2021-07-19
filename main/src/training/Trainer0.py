@@ -1,10 +1,13 @@
 import numpy as np
 import torch
+from typing import List
 
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass
+from main.src.training.AbstractCallback import AbstractCallback
 from main.src.training.TrValidSplit import trvalidsplit
+from main.src.training.confusion_matrix.ConfusionMatrixCallback import ConfusionMatrixCallback
 from main.src.training.early_stopping.AbstractEarlyStopping import AbstractEarlyStopping
 from main.src.training.enums import EnumDataset
 from main.src.training.metrics.loss_factory import LossFactory
@@ -76,6 +79,7 @@ class Trainer0(BaseClass):
         self.valid_batches = [[], []]
         self.attr_global_name = "trainer"
         self.saver(self).save()
+        self.attr_callbacks: List[AbstractCallback] = [ConfusionMatrixCallback(self.attr_dataset.attr_label_modifier.attr_class_mapping)]
 
     def add_to_batch_tr(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
@@ -160,6 +164,8 @@ class Trainer0(BaseClass):
                                 prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
                                 self.attr_loss(prediction, output_gpu, prediction_npy,output_npy, EnumDataset.Valid)
                             self.attr_metrics(prediction_npy, output_npy, EnumDataset.Valid)
+                            for callback in self.attr_callbacks:
+                                callback.on_valid_batch_end(prediction_npy,output_npy)
                             self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
 
                 self.attr_progress.end_epoch(loss=current_loss, epoch=epoch, img_processed=i)

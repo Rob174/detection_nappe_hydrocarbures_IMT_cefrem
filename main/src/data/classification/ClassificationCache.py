@@ -52,7 +52,7 @@ class ClassificationCache(BaseClass):
             self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier()
+            self.attr_label_modifier = NoLabelModifier(original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)

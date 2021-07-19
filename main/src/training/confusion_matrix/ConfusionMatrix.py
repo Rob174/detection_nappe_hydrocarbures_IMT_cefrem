@@ -6,11 +6,11 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class ConfusionMatrix(BaseClass):
-    def __init__(self,class_mappings: Dict[str,str],class_names: List[str]):
+    def __init__(self,class_mappings: Dict[int,str],class_names: List[str]):
         """
 
         Args:
-            class_mappings: dict of str,  str with for each name the function to extract on an individual prediction (no batch dim)
+            class_mappings: dict of int,  str with for each name the function to extract on an individual prediction (no batch dim)
             class_names: names in the order to indicate how to map index to real names
         """
         self.attr_class_names = class_names
@@ -38,9 +38,8 @@ class ConfusionMatrix(BaseClass):
                     class_matrix_pred = class_index
                 if eval(function_test)(true_value):
                     class_matrix_true = class_index
-            if class_matrix_true != "none" and class_matrix_pred != "none":
-                class_matrix_pred = int(class_matrix_pred)
-                class_matrix_true = int(class_matrix_true)
+            if class_matrix_true == "none" or class_matrix_pred != "none":
+                raise Exception("One class at least has no index found")
             self.matrix[class_matrix_pred,class_matrix_true] += 1
             self.tot_pred[class_matrix_pred] += 1
             self.tot_true[class_matrix_true] += 1
@@ -51,14 +50,14 @@ class ConfusionMatrix(BaseClass):
         full_matrix[-1, :self.num_matrix_classes] = self.tot_true
         full_matrix[-1,-1] = np.sum(np.diag(self.matrix))
 
-        tot = np.sum(self.matrix)
-        full_matrix_percent = np.copy(full_matrix) / tot * 100
-
-        final_matrix = np.empty((self.num_matrix_classes+1,self.num_matrix_classes+1)).tolist()
-        for x in range(self.num_matrix_classes+1):
-            for y in range(self.num_matrix_classes+1):
-                final_matrix[x][y] = f"{full_matrix[x,y]}<br>{full_matrix_percent[x,y]:.2f}%"
-        final_matrix.insert(0,[]+self.attr_class_names)
-        for l_id in range(self.num_matrix_classes):
-            final_matrix[l_id+1].insert(0,self.attr_class_names[l_id])
-        self.attr_full_matrix = final_matrix
+        # tot = np.sum(self.matrix)
+        # full_matrix_percent = np.copy(full_matrix) / tot * 100
+        #
+        # final_matrix = np.empty((self.num_matrix_classes+1,self.num_matrix_classes+1)).tolist()
+        # for x in range(self.num_matrix_classes+1):
+        #     for y in range(self.num_matrix_classes+1):
+        #         final_matrix[x][y] = f"{full_matrix[x,y]}<br>{full_matrix_percent[x,y]:.2f}%"
+        # final_matrix.insert(0,[]+self.attr_class_names)
+        # for l_id in range(self.num_matrix_classes):
+        #     final_matrix[l_id+1].insert(0,self.attr_class_names[l_id])
+        self.attr_full_matrix = full_matrix

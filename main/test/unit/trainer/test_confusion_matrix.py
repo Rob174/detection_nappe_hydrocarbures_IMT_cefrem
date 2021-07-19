@@ -8,10 +8,10 @@ import numpy as np
 class test_confusion_matrix(unittest.TestCase):
     def test_confusion_matrix_compiles(self):
         confusion_matrix = ConfusionMatrix(class_mappings={
-            "0":"lambda label:label[0] == 0 and label[1] == 0",
-            "1":"lambda label:label[0] == 0 and label[1] == 1",
-            "2":"lambda label:label[0] == 1 and label[1] == 0",
-            "3":"lambda label:label[0] == 1 and label[1] == 1"
+            0:"lambda label:label[0] == 0 and label[1] == 0",
+            1:"lambda label:label[0] == 0 and label[1] == 1",
+            2:"lambda label:label[0] == 1 and label[1] == 0",
+            3:"lambda label:label[0] == 1 and label[1] == 1"
         },
             class_names=[
                 "Nothing",

@@ -63,7 +63,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier()
+            self.attr_label_modifier = NoLabelModifier(original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)

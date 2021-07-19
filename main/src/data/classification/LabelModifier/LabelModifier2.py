@@ -33,7 +33,7 @@ class LabelModifier2(AbstractLabelModifier):
             lvalue.append(str(i))
             lname.append(name.value)
         tmp_mapping["|".join(lkey), Way.ORIGINAL_WAY] = "|".join(lname), "|".join(lvalue)
-        self.attr_class_mapping_merged = tmp_mapping
+        self.attr_class_mapping = tmp_mapping
         self.attr_global_name = "attr_dataset"
 
     def make_classification_label(self, annotation: np.ndarray):
