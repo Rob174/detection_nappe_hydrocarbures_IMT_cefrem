@@ -28,7 +28,7 @@ class ConfusionMatrixBackend:
             except StopIteration:
                 raise Exception(f"Matrix not found with functions {access_names}")
         str_list = self.generate_str_list()
-        self.add_to_html_web_page(FolderInfos.root_folder+FolderInfos.separator.join(["main","src","analysis","analysis","confusion_matrix","confusion_matrix.html"]),
+        self.html = self.add_to_html_web_page(FolderInfos.root_folder+FolderInfos.separator.join(["main","src","analysis","analysis","confusion_matrix","confusion_matrix.html"]),
                                   str_list)
     def generate_str_list(self):
         tot = np.sum(self.matrix[:-1,:-1])
@@ -58,9 +58,14 @@ class ConfusionMatrixBackend:
             def generate_tags(i_l,name):
                 lelems = []
 
-                for vals in list_str[i_l][:-1]:
+                for i,vals in enumerate(list_str[i_l][:-1]):
                     td = soup.new_tag("td")
                     vals = vals.split(",")
+                    num_on_same_row = float(list_str[i_l][-1].split(',')[0])
+                    num_on_same_col = float(list_str[-1][i].split(',')[0])
+                    percent_row = float(vals[0])/num_on_same_row*100 if num_on_same_row != 0 else 0
+                    percent_col = float(vals[0])/num_on_same_col*100 if num_on_same_col != 0 else 0
+                    td["title"] = f"col_percent:{percent_col:.2f}%; row_percent:{percent_row:.2f}%"
                     p1 = soup.new_tag("p")
                     p1.string = vals[0]
                     p2 = soup.new_tag("p")
@@ -83,7 +88,7 @@ class ConfusionMatrixBackend:
             tags = generate_tags(0,self.names[0])
             for tag in tags:
                 soup.body.table.tbody.tr.append(tag)
-            for i,name in zip(range(0,len(list_str)),reversed(self.names[1:])):
+            for i,name in zip(range(1,len(list_str)),reversed(self.names[1:])):
                 tr = soup.new_tag("tr")
                 th = soup.new_tag("th")
                 th.string = name

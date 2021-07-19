@@ -49,4 +49,5 @@ class ConfusionMatrix(BaseClass):
         full_matrix[:self.num_matrix_classes, -1] = self.tot_pred
         full_matrix[-1, :self.num_matrix_classes] = self.tot_true
         full_matrix[-1,-1] = np.sum(np.diag(self.matrix))
+
         self.attr_full_matrix = full_matrix.tolist()

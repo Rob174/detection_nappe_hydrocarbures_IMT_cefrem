@@ -110,6 +110,7 @@
                 percent = percent.slice(0,percent.length-1)
                 let value_color = parseInt(percent)/100;
                 $(this).css("background-color", `rgba(255, 0, 0, ${value_color})`);
+
                 console.log('Percent : '+percent);
             });
         });

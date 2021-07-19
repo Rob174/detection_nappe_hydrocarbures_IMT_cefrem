@@ -157,7 +157,7 @@ class Trainer0(BaseClass):
                                     input, output, transformation_matrix, item = next(dataset_valid_iter)
                                 opt_valid_batch = self.add_to_batch_valid(input, output)
                             it_val += 1
-                            input_npy, output_npy = opt_tr_batch
+                            input_npy, output_npy = opt_valid_batch
                             with torch.no_grad():
                                 input_gpu = torch.Tensor(input_npy).to(device)
                                 prediction = self.attr_model.model(input_gpu)
