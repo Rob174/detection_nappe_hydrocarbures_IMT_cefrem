@@ -21,9 +21,9 @@ class CacheMetadataManager:
     def get(self,metadata_name):
         data = None
         if isinstance(self.dico_metadata[metadata_name]["access"],list):
-            data = self.extract_from_list_of_possibilities(self.dico_metadata[metadata_name],self.dico_data)
+            data = self.extract_from_list_of_possibilities(self.dico_metadata[metadata_name]["access"],self.dico_data)
         elif isinstance(self.dico_metadata[metadata_name]["access"],str):
-            data = self.extract_from_uniq_function(self.dico_metadata[metadata_name],self.dico_data)
+            data = self.extract_from_uniq_function(self.dico_metadata[metadata_name]["access"],self.dico_data)
         else:
             print(self.dico_metadata[metadata_name])
             raise NotImplementedError

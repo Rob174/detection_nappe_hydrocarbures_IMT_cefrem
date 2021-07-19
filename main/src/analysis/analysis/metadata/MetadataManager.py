@@ -15,9 +15,9 @@ class MetadataManager:
             except:
                 pass
         return None
-    def extract_from_uniq_function(self,function,dico_data):
+    def extract_from_uniq_function(self,function,dico):
         try:
-            value = self.formatter.format(eval(function)(dico_data))
+            value = self.formatter.format(eval(function)(dico))
             return value
         except:
             return None
