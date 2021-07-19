@@ -38,7 +38,7 @@ class ConfusionMatrix(BaseClass):
                     class_matrix_pred = class_index
                 if eval(function_test)(true_value):
                     class_matrix_true = class_index
-            if class_matrix_true == "none" or class_matrix_pred != "none":
+            if class_matrix_true == "none" or class_matrix_pred == "none":
                 raise Exception(f"One class at least has no index found with \nclass_matrix_true={class_matrix_true} and class_matrix_pred={class_matrix_pred}\n")
             self.matrix[class_matrix_pred,class_matrix_true] += 1
             self.tot_pred[class_matrix_pred] += 1
