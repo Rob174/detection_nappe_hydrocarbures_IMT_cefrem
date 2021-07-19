@@ -49,15 +49,4 @@ class ConfusionMatrix(BaseClass):
         full_matrix[:self.num_matrix_classes, -1] = self.tot_pred
         full_matrix[-1, :self.num_matrix_classes] = self.tot_true
         full_matrix[-1,-1] = np.sum(np.diag(self.matrix))
-
-        # tot = np.sum(self.matrix)
-        # full_matrix_percent = np.copy(full_matrix) / tot * 100
-        #
-        # final_matrix = np.empty((self.num_matrix_classes+1,self.num_matrix_classes+1)).tolist()
-        # for x in range(self.num_matrix_classes+1):
-        #     for y in range(self.num_matrix_classes+1):
-        #         final_matrix[x][y] = f"{full_matrix[x,y]}<br>{full_matrix_percent[x,y]:.2f}%"
-        # final_matrix.insert(0,[]+self.attr_class_names)
-        # for l_id in range(self.num_matrix_classes):
-        #     final_matrix[l_id+1].insert(0,self.attr_class_names[l_id])
         self.attr_full_matrix = full_matrix.tolist()

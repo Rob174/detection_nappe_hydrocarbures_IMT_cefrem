@@ -1,0 +1,61 @@
+{
+    "commit": "ea3dff95c6993b5f7f26d4a75945b13bf7d0633c",
+    "date": "2021-07-19_11h19min09s",
+    "trainer": {
+        "attr_callbacks": [
+            {
+                "attr_confusion_matrix": {
+                    "attr_class_names": [
+                        "nothing",
+                        "spill",
+                        "seep",
+                        "seep_spill"
+                    ],
+                    "attr_class_mappings": {
+                        "0": "lambda label:label[0] == 0 and label[1] == 0",
+                        "1": "lambda label:label[0] == 0 and label[1] == 1",
+                        "2": "lambda label:label[0] == 1 and label[1] == 0",
+                        "3": "lambda label:label[0] == 1 and label[1] == 1"
+                    },
+                    "attr_full_matrix": [
+                        [
+                            1.0,
+                            0.0,
+                            2.0,
+                            0.0,
+                            3.0
+                        ],
+                        [
+                            1.0,
+                            1.0,
+                            1.0,
+                            0.0,
+                            3.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            2.0,
+                            0.0,
+                            3.0
+                        ],
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ],
+                        [
+                            3.0,
+                            2.0,
+                            5.0,
+                            0.0,
+                            4.0
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+}
