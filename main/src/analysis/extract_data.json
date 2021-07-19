@@ -11,6 +11,12 @@
       ],
       "default": "\"allexceptlastdense\""
     },
+    "interval_other_class_adder": {
+      "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_dataset\"][\"attr_dataset\"][\"attr_other_class_adder\"][\"attr_interval\"]"
+      ],
+      "default": "\"none\""
+    },
     "patch_exclusion_policy": {
       "access": [
         "lambda dico:dico[\"trainer\"][\"attr_dataset\"][\"attr_patch_creator\"][\"attr_exclusion_policy\"]",
