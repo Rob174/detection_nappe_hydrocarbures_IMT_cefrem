@@ -221,13 +221,15 @@ As no parameters produces better performances, we will investigate:
   - curves coherent with prediction (does not learn after 1st epoch flobally)
 - train with lr 100 times smaller
 
-
+# 19-07-2021
+- ✔️ progressively add other patches
+- ✔️ Debugging metadata mapping 
+- ⏲️ Confusion matrix
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
-- progressively add other patches
 - solve bug progress bar
 - doc
 - 1️⃣Confusion matrix
