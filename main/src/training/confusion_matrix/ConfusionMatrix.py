@@ -30,6 +30,9 @@ class ConfusionMatrix(BaseClass):
         Returns:
 
         """
+        self.matrix = np.zeros((self.num_matrix_classes,self.num_matrix_classes))
+        self.tot_pred = np.zeros((self.num_matrix_classes,))
+        self.tot_true = np.zeros((self.num_matrix_classes,))
         for pred_value,true_value in zip(prediction,true):
             class_matrix_pred = "none"
             class_matrix_true = "none"
