@@ -20,7 +20,7 @@ class ConfusionMatrixCallback(BaseClass,AbstractCallback):
                     for (id,name),present in zip(id_names,presence):
                         l.append(f"label[{id}] == {present}")
                         if present == 1:
-                            if isinstance(name,list): # TODO cuppling to solve
+                            if isinstance(name,list) or isinstance(name,tuple): # TODO cuppling to solve
                                 name = name[0]
                             final_name.append(name)
                     if len(final_name) == 0:
