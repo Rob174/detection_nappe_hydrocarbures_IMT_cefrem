@@ -169,11 +169,9 @@ class Trainer0(BaseClass):
                             for callback in self.attr_callbacks:
                                 callback.on_valid_batch_end(prediction_npy,output_npy)
                             self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
-                            break
 
                 self.attr_progress.end_epoch(loss=current_loss, epoch=epoch, img_processed=i)
                 self.attr_model_saver.save_model(self.attr_model, epoch, i)
                 self.saver(self).save()
-                break
                 if self.attr_early_stopping.stop_training():
                     break
