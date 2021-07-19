@@ -28,6 +28,11 @@ class LabelModifier1(AbstractLabelModifier):
         for i, name in enumerate(classes_to_use):
             tmp_mapping[original_class_mapping[name.value], Way.ORIGINAL_WAY] = name.value, i
         self.attr_class_mapping = tmp_mapping
+    def get_final_class_mapping(self):
+        dico = TwoWayDict({})
+        for original_id,(name,dest_id) in self.attr_class_mapping.items(dico_chosen=Way.ORIGINAL_WAY):
+            dico[dest_id] = name
+        return dico
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
         """Creates the classification label based on the annotation patch image

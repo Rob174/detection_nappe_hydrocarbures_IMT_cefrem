@@ -79,7 +79,9 @@ class Trainer0(BaseClass):
         self.valid_batches = [[], []]
         self.attr_global_name = "trainer"
         self.saver(self).save()
-        self.attr_callbacks: List[AbstractCallback] = [ConfusionMatrixCallback(self.attr_dataset.attr_dataset.attr_label_modifier.attr_class_mapping)]
+        self.attr_callbacks: List[AbstractCallback] = [
+            ConfusionMatrixCallback(self.attr_dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
+        ]
 
     def add_to_batch_tr(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
