@@ -60,4 +60,4 @@ class ConfusionMatrix(BaseClass):
         # final_matrix.insert(0,[]+self.attr_class_names)
         # for l_id in range(self.num_matrix_classes):
         #     final_matrix[l_id+1].insert(0,self.attr_class_names[l_id])
-        self.attr_full_matrix = full_matrix
+        self.attr_full_matrix = full_matrix.tolist()
