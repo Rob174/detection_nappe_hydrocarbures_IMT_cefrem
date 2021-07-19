@@ -83,7 +83,7 @@
             <tr>
                 <th></th>
                 <th></th>
-                <th id=""trueClass> <div>True classes</div> </th>
+                <th colspan="2"> <div>True classes</div> </th>
                 <th></th>
             </tr>
             <tr>
@@ -95,23 +95,22 @@
         <tbody>
             <tr>
                 <th rowspan="3" style="padding-left: 0;padding-right: 0;"><div style="transform: rotate(-90deg);">Predicted classes</div></th>
-                <th>Class1</th>
-                <th></td>
+
             </tr>
             <tr>
                 <th></th>
                 <th><div>Totals <br> true</div></th>
-                <th><div>Correct</div><div>40<br>10%</div></td>
             </tr>
         </tbody>
     </table>
     <script>
         $(document).ready(function () {
             $("table tr td").each(function () {
-                let [value, percent] = $(this).html().split("<br>");
+                let percent = this.getElementsByTagName("p")[1].innerText;
+                percent = percent.slice(0,percent.length-1)
                 let value_color = parseInt(percent)/100;
                 $(this).css("background-color", `rgba(255, 0, 0, ${value_color})`);
-                console.log('Value ' + value + " with " + percent);
+                console.log('Percent : '+percent);
             });
         });
     </script>

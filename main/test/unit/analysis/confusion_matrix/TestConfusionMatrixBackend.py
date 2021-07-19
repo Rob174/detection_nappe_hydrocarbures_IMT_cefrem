@@ -15,4 +15,7 @@ class TestConfusionMatrixBackend(unittest.TestCase):
         value_functions = extract_functions_dict["confusion_matrix"]["value"]
         names_functions = extract_functions_dict["confusion_matrix"]["names"]
         confusion_matrix = ConfusionMatrixBackend(dico,value_functions,names_functions)
-        print(confusion_matrix.generate_str_list())
+        matrix = confusion_matrix.generate_str_list()
+        num_classes = 4
+        self.assertEqual(len(matrix),num_classes+1)
+        self.assertEqual(False not in list(map(lambda x:len(x)==num_classes+1,matrix)),True)
