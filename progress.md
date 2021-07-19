@@ -225,9 +225,9 @@ As no parameters produces better performances, we will investigate:
 - ✔️ progressively add other patches
 - ✔️ Debugging metadata mapping 
 - ⏲️ Confusion matrix
-  - ⏳ Backend code 
+  - ✔️ Backend code 
   - ✔️ Tests
-  - ⏳ Frontend code
+  - ⏲️ Frontend code
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
