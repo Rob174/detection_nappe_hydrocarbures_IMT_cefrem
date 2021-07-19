@@ -143,7 +143,7 @@ class Trainer0(BaseClass):
                             self.attr_tr_vals_pred.append(prediction_npy.tolist())
                         self.attr_metrics(prediction_npy, output_npy, "tr")
 
-                        self.attr_progress.end_iteration(loss=current_loss, tr_batch_size=self.attr_tr_batch_size,
+                        self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
                                                          it_tr=it_tr, img_processed=i)
                         # Validation step
                         if it_tr % self.attr_eval_step == 0:
@@ -170,7 +170,7 @@ class Trainer0(BaseClass):
                                 callback.on_valid_batch_end(prediction_npy,output_npy)
                             self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
 
-                self.attr_progress.end_epoch(loss=current_loss, epoch=epoch, img_processed=i)
+                self.attr_progress.end_epoch(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], epoch=epoch, img_processed=i)
                 self.attr_model_saver.save_model(self.attr_model, epoch, i)
                 self.saver(self).save()
                 if self.attr_early_stopping.stop_training():
