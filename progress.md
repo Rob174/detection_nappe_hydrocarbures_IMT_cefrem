@@ -224,10 +224,10 @@ As no parameters produces better performances, we will investigate:
 # 19-07-2021
 - ✔️ progressively add other patches
 - ✔️ Debugging metadata mapping 
-- ⏲️ Confusion matrix
+- ✔️ Confusion matrix
   - ✔️ Backend code 
   - ✔️ Tests
-  - ⏲️ Frontend code
+  - ✔️ Frontend code
 
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
@@ -235,9 +235,6 @@ As no parameters produces better performances, we will investigate:
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
-- solve bug progress bar
-- doc
-- 1️⃣Confusion matrix
 - 2️⃣ Update the documentation
 - 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
 - 9️⃣ Hyperparameters optimization
