@@ -85,7 +85,7 @@ class Trainer0(BaseClass):
         self.attr_callbacks: List[AbstractCallback] = [
             ConfusionMatrixCallback(self.attr_dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
         ]
-        self.attr_rgb_overlay = rgb_overlay
+        self.rgb_overlay = rgb_overlay
 
     def add_to_batch_tr(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
@@ -179,4 +179,4 @@ class Trainer0(BaseClass):
                 self.saver(self).save()
                 if self.attr_early_stopping.stop_training():
                     break
-                self.attr_rgb_overlay(epoch = epoch,iteration=it_tr,model=self.attr_model.model,device = device,num_classes=self.attr_model.attr_num_classes)
+                self.rgb_overlay(epoch = epoch, iteration=it_tr, model=self.attr_model.model, device = device, num_classes=self.attr_model.attr_num_classes)
