@@ -74,7 +74,8 @@ if __name__ == "__main__":
         patch_creator=arguments.patch,
         grid_size=arguments.grid_size,
         input_size=arguments.input_size,
-        classes_to_use=arguments.classes
+        classes_to_use=arguments.classes,
+        standardizer=dataset.attr_dataset.attr_standardizer
                                     )
     print("start")
 

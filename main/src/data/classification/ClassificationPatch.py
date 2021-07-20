@@ -21,6 +21,7 @@ from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModif
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
+from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses
@@ -244,7 +245,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
 
     def __len__(self):
         return None
-
+    def set_standardizer(self, standardizer: AbstractStandardizer):
+        self.attr_standardizer = standardizer
     def make_patches_of_image(self, name: str):
         """Creates and returns all patches of an image
 
@@ -258,7 +260,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
             - classif: np.ndarray classification label as returned by make_classification_label
             - reject: bool reject only based on margins
         """
-        self.attr_standardizer = StandardizerCacheMixed(interval=1)
         last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
         liste_patches = []
         num_patches = self.patch_creator.num_available_patches(last_image)

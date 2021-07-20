@@ -6,6 +6,7 @@ from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, Ti
 
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
+from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses, EnumUsage
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm
@@ -14,7 +15,7 @@ from main.src.models.ModelFactory import ModelFactory
 
 
 class RGB_Overlay_Patch:
-    def __init__(self, dataset_name=EnumLabelModifier.LabelModifier1, usage_type=EnumUsage.Classification,
+    def __init__(self, standardizer: AbstractStandardizer,dataset_name=EnumLabelModifier.LabelModifier1, usage_type=EnumUsage.Classification,
                  patch_creator=EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=256,
                  classes_to_use=(EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
@@ -26,6 +27,8 @@ class RGB_Overlay_Patch:
         with open(FolderInfos.base_filename + "parameters.json", "r") as fp:
             self.parameters = json.load(fp)
         self.name_img = "027481_0319CB_0EB7"
+        self.standardizer = standardizer
+        self.dataset.attr_dataset.set_standardizer(standardizer=standardizer)
 
     def __call__(self, epoch: int, iteration: int, model,device,blending_factor: float = 0.5,
              threshold: bool = True, num_classes: int = 2):
@@ -91,8 +94,6 @@ class RGB_Overlay_Patch:
             # initialize the overlay for the patch
             color_true = np.ones((resized_grid_size, resized_grid_size, 3))
             color_pred = np.ones((resized_grid_size, resized_grid_size, 3))
-            if output[0] == 1 or output[1] == 1:
-                b=0
             for i, c in enumerate(output):
                 color_true[:, :, i] *= c
             if threshold is True:
