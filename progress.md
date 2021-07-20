@@ -229,6 +229,10 @@ As no parameters produces better performances, we will investigate:
   - ✔️ Tests
   - ✔️ Frontend code
 
+# 20-07-2021
+
+- ⏳ model problem debugging
+- ⏲️ doc
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
