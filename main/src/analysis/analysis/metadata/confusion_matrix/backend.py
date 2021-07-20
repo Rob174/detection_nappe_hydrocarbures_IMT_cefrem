@@ -88,7 +88,7 @@ class ConfusionMatrixBackend:
             tags = generate_tags(0,self.names[0])
             for tag in tags:
                 soup.body.table.tbody.tr.append(tag)
-            for i,name in zip(range(1,len(list_str)),reversed(self.names[1:])):
+            for i,name in zip(reversed(range(1,len(list_str)-1)),reversed(self.names[1:])):
                 tr = soup.new_tag("tr")
                 th = soup.new_tag("th")
                 th.string = name

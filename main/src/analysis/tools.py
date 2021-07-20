@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
 
@@ -6,6 +7,7 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses, EnumUsage
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm
+from main.src.data.resizer import Resizer
 
 
 class RGB_Overlay_Patch:
@@ -57,10 +59,13 @@ class RGB_Overlay_Patch:
         with progress:  # progress bar manager to use the progress bar
             progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
             skipped = 0
+            resizer = Resizer(out_size_w=256,interpolation=cv2.INTER_LANCZOS4)
             for id, [input, output, filter] in enumerate(patches):
+
                 if filter is True:  # skip the image if the attr_dataset ask to skip this patch (can be for multiple reasons -> see DatasetFactory parameters supplied)
                     skipped += 1
                     continue
+                input = resizer.call(input)
                 input_adapted = np.stack((input, input, input), axis=0)  # convert patch to rgb
                 # pytorch can only make predictions for batches of images. That is why we create a "batch" of one image by adding one dimension to the image:
                 # shape : (1, img_width, img_height, 3)
@@ -102,14 +107,14 @@ class RGB_Overlay_Patch:
 
 
 if __name__ == "__main__":
-    choice_folder1 = '2021-07-18_23h25min14s_'
+    choice_folder1 = '2021-07-19_16h18min55s_'
     from main.src.models.ModelFactory import ModelFactory
     import json, os
 
     name = "027481_0319CB_0EB7"
     FolderInfos.init(test_without_data=True)
     folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
-    epoch = 51
+    epoch = 6
     iteration = 15923
 
     if os.path.exists(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:

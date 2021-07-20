@@ -20,6 +20,7 @@ from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
+from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
@@ -277,12 +278,14 @@ class ClassificationPatch(DataSentinel1Segmentation):
             - classif: np.ndarray classification label as returned by make_classification_label
             - reject: bool reject only based on margins
         """
+        self.attr_standardizer = StandardizerCacheMixed(interval=1)
         last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
         liste_patches = []
         num_patches = self.patch_creator.num_available_patches(last_image)
         # Create all the patches of input images
         for id in range(num_patches):
             patch, reject = self.patch_creator(last_image, name, patch_id=id)
+            patch = self.attr_standardizer.standardize(patch)
             liste_patches.append([patch])
             liste_patches[id].append(reject)
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
