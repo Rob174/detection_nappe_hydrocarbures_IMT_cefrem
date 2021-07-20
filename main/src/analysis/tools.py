@@ -66,52 +66,49 @@ class RGB_Overlay_Patch:
             "•",
             TimeRemainingColumn()
         )  # prepare the progress bar -> tell which columns to display
-        with progress:  # progress bar manager to use the progress bar
-            progression = progress.add_task("generation", name="[red]Progress", total=len(patches))
-            skipped = 0
-            resizer = Resizer(out_size_w=256,interpolation=cv2.INTER_LANCZOS4)
-            for id, [input, output, filter] in enumerate(patches):
+        skipped = 0
+        resizer = Resizer(out_size_w=256,interpolation=cv2.INTER_LANCZOS4)
+        for id, [input, output, filter] in enumerate(patches):
 
-                if filter is True:  # skip the image if the attr_dataset ask to skip this patch (can be for multiple reasons -> see DatasetFactory parameters supplied)
-                    skipped += 1
-                    continue
-                input = resizer.call(input)
-                input_adapted = np.stack((input, input, input), axis=0)  # convert patch to rgb
-                # pytorch can only make predictions for batches of images. That is why we create a "batch" of one image by adding one dimension to the image:
-                # shape : (1, img_width, img_height, 3)
-                input_adapted = input_adapted.reshape((1, *input_adapted.shape))
-                # predict output with cpu if no device (gpu) is provided else predict with gpu and ransfer the result on cpu
+            if filter is True:  # skip the image if the attr_dataset ask to skip this patch (can be for multiple reasons -> see DatasetFactory parameters supplied)
+                skipped += 1
+                continue
+            input = resizer.call(input)
+            input_adapted = np.stack((input, input, input), axis=0)  # convert patch to rgb
+            # pytorch can only make predictions for batches of images. That is why we create a "batch" of one image by adding one dimension to the image:
+            # shape : (1, img_width, img_height, 3)
+            input_adapted = input_adapted.reshape((1, *input_adapted.shape))
+            # predict output with cpu if no device (gpu) is provided else predict with gpu and ransfer the result on cpu
 
-                with torch.no_grad():
-                    prediction = model(input) if device is None else model(
-                        torch.tensor(input_adapted).to(device)).cpu().detach().numpy()
-                # get the pixel position of the patch
-                pos_x, pos_y = self.dataset.attr_patch_creator.get_position_patch(id, original_img.shape)
-                if len(output) > 3:
-                    raise Exception(f"{len(output)} classes : Too much : cannot use this vizualization technic")
-                resized_grid_size = self.dataset.attr_patch_creator.attr_grid_size_px
-                # initialize the overlay for the patch
-                color_true = np.ones((resized_grid_size, resized_grid_size, 3))
-                color_pred = np.ones((resized_grid_size, resized_grid_size, 3))
-                if output[0] == 1 or output[1] == 1:
-                    b=0
-                for i, c in enumerate(output):
-                    color_true[:, :, i] *= c
-                if threshold is True:
-                    for i, c in enumerate(prediction[0]):
-                        color_pred[:, :, i] *= 0 if c <= 0.5 else 1
-                else:
-                    for i, c in enumerate(prediction[0]):
-                        color_pred[:, :, i] *= c
-                coordx1_not_resize = pos_x
-                coordx2_not_resize = coordx1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
-                coordy1_not_resize = pos_y
-                coordy2_not_resize = coordy1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
-                overlay_true[coordx1_not_resize:coordx2_not_resize, coordy1_not_resize:coordy2_not_resize,
-                :] += color_true * (1-blending_factor)
-                overlay_pred[coordx1_not_resize:coordx2_not_resize, coordy1_not_resize:coordy2_not_resize,
-                :] += color_pred * (1-blending_factor)
-                progress.update(progression, advance=1)
+            with torch.no_grad():
+                prediction = model(input) if device is None else model(
+                    torch.tensor(input_adapted).to(device)).cpu().detach().numpy()
+            # get the pixel position of the patch
+            pos_x, pos_y = self.dataset.attr_patch_creator.get_position_patch(id, original_img.shape)
+            if len(output) > 3:
+                raise Exception(f"{len(output)} classes : Too much : cannot use this vizualization technic")
+            resized_grid_size = self.dataset.attr_patch_creator.attr_grid_size_px
+            # initialize the overlay for the patch
+            color_true = np.ones((resized_grid_size, resized_grid_size, 3))
+            color_pred = np.ones((resized_grid_size, resized_grid_size, 3))
+            if output[0] == 1 or output[1] == 1:
+                b=0
+            for i, c in enumerate(output):
+                color_true[:, :, i] *= c
+            if threshold is True:
+                for i, c in enumerate(prediction[0]):
+                    color_pred[:, :, i] *= 0 if c <= 0.5 else 1
+            else:
+                for i, c in enumerate(prediction[0]):
+                    color_pred[:, :, i] *= c
+            coordx1_not_resize = pos_x
+            coordx2_not_resize = coordx1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
+            coordy1_not_resize = pos_y
+            coordy2_not_resize = coordy1_not_resize + self.dataset.attr_patch_creator.attr_grid_size_px
+            overlay_true[coordx1_not_resize:coordx2_not_resize, coordy1_not_resize:coordy2_not_resize,
+            :] += color_true * (1-blending_factor)
+            overlay_pred[coordx1_not_resize:coordx2_not_resize, coordy1_not_resize:coordy2_not_resize,
+            :] += color_pred * (1-blending_factor)
         print(f"skipped {skipped}")
         return overlay_true, overlay_pred, original_img
     def call(self, folder: str,epoch: int, iteration: int, name_img: str, model,device,blending_factor: float = 0.5,
