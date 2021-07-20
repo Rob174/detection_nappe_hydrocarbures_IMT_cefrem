@@ -9,6 +9,7 @@ from h5py import File
 
 from main.FolderInfos import FolderInfos
 from main.src.data.TwoWayDict import Way
+from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
@@ -52,7 +53,7 @@ class ClassificationCache(BaseClass):
             self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier(original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
@@ -109,30 +110,8 @@ class ClassificationCache(BaseClass):
     def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)
-        annotation = self.make_classification_label(annotation)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
         return image, annotation
-
-    def make_classification_label(self, annotations_patch):
-        """Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
-
-        Args:
-            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-        Returns: the classification label
-
-        """
-
-        output = np.zeros((len(DataSentinel1Segmentation.attr_original_class_mapping),), dtype=np.float32)
-        for value in DataSentinel1Segmentation.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):
-            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-            value = int(value)
-            #  if the class is in the patch
-            if value in annotations_patch:
-                output[value] = 1.
-        return output
 
     def len(self, dataset) -> Optional[int]:
         if dataset == "tr":

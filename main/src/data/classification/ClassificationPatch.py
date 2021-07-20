@@ -17,6 +17,7 @@ from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
 from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
+from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
@@ -64,7 +65,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier(original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
                                                       original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
@@ -165,7 +166,9 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         self.annotations_labels.get, item,
                         partial_transformation_matrix, patch_upper_left_corner_coords)
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
+                    annotations_patch = self.attr_label_modifier.make_classification_label(annotations_patch)
+                    classification = self.attr_label_modifier.make_classification_label(annotations_patch)
+                    balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
                     if balance_reject is True:
                         continue
                     image = np.array(image, dtype=np.float32)
@@ -228,7 +231,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     input = np.stack((input, input, input), axis=0)  # 0 ns most of the time
                     input = (input - self.pixel_stats["mean"]) / self.pixel_stats["std"]
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classif, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
+                    classif = self.attr_label_modifier.make_classification_label(annotations_patch)
+                    balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
                     # As the balancing operation are done in the make_classification_label method, we reject an image
                     # if it is rejected due to margins or balancing
                     reject = reject or balance_reject
@@ -237,30 +241,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         continue
                     yield input, classif, None, item
 
-    def make_classification_label(self, annotations_patch):
-        """Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
-
-        Args:
-            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-        Returns: the classification label
-
-        """
-
-        output = np.zeros((len(self.attr_original_class_mapping),), dtype=np.float32)  # 0 ns
-        for value in self.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):  # btwn 1 and 2 ms for the for loop
-            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-            value = int(value)
-            #  if the class is in the patch
-            if value in annotations_patch:
-                output[value] = 1.
-        # Check if we need to reject the patch due to overrepresented class
-        balance_reject = self.attr_balance.filter(output)
-        # Modify the label if require
-        output = self.attr_label_modifier.make_classification_label(output)
-        return output, balance_reject
 
     def __len__(self):
         return None
@@ -291,7 +271,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         annotations = np.array(self.annotations_labels[name], dtype=np.float32)
         for id in range(num_patches):
             patch, reject = self.patch_creator(annotations, name, patch_id=id)
-            classif = self.make_classification_label(patch)
+            classif = self.attr_label_modifier.make_classification_label(patch)
             # we ignore balancing rejects
             liste_patches[id].insert(1, classif[0])
         return liste_patches

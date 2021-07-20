@@ -9,7 +9,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class AbstractLabelModifier(ABC, BaseClass):
     def __init__(self):
-        pass
+        self.initial_label = None
 
     @abstractmethod
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
@@ -23,3 +23,6 @@ class AbstractLabelModifier(ABC, BaseClass):
 
         """
         pass
+    def get_initial_label(self):
+        assert self.initial_label is not None, "make_classification_label must be called before get_initial_label"
+        return self.initial_label

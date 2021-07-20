@@ -6,6 +6,7 @@ import numpy as np
 
 from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
+from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.enums import EnumClasses
 
 
@@ -21,6 +22,7 @@ class LabelModifier2(AbstractLabelModifier):
     def __init__(self, original_class_mapping: TwoWayDict,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill)):
         super().__init__()
+        self.label_modifier0 = LabelModifier0(class_mapping=original_class_mapping)
         self.attr_name = self.__class__.__name__
         tmp_mapping = TwoWayDict({})
         self.attr_classes_to_use = classes_to_use
@@ -42,15 +44,16 @@ class LabelModifier2(AbstractLabelModifier):
         Merge specified classes together
 
         Args:
-            annotation: np.ndarray 1d containing the probability that the patch contain the classes as specified in NoLabelModifier make_classification_label method
+            annotation: np.ndarray 2d containing for each pixel the class of this pixel
 
         Returns:
             annotation_modified: the classification label modified
 
         """
+        annotation = self.label_modifier0.make_classification_label(annotation)
         # of shape (val_0-1_class_other,val_0-1_class_1,val_0-1_class_2...)
         annotation_modified = np.zeros((1,))
-        src_indexes = list(map(int, self.attr_class_mapping_merged.keys(Way.ORIGINAL_WAY)[0].split("|")))
+        src_indexes = list(map(int, self.attr_class_mapping.keys(Way.ORIGINAL_WAY)[0].split("|")))
         # Merging selected classes together with the max
         for src_index in src_indexes:
             annotation_modified[0] = max(annotation_modified[0], annotation[src_index])

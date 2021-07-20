@@ -31,6 +31,6 @@ class BalanceClasses1(BaseClass, AbstractBalance):
         """
         if len(classification_label[classification_label > 0]) == 1 and np.argmax(
                 classification_label) == self.attr_other_index:
-            self.attr_num_accepted += 1
             return True
+        self.attr_num_accepted += 1
         return False
