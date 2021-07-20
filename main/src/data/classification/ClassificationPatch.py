@@ -84,7 +84,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
         else:
             raise NotImplementedError
         if augmentations_img != "none":
-            if augmenter_img == EnumAugmenter.Augmenter0:
+            if augmenter_img == EnumAugmenter.Augmenter0: # à supprimer
                 self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
                 self.generator = self.generate_item_step_by_step
                 self.annotations_labels = NumpyAnnotations()
@@ -104,7 +104,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             self.generator = self.generate_item_step_by_step
             self.annotations_labels = NumpyAnnotations()
             self.attr_img_augmenter = NoAugmenter()
-        if augmentations_patch != "none":
+        if augmentations_patch != "none": # à enlever
             if augmenter_patch == EnumAugmenter.Augmenter0:
                 self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmentations_patch)
             else:

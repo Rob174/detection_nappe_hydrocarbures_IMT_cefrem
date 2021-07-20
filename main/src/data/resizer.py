@@ -22,7 +22,7 @@ class Resizer(BaseClass):
     def __call__(self, array) -> np.ndarray:
         return self.call(array)
 
-    def call(self, array) -> np.ndarray:
+    def call(self, array: np.ndarray) -> np.ndarray:
         """Perform the resize operation
 
         Args:

@@ -3,6 +3,7 @@
 import subprocess
 import sys
 
+from main.src.analysis.tools import RGB_Overlay_Patch
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
@@ -55,6 +56,14 @@ if __name__ == "__main__":
                              other_class_adder=arguments.other_class_adder,
                              interval=arguments.interval
                              )
+    rgb_overlay = RGB_Overlay_Patch(
+        dataset_name=arguments.attr_dataset,
+        usage_type=arguments.usage_type,
+        patch_creator=arguments.patch,
+        grid_size=arguments.grid_size,
+        input_size=arguments.input_size,
+        classes_to_use=arguments.classes
+                                    )
     saver["date"] = FolderInfos.id
 
     num_classes = len(arguments.classes) if arguments.attr_dataset != EnumLabelModifier.LabelModifier2 else 1

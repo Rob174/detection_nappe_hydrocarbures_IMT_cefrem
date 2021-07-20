@@ -1,5 +1,7 @@
 import cv2
+import matplotlib
 import numpy as np
+import json, os, torch
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from main.FolderInfos import FolderInfos
@@ -8,6 +10,7 @@ from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses, EnumUsage
 from main.src.data.patch_creator.enums import EnumPatchAlgorithm
 from main.src.data.resizer import Resizer
+from main.src.models.ModelFactory import ModelFactory
 
 
 class RGB_Overlay_Patch:
@@ -18,11 +21,18 @@ class RGB_Overlay_Patch:
         self.dataset = DatasetFactory(dataset_name=dataset_name, usage_type=usage_type, patch_creator=patch_creator,
                                       grid_size=grid_size, input_size=input_size, classes_to_use=classes_to_use,
                                       force_classifpatch=True)
+        self.classes_to_use = classes_to_use
 
-    def __call__(self, name_img, model, blending_factor=0.5, device=None,threshold=False):
-        return self.call(name_img, model, blending_factor, device,threshold)
+        with open(FolderInfos.base_filename + "parameters.json", "r") as fp:
+            self.parameters = json.load(fp)
+        self.name_img = "027481_0319CB_0EB7"
 
-    def call(self, name_img, model, blending_factor=0.25, device=None, threshold=False):
+    def __call__(self, epoch: int, iteration: int, model,device,blending_factor: float = 0.5,
+             threshold: bool = True, num_classes: int = 2):
+        return self.call(FolderInfos.base_folder,epoch, iteration, self.name_img, model,device, blending_factor,
+             threshold, num_classes)
+
+    def generate_overlay_matrices(self, name_img, model, blending_factor=0.25, device=None, threshold=False):
         """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:
@@ -104,62 +114,23 @@ class RGB_Overlay_Patch:
                 progress.update(progression, advance=1)
         print(f"skipped {skipped}")
         return overlay_true, overlay_pred, original_img
+    def call(self, folder: str,epoch: int, iteration: int, name_img: str, model,device,blending_factor: float = 0.5,
+             threshold: bool = True, num_classes: int = 2):
+        if os.path.exists(f"{folder}_{name_img}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
+            return
+        else:
+            matplotlib.use("agg")
+            array_overlay = self.generate_overlay_matrices(name_img=name_img, model=model,
+                                                           blending_factor=blending_factor,
+                                                           device=device, threshold=True)
 
+            import matplotlib.pyplot as plt
 
-if __name__ == "__main__":
-    choice_folder1 = '2021-07-19_16h18min55s_'
-    from main.src.models.ModelFactory import ModelFactory
-    import json, os
-
-    name = "027481_0319CB_0EB7"
-    FolderInfos.init(test_without_data=True)
-    folder = FolderInfos.data_folder + choice_folder1 + FolderInfos.separator
-    epoch = 6
-    iteration = 15923
-
-    if os.path.exists(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png") is True:
-        print("loading from cache")
-        import matplotlib.pyplot as plt
-        from PIL import Image
-
-        image_true = Image.open(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
-        image_pred = Image.open(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
-        plt.figure(figsize=(10, 10))
-        plt.imshow(image_true)
-        plt.figure(figsize=(10, 10))
-        plt.imshow(image_pred)
-        plt.show()
-    else:
-        print("not already computed, processing...")
-        with open(folder + choice_folder1 + "parameters.json", "r") as fp:
-            dico = json.load(fp)
-        classes_to_use = [EnumClasses.Seep, EnumClasses.Spill]
-        rgb_overlay = RGB_Overlay_Patch(dataset_name=EnumLabelModifier.LabelModifier1,
-                                        usage_type=EnumUsage.Classification,
-                                        patch_creator=EnumPatchAlgorithm.FixedPx,
-                                        grid_size=1000,
-                                        input_size=256,
-                                        classes_to_use=classes_to_use
-                                        )
-
-        import torch
-
-        device = torch.device("cuda")
-        model = ModelFactory(model_name=dico["trainer"]["attr_model"]["attr_model_name"],
-                             num_classes=dico["trainer"]["attr_model"]["attr_num_classes"])()
-        model.to(device)
-        model.load_state_dict(torch.load(f"{folder}{choice_folder1}_model_epoch-{epoch}_it-{iteration}.pt"))
-        array_overlay = rgb_overlay(name_img=name, model=model, blending_factor=0.5, device=device, threshold=True)
-
-        import matplotlib.pyplot as plt
-
-        plt.figure(figsize=(10, 10))
-        plt.imshow(array_overlay[0])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {classes_to_use}", fontsize=14)
-        plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
-        plt.figure(figsize=(10, 10))
-        plt.imshow(array_overlay[1])
-        plt.gcf().text(0.02, 0.75, f"RGB with order {classes_to_use}", fontsize=14)
-        plt.savefig(f"{folder}{choice_folder1}_{name}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
-        plt.figure(figsize=(10, 10))
-        plt.imshow(array_overlay[2], cmap="gray")
+            plt.figure(figsize=(10, 10))
+            plt.imshow(array_overlay[0])
+            plt.gcf().text(0.02, 0.75, f"RGB with order {self.classes_to_use}", fontsize=14)
+            plt.savefig(f"{folder}_{name_img}_it_{iteration}_epoch_{epoch}_rgb_overlay_true.png")
+            plt.figure(figsize=(10, 10))
+            plt.imshow(array_overlay[1])
+            plt.gcf().text(0.02, 0.75, f"RGB with order {self.classes_to_use}", fontsize=14)
+            plt.savefig(f"{folder}_{name_img}_it_{iteration}_epoch_{epoch}_rgb_overlay_pred.png")
