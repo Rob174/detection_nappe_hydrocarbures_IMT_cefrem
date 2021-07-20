@@ -50,7 +50,7 @@ class Trainer0(BaseClass):
                     with open(FolderInfos.input_data_folder + "filtered_other_img_infos.json", "w") as fp:
                         json.dump(dico_info, fp)
 
-            with open(FolderInfos.input_data_folder + "filtered_img_infos.json", "w") as fp:
+            with open(FolderInfos.input_data_folder + "filtered_other_img_infos.json", "w") as fp:
                 json.dump(dico_info, fp)
 
         self.saver(self.dataset)
