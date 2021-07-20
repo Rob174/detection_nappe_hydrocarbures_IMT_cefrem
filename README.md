@@ -187,3 +187,8 @@ Questions
 
 - besoin de répondre à Mr Gondet ?
 - résultats à l'heure actuelle
+
+
+### Mardi 20/07 14h
+
+- besoin de maintenir la version step by step de l'algo ?
