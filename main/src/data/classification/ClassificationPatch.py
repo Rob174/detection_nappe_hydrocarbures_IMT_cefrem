@@ -273,7 +273,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             patch, reject = self.patch_creator(annotations, name, patch_id=id)
             classif = self.attr_label_modifier.make_classification_label(patch)
             # we ignore balancing rejects
-            liste_patches[id].insert(1, classif[0])
+            liste_patches[id].insert(1, classif)
         return liste_patches
 
     def len(self, dataset: str) -> Optional[int]:
