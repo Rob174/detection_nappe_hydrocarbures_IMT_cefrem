@@ -56,14 +56,6 @@ if __name__ == "__main__":
                              other_class_adder=arguments.other_class_adder,
                              interval=arguments.interval
                              )
-    rgb_overlay = RGB_Overlay_Patch(
-        dataset_name=arguments.attr_dataset,
-        usage_type=arguments.usage_type,
-        patch_creator=arguments.patch,
-        grid_size=arguments.grid_size,
-        input_size=arguments.input_size,
-        classes_to_use=arguments.classes
-                                    )
     saver["date"] = FolderInfos.id
 
     num_classes = len(arguments.classes) if arguments.attr_dataset != EnumLabelModifier.LabelModifier2 else 1
@@ -76,6 +68,14 @@ if __name__ == "__main__":
     early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
 
+    rgb_overlay = RGB_Overlay_Patch(
+        dataset_name=arguments.attr_dataset,
+        usage_type=arguments.usage_type,
+        patch_creator=arguments.patch,
+        grid_size=arguments.grid_size,
+        input_size=arguments.input_size,
+        classes_to_use=arguments.classes
+                                    )
     print("start")
 
     Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
