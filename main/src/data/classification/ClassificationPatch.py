@@ -5,9 +5,11 @@ import random
 from typing import Optional
 from typing import Tuple
 
+import cv2
 import numpy as np
 from rasterio.transform import Affine, rowcol
 
+from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.RotationResizeMirrors import RotationResizeMirrors
 from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
@@ -167,7 +169,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         self.annotations_labels.get, item,
                         partial_transformation_matrix, patch_upper_left_corner_coords)
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    annotations_patch = self.attr_label_modifier.make_classification_label(annotations_patch)
                     classification = self.attr_label_modifier.make_classification_label(annotations_patch)
                     balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
                     if balance_reject is True:
@@ -247,6 +248,71 @@ class ClassificationPatch(DataSentinel1Segmentation):
         return None
     def set_standardizer(self, standardizer: AbstractStandardizer):
         self.attr_standardizer = standardizer
+    def set_annotator(self,annotations):
+        self.annotations_labels = annotations
+    def create_patch_warp_affine(self, image: np.ndarray,
+                              coord_patch: Tuple[int, int]):
+        resize_factor = 256/1000
+        resize_matrix = np.array([[resize_factor, 0, 0],
+                                  [0, resize_factor, 0],
+                                  [0, 0, 1]])
+        translate_matrix = np.array([[1, 0, -coord_patch[1]],
+                                         [0, 1, -coord_patch[0]],
+                                         [0, 0, 1]])
+        transformation_matrix = translate_matrix.dot(resize_matrix)
+        image = cv2.warpAffine(image, transformation_matrix[:-1, :],
+                                     dsize=(self.attr_resizer.attr_out_size_w, self.attr_resizer.attr_out_size_w),
+                                     flags=cv2.INTER_LANCZOS4)
+        return image,transformation_matrix
+    def make_patches_of_image3(self,name: str):
+        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
+        liste_patches = []
+        num_patches = self.patch_creator.num_available_patches(last_image)
+        augmentation = RotationResizeMirrors(1000,256,rotation_step=15,resize_lower_fact_float=1,resize_upper_fact_float=2)
+        resize_factor = 256/1000
+        partial_transformation = np.array([[resize_factor, 0, 0],
+                                  [0, resize_factor, 0],
+                                  [0, 0, 1]])
+        # Create all the patches of input images
+
+        print("shape img : ",last_image.shape)
+        for i,coord in enumerate(augmentation.get_grid(last_image.shape,partial_transformation)):
+            # print("coord : ",coord)
+            patch,_ = self.create_patch_warp_affine(last_image,coord)
+            patch = self.attr_standardizer.standardize(patch)
+            liste_patches.append([patch])
+        # annotations = np.array(self.annotations_labels[name], dtype=np.float32)
+        annotations = PointAnnotations()
+        for i,coord in enumerate(augmentation.get_grid(last_image.shape,partial_transformation)):
+            translate_matrix = np.array([[1, 0, -coord[1]],
+                                         [0, 1, -coord[0]],
+                                         [0, 0, 1]])
+            transformation_matrix = translate_matrix.dot(partial_transformation)
+            patch = annotations.get(name,transformation_matrix,256)
+            # patch = self.create_patch_warp_affine(annotations,coord)
+            print(np.unique(patch))
+            classif = self.attr_label_modifier.make_classification_label(patch)
+            # we ignore balancing rejects
+            liste_patches[i].insert(1, classif)
+        return liste_patches
+    def make_patches_of_image2(self,name: str):
+        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
+        liste_patches = []
+        num_patches = self.patch_creator.num_available_patches(last_image)
+        # Create all the patches of input images
+        for id in range(num_patches):
+            pos_x, pos_y = self.patch_creator.get_position_patch(id, last_image.shape)
+            patch,_ = self.create_patch_warp_affine(last_image,(pos_x,pos_y))
+            patch = self.attr_standardizer.standardize(patch)
+            liste_patches.append([patch])
+        annotations = np.array(self.annotations_labels[name], dtype=np.float32)
+        for id in range(num_patches):
+            pos_x, pos_y = self.patch_creator.get_position_patch(id, annotations.shape)
+            patch,_ = self.create_patch_warp_affine(annotations,(pos_x,pos_y))
+            classif = self.attr_label_modifier.make_classification_label(patch)
+            # we ignore balancing rejects
+            liste_patches[id].insert(1, classif)
+        return liste_patches
     def make_patches_of_image(self, name: str):
         """Creates and returns all patches of an image
 
