@@ -9,9 +9,10 @@ from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.enums import EnumClasses
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class LabelModifier1(AbstractLabelModifier):
+class LabelModifier1(AbstractLabelModifier, BaseClass):
     """Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
     and to change their order.
 
@@ -46,7 +47,8 @@ class LabelModifier1(AbstractLabelModifier):
             annotation_modified: the classification label modified
 
         """
-        annotation = self.label_modifier0.make_classification_label(annotation)
+        self.initial_label = self.label_modifier0.make_classification_label(annotation)
+        annotation = self.initial_label
         # Create a classification label with less classes
         annotation_modified = np.zeros((len(self.attr_class_mapping.keys()),))
         # {index_src_0:(class0,index_dest0),index_src_1:(class1,index_dest1),....}

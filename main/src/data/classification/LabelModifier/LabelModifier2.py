@@ -50,7 +50,8 @@ class LabelModifier2(AbstractLabelModifier):
             annotation_modified: the classification label modified
 
         """
-        annotation = self.label_modifier0.make_classification_label(annotation)
+        self.initial_label = self.label_modifier0.make_classification_label(annotation)
+        annotation = self.initial_label
         # of shape (val_0-1_class_other,val_0-1_class_1,val_0-1_class_2...)
         annotation_modified = np.zeros((1,))
         src_indexes = list(map(int, self.attr_class_mapping.keys(Way.ORIGINAL_WAY)[0].split("|")))
