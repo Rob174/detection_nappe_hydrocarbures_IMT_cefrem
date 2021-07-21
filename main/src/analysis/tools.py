@@ -84,7 +84,7 @@ class RGB_Overlay_Patch:
             # predict output with cpu if no device (gpu) is provided else predict with gpu and ransfer the result on cpu
 
             with torch.no_grad():
-                prediction = model(input) if device is None else model(
+                prediction = model(input_adapted) if device is None else model(
                     torch.tensor(input_adapted).to(device)).cpu().detach().numpy()
             # get the pixel position of the patch
             pos_x, pos_y = self.dataset.attr_patch_creator.get_position_patch(id, original_img.shape)

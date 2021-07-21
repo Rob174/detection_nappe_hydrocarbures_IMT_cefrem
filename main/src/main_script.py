@@ -3,6 +3,7 @@
 import subprocess
 import sys
 
+from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.analysis.tools import RGB_Overlay_Patch
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
@@ -12,9 +13,9 @@ sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src")
 sys.path.append(r"C:\Users\robin\Documents\projets")
 
-# from main.src.training.Trainer0 import Trainer0
+from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
-from main.src.training.TrainerGenerateCache import Trainer0
+# from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory
@@ -54,8 +55,7 @@ if __name__ == "__main__":
                              augmentations_patch=arguments.augmentations_patch,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
-                             interval=arguments.interval,
-                             force_classifpatch=True
+                             interval=arguments.interval
                              )
     saver["date"] = FolderInfos.id
 
@@ -69,15 +69,9 @@ if __name__ == "__main__":
     early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
 
-    # rgb_overlay = RGB_Overlay_Patch(
-    #     dataset_name=arguments.attr_dataset,
-    #     usage_type=arguments.usage_type,
-    #     patch_creator=arguments.patch,
-    #     grid_size=arguments.grid_size,
-    #     input_size=arguments.input_size,
-    #     classes_to_use=arguments.classes,
-    #     standardizer=dataset.attr_dataset.attr_standardizer
-    #                                 )
+    rgb_overlay = RGB_Overlay2(
+        standardizer=dataset.attr_dataset.attr_standardizer
+                                    )
     print("start")
 
     Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
