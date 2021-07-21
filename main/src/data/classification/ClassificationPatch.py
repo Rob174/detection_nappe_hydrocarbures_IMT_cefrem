@@ -158,13 +158,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
         if isinstance(self.attr_patch_augmenter, NoAugmenter) is False:
             raise Exception("The patch augmenter is not supported when you choose augmenter1 for image augmenter")
         images_available = self.tr_keys if dataset == "tr" else self.valid_keys
-        for num_dataset in range(self.attr_augmentation_factor):
-            random.shuffle(images_available)
-            for item in images_available:
+        for num_dataset in range(1):#self.attr_augmentation_factor):
+            # random.shuffle(images_available)
+            for item in ["027481_0319CB_0EB7"]:#images_available:
                 image = self.images[item]
                 partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in np.random.permutation(
-                        self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                for patch_upper_left_corner_coords in self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix): #np.random.permutation(
+                        #):
                     annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
                         self.annotations_labels.get, item,
                         partial_transformation_matrix, patch_upper_left_corner_coords)

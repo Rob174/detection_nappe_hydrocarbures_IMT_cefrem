@@ -12,9 +12,9 @@ sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src")
 sys.path.append(r"C:\Users\robin\Documents\projets")
 
-from main.src.training.Trainer0 import Trainer0
+# from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
-# from main.src.training.TrainerGenerateCache import Trainer0
+from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory
@@ -54,7 +54,8 @@ if __name__ == "__main__":
                              augmentations_patch=arguments.augmentations_patch,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
-                             interval=arguments.interval
+                             interval=arguments.interval,
+                             force_classifpatch=True
                              )
     saver["date"] = FolderInfos.id
 
