@@ -79,7 +79,7 @@ class RGB_Overlay_Patch:
             input = resizer.call(input)
             input_adapted = np.stack((input, input, input), axis=0)  # convert patch to rgb
             # pytorch can only make predictions for batches of images. That is why we create a "batch" of one image by adding one dimension to the image:
-            # shape : (1, img_width, img_height, 3)
+            # shape : (1, 3, img_width, img_height)
             input_adapted = input_adapted.reshape((1, *input_adapted.shape))
             # predict output with cpu if no device (gpu) is provided else predict with gpu and ransfer the result on cpu
 
