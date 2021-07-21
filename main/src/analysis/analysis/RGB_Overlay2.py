@@ -55,7 +55,9 @@ class RGB_Overlay2:
                     patch = np.array(patch,dtype=np.float32)
                     annotation_patch = np.array(annotation_patch,dtype=np.float32)
                     transformation_matrix = np.array(dico_infos[name]["transformation_matrix"],dtype=np.float32)
+                    inv_matrix = np.linalg.inv(transformation_matrix)
                     patch_full_shape = cv2.warpAffine(reconstructed_image,np.linalg.inv(transformation_matrix)[:-1,:],dsize=reconstructed_image.shape[::-1],flags=cv2.INTER_LANCZOS4)
+
                     reconstructed_image += patch_full_shape
                     del patch_full_shape
                     with torch.no_grad():
@@ -81,6 +83,10 @@ class RGB_Overlay2:
             min = np.min(image)
         if max is None:
             max = np.max(image)
+        if max == min == 0:
+            return image
+        if max == min:
+            return image/max
         return (image-min)/(max-min)
     def visualize_overlays(self,overlay_pred,overlay_true,reconstructed_image,original_img, threshold:int=0.5):
 
