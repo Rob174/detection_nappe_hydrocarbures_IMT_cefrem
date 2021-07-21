@@ -93,12 +93,12 @@ class RGB_Overlay2:
         plt.title(f"Overlay true")
         plt.imshow(overlay_true)
         plt.savefig(FolderInfos.base_filename+"rgb_overlay_true.png")
-
+        del overlay_true
         plt.figure(2)
         plt.title(f"Overlay pred")
         plt.imshow(overlay_pred)
         plt.savefig(FolderInfos.base_filename+"rgb_overlay_pred.png")
-
+        del overlay_pred
         plt.figure(3)
         plt.title(f"Original image")
         plt.imshow(original_img,cmap="gray")
