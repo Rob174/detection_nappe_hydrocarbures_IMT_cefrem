@@ -86,8 +86,8 @@ class RGB_Overlay2:
 
         reconstructed_image = self.normalize(reconstructed_image) * threshold
         [overlay_true,overlay_pred] = [overlay * (1-threshold) for overlay in [overlay_true,overlay_pred]]
-        overlay_true = reconstructed_image+overlay_true
-        overlay_pred = reconstructed_image+overlay_pred
+        overlay_true = np.stack((reconstructed_image,)*3,axis=-1)+overlay_true
+        overlay_pred = np.stack((reconstructed_image,)*3,axis=-1)+overlay_pred
 
         plt.figure(1)
         plt.title(f"Overlay true")
