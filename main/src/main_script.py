@@ -84,6 +84,5 @@ if __name__ == "__main__":
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,
-             eval_step=arguments.eval_step, debug=arguments.debug,
-             rgb_overlay=rgb_overlay)()
+             eval_step=arguments.eval_step, debug=arguments.debug)()
     print("end")
