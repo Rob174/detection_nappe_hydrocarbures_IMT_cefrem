@@ -92,14 +92,17 @@ class RGB_Overlay2:
         plt.figure(1)
         plt.title(f"Overlay true")
         plt.imshow(overlay_true)
+        plt.savefig(FolderInfos.base_filename+"rgb_overlay_true.png")
 
         plt.figure(2)
         plt.title(f"Overlay pred")
         plt.imshow(overlay_pred)
+        plt.savefig(FolderInfos.base_filename+"rgb_overlay_pred.png")
 
         plt.figure(3)
         plt.title(f"Original image")
         plt.imshow(original_img,cmap="gray")
+        plt.savefig(FolderInfos.base_filename+"rgb_overlay_image.png")
 
         plt.show()
     def __call__(self, model,device):
