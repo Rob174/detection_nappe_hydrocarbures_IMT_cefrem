@@ -112,4 +112,5 @@ class RGB_Overlay2:
 
         plt.show()
     def __call__(self, model,device):
+        model.load_state_dict(torch.load(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-21_02h37min54s_\2021-07-21_02h37min54s__model_epoch-14_it-15923.pt"))
         self.visualize_overlays(*self.generate_overlay_matrices(self.name_img,model=model,device=device),threshold=0.5)
