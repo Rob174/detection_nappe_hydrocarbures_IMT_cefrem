@@ -33,8 +33,8 @@ class Trainer0(BaseClass):
 
     def call(self):
         """Save the input and outputs with metadata"""
-        with h5py.File(FolderInfos.input_data_folder + "filtered_cache_images1.hdf5", "w") as cache_images:
-            with h5py.File(FolderInfos.input_data_folder + "filtered_cache_annotations1.hdf5", "w") as cache_annotations:
+        with h5py.File(FolderInfos.input_data_folder + "test_cache_image.hdf5", "w") as cache_images:
+            with h5py.File(FolderInfos.input_data_folder + "test_cache_annotations.hdf5", "w") as cache_annotations:
                 dico_info = {}
                 class Wrapper:
                     def __init__(self,data,dataset):
@@ -48,10 +48,10 @@ class Trainer0(BaseClass):
                     cache_annotations.create_dataset(str(i), shape=output.shape, dtype='i', data=output)
                     if i % 1000 == 0:
                         print(i,end="\r")
-                        with open(FolderInfos.input_data_folder + "filtered_img_infos1.json", "w") as fp:
+                        with open(FolderInfos.input_data_folder + "test_cache_img_infos.json", "w") as fp:
                             json.dump(dico_info, fp)
 
-                with open(FolderInfos.input_data_folder + "filtered_img_infos1.json", "w") as fp:
+                with open(FolderInfos.input_data_folder + "test_cache_img_infos.json", "w") as fp:
                     json.dump(dico_info, fp)
 
         self.saver(self.dataset)
