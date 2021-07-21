@@ -53,7 +53,7 @@ class RGB_Overlay2:
 
                 for name,patch,annotation_patch in zip(cache_img.keys(),cache_img.values(),cache_annotations.values()):
                     transformation_matrix = np.array(dico_infos[name]["transformation_matrix"],dtype=np.float32)
-                    patch_full_shape = cv2.warpAffine(reconstructed_image,np.linalg.inv(transformation_matrix),dsize=reconstructed_image.shape,flags=cv2.INTER_LANCZOS4)
+                    patch_full_shape = cv2.warpAffine(reconstructed_image,np.linalg.inv(transformation_matrix)[:-1,:],dsize=reconstructed_image.shape,flags=cv2.INTER_LANCZOS4)
                     reconstructed_image += patch_full_shape
                     del patch_full_shape
                     with torch.no_grad():
