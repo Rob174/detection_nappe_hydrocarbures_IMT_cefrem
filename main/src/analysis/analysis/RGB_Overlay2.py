@@ -106,4 +106,4 @@ class RGB_Overlay2:
 
         plt.show()
     def __call__(self, model,device):
-        self.generate_overlay_matrices(self.name_img,model=model,device=device)
+        self.visualize_overlays(*self.generate_overlay_matrices(self.name_img,model=model,device=device),threshold=0.5)
