@@ -133,6 +133,7 @@ class TrainerTest(BaseClass):
                             opt_valid_batch = self.add_to_batch_valid(input, output)
                         it_val += 1
                         input_npy, output_npy = opt_valid_batch
+                        self.attr_model.model.eval()
                         with torch.no_grad():
                             print(self.attr_model.model.training)
                             input_gpu = torch.Tensor(input_npy).to(device)
