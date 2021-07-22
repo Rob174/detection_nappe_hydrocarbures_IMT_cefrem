@@ -134,6 +134,7 @@ class TrainerTest(BaseClass):
                         it_val += 1
                         input_npy, output_npy = opt_valid_batch
                         with torch.no_grad():
+                            print(self.attr_model.model.training)
                             input_gpu = torch.Tensor(input_npy).to(device)
                             prediction = self.attr_model.model(input_gpu)
                             del input_gpu
@@ -143,7 +144,7 @@ class TrainerTest(BaseClass):
                             # print(prediction_npy)
                 if i > 1000:
                     break
-            predictions = np.stack(l_pred,axis=0)
+            predictions = np.concatenate(l_pred,axis=0)
             if self.attr_early_stopping.stop_training():
                 break
             # self.rgb_overlay(model=self.attr_model.model,
