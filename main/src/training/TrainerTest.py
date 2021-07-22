@@ -89,25 +89,11 @@ class TrainerTest(BaseClass):
 
     def add_to_batch_tr(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        self.tr_batches[0].append(input)
-        self.tr_batches[1].append(output)
-        if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-            full_batch = (np.stack(self.tr_batches[0], axis=0), np.stack(self.tr_batches[1], axis=0))
-            self.tr_batches = [[], []]
-            return full_batch
-        else:
-            return None
+        return np.reshape(input,(1,*input.shape)),np.reshape(output,(1,*input.shape))
 
     def add_to_batch_valid(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        self.valid_batches[0].append(input)
-        self.valid_batches[1].append(output)
-        if len(self.valid_batches[0]) == self.attr_valid_batch_size:
-            full_batch = (np.stack(self.valid_batches[0], axis=0), np.stack(self.valid_batches[1], axis=0))
-            self.valid_batches = [[], []]
-            return full_batch
-        else:
-            return None
+        return np.reshape(input,(1,*input.shape)),np.reshape(output,(1,*input.shape))
 
     def __call__(self):
         return self.call()
