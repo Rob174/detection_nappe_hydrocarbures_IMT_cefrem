@@ -114,55 +114,46 @@ class TrainerTest(BaseClass):
 
     def call(self):
         """Train the attr_model"""
-        with self.attr_progress:
-            dataset_valid_iter = iter(self.dataset_valid)
-            device = torch.device("cuda")
-            self.attr_model.model.to(device)
-            current_loss = -1
-            it_tr = 0
-            it_val = 0
-            for epoch in range(self.attr_num_epochs):
-                for i, [input, output, transformation_matrix, item] in enumerate(self.dataset_tr):
-                    opt_tr_batch = self.add_to_batch_tr(input, output)
-                    if opt_tr_batch is not None:
-                        it_tr += 1
-                        self.attr_last_iter = i
-                        self.attr_last_epoch = epoch
+        dataset_valid_iter = iter(self.dataset_valid)
+        device = torch.device("cuda")
+        self.attr_model.model.to(device)
+        it_tr = 0
+        it_val = 0
+        for epoch in range(self.attr_num_epochs):
+            for i, [input, output, transformation_matrix, item] in enumerate(self.dataset_tr):
+                opt_tr_batch = self.add_to_batch_tr(input, output)
+                if opt_tr_batch is not None:
+                    it_tr += 1
 
 
-                        # zero the parameter gradients
-                        self.attr_optimizer.zero_grad()
+                    # zero the parameter gradients
+                    self.attr_optimizer.zero_grad()
 
-                        # forward + backward + optimize
+                    # forward + backward + optimize
 
 
-                        self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
-                                                         it_tr=it_tr, img_processed=i)
-                        # Validation step
-                        if it_tr % self.attr_eval_step == 0:
-                            opt_valid_batch = None
-                            while opt_valid_batch is None:
-                                try:
-                                    input, output, transformation_matrix, item = next(dataset_valid_iter)
-                                except StopIteration:
-                                    # reinitialize data loader
-                                    dataset_valid_iter = iter(self.dataset_valid)
-                                    input, output, transformation_matrix, item = next(dataset_valid_iter)
-                                opt_valid_batch = self.add_to_batch_valid(input, output)
-                            it_val += 1
-                            input_npy, output_npy = opt_valid_batch
-                            with torch.no_grad():
-                                input_gpu = torch.Tensor(input_npy).to(device)
-                                prediction = self.attr_model.model(input_gpu)
-                                del input_gpu
-                                output_gpu = torch.Tensor(output_npy).float().to(device)
-                                prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
-                            for callback in self.attr_callbacks:
-                                callback.on_valid_batch_end(prediction_npy,output_npy)
-                    if i > 1000:
-                        break
-                self.attr_progress.end_epoch(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], epoch=epoch, img_processed=i)
-                if self.attr_early_stopping.stop_training():
+                    # Validation step
+                    if it_tr % self.attr_eval_step == 0:
+                        opt_valid_batch = None
+                        while opt_valid_batch is None:
+                            try:
+                                input, output, transformation_matrix, item = next(dataset_valid_iter)
+                            except StopIteration:
+                                # reinitialize data loader
+                                dataset_valid_iter = iter(self.dataset_valid)
+                                input, output, transformation_matrix, item = next(dataset_valid_iter)
+                            opt_valid_batch = self.add_to_batch_valid(input, output)
+                        it_val += 1
+                        input_npy, output_npy = opt_valid_batch
+                        with torch.no_grad():
+                            input_gpu = torch.Tensor(input_npy).to(device)
+                            prediction = self.attr_model.model(input_gpu)
+                            del input_gpu
+                            output_gpu = torch.Tensor(output_npy).float().to(device)
+                            prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
+                if i > 1000:
                     break
+            if self.attr_early_stopping.stop_training():
+                break
             # self.rgb_overlay(model=self.attr_model.model,
             #                  device = device)
