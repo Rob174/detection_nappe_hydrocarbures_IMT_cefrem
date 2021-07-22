@@ -1,6 +1,6 @@
 """Apply all transformations at once thanks to the transformation matrix and warpAffine. Optimized version of Augmenter0"""
 
-from typing import Tuple, List, Callable
+from typing import Tuple, List, Callable, Optional
 
 import cv2
 import numpy as np
@@ -32,7 +32,6 @@ class NoAugmenter(BaseClass):
     """
 
     def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int, allowed_transformations,
-                 image_access_function: Callable[[str],Tuple[np.ndarray,np.ndarray]],
                  label_access_function:Callable[[str],Tuple[np.ndarray,np.ndarray]]):
         self.attr_allowed_transformations = allowed_transformations
         self.attr_transformations_class = None
@@ -45,9 +44,11 @@ class NoAugmenter(BaseClass):
                                                                  grid_maker=self.attr_grid_maker,
                                                                  patch_size_final_resize=patch_size_final_resize
                                                                  )
-        self.attr_image_applier = AugmentationApplierImage(access_function=image_access_function,
+        self.attr_image_applier = AugmentationApplierImage(
                                                            grid_maker=self.attr_grid_maker,
                                                            patch_size_final_resize=patch_size_final_resize)
+    def set_image_access_function(self,function:Callable[[str],Tuple[np.ndarray,np.ndarray]]):
+        self.attr_image_applier.access_function = function
 
     def add_transformation(self, *args,**kwargs):
         """Method that map transformation names with actual classes.
@@ -58,7 +59,7 @@ class NoAugmenter(BaseClass):
         """
         pass
 
-    def transform_image(self, image_name: str, partial_transformation_matrix: np.ndarray,
+    def transform_image(self, image: np.ndarray, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random augmentations in the order in which they have been supplied.
 
@@ -76,10 +77,10 @@ class NoAugmenter(BaseClass):
                     - the transformation matrix
 
                 """
-        return self.attr_image_applier.transform(image_name, partial_transformation_matrix,
+        return self.attr_image_applier.transform(image, partial_transformation_matrix,
                                                  patch_upper_left_corner_coords)
 
-    def transform_label(self, annotation_function: Callable, image_name: str, partial_transformation_matrix: np.ndarray,
+    def transform_label(self, image_name: str, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations at once on the annotation **points** directly
 
