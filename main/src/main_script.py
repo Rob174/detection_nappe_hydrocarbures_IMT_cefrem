@@ -80,27 +80,27 @@ if __name__ == "__main__":
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,
              eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
-    print("second training")
-    dataset = DatasetFactory(dataset_name=arguments.attr_dataset,
-                             usage_type=arguments.usage_type,
-                             patch_creator=arguments.patch,
-                             grid_size=arguments.grid_size,
-                             input_size=arguments.input_size,
-                             exclusion_policy=arguments.patch_exclude_policy,
-                             exclusion_policy_threshold=arguments.patch_exclude_policy_threshold,
-                             classes_to_use=arguments.classes,
-                             balance=arguments.balance,
-                             augmenter_img=arguments.augmenter_img,
-                             augmentations_img=arguments.augmentations_img,
-                             augmenter_patch=arguments.augmenter_patch,
-                             augmentations_patch=arguments.augmentations_patch,
-                             augmentation_factor=arguments.augmentation_factor,
-                             other_class_adder=arguments.other_class_adder,
-                             interval=arguments.interval
-                             )
-    TrainerTest(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
-             dataset=dataset, model=model,
-             optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
-             saver=saver,
-             eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
+    # print("second training")
+    # dataset = DatasetFactory(dataset_name=arguments.attr_dataset,
+    #                          usage_type=arguments.usage_type,
+    #                          patch_creator=arguments.patch,
+    #                          grid_size=arguments.grid_size,
+    #                          input_size=arguments.input_size,
+    #                          exclusion_policy=arguments.patch_exclude_policy,
+    #                          exclusion_policy_threshold=arguments.patch_exclude_policy_threshold,
+    #                          classes_to_use=arguments.classes,
+    #                          balance=arguments.balance,
+    #                          augmenter_img=arguments.augmenter_img,
+    #                          augmentations_img=arguments.augmentations_img,
+    #                          augmenter_patch=arguments.augmenter_patch,
+    #                          augmentations_patch=arguments.augmentations_patch,
+    #                          augmentation_factor=arguments.augmentation_factor,
+    #                          other_class_adder=arguments.other_class_adder,
+    #                          interval=arguments.interval
+    #                          )
+    # TrainerTest(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
+    #          dataset=dataset, model=model,
+    #          optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
+    #          saver=saver,
+    #          eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
     print("end")

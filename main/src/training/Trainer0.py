@@ -118,7 +118,6 @@ class Trainer0(BaseClass):
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.attr_model.model.to(device)
-            current_loss = -1
             it_tr = 0
             it_val = 0
             for epoch in range(self.attr_num_epochs):
@@ -175,8 +174,6 @@ class Trainer0(BaseClass):
                             for callback in self.attr_callbacks:
                                 callback.on_valid_batch_end(prediction_npy,output_npy)
                             self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
-                    if i > 1000:
-                        break
                 self.attr_progress.end_epoch(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], epoch=epoch, img_processed=i)
                 self.attr_model_saver.save_model(self.attr_model, epoch, i)
                 self.saver(self).save()
