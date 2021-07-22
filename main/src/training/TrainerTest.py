@@ -112,8 +112,6 @@ class TrainerTest(BaseClass):
                     it_tr += 1
 
 
-                    # zero the parameter gradients
-                    self.attr_optimizer.zero_grad()
 
                     # forward + backward + optimize
 
