@@ -103,8 +103,10 @@ class TrainerTest(BaseClass):
         dataset_valid_iter = iter(self.dataset_valid)
         device = torch.device("cuda")
         self.attr_model.model.to(device)
+        self.attr_model.model.eval()
         it_tr = 0
         it_val = 0
+        l_pred = []
         for epoch in range(self.attr_num_epochs):
             for i, [input, output, transformation_matrix, item] in enumerate(self.dataset_tr):
                 opt_tr_batch = self.add_to_batch_tr(input, output)
@@ -137,9 +139,11 @@ class TrainerTest(BaseClass):
                             del input_gpu
                             output_gpu = torch.Tensor(output_npy).float().to(device)
                             prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
-                            print(prediction_npy)
+                            l_pred.append(prediction_npy)
+                            # print(prediction_npy)
                 if i > 1000:
                     break
+            predictions = np.stack(l_pred,axis=0)
             if self.attr_early_stopping.stop_training():
                 break
             # self.rgb_overlay(model=self.attr_model.model,
