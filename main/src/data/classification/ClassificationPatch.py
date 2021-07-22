@@ -120,8 +120,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
-        if isinstance(self.attr_img_augmenter, Augmenter1) is False:
-            raise Exception("Only augmenter1 is supported with this method of attr_dataset generation")
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
             for item in images_available:
