@@ -106,16 +106,12 @@ class RGB_Overlay2:
         overlay_pred = np.stack((reconstructed_image,)*3,axis=-1)+overlay_pred
         import matplotlib
         matplotlib.use("agg")
-        plt.figure(1)
-        plt.title(f"Overlay true")
-        plt.imshow(overlay_true)
-        plt.savefig(FolderInfos.base_filename+"rgb_overlay_true.png")
-        del overlay_true
-        plt.figure(2)
-        plt.title(f"Overlay pred")
-        plt.imshow(overlay_pred)
-        plt.savefig(FolderInfos.base_filename+"rgb_overlay_pred.png")
-        del overlay_pred
+        for i,[name,data] in enumerate(zip(["true","pred"],[overlay_true,overlay_pred])):
+            plt.figure(i+1)
+            plt.title(f"Overlay "+name)
+            plt.imshow(data)
+            plt.savefig(FolderInfos.base_filename+f"rgb_overlay_{name}.png")
+            del data
 
     def __call__(self, model,device):
         model.load_state_dict(torch.load(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-21_02h37min54s_\2021-07-21_02h37min54s__model_epoch-14_it-15923.pt"))
