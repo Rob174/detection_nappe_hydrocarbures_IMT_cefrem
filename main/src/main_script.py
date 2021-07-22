@@ -14,9 +14,9 @@ sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src")
 sys.path.append(r"C:\Users\robin\Documents\projets")
 
-from main.src.training.Trainer0 import Trainer0
+# from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
-# from main.src.training.TrainerGenerateCache import Trainer0
+from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory
@@ -70,16 +70,16 @@ if __name__ == "__main__":
     early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
 
-    rgb_overlay = RGB_Overlay2(
-        standardizer=dataset.attr_dataset.attr_standardizer
-                                    )
+    # rgb_overlay = RGB_Overlay2(
+    #     standardizer=dataset.attr_dataset.attr_standardizer
+    #                                 )
     print("start")
 
     Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,
-             eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
+             eval_step=arguments.eval_step, debug=arguments.debug)() #,rgb_overlay=rgb_overlay)()
     # print("second training")
     # dataset = DatasetFactory(dataset_name=arguments.attr_dataset,
     #                          usage_type=arguments.usage_type,
