@@ -137,6 +137,7 @@ class TrainerTest(BaseClass):
                             del input_gpu
                             output_gpu = torch.Tensor(output_npy).float().to(device)
                             prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
+                            print(prediction_npy)
                 if i > 1000:
                     break
             if self.attr_early_stopping.stop_training():
