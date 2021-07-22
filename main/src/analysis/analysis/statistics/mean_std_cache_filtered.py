@@ -3,12 +3,12 @@ import numpy as np
 from enum import Enum
 
 from main.FolderInfos import FolderInfos
-from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
+from main.src.enums import EnumAugmenter
 from main.src.data.DatasetFactory import DatasetFactory
-from main.src.data.balance_classes.enums import EnumBalance
-from main.src.data.classification.enums import EnumLabelModifier
-from main.src.data.enums import EnumUsage, EnumClasses
-from main.src.data.patch_creator.enums import EnumPatchExcludePolicy, EnumPatchAlgorithm
+from main.src.enums import EnumBalance
+from main.src.enums import EnumLabelModifier
+from main.src.enums import EnumUsage, EnumClasses
+from main.src.enums import EnumPatchExcludePolicy, EnumPatchAlgorithm
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)

@@ -10,22 +10,23 @@ from rasterio.transform import Affine, rowcol
 
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
-from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
+from main.src.enums import EnumAugmenter
 from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
 from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
-from main.src.data.balance_classes.enums import EnumBalance
+from main.src.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
 from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
-from main.src.data.classification.enums import EnumLabelModifier
-from main.src.data.enums import EnumClasses
+from main.src.enums import EnumLabelModifier
+from main.src.enums import EnumClasses
+from main.src.data.patch_creator.MarginCheck import MarginCheck
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
-from main.src.training.enums import EnumDataset
+from main.src.enums import EnumDataset
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
@@ -43,15 +44,16 @@ class ClassificationPatch(DataSentinel1Segmentation):
         label_modifier: EnumLabelModifier
     """
 
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
+    def __init__(self, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
-                 tr_percent=0.7):
+                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
-        self.patch_creator = patch_creator
+        self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
+        self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_resizer = Resizer(out_size_w=input_size)
         self.attr_augmentation_factor = augmentation_factor
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
@@ -84,7 +86,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             if augmenter_img == EnumAugmenter.Augmenter1:
                 self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
                                                      patch_size_before_final_resize=
-                                                     self.patch_creator.attr_grid_size_px,
+                                                     self.attr_grid_size_px,
                                                      patch_size_final_resize=input_size,
                                                      label_access_function=self.annotations_labels.get
                                                      )
@@ -92,7 +94,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
             else:
                 self.attr_img_augmenter = NoAugmenter(allowed_transformations=augmentations_img,
                                                      patch_size_before_final_resize=
-                                                     self.patch_creator.attr_grid_size_px,
+                                                     self.attr_grid_size_px,
                                                      patch_size_final_resize=input_size,
                                                      label_access_function=self.annotations_labels.get
                                                       )
@@ -125,8 +127,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
             for item in images_available:
                 image = self.images[item]
                 image = np.array(image, dtype=np.float32)
-                partial_transformation_matrix = np.array([[256/1000,0,0],[0,256/1000,0],[0,0,1]],dtype=np.float32)#self.attr_img_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix):#np.random.permutation(self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
+                for patch_upper_left_corner_coords in np.random.permutation(self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
                     annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
                         image_name=item,
                         partial_transformation_matrix=partial_transformation_matrix,
@@ -135,16 +137,16 @@ class ClassificationPatch(DataSentinel1Segmentation):
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
                     classification = self.attr_label_modifier.make_classification_label(annotations_patch)
                     balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
-                    # if balance_reject is True:
-                    #     continue
+                    if balance_reject is True:
+                        continue
                     image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
                         image=image,
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )
                     reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
-                    # if reject is True:
-                    #     continue
+                    if reject is True:
+                        continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch,)*3, axis=0)  # 0 ns most of the time
                     yield image_patch, classification, transformation_matrix, item

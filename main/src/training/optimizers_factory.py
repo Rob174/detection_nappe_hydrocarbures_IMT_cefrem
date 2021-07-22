@@ -1,7 +1,7 @@
 import torch.optim as optim
 
 from main.src.models.ModelFactory import ModelFactory
-from main.src.models.enums import EnumOptimizer
+from main.src.enums import EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
 
 

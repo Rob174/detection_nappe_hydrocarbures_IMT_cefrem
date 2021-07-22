@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from main.src.models.enums import EnumFreeze
+from main.src.enums import EnumFreeze
 from main.src.param_savers.BaseClass import BaseClass
 
 

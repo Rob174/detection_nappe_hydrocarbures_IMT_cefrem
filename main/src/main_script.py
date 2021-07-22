@@ -26,7 +26,7 @@ from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.Parser0 import Parser0
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
-from main.src.data.classification.enums import EnumLabelModifier
+from main.src.enums import EnumLabelModifier
 from main.src.enums import EnumGitCheck
 
 if __name__ == "__main__":

@@ -36,7 +36,7 @@ class FolderInfos(BaseClass):
     """str, proper separator for the operating system (linux or windows)"""
 
     @staticmethod
-    def init(custom_name="",subdir="",test_without_data=False):
+    def init(custom_name="",subdir="",test_without_data=False,with_id=None):
         """Initialize some interesting pathes as static attributes.
 
         Args:
@@ -49,6 +49,8 @@ class FolderInfos(BaseClass):
             FolderInfos.separator = "\\"
         while True:
             FolderInfos.id = strftime("%Y-%m-%d_%Hh%Mmin%Ss", localtime())
+            if with_id is not None:
+                FolderInfos.id = with_id
             FolderInfos.root_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2]) + FolderInfos.separator
             FolderInfos.data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + ["data_out"+FolderInfos.separator])
             FolderInfos.input_data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + ["data_in"]) + FolderInfos.separator
@@ -58,7 +60,7 @@ class FolderInfos(BaseClass):
             FolderInfos.base_filename = FolderInfos.base_folder + FolderInfos.id+"_"+custom_name
             FolderInfos.data_test = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + ["data_test"]) + FolderInfos.separator
             try:
-                if test_without_data is False:
+                if test_without_data is False and with_id is None:
                     os.mkdir(FolderInfos.base_folder)
                 break
             except Exception as e:

@@ -10,7 +10,7 @@ from main.src.training.AbstractCallback import AbstractCallback
 from main.src.training.TrValidSplit import trvalidsplit
 from main.src.training.confusion_matrix.ConfusionMatrixCallback import ConfusionMatrixCallback
 from main.src.training.early_stopping.AbstractEarlyStopping import AbstractEarlyStopping
-from main.src.training.enums import EnumDataset
+from main.src.enums import *
 from main.src.training.metrics.loss_factory import LossFactory
 from main.src.training.metrics.metrics_factory import MetricsFactory
 from main.src.training.optimizers_factory import OptimizersFactory

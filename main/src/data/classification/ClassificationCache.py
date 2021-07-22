@@ -18,8 +18,8 @@ from main.src.data.classification.PatchAdder.OtherClassPatchAdder import OtherCl
 from main.src.data.classification.PatchAdder.PatchAdderCallback import PatchAdderCallback
 from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.data.classification.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
-from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
-from main.src.data.enums import EnumClasses
+from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
+from main.src.enums import EnumClasses
 from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 from main.src.param_savers.BaseClass import BaseClass
 

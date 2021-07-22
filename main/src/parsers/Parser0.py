@@ -1,14 +1,8 @@
 import argparse
 
-from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
-from main.src.data.balance_classes.enums import *
-from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
-from main.src.data.enums import EnumUsage, EnumClasses
-from main.src.data.patch_creator.enums import *
-from main.src.enums import EnumGitCheck
-from main.src.models.enums import EnumModels, EnumOptimizer, EnumFreeze
+
+from main.src.enums import *
 from main.src.param_savers.BaseClass import BaseClass
-from main.src.training.enums import EnumLoss
 
 
 class Parser0(BaseClass):

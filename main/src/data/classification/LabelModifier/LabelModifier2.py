@@ -7,7 +7,7 @@ import numpy as np
 from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
-from main.src.data.enums import EnumClasses
+from main.src.enums import EnumClasses
 
 
 class LabelModifier2(AbstractLabelModifier):

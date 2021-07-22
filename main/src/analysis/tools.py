@@ -7,9 +7,9 @@ from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, Ti
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
-from main.src.data.classification.enums import EnumLabelModifier
-from main.src.data.enums import EnumClasses, EnumUsage
-from main.src.data.patch_creator.enums import EnumPatchAlgorithm
+from main.src.enums import EnumLabelModifier
+from main.src.enums import EnumClasses, EnumUsage
+from main.src.enums import EnumPatchAlgorithm
 from main.src.data.resizer import Resizer
 from main.src.models.ModelFactory import ModelFactory
 
