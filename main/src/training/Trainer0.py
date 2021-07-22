@@ -125,6 +125,7 @@ class Trainer0(BaseClass):
                 for i, [input, output, transformation_matrix, item] in enumerate(self.dataset_tr):
                     opt_tr_batch = self.add_to_batch_tr(input, output)
                     if opt_tr_batch is not None:
+                        self.attr_model.model.train()
                         it_tr += 1
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
@@ -162,6 +163,7 @@ class Trainer0(BaseClass):
                                 opt_valid_batch = self.add_to_batch_valid(input, output)
                             it_val += 1
                             input_npy, output_npy = opt_valid_batch
+                            self.attr_model.model.eval()
                             with torch.no_grad():
                                 input_gpu = torch.Tensor(input_npy).to(device)
                                 prediction = self.attr_model.model(input_gpu)
