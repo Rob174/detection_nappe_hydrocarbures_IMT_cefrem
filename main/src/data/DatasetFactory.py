@@ -78,8 +78,6 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                                                         balance=balance,
                                                         augmentations_img=augmentations_img,
                                                         augmenter_img=augmenter_img,
-                                                        augmentations_patch=augmentations_patch,
-                                                        augmenter_patch=augmenter_patch,
                                                         augmentation_factor=augmentation_factor,
                                                         label_modifier=dataset_name)
 
