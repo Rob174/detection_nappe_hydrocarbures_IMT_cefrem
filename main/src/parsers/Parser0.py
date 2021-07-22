@@ -60,10 +60,10 @@ class Parser0(BaseClass):
                             "type": int,
                             "help": "Argument for OtherClassPatchAdder"},
             # Augmentations
-            '-augmenter_img': {"dest": 'augmenter_img', "default": EnumAugmenter.Augmenter1, "type": EnumAugmenter,
+            '-augmenter_img': {"dest": 'augmenter_img', "default": EnumAugmenter.NoAugmenter, "type": EnumAugmenter,
                                "help": "Indicate which augmenter to use to apply transformations on source image",
                                "choices": list(EnumAugmenter)},
-            '-augmentations_img': {"dest": 'augmentations_img', "default": "combinedRotResizeMir_10_0.25_4",
+            '-augmentations_img': {"dest": 'augmentations_img', "default": "",
                                    "type": str,
                                    "help": "Indicate the augmentations to apply to images in the order desired seprated by commas, available : combinedRotResizeMir_10_0.25_4"},
             '-augmenter_patch': {"dest": 'augmenter_patch', "default": EnumAugmenter.NoAugmenter, "type": EnumAugmenter,
