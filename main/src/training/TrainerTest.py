@@ -89,11 +89,11 @@ class TrainerTest(BaseClass):
 
     def add_to_batch_tr(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        return np.reshape(input,(1,*input.shape)),np.reshape(output,(1,*input.shape))
+        return np.reshape(input,(1,*input.shape)),np.reshape(output,(1,*output.shape))
 
     def add_to_batch_valid(self, input, output):
         """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        return np.reshape(input,(1,*input.shape)),np.reshape(output,(1,*input.shape))
+        return np.reshape(input,(1,*input.shape)),np.reshape(output,(1,*output.shape))
 
     def __call__(self):
         return self.call()
@@ -112,6 +112,8 @@ class TrainerTest(BaseClass):
                     it_tr += 1
 
 
+                    # zero the parameter gradients
+                    self.attr_optimizer.zero_grad()
 
                     # forward + backward + optimize
 
