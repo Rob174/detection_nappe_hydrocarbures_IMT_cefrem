@@ -1,8 +1,10 @@
 import numpy as np
 from typing import List, Tuple
 
+from main.src.param_savers.BaseClass import BaseClass
 
-class GridMaker:
+
+class GridMaker(BaseClass):
     def __init__(self,patch_size_final_resize: int):
         self.attr_patch_size_final_resize = patch_size_final_resize
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
