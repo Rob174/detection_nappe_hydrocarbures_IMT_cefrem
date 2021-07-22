@@ -2,7 +2,7 @@
 filter them"""
 
 import random
-from typing import Optional
+from typing import Optional, List, Union
 from typing import Tuple
 
 import numpy as np
@@ -25,6 +25,7 @@ from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
+from main.src.training.enums import EnumDataset
 
 
 class ClassificationPatch(DataSentinel1Segmentation):
@@ -54,8 +55,10 @@ class ClassificationPatch(DataSentinel1Segmentation):
         self.attr_resizer = Resizer(out_size_w=input_size)
         self.attr_augmentation_factor = augmentation_factor
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
-        self.tr_keys = list(self.images.keys())[:int(len(self.images) * tr_percent)]
-        self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
+        self.datasets = {
+            "tr":list(self.images.keys())[:int(len(self.images) * tr_percent)],
+            "valid":list(self.images.keys())[int(len(self.images) * tr_percent):]
+        }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = LabelModifier0(class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
@@ -98,8 +101,12 @@ class ClassificationPatch(DataSentinel1Segmentation):
         # Cache to store between epochs rejected images if we have no image augmenter
         self.cache_img_id_rejected = []
 
-    def __iter__(self, dataset="tr"):
-        return iter(self.generator(self.tr_keys if dataset == "tr" else self.valid_keys))
+    def __iter__(self, dataset: Union[EnumDataset,List[str]] = EnumDataset.Train):
+        if isinstance(dataset,list):
+            keys = dataset
+        else:
+            keys = self.datasets[dataset]
+        return iter(self.generator(keys))
 
     def generator(self, images_available):
         """
