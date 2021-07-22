@@ -54,8 +54,6 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
         self.attr_global_name = "data"
-        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
-            dico_infos = json.load(fp)
 
         if usage_type == EnumUsage.Classification:
             if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
@@ -67,6 +65,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                                                         other_class_adder=other_class_adder,interval=interval)
             else:
                 if patch_creator == EnumPatchAlgorithm.FixedPx:
+                    with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
+                        dico_infos = json.load(fp)
                     self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
                                                              images_informations_preprocessed=dico_infos,
                                                              exclusion_policy=exclusion_policy,

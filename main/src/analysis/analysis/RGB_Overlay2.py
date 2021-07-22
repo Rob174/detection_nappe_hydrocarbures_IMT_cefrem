@@ -44,6 +44,7 @@ class RGB_Overlay2:
                 with open(FolderInfos.input_data_folder+"test_cache_img_infos.json","r") as fp:
                     dico_infos = json.load(fp)
                 reconstructed_image = np.zeros(original_img.shape)
+                del original_img
                 if device is not None:
                     transfert_to_pytorch = lambda x:torch.Tensor(x).to(device)
                     transfert_from_pytorch = lambda x:x.cpu().detach().numpy()
@@ -55,7 +56,6 @@ class RGB_Overlay2:
                     patch = np.array(patch,dtype=np.float32)
                     annotation_patch = np.array(annotation_patch,dtype=np.float32)
                     transformation_matrix = np.array(dico_infos[name]["transformation_matrix"],dtype=np.float32)
-                    inv_matrix = np.linalg.inv(transformation_matrix)
                     patch_full_shape = cv2.warpAffine(reconstructed_image,np.linalg.inv(transformation_matrix)[:-1,:],dsize=reconstructed_image.shape[::-1],flags=cv2.INTER_LANCZOS4)
 
                     reconstructed_image += patch_full_shape
@@ -68,16 +68,25 @@ class RGB_Overlay2:
                             ))
                         )
                         prediction = prediction.flatten()
-                        if len(prediction) > 3:
+                        annotation_patch = annotation_patch.flatten()
+                        if len(prediction) > 3 or len(annotation_patch) > 3:
                             raise Exception("Cannot show rgb overlay with more than 3 classes")
-                        for overlay_dest in [overlay_pred,overlay_true]:
-                            overlay = np.ones((*patch.shape[-2:],3),dtype=np.float32)
-                            for i in range(len(prediction)):
-                                overlay[:,:,i] *= prediction[i]
-                            overlay_full_shape = cv2.warpAffine(overlay, np.linalg.inv(transformation_matrix)[:-1,:],
-                                                              dsize=reconstructed_image.shape[::-1], flags=cv2.INTER_LANCZOS4)
-                            overlay_dest += overlay_full_shape
-            return overlay_pred,overlay_true,reconstructed_image,original_img
+                        overlay_patch_pred = np.ones((*patch.shape[-2:],3),dtype=np.float32)
+                        overlay_patch_true = np.ones((*patch.shape[-2:], 3), dtype=np.float32)
+                        for i in range(len(prediction)):
+                            overlay_patch_pred[:,:,i] *= prediction[i]
+                            overlay_patch_true[:, :, i] *= annotation_patch[i]
+                        overlay_full_shape_pred = cv2.warpAffine(overlay_patch_pred, np.linalg.inv(transformation_matrix)[:-1,:],
+                                                          dsize=reconstructed_image.shape[::-1], flags=cv2.INTER_LANCZOS4)
+                        overlay_full_shape_true = cv2.warpAffine(overlay_patch_true, np.linalg.inv(transformation_matrix)[:-1,:],
+                                                          dsize=reconstructed_image.shape[::-1], flags=cv2.INTER_LANCZOS4)
+                        overlay_pred += overlay_full_shape_pred
+                        overlay_true += overlay_full_shape_true
+                        del overlay_full_shape_pred
+                        del overlay_full_shape_true
+                        del overlay_patch_true
+                        del overlay_patch_pred
+            return overlay_pred,overlay_true,reconstructed_image
     def normalize(self,image,min=None,max=None):
         if min is None:
             min = np.min(image)
@@ -88,13 +97,14 @@ class RGB_Overlay2:
         if max == min:
             return image/max
         return (image-min)/(max-min)
-    def visualize_overlays(self,overlay_pred,overlay_true,reconstructed_image,original_img, threshold:int=0.5):
+    def visualize_overlays(self,overlay_pred,overlay_true,reconstructed_image, threshold:int=0.5):
 
         reconstructed_image = self.normalize(reconstructed_image) * threshold
-        [overlay_true,overlay_pred] = [overlay * (1-threshold) for overlay in [overlay_true,overlay_pred]]
+        [overlay_true,overlay_pred] = [self.normalize(overlay) * (1-threshold) for overlay in [overlay_true,overlay_pred]]
         overlay_true = np.stack((reconstructed_image,)*3,axis=-1)+overlay_true
         overlay_pred = np.stack((reconstructed_image,)*3,axis=-1)+overlay_pred
-
+        import matplotlib
+        matplotlib.use("agg")
         plt.figure(1)
         plt.title(f"Overlay true")
         plt.imshow(overlay_true)
@@ -105,12 +115,7 @@ class RGB_Overlay2:
         plt.imshow(overlay_pred)
         plt.savefig(FolderInfos.base_filename+"rgb_overlay_pred.png")
         del overlay_pred
-        plt.figure(3)
-        plt.title(f"Original image")
-        plt.imshow(original_img,cmap="gray")
-        plt.savefig(FolderInfos.base_filename+"rgb_overlay_image.png")
 
-        plt.show()
     def __call__(self, model,device):
         model.load_state_dict(torch.load(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-21_02h37min54s_\2021-07-21_02h37min54s__model_epoch-14_it-15923.pt"))
         self.visualize_overlays(*self.generate_overlay_matrices(self.name_img,model=model,device=device),threshold=0.5)

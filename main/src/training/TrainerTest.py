@@ -18,7 +18,7 @@ from main.src.training.periodic_model_saver.AbstractModelSaver import AbstractMo
 from main.src.training.progress_bar.ProgressBarFactory import ProgressBarFactory
 
 
-class Trainer0(BaseClass):
+class TrainerTest(BaseClass):
     """Class managing the training process
 
     Args:
@@ -129,23 +129,12 @@ class Trainer0(BaseClass):
                         self.attr_last_iter = i
                         self.attr_last_epoch = epoch
 
-                        input_npy, output_npy = opt_tr_batch
-                        input_gpu = torch.Tensor(input_npy).to(device)
+
                         # zero the parameter gradients
                         self.attr_optimizer.zero_grad()
 
                         # forward + backward + optimize
-                        prediction_gpu = self.attr_model.model(input_gpu)
-                        del input_gpu
-                        prediction_npy = prediction_gpu.cpu().detach().numpy()
-                        output_gpu = torch.Tensor(output_npy).float().to(device)
-                        self.attr_loss(prediction_gpu, output_gpu, prediction_npy,output_npy,EnumDataset.Train)
-                        del output_gpu
 
-                        if self.attr_debug == "true":
-                            self.attr_tr_vals_true.append(output_npy.tolist())
-                            self.attr_tr_vals_pred.append(prediction_npy.tolist())
-                        self.attr_metrics(prediction_npy, output_npy, "tr")
 
                         self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
                                                          it_tr=it_tr, img_processed=i)
@@ -168,16 +157,11 @@ class Trainer0(BaseClass):
                                 del input_gpu
                                 output_gpu = torch.Tensor(output_npy).float().to(device)
                                 prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
-                                self.attr_loss(prediction, output_gpu, prediction_npy,output_npy, EnumDataset.Valid)
-                            self.attr_metrics(prediction_npy, output_npy, EnumDataset.Valid)
                             for callback in self.attr_callbacks:
                                 callback.on_valid_batch_end(prediction_npy,output_npy)
-                            self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
                     if i > 1000:
                         break
                 self.attr_progress.end_epoch(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], epoch=epoch, img_processed=i)
-                self.attr_model_saver.save_model(self.attr_model, epoch, i)
-                self.saver(self).save()
                 if self.attr_early_stopping.stop_training():
                     break
             # self.rgb_overlay(model=self.attr_model.model,

@@ -50,11 +50,13 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
                 }
                 threshold = float(re.sub("^accuracy_threshold-([0-9]\\.[0-9]+)$", "\\1", metric))
                 def f(pred,true,threshold):
-                    pred[pred > threshold] = 1.
-                    pred[pred <= threshold] = 0.
-                    true[true > threshold] = 1.
-                    true[true <= threshold] = 0.
-                    return np.sum(np.abs(pred-true))
+                    new_pred = np.copy(pred)
+                    new_true = np.copy(true)
+                    new_pred[pred > threshold] = 1.
+                    new_pred[pred <= threshold] = 0.
+                    new_true[true > threshold] = 1.
+                    new_true[true <= threshold] = 0.
+                    return np.sum(np.abs(new_pred-new_true))
 
                 function = partial(f,threshold=threshold)
                 self.functions_metrics.append(function)

@@ -5,6 +5,7 @@ import sys
 
 from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.analysis.tools import RGB_Overlay_Patch
+from main.src.training.TrainerTest import TrainerTest
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
@@ -75,6 +76,12 @@ if __name__ == "__main__":
     print("start")
 
     Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
+             dataset=dataset, model=model,
+             optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
+             saver=saver,
+             eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
+    print("second training")
+    TrainerTest(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,

@@ -92,7 +92,7 @@ class ClassificationCache(BaseClass):
         images_available = self.tr_keys if dataset == "tr" else self.valid_keys
         with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5", "r") as annotations_cache:
             with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as images_cache:
-                random.shuffle(images_available)
+                # random.shuffle(images_available)
                 self.attr_patch_adder_callback.on_epoch_start()
                 for id in images_available:
                     data = self.attr_other_class_adder.generate_if_required()

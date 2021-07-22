@@ -20,6 +20,11 @@ class ConfusionMatrix(BaseClass):
         self.tot_pred = np.zeros((self.num_matrix_classes,))
         self.tot_true = np.zeros((self.num_matrix_classes,))
         self.attr_full_matrix = None
+    def apply_threshold(self,image: np.ndarray):
+        new_image = np.copy(image)
+        new_image[image > 0.5] = 1.
+        new_image[image < 0.5] = 0.
+        return new_image
     def update_matrix(self,prediction,true):
         """Creates the confusion matrix corresponding to the validation batch
 
@@ -30,6 +35,7 @@ class ConfusionMatrix(BaseClass):
         Returns:
 
         """
+        prediction = self.apply_threshold(prediction)
         self.matrix = np.zeros((self.num_matrix_classes,self.num_matrix_classes))
         self.tot_pred = np.zeros((self.num_matrix_classes,))
         self.tot_true = np.zeros((self.num_matrix_classes,))
