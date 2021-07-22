@@ -62,6 +62,7 @@ class RGB_Overlay2:
                     del patch_full_shape
                     with torch.no_grad():
                         patch = patch.reshape((1,*patch.shape))
+                        model.eval()
                         prediction: np.ndarray = transfert_from_pytorch(
                             model(transfert_to_pytorch(
                                 self.standardizer.standardize(patch)
