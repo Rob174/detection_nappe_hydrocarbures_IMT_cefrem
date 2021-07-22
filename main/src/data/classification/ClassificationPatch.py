@@ -113,9 +113,9 @@ class ClassificationPatch(DataSentinel1Segmentation):
         return rowcol(transform, posx, posy)
 
     def __iter__(self, dataset="tr"):
-        return iter(self.generator(dataset))
+        return iter(self.generator(self.tr_keys if dataset == "tr" else self.valid_keys))
 
-    def generator(self, dataset="tr"):
+    def generator(self, images_available):
         """
 
         Args:
@@ -129,21 +129,20 @@ class ClassificationPatch(DataSentinel1Segmentation):
         """
         if isinstance(self.attr_img_augmenter, Augmenter1) is False:
             raise Exception("Only augmenter1 is supported with this method of attr_dataset generation")
-        images_available = self.tr_keys if dataset == "tr" else self.valid_keys
         for num_dataset in range(self.attr_augmentation_factor):
             random.shuffle(images_available)
             for item in images_available:
                 image = self.images[item]
                 partial_transformation_matrix = np.array([[256/1000,0,0],[0,256/1000,0],[0,0,1]],dtype=np.float32)#self.attr_img_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in np.random.permutation(self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                for patch_upper_left_corner_coords in self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix):#np.random.permutation(self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
                     annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
                         self.annotations_labels.get, item,
                         partial_transformation_matrix, patch_upper_left_corner_coords)
                     # Create the classification label with the proper technic ⚠️⚠️ inheritance
                     classification = self.attr_label_modifier.make_classification_label(annotations_patch)
                     balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
-                    if balance_reject is True:
-                        continue
+                    # if balance_reject is True:
+                    #     continue
                     image = np.array(image, dtype=np.float32)
                     image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
                         image=image,
@@ -151,8 +150,8 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )
                     reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
-                    if reject is True:
-                        continue
+                    # if reject is True:
+                    #     continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
                     yield image_patch, classification, transformation_matrix, item

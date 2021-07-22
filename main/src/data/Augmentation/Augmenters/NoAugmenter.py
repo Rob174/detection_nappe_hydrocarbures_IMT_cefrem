@@ -14,7 +14,7 @@ from main.src.data.Augmentation.GridMaker.GridMaker import GridMaker
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class Augmenter1(BaseClass):
+class NoAugmenter(BaseClass):
     """Manage and keep track of augmentations to apply on source images only to directly extract patches
 
     With this class, only one augmentation is supported combinedRotResizeMir which allows to commpute the final patch to be provided to the attr_model after
@@ -31,7 +31,7 @@ class Augmenter1(BaseClass):
 
     """
 
-    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int, allowed_transformations: str,
+    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int, allowed_transformations,
                  image_access_function: Callable[[str],Tuple[np.ndarray,np.ndarray]],
                  label_access_function:Callable[[str],Tuple[np.ndarray,np.ndarray]]):
         self.attr_allowed_transformations = allowed_transformations
@@ -49,32 +49,14 @@ class Augmenter1(BaseClass):
                                                            grid_maker=self.attr_grid_maker,
                                                            patch_size_final_resize=patch_size_final_resize)
 
-    def add_transformation(self, allowed_transformations: str, patch_size_before_final_resize: int,
-                           patch_size_final_resize: int):
+    def add_transformation(self, *args,**kwargs):
         """Method that map transformation names with actual classes.
 
         Args:
-            allowed_transformations: str, list of augmentations to apply. Currently supported:
-            - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
-            patch_size_before_final_resize: int, size in px of the output patch to extract
-            patch_size_final_resize: int, size in px of the output patch provided to the attr_model
         Returns:
 
         """
-        if "combinedRotResizeMir" in allowed_transformations:
-            seen = True
-            [_, rotation_step, resize_lower_fact_float, resize_upper_fact_float] = allowed_transformations.split("_")
-            rotation_step = float(rotation_step)
-            resize_lower_fact_float = float(resize_lower_fact_float)
-            resize_upper_fact_float = float(resize_upper_fact_float)
-            self.attr_transformations_classes = RotationResizeMirrors(rotation_step=rotation_step,
-                                                                      resize_lower_fact_float=resize_lower_fact_float,
-                                                                      resize_upper_fact_float=resize_upper_fact_float,
-                                                                      patch_size_before_final_resize=patch_size_before_final_resize,
-                                                                      patch_size_final_resize=patch_size_final_resize
-                                                                      )
-        else:
-            raise NotImplementedError(f"{allowed_transformations} is not implemented")
+        pass
 
     def transform_image(self, image_name: str, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
@@ -94,7 +76,8 @@ class Augmenter1(BaseClass):
                     - the transformation matrix
 
                 """
-        return self.attr_image_applier.transform(image_name,partial_transformation_matrix,patch_upper_left_corner_coords)
+        return self.attr_image_applier.transform(image_name, partial_transformation_matrix,
+                                                 patch_upper_left_corner_coords)
 
     def transform_label(self, annotation_function: Callable, image_name: str, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
@@ -113,7 +96,8 @@ class Augmenter1(BaseClass):
             - the transformed annotation patch
             - the transformation matrix used
         """
-        return self.attr_label_applier.transform(image_name,partial_transformation_matrix,patch_upper_left_corner_coords)
+        return self.attr_label_applier.transform(image_name, partial_transformation_matrix,
+                                                 patch_upper_left_corner_coords)
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
@@ -129,21 +113,6 @@ class Augmenter1(BaseClass):
 
         return self.attr_grid_maker.get_grid(img_shape, partial_transformation_matrix)
 
-    def compute_transformation_matrix(self, rows, cols, angle, resize_factor, mirror):
-        """ Compute the transformation matrix corresponding to the parameters supplied
-
-            Args:
-                rows: number of rows of the input image
-                cols: number of cols of the input image
-                angle, float angle of rotation
-                resize_factor, float resize factor taking into account the final resize to get the input image for the model
-                mirror, int 0 = fliplr ; 1 = flipud ; -1 = noflip
-
-            Returns:
-                np.ndarray, the transformation matrix
-            """
-        return self.attr_transformations_classes.compute_transformation_matrix(rows, cols, angle, resize_factor, mirror)
-
     def choose_new_augmentations(self, image: np.ndarray) -> np.ndarray:
         """Method that allows to create a new augmentation dict containing
 
@@ -155,4 +124,5 @@ class Augmenter1(BaseClass):
             - mirrorlr
             - mirrorud
         """
-        return self.attr_transformations_classes.choose_new_augmentation(image)
+        resize_factor = self.attr_patch_size_final_resize/self.attr_patch_size_before_final_resize
+        return np.array([[resize_factor,0,0],[0,resize_factor,0],[0,0,1]],dtype=np.float32)
