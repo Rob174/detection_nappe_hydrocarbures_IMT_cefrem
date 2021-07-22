@@ -179,5 +179,5 @@ class Trainer0(BaseClass):
                 self.saver(self).save()
                 if self.attr_early_stopping.stop_training():
                     break
-            # self.rgb_overlay(model=self.attr_model.model,
-            #                  device = device)
+            self.rgb_overlay(model=self.attr_model.model,
+                             device = device)
