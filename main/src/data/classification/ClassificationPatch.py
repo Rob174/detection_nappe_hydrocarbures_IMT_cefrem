@@ -5,32 +5,24 @@ import random
 from typing import Optional
 from typing import Tuple
 
-import cv2
 import numpy as np
 from rasterio.transform import Affine, rowcol
 
-from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.RotationResizeMirrors import RotationResizeMirrors
-from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
-from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
-from main.src.data.TwoWayDict import Way
 from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
+from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
 from main.src.data.balance_classes.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
-from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
 from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
 from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
-from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.data.classification.enums import EnumLabelModifier
 from main.src.data.enums import EnumClasses
 from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
-from main.src.data.segmentation.NumpyAnnotations import NumpyAnnotations
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
 
 
@@ -45,8 +37,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
         balance: EnumBalance indicating the class used to balance images
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_img: opt EnumAugmenter, name of the augmenter to use on source image
-        augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
-        augmenter_patch: opt EnumAugmenter, name of the augmenter to use on patches
         augmentation_factor: the number of replicas of the original attr_dataset to do
         label_modifier: EnumLabelModifier
     """
@@ -54,7 +44,6 @@ class ClassificationPatch(DataSentinel1Segmentation):
     def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent=0.7):

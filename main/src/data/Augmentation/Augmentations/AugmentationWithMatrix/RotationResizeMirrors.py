@@ -152,7 +152,7 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         """
         # Transformation matrix construction  ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️ coordinates in OPENCV are in the opposite way of the normal row,cols way
         partial_transformation_matrix = np.identity(3)
-
+        # Mirrors
         src_points = np.array([[0, 0], [0, rows - 1], [cols - 1, 0], [cols - 1, rows - 1]], dtype=np.float32)
         dst_points = src_points
         if mirror == 0:
@@ -161,14 +161,15 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
             dst_points = np.array([src_points[1], src_points[0], src_points[3], src_points[2]], dtype=np.float32)
         mirror_matrix = np.concatenate((cv2.getAffineTransform(src_points[:3], dst_points[:3]), [[0, 0, 1]]), axis=0)
         partial_transformation_matrix = (mirror_matrix.dot(partial_transformation_matrix))
+        # Resize
         resize_matrix = np.array([[resize_factor, 0, 0],
                                   [0, resize_factor, 0],
                                   [0, 0, 1]])
         partial_transformation_matrix = resize_matrix.dot(partial_transformation_matrix)
+        # Rotate
         rotate_matrix = np.concatenate((cv2.getRotationMatrix2D((cols * resize_factor / 2, rows * resize_factor / 2),
                                                                 angle=angle, scale=1), [[0, 0, 1]]), axis=0)
         partial_transformation_matrix = rotate_matrix.dot(partial_transformation_matrix)
-
         adjusted_translation = np.array(
             [[1, 0., -min(0, partial_transformation_matrix.dot([cols - 1, rows - 1, 1])[0])],
              [0, 1, -min(0, partial_transformation_matrix.dot([cols - 1, rows - 1, 1])[1])],
