@@ -146,7 +146,7 @@ class ClassificationPatch(BaseClass):
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )
-                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
+                    # Create the classification label with the proper technic
                     classification = self.attr_label_modifier.make_classification_label(annotations_patch)
                     balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
                     if balance_reject is True:
@@ -160,10 +160,25 @@ class ClassificationPatch(BaseClass):
                     if reject is True:
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch,)*3, axis=0)  # 0 ns most of the time
+                    image_patch = np.stack((image_patch,)*3, axis=0)
                     yield image_patch, classification, transformation_matrix, item
 
-
+    def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int], standardizer: AbstractStandardizer, transformation_matrix: np.ndarray = None,
+                  ) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
+        """Generate image patch and corresponding annotation for the given parameters"""
+        image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
+            image=image,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        annotation_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
+            image=annotation,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        classification = self.attr_label_modifier.make_classification_label(annotation_patch)
+        image_patch = np.stack((image_patch,)*3, axis=0)
+        return image_patch,classification,transformation_matrix
     def __len__(self):
         return None
     def set_standardizer(self, standardizer: AbstractStandardizer):

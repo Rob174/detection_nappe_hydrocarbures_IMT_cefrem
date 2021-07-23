@@ -105,8 +105,6 @@ class ClassificationCache(BaseClass):
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
                     image, annotation = self.process_infos(image, annotation)
                     yield image, annotation, transformation_matrix, source_img
-
-
     def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)
