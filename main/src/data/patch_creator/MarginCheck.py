@@ -7,8 +7,8 @@ class MarginCheck(BaseClass):
     def __init__(self,threshold: int = 1000):
         self.attr_threshold = threshold
 
-    def check_reject(patch: np.ndarray, threshold_px: int):
+    def check_reject(self,patch: np.ndarray):
         if len(patch[
-                   patch == 0]) > threshold_px:  # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
+                   patch == 0]) > self.attr_threshold:  # 0 ns or 1 ms (sometimes) for the condition. 1 ms and 5 ms for the len(patch.... . 0 ns for the int(.....
             return True
         return False

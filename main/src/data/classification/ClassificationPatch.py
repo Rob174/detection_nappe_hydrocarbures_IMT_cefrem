@@ -1,15 +1,18 @@
 """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
 filter them"""
-
+import json
 import random
 from typing import Optional, List, Union
 from typing import Tuple
 
 import numpy as np
+from h5py import File
 from rasterio.transform import Affine, rowcol
 
+from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
 from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
 from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
@@ -27,9 +30,10 @@ from main.src.data.resizer import Resizer
 from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 from main.src.data.segmentation.PointAnnotations import PointAnnotations
 from main.src.enums import EnumDataset
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class ClassificationPatch(DataSentinel1Segmentation):
+class ClassificationPatch(BaseClass):
     """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
     filter them.
 
@@ -44,6 +48,12 @@ class ClassificationPatch(DataSentinel1Segmentation):
         label_modifier: EnumLabelModifier
     """
 
+    attr_original_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
+        {  # Formatted in the following way: src_index in cache, name, the position encode destination index
+            0: "other",
+            1: "seep",
+            2: "spill",
+        })
     def __init__(self, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
@@ -51,10 +61,17 @@ class ClassificationPatch(DataSentinel1Segmentation):
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
+        self.attr_global_name = "attr_dataset"
+        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
+            self.images_infos = json.load(fp)
+        with open(f"{FolderInfos.input_data_folder}pixel_stats.json", "r") as fp:
+            self.pixel_stats = json.load(fp)
+        self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
+        self.attr_class_mapping = TwoWayDict(
+            {k: v for k, v in DataSentinel1Segmentation.attr_original_class_mapping.items()})
         self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
         self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
-        self.attr_resizer = Resizer(out_size_w=input_size)
         self.attr_augmentation_factor = augmentation_factor
         super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
         self.datasets = {
@@ -63,13 +80,13 @@ class ClassificationPatch(DataSentinel1Segmentation):
         }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
         if balance == EnumBalance.NoBalance:
@@ -144,7 +161,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )
-                    reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
+                    reject = self.attr_check_margin_reject.check_reject(image_patch)
                     if reject is True:
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data

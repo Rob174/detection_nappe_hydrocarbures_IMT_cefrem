@@ -43,13 +43,11 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  usage_type: EnumUsage = EnumUsage.Classification,
-                 patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=1000,
                  exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch="none", augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
@@ -57,29 +55,22 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 
         if usage_type == EnumUsage.Classification:
             if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-                    and augmentations_img == "combinedRotResizeMir_10_0.25_4" and augmenter_patch == EnumAugmenter.NoAugmenter \
-                    and augmentations_patch == "none" and \
+                    and augmentations_img == "combinedRotResizeMir_10_0.25_4"  and \
                     exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
                     and grid_size == 1000 and not force_classifpatch:
                 self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                         other_class_adder=other_class_adder,interval=interval)
             else:
-                if patch_creator == EnumPatchAlgorithm.FixedPx:
-                    with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
-                        dico_infos = json.load(fp)
-                    self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
-                                                             images_informations_preprocessed=dico_infos,
-                                                             exclusion_policy=exclusion_policy,
-                                                             exclusion_policy_threshold=exclusion_policy_threshold)
-                else:
-                    raise NotImplementedError(f"{patch_creator} is not implemented")
-                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
+                self.attr_dataset = ClassificationPatch(input_size=input_size,
                                                         classes_to_use=classes_to_use,
                                                         balance=balance,
                                                         augmentations_img=augmentations_img,
                                                         augmenter_img=augmenter_img,
                                                         augmentation_factor=augmentation_factor,
-                                                        label_modifier=dataset_name)
+                                                        label_modifier=dataset_name,
+                                                        grid_size_px=grid_size,
+                                                        threshold_margin=exclusion_policy_threshold
+                                                        )
 
 
         elif usage_type == EnumUsage.Segmentation:

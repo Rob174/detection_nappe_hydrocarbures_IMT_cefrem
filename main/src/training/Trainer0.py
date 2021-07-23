@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from typing import List
 
+from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.analysis.tools import RGB_Overlay_Patch
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.models.ModelFactory import ModelFactory
@@ -45,7 +46,7 @@ class Trainer0(BaseClass):
                  model_saver: AbstractModelSaver,
                  saver,
                  eval_step,
-                 rgb_overlay: RGB_Overlay_Patch,
+                 rgb_overlay: RGB_Overlay2,
                  debug="false"):
 
         self.attr_debug = debug

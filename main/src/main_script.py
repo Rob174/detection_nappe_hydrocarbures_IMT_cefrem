@@ -43,7 +43,6 @@ if __name__ == "__main__":
             f"There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?")
     dataset = DatasetFactory(dataset_name=arguments.attr_dataset,
                              usage_type=arguments.usage_type,
-                             patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
@@ -52,8 +51,6 @@ if __name__ == "__main__":
                              balance=arguments.balance,
                              augmenter_img=arguments.augmenter_img,
                              augmentations_img=arguments.augmentations_img,
-                             augmenter_patch=arguments.augmenter_patch,
-                             augmentations_patch=arguments.augmentations_patch,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
                              interval=arguments.interval
