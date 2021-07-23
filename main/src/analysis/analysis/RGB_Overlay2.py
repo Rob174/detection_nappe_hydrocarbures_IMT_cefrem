@@ -37,6 +37,7 @@ class RGB_Overlay2:
 
         """
         with File(FolderInfos.input_data_folder+"images_preprocessed.hdf5","r") as cache:
+            original_image = np.array(cache[name_img],dtype=np.float16)
             original_shape = cache[name_img].shape  # radar image input (1 channel only)
 
         with File(FolderInfos.input_data_folder+"test_cache_image.hdf5","r") as cache_img:
@@ -52,15 +53,13 @@ class RGB_Overlay2:
                     transfert_to_pytorch = lambda x:torch.Tensor(x)
                     transfert_from_pytorch = lambda x:x.detach().numpy()
                 # True label visualization + reconstructed image
-                overlay_true = np.zeros((*original_shape,3),dtype=np.float32)  # prepare the overlays with 3 channels for colors (float 16 to save memory)
-                reconstructed_image = np.zeros((*original_shape,3),dtype=np.float32)
+                overlay_true = np.ones((*original_shape,3),dtype=np.float16)
 
-                for name, patch, annotation_patch in zip(cache_img.keys(), cache_img.values(),
-                                                         cache_annotations.values()):
+                for name, patch,annotation_patch in zip(cache_img.keys(),cache_img.values(),cache_annotations.values()):
+                    print(name,end="\r")
                     inverse_transformation_matrix = np.linalg.inv(np.array(dico_infos[name]["transformation_matrix"], dtype=np.float32))
 
                     patch_shape = patch.shape[-2:]
-                    patch = np.array(patch,dtype=np.float32)[0]
                     # compute manually points to slice
                     corner_upleft = np.array([0, 0, 1])
                     mapped_corner_upperleft = np.round(inverse_transformation_matrix.dot(corner_upleft)).astype(
@@ -68,10 +67,6 @@ class RGB_Overlay2:
                     corner_bottomright = np.array([*patch_shape[::-1], 1])
                     mapped_corner_bottomright = np.round(inverse_transformation_matrix
                                                          .dot(corner_bottomright)).astype(np.int32).tolist()
-                    patch = cv2.resize(patch,dsize=1000)
-                    for c in range(3):
-                        reconstructed_image[mapped_corner_upperleft[1]:mapped_corner_bottomright[1],
-                                            mapped_corner_upperleft[0]:mapped_corner_bottomright[0], c] = patch
 
                     if len(annotation_patch) > 3:
                         raise Exception("Cannot show rgb overlay with more than 3 classes")
@@ -80,19 +75,20 @@ class RGB_Overlay2:
                     for i in range(len(annotation_patch)):
                         overlay_true[mapped_corner_upperleft[1]:mapped_corner_bottomright[1],
                                      mapped_corner_upperleft[0]:mapped_corner_bottomright[0], i] *= annotation_patch[i]
-
-                reconstructed_image = np.stack((self.normalize(reconstructed_image) * threshold,)*3,axis=-1)
+                reconstructed_image = self.normalize(original_image) * threshold
+                reconstructed_image = np.stack((reconstructed_image,)*3,axis=-1)
                 overlay_true = reconstructed_image+self.normalize(overlay_true) * (1-threshold)
 
                 name = "true"
                 plt.figure(1)
                 plt.title(f"Overlay " + name)
-                plt.imshow(np.array(overlay_true,dtype=np.float32))
+                plt.imshow(np.array(overlay_true*255,dtype=np.uint8))
                 plt.savefig(FolderInfos.base_filename + f"rgb_overlay_{name}.png")
                 del overlay_true
 
-                overlay_pred = np.zeros((*original_shape, 3), dtype=np.float16)
-                for name,patch,annotation_patch in zip(cache_img.keys(),cache_img.values(),cache_annotations.values()):
+                overlay_pred = np.ones((*original_shape, 3), dtype=np.float16)
+                for name,patch in zip(cache_img.keys(),cache_img.values()):
+                    print(name, end="\r")
                     inverse_transformation_matrix = np.linalg.inv(np.array(dico_infos[name]["transformation_matrix"], dtype=np.float32))
                     patch_shape = patch.shape[-2:]
                     patch: np.ndarray = np.reshape(patch,(1,*patch.shape))
@@ -116,14 +112,13 @@ class RGB_Overlay2:
 
                         for i in range(len(prediction)):
                             overlay_pred[mapped_corner_upperleft[1]:mapped_corner_bottomright[1],
-                                         mapped_corner_upperleft[0]:mapped_corner_bottomright[0],i] *= prediction[i]
+                                         mapped_corner_upperleft[0]:mapped_corner_bottomright[0],i] *= 1 if prediction[i] > 0.5 else 0
 
                 overlay_pred = reconstructed_image + self.normalize(overlay_pred) * (1 - threshold)
                 name = "pred"
                 plt.figure(2)
                 plt.title(f"Overlay " + name)
-                plt.imshow(np.array(overlay_pred,dtype=np.float32))
-                plt.imshow(overlay_pred)
+                plt.imshow(np.array(overlay_pred*255,dtype=np.uint8))
                 plt.savefig(FolderInfos.base_filename + f"rgb_overlay_{name}.png")
                 del overlay_pred
     def normalize(self,image,min=None,max=None):
