@@ -15,7 +15,7 @@ from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
 from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
-from main.src.training.TrainerGenerateCache import Trainer0
+# from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory
@@ -32,7 +32,7 @@ from main.src.enums import EnumGitCheck
 if __name__ == "__main__":
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + "parameters.json")
-    parser = Parser1()
+    parser = Parser0()
     saver(parser)
     arguments = parser()
     saver["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
