@@ -4,9 +4,9 @@ import numpy as np
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
-from main.src.data.Annotations.NumpyAnnotations import NumpyAnnotations
+from main.src.data.Datasets.Annotations import NumpyAnnotations
 from main.src.models.ModelFactory import ModelFactory, EnumModels, EnumFreeze
-from main.src.parsers.Parser0 import Parser0
+from main.src.parsers.ParserClassificationCache import Parser0
 from main.src.training.TrValidSplit import trvalidsplit
 
 if __name__ == "__main__":

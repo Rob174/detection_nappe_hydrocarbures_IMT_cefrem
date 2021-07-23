@@ -2,7 +2,7 @@
 filter them"""
 import json
 import random
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Dict
 from typing import Tuple
 
 import numpy as np
@@ -11,6 +11,8 @@ from h5py import File
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
 from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
@@ -24,7 +26,7 @@ from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.enums import EnumLabelModifier
 from main.src.enums import EnumClasses
 from main.src.data.MarginCheck import MarginCheck
-from main.src.data.Annotations.PointAnnotations import PointAnnotations
+from main.src.data.Datasets import PointDataset
 from main.src.enums import EnumDataset
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -60,8 +62,6 @@ class ClassificationPatch(BaseClass):
         self.attr_global_name = "attr_dataset"
         with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
             self.images_infos = json.load(fp)
-        with open(f"{FolderInfos.input_data_folder}pixel_stats.json", "r") as fp:
-            self.pixel_stats = json.load(fp)
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         self.attr_class_mapping = TwoWayDict(
             {k: v for k, v in ClassificationPatch.attr_original_class_mapping.items()})
@@ -94,7 +94,7 @@ class ClassificationPatch(BaseClass):
         else:
             raise NotImplementedError
         if augmentations_img != "none":
-            self.annotations_labels = PointAnnotations()
+            self.annotations_labels = PointDataset()
             if augmenter_img == EnumAugmenter.Augmenter1:
                 self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
                                                      patch_size_before_final_resize=
@@ -114,7 +114,19 @@ class ClassificationPatch(BaseClass):
             raise NotImplementedError(f"{augmenter_img} is not implemented")
         # Cache to store between epochs rejected images if we have no image augmenter
         self.cache_img_id_rejected = []
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        """Change the origin of the patches
 
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
+
+        """
+        self.attr_image_dataset = image_dataset
+        self.attr_label_dataset = label_dataset
+        self.dico_infos = dico_infos
     def __iter__(self, dataset: Union[EnumDataset,List[str]] = EnumDataset.Train):
         if isinstance(dataset,list):
             keys = dataset
@@ -163,9 +175,27 @@ class ClassificationPatch(BaseClass):
                     image_patch = np.stack((image_patch,)*3, axis=0)
                     yield image_patch, classification, transformation_matrix, item
 
-    def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int], standardizer: AbstractStandardizer, transformation_matrix: np.ndarray = None,
+    def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
+                  standardizer: AbstractStandardizer,label_encoding: TwoWayDict, transformation_matrix: Optional[np.ndarray] = None
                   ) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
-        """Generate image patch and corresponding annotation for the given parameters"""
+        """Generate image patch and corresponding annotation for the given parameters
+
+        Args:
+            image: np.ndarray, image on which to apply the transformations
+            annotation: np.ndarray, annotation on which to apply the transformations
+            patch_upper_left_corner_coords: coordinates of the upper left corner to get
+            standardizer: object giving allowing to standardize the patch
+            label_encoding: TwoWayDict mapping between labels names and encoding as uint8
+            transformation_matrix: Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation
+
+        Returns:
+            Tuple[np.ndarray,np.ndarray,np.ndarray]
+            - image_patch: patch extracted from the image
+            - classification: vector containing true probabilities of presence of annotation
+            - transformation_matrix: 3,3 transformation matrix applied
+        """
+        if transformation_matrix is None:
+            transformation_matrix = np.identity(3)
         image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
             image=image,
             partial_transformation_matrix=transformation_matrix,
@@ -178,6 +208,7 @@ class ClassificationPatch(BaseClass):
         )
         classification = self.attr_label_modifier.make_classification_label(annotation_patch)
         image_patch = np.stack((image_patch,)*3, axis=0)
+        image_patch = standardizer.standardize(image_patch)
         return image_patch,classification,transformation_matrix
     def __len__(self):
         return None

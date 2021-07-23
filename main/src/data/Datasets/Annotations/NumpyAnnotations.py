@@ -8,7 +8,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 class NumpyAnnotations(BaseClass):
     """Gives access to the numpy version of the annotations. Is not adapted for augmentations. Not used in the current code"""
-    def __init__(self):
+    def __init__(self, path_):
         self.annotations_labels = File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5", "r")
     def __getitem__(self,item):
         return self.annotations_labels[item]

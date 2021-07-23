@@ -4,7 +4,7 @@ from h5py import File
 
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
-from main.src.data.Annotations.PointAnnotations import PointAnnotations
+from main.src.data.Datasets import PointDataset
 
 
 class TestAugmenter1(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestAugmenter1(unittest.TestCase):
             self.assertTrue(np.count_nonzero(augmenter.transform_image(self.originale,np.identity(3),coord)[0]) > 0)
     def test_patch_annotation_points(self):
         augmenter = Augmenter1(1000,256,"combinedRotResizeMir_10_0.25_4")
-        annotations = PointAnnotations()
+        annotations = PointDataset()
         # Zone 1: row and cols index start of patch in test_grid lists
         coords = [(5632,4352),(5632,4608),(5888,4352),(5888,4608)]
         for coord in coords:

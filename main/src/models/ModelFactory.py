@@ -41,7 +41,7 @@ class ModelFactory(BaseClass):
         self.attr_num_classes = num_classes
 
     def call(self):
-        """Returns the pytorch attr_model"""
+        """Returns the pytorch model"""
         return self.model
 
     def __call__(self):

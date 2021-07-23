@@ -2,15 +2,20 @@
 
 import json
 import random
-from typing import Tuple, Generator, Optional
+from typing import Tuple, Generator, Optional, Dict
 
 import numpy as np
 from h5py import File
 
 from main.FolderInfos import FolderInfos
+from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.Annotations.FabricFilteredCache import FabricFilteredCache
+from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.PointDataset import PointDataset
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.TwoWayDict import TwoWayDict
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
 from main.src.data.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
@@ -35,7 +40,8 @@ class ClassificationCache(BaseClass):
         interval: int, interval between two un annotated patches
     """
 
-    def __init__(self, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
+    def __init__(self,
+                 label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
@@ -44,20 +50,21 @@ class ClassificationCache(BaseClass):
         self.attr_standardization = True
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
-        with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5", "r") as images_cache:
+        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricFilteredCache()()
+        with self.attr_image_dataset as images_cache:
             self.tr_keys = list(images_cache.keys())[:int(len(images_cache) * tr_percent)]
             if self.attr_limit_num_images is not None:
                 self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
             self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
 
@@ -68,9 +75,19 @@ class ClassificationCache(BaseClass):
             self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
         self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
-        with open(f"{FolderInfos.input_data_folder}filtered_img_infos.json", "r") as fp:
-            self.dico_infos = json.load(fp)
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        """Change the origin of the patches
 
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
+
+        """
+        self.attr_image_dataset = image_dataset
+        self.attr_label_dataset = label_dataset
+        self.dico_infos = dico_infos
     def __iter__(self, dataset="tr"):
         return iter(self.generator())
 
@@ -88,8 +105,8 @@ class ClassificationCache(BaseClass):
                    item: str name of the source image
         """
         images_available = self.tr_keys if dataset == "tr" else self.valid_keys
-        with File(f"{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5", "r") as annotations_cache:
-            with File(f"{FolderInfos.input_data_folder}filtered_cache_images.hdf5", "r") as images_cache:
+        with self.attr_image_dataset as annotations_cache:
+            with self.attr_label_dataset as images_cache:
                 random.shuffle(images_available)
                 self.attr_patch_adder_callback.on_epoch_start()
                 for id in images_available:
@@ -110,6 +127,7 @@ class ClassificationCache(BaseClass):
         image = np.stack((image,) * 3, axis=0)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
         return image, annotation
+
 
     def len(self, dataset) -> Optional[int]:
         if dataset == "tr":

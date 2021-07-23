@@ -4,7 +4,8 @@ import unittest
 import matplotlib.pyplot as plt
 
 from main.FolderInfos import FolderInfos
-from main.src.data.Annotations.PointAnnotations import PointAnnotations
+from main.src.data.Datasets import PointDataset
+
 
 def plot_differences(array1, array2, cmap1="gray", cmap2="gray"):
     fig1 = plt.figure(1)
@@ -23,7 +24,7 @@ class TestPointAnnotations(unittest.TestCase):
         FolderInfos.init(test_without_data=True)
         with File(FolderInfos.input_data_folder+"annotations_labels_preprocessed.hdf5","r") as annotation:
             originale = np.array(annotation[self.img_test],dtype=np.float32)
-        point_annotations = PointAnnotations()
+        point_annotations = PointDataset()
         side_length = originale.shape[0]
         annotation = point_annotations.get(self.img_test,np.identity(3),side_length)
         originale = originale[:side_length,:side_length]

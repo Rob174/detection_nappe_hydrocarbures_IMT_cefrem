@@ -23,8 +23,8 @@ from main.src.training.metrics.loss_factory import LossFactory
 from main.src.training.optimizers_factory import OptimizersFactory
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
-from main.src.parsers.Parser0 import Parser0
-from main.src.parsers.Parser1 import Parser1
+from main.src.parsers.ParserClassificationCache import Parser0
+from main.src.parsers.ParserClassificationPatch import Parser1
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
 from main.src.enums import EnumLabelModifier
@@ -42,6 +42,7 @@ if __name__ == "__main__":
         changes_str = "\n".join(list(map(lambda x: '\t- ' + x, changes)))
         input(
             f"There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?")
+
     dataset = DatasetFactory(dataset_name=arguments.attr_dataset,
                              usage_type=arguments.usage_type,
                              grid_size=arguments.grid_size,

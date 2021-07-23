@@ -5,13 +5,13 @@ from main.src.enums import *
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class Parser1(BaseClass):
+class ParserClassificationCache(BaseClass):
     """
     Class managing possible arguments available to provide to the python main_script launched in the console
 
     Example 1: creating a parser and getting one argument
 
-            >>> parser = Parser1() # initialize the parser (constructor)
+            >>> parser = ParserClassificationCache() # initialize the parser (constructor)
             >>> arguments = parser() # parse arguments (by calling __call__ method)
             >>> arguments.attr_dataset # example of access to one of the possible argument
             "classificationpatch1"
@@ -60,12 +60,8 @@ class Parser1(BaseClass):
             '-augmentations_img': {"dest": 'augmentations_img', "default": "combinedRotResizeMir_10_0.25_4",
                                    "type": str,
                                    "help": "Indicate the augmentations to apply to images in the order desired seprated by commas, available : combinedRotResizeMir_10_0.25_4"},
-            '-augmenter_patch': {"dest": 'augmenter_patch', "default": EnumAugmenter.NoAugmenter, "type": EnumAugmenter,
-                                 "help": "Indicate which augmenter to use to use to apply transformations on patches",
-                                 "choices": list(EnumAugmenter)},
-            '-augmentations_patch': {"dest": 'augmentations_patch', "default": "none", "type": str,
-                                     "help": "Indicate the augmentations to apply to patches in the order desired seprated by commas"},
-            '-augmentation_factor': {"dest": 'augmentation_factor', "default": 1, "type": int,
+
+            '-augmentation_factor': {"dest": 'augmentation_factor', "default": 100, "type": int,
                                      "help": "The number of times that the source image is augmented"},
             # Model
             '-attr_model': {"dest": 'attr_model', "default": EnumModels.Resnet152, "type": EnumModels,
@@ -77,7 +73,7 @@ class Parser1(BaseClass):
                         "help": "Choose whcih layers to freeze in the original attr_model",
                         "choices": list(EnumFreeze)},
             # Training
-            '-num_epochs': {"dest": 'num_epochs', "default": 1,
+            '-num_epochs': {"dest": 'num_epochs', "default": 10,
                             "type": int,
                             "help": "Number of epochs / repetitions of the training attr_dataset"},
             '-eval_step': {"dest": 'eval_step', "default": 10, "type": int,
@@ -111,3 +107,6 @@ class Parser1(BaseClass):
         return self.parser.parse_args()
 
 
+if __name__ == "__main__":
+    args = Parser0()()
+    stop = 0

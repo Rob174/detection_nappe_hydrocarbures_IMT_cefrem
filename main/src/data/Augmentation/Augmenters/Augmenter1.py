@@ -96,7 +96,7 @@ class Augmenter1(BaseClass):
                 """
         return self.attr_image_applier.transform(image,partial_transformation_matrix,patch_upper_left_corner_coords)
 
-    def transform_label(self, annotation_function: Callable, image_name: str, partial_transformation_matrix: np.ndarray,
+    def transform_label(self, annotation_function: List[Tuple[int,int]], image_name: str, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations at once on the annotation **points** directly
 

@@ -5,13 +5,13 @@ from h5py import File
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from main.FolderInfos import FolderInfos
-from main.src.data.Annotations.PointAnnotations import PointAnnotations
+from main.src.data.Datasets import PointDataset
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)
     with open(FolderInfos.input_data_folder+"filtered_img_infos.json","r") as fp:
         dico_infos = json.load(fp)
-    cache_annotations_pts = PointAnnotations()
+    cache_annotations_pts = PointDataset()
     with File(FolderInfos.input_data_folder+"filtered_cache_annotations.hdf5","w") as cache_annotations:
         with Progress(
             TextColumn("{task.fields[name]}", justify="right"),
