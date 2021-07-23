@@ -1,24 +1,19 @@
 """Apply all transformations at once thanks to the transformation matrix and warpAffine. Optimized version of Augmenter0"""
 
-from typing import Tuple, List, Callable, Optional
+from typing import Tuple, List, Callable
 
-import cv2
 import numpy as np
 
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierImage import \
     AugmentationApplierImage
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierLabelPoints import \
     AugmentationApplierLabelPoints
-from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.RotationResizeMirrors import RotationResizeMirrors
-from main.src.data.Augmentation.GridMaker.GridMaker import GridMaker
+from main.src.data.GridMaker.GridMaker import GridMaker
 from main.src.param_savers.BaseClass import BaseClass
 
 
 class NoAugmenter(BaseClass):
     """Manage and keep track of augmentations to apply on source images only to directly extract patches
-
-    With this class, only one augmentation is supported combinedRotResizeMir which allows to commpute the final patch to be provided to the attr_model after
-    rotation, mirrors, resizes (one for augmentation and another to resize the patch to a smaller version)
 
     This class splits annotation generation and image generation.
     It allows to filter the global sample on the label as it costs less to generate it
@@ -82,7 +77,7 @@ class NoAugmenter(BaseClass):
 
     def transform_label(self, image_name: str, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
-        """Compute the random mirrors transformations at once on the annotation **points** directly
+        """Compute no augmentations on points
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
 
@@ -94,8 +89,8 @@ class NoAugmenter(BaseClass):
 
         Returns:
             tuple of np.ndarray
-            - the transformed annotation patch
-            - the transformation matrix used
+            - the annotation patch
+            - the transformation matrix used (with patch extraction)
         """
         return self.attr_label_applier.transform(image_name, partial_transformation_matrix,
                                                  patch_upper_left_corner_coords)
@@ -120,10 +115,7 @@ class NoAugmenter(BaseClass):
         Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
             ⚠️⚠️⚠️⚠️️ coordinates in OPENCV are in the opposite way of the normal row,cols way ⚠️⚠️⚠️⚠
             Internally this matrix include the following transformations:
-            - angle
-            - resize_factor
-            - mirrorlr
-            - mirrorud
+            - resize_factor: to get the correct final patch size
         """
         resize_factor = self.attr_patch_size_final_resize/self.attr_patch_size_before_final_resize
         return np.array([[resize_factor,0,0],[0,resize_factor,0],[0,0,1]],dtype=np.float32)

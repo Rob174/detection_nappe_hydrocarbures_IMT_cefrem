@@ -8,19 +8,17 @@ import numpy as np
 from h5py import File
 
 from main.FolderInfos import FolderInfos
-from main.src.data.TwoWayDict import Way
-from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
-from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
-from main.src.data.classification.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
-from main.src.data.classification.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
-from main.src.data.classification.PatchAdder.PatchAdderCallback import PatchAdderCallback
-from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
-from main.src.data.classification.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
+from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
+from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
+from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.classification.ClassificationPatch import ClassificationPatch
+from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
+from main.src.data.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
+from main.src.data.PatchAdder.PatchAdderCallback import PatchAdderCallback
+from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
+from main.src.data.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
 from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.enums import EnumClasses
-from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -53,13 +51,13 @@ class ClassificationCache(BaseClass):
             self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
 

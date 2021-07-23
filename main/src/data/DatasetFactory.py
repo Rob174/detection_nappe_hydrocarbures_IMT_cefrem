@@ -11,7 +11,6 @@ from main.src.data.classification.ClassificationPatch import ClassificationPatch
 from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.enums import EnumUsage, EnumClasses
 from main.src.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
-from main.src.data.patch_creator.patch_creator0 import Patch_creator0
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -23,7 +22,6 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     Args:
         dataset_name: EnumLabelModifier,
         usage_type: EnumUsage,
-        patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the attr_model
         exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [NoLabelModifier](./classification/NoLabelModifier.html)

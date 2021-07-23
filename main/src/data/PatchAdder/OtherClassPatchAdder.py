@@ -8,7 +8,7 @@ import numpy as np
 from h5py import File
 
 from main.FolderInfos import FolderInfos
-from main.src.data.classification.PatchAdder.AbstractClassAdder import AbstractClassAdder
+from main.src.data.PatchAdder.AbstractClassAdder import AbstractClassAdder
 from main.src.param_savers.BaseClass import BaseClass
 
 

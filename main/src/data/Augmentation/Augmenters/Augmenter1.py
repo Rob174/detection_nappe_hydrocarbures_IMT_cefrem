@@ -1,8 +1,7 @@
-"""Apply all transformations at once thanks to the transformation matrix and warpAffine. Optimized version of Augmenter0"""
+"""Apply all transformations at once thanks to the transformation matrix and warpAffine. """
 
-from typing import Tuple, List, Callable, Optional
+from typing import Tuple, List, Callable
 
-import cv2
 import numpy as np
 
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierImage import \
@@ -10,7 +9,7 @@ from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationAp
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierLabelPoints import \
     AugmentationApplierLabelPoints
 from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.RotationResizeMirrors import RotationResizeMirrors
-from main.src.data.Augmentation.GridMaker.GridMaker import GridMaker
+from main.src.data.GridMaker.GridMaker import GridMaker
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -28,11 +27,11 @@ class Augmenter1(BaseClass):
             - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
             patch_size_final_resize: int, size in px of the output patch provided to the attr_model
-
+            label_access_function:Callable[[str,np.ndarray,int],np.ndarray], function to accesss the points
     """
 
     def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int, allowed_transformations: str,
-                 label_access_function:Callable[[str],Tuple[np.ndarray,np.ndarray]]):
+                 label_access_function:Callable[[str,np.ndarray,int],np.ndarray]):
         self.attr_allowed_transformations = allowed_transformations
         self.attr_transformations_class = None
         self.attr_patch_size_before_final_resize = patch_size_before_final_resize
@@ -44,9 +43,10 @@ class Augmenter1(BaseClass):
                                                                  grid_maker=self.attr_grid_maker,
                                                                  patch_size_final_resize=patch_size_final_resize
                                                                  )
-        self.attr_image_applier = AugmentationApplierImage(access_function=image_access_function,
+        self.attr_image_applier = AugmentationApplierImage(
                                                            grid_maker=self.attr_grid_maker,
-                                                           patch_size_final_resize=patch_size_final_resize)
+                                                           patch_size_final_resize=patch_size_final_resize
+        )
     def set_image_access_function(self,function:Callable[[str],Tuple[np.ndarray,np.ndarray]]):
         self.attr_image_applier.access_function = function
 

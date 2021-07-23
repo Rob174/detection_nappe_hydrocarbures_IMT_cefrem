@@ -1,16 +1,12 @@
 import json
 import torch
 
-import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from h5py import File
 
 from main.FolderInfos import FolderInfos
-from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
-from main.src.enums import EnumLabelModifier
-from main.src.enums import EnumClasses, EnumUsage
-from main.src.enums import EnumPatchAlgorithm
+from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 import matplotlib
 matplotlib.use("agg")
 

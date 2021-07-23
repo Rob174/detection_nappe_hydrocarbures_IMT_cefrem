@@ -7,7 +7,6 @@ from typing import Tuple
 
 import numpy as np
 from h5py import File
-from rasterio.transform import Affine, rowcol
 
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
@@ -18,17 +17,14 @@ from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
 from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
 from main.src.enums import EnumBalance
 from main.src.data.balance_classes.no_balance import NoBalance
-from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
-from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
+from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
+from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
+from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.enums import EnumLabelModifier
 from main.src.enums import EnumClasses
-from main.src.data.patch_creator.MarginCheck import MarginCheck
-from main.src.data.patch_creator.patch_creator0 import Patch_creator0
-from main.src.data.resizer import Resizer
-from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
-from main.src.data.segmentation.PointAnnotations import PointAnnotations
+from main.src.data.MarginCheck import MarginCheck
+from main.src.data.Annotations.PointAnnotations import PointAnnotations
 from main.src.enums import EnumDataset
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -68,12 +64,11 @@ class ClassificationPatch(BaseClass):
             self.pixel_stats = json.load(fp)
         self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
         self.attr_class_mapping = TwoWayDict(
-            {k: v for k, v in DataSentinel1Segmentation.attr_original_class_mapping.items()})
+            {k: v for k, v in ClassificationPatch.attr_original_class_mapping.items()})
         self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
         self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_augmentation_factor = augmentation_factor
-        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
         self.datasets = {
             "tr":list(self.images.keys())[:int(len(self.images) * tr_percent)],
             "valid":list(self.images.keys())[int(len(self.images) * tr_percent):]

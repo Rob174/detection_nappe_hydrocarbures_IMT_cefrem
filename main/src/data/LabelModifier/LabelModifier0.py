@@ -1,14 +1,10 @@
 """Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
 and to change their order."""
 
-from typing import Tuple
-
 import numpy as np
 
 from main.src.data.TwoWayDict import TwoWayDict, Way
-from main.src.data.balance_classes.AbstractBalance import AbstractBalance
-from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
-from main.src.enums import EnumClasses
+from main.src.data.LabelModifier import AbstractLabelModifier
 
 
 class LabelModifier0(AbstractLabelModifier):

@@ -76,7 +76,7 @@ class EnumPatchExcludePolicy(str, Enum):
 class EnumUsage(str, Enum):
     Classification = "classification"
     """attr_dataset to classify patches"""
-    Segmentation = "segmentation"
+    Segmentation = "Annotations"
     """attr_dataset to segment an image"""
 
 

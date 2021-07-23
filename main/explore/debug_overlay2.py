@@ -1,20 +1,12 @@
-import cv2
 import torch
 import numpy as np
 from h5py import File
-from numba.core.datamodel.models import EnumModel
 
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
-from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
-from main.src.data.resizer import Resizer
-from main.src.data.segmentation.NumpyAnnotations import NumpyAnnotations
+from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.models.ModelFactory import ModelFactory, EnumModels, EnumFreeze
 from main.src.parsers.Parser0 import Parser0
-from main.src.training.TrValidSplit import trvalidsplit
-import matplotlib
-import matplotlib.pyplot as plt
-
 
 if __name__ == '__main__':
     FolderInfos.init(test_without_data=True)

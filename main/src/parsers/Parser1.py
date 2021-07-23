@@ -65,7 +65,7 @@ class Parser1(BaseClass):
                                  "choices": list(EnumAugmenter)},
             '-augmentations_patch': {"dest": 'augmentations_patch', "default": "none", "type": str,
                                      "help": "Indicate the augmentations to apply to patches in the order desired seprated by commas"},
-            '-augmentation_factor': {"dest": 'augmentation_factor', "default": 100, "type": int,
+            '-augmentation_factor': {"dest": 'augmentation_factor', "default": 1, "type": int,
                                      "help": "The number of times that the source image is augmented"},
             # Model
             '-attr_model': {"dest": 'attr_model', "default": EnumModels.Resnet152, "type": EnumModels,

@@ -5,7 +5,7 @@ from h5py import File
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from main.FolderInfos import FolderInfos
-from main.src.data.segmentation.PointAnnotations import PointAnnotations
+from main.src.data.Annotations.PointAnnotations import PointAnnotations
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=True)

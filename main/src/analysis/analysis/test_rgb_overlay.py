@@ -1,7 +1,7 @@
 from main.src.models.ModelFactory import ModelFactory
 from main.src.enums import *
 from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
-from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
+from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 import torch
 from main.FolderInfos import FolderInfos
 

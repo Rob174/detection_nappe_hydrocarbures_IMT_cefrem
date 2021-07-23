@@ -5,7 +5,7 @@ import json
 import numpy as np
 
 from main.FolderInfos import FolderInfos
-from main.src.data.classification.Standardizer.AbstractStandardizer import AbstractStandardizer
+from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.param_savers.BaseClass import BaseClass
 
 

@@ -4,7 +4,7 @@ from h5py import File
 
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
-from main.src.data.segmentation.PointAnnotations import PointAnnotations
+from main.src.data.Annotations.PointAnnotations import PointAnnotations
 
 
 class TestAugmenter1(unittest.TestCase):

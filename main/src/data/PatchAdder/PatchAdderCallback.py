@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from main.src.data.classification.PatchAdder.AbstractClassAdder import AbstractClassAdder
+from main.src.data.PatchAdder.AbstractClassAdder import AbstractClassAdder
 from main.src.param_savers.BaseClass import BaseClass
 
 

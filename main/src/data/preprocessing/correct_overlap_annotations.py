@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
             for name in images_hdf5.keys():
                 image_array = np.array(images_hdf5[name])
-                # Shapefile segmentation map computation
+                # Shapefile Annotations map computation
                 ## Create empty array with the same shape as the original image
                 segmentation_map = np.zeros(shape=image_array.shape, dtype=np.uint8)
                 segmentation_map = Image.fromarray(segmentation_map)

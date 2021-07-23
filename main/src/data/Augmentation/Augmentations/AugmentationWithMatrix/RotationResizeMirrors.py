@@ -1,4 +1,4 @@
-"""Class computing random rotation mirrors resize at once"""
+"""Class computing the transformation matrix to apply later (with the appliers) random rotation mirrors resize at once"""
 
 from typing import Tuple, List, Callable
 
@@ -10,7 +10,7 @@ from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.AbstractAug
 
 
 class RotationResizeMirrors(AbstractAugmentationWithMatrix):
-    """Class computing random rotation mirrors resize
+    """Class computing random rotation mirrors resize transformation matrix
 
     Args:
         rotation_step: float, rotation step to take angle between angle 0 and 360° with a ... angle step
@@ -19,24 +19,6 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         patch_size_before_final_resize: int, size in px of the output patch to extract
         patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 
-    Usage:
-
-        >>> image = ...
-        >>> annotation = ...
-        >>> augmentation = RotationResizeMirrors(patch_size_before_final_resize=1000,
-        ...                                      patch_size_final_resize=256,rotation_step=15,
-        ...                                      resize_lower_fact_float=0.25,
-        ...                                      resize_upper_fact_float=4)
-        >>> partial_transformation_matrix = augmentation.choose_new_augmentation(image.shape)
-        >>> for coord in augmentation.get_grid(image.shape,partial_transformation_matrix):
-        ...     patch_array, transformation_matrix = augmentation.compute_image_augment(image,
-        ...                                                                              partial_transformation_matrix,
-        ...                                                                              coord)
-        ...     patch_annotation, _ = augmentation.compute_image_augment(image, partial_transformation_matrix,
-        ...                                                              coord)
-        ... # Compute the random transformation with the static class
-        >>> patch_array.shape
-        (256,256)
     """
 
     def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int, rotation_step: float,

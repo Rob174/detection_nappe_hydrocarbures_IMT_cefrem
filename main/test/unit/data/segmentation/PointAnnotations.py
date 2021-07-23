@@ -4,7 +4,7 @@ import unittest
 import matplotlib.pyplot as plt
 
 from main.FolderInfos import FolderInfos
-from main.src.data.segmentation.PointAnnotations import PointAnnotations
+from main.src.data.Annotations.PointAnnotations import PointAnnotations
 
 def plot_differences(array1, array2, cmap1="gray", cmap2="gray"):
     fig1 = plt.figure(1)

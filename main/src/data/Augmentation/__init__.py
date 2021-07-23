@@ -6,7 +6,9 @@ we have a first object Augmenter... in the package Augmenters
 which we first neeed to initialize.
 It allows us to specify the augmentations to use and in which order to apply them (cf doc)
 
->>> augmenter = Augmenter0(allowed_transformations="mirrors,rotations")
+>>> augmenter = Augmenter1(patch_size_before_final_resize=1000, patch_size_final_resize=256,
+...                        allowed_transformations="combinedRotResizeMir_10_0.25_4",
+...                        label_access_function=PointAnnotations().get)
 
 Then we can use this object to apply random transformations
 to input ⚠️ images (not batch of images).
@@ -30,8 +32,8 @@ Typical usage
 >>> def get_label_transformed(image_name,transformation_matrix):
 ...     # get points of polygons for image name
 ...     # apply the transformation matrix
-...     # draw the segmentation map
-...     # return the segmentation
+...     # draw the Annotations map
+...     # return the Annotations
 >>> partial_transformation_matrix = augmenter.choose_new_augmentations()
 >>> for patch_upper_left_corner_coords in augmenter.get_grid(image.shape, partial_transformation_matrix)):
 ...     annotations_patch,transformation_matrix = augmenter.transform_label(get_label_transformed,"017635_0212D5_0F87",

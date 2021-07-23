@@ -1,4 +1,4 @@
-"""BaseClass to build a Augmentation that also return the matrix of transformation"""
+"""BaseClass to build a Augmentation that return the matrix of transformation"""
 
 from abc import ABC, abstractmethod
 from typing import Tuple, Dict, Any, Callable
@@ -9,6 +9,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class AbstractAugmentationWithMatrix(ABC, BaseClass):
+    """BaseClass to build a Augmentation that also return the matrix of transformation"""
     @abstractmethod
     def compute_image_augment(self, image: np.ndarray,
                               partial_transformation_matrix: np.ndarray,

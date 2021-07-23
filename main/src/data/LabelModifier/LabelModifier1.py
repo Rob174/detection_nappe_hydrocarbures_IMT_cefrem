@@ -6,8 +6,8 @@ from typing import Tuple
 import numpy as np
 
 from main.src.data.TwoWayDict import TwoWayDict, Way
-from main.src.data.classification.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
-from main.src.data.classification.LabelModifier.LabelModifier0 import LabelModifier0
+from main.src.data.LabelModifier import AbstractLabelModifier
+from main.src.data.LabelModifier import LabelModifier0
 from main.src.enums import EnumClasses
 from main.src.param_savers.BaseClass import BaseClass
 
