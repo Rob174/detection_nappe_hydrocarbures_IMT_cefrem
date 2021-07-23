@@ -3,7 +3,6 @@ import torch
 from typing import List
 
 from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
-from main.src.analysis.tools import RGB_Overlay_Patch
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass

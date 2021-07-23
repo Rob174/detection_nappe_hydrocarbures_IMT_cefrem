@@ -4,7 +4,7 @@ and to change their order."""
 import numpy as np
 
 from main.src.data.TwoWayDict import TwoWayDict, Way
-from main.src.data.LabelModifier import AbstractLabelModifier
+from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 
 
 class LabelModifier0(AbstractLabelModifier):
