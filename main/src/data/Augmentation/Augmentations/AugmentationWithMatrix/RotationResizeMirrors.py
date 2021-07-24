@@ -89,7 +89,7 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         return partial_transformation_matrix
 
     def choose_new_augmentation(self, image: np.ndarray) -> np.ndarray:
-        """Method that allows to create a new augmentation dict containing
+        """Method that allows to create a new augmentation transformation matrix
 
         Returns: np.ndarray, transformation matrix to apply the augmentation. It will be further required to "add" (dot multiply) the shift matrix to extract the correct patch
             ⚠️⚠️⚠️⚠️️ coordinates in OPENCV are in the opposite way of the normal row,cols way ⚠️⚠️⚠️⚠

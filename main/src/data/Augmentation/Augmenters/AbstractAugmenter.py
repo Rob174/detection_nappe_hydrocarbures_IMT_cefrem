@@ -1,69 +1,60 @@
-"""Apply all transformations at once thanks to the transformation matrix and warpAffine. Optimized version of Augmenter0"""
+"""BaseClass to build an augmenter which manages augmentations"""
 
-from typing import Tuple, List, Callable, Dict
+from abc import ABC, abstractmethod
+from typing import List, Tuple, Any
 
 import numpy as np
 
-from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierImage import \
-    AugmentationApplierImage
-from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierLabelPoints import \
-    AugmentationApplierLabelPoints
-from main.src.data.Augmentation.Augmenters.AbstractAugmenter import AbstractAugmenter
-from main.src.data.GridMaker.GridMaker import GridMaker
-from main.src.param_savers.BaseClass import BaseClass
+from main.src.data.Augmentation.Augmentations.AugmentationApplier.AbstractApplier import AbstractApplier
+from main.src.data.GridMaker.AbstractGridMaker import AbstractGridMaker
 
 
-class NoAugmenter(BaseClass, AbstractAugmenter):
-    """Manage and keep track of augmentations to apply on source images only to directly extract patches
+class AbstractAugmenter(ABC):
+    """BaseClass to build an augmenter which manages augmentations
 
-    This class splits annotation generation and image generation.
-    It allows to filter the global sample on the label as it costs less to generate it
-
-        Args:
-            allowed_transformations: List[str], augmentations to apply. Currently supported:
-            - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
-            patch_size_before_final_resize: int, size in px of the output patch to extract
-            patch_size_final_resize: int, size in px of the output patch provided to the attr_model
-
+    Args:
+        allowed_transformations: List[str], augmentations to apply.
+        patch_size_before_final_resize: int, size in px of the output patch to extract
+        patch_size_final_resize: int, size in px of the output patch provided to the attr_model
     """
 
     def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int,
                  allowed_transformations: List[str]):
-        super(NoAugmenter, self).__init__(patch_size_before_final_resize, patch_size_final_resize,
-                                          allowed_transformations)
-        self.attr_grid_maker = GridMaker(patch_size_final_resize=patch_size_final_resize)
-        self.attr_label_applier = AugmentationApplierLabelPoints(
-            grid_maker=self.attr_grid_maker,
-            patch_size_final_resize=patch_size_final_resize
-        )
-        self.attr_image_applier = AugmentationApplierImage(
-            grid_maker=self.attr_grid_maker,
-            patch_size_final_resize=patch_size_final_resize)
+        self.attr_allowed_transformations = allowed_transformations
+        self.attr_transformations_class = None
+        self.attr_patch_size_before_final_resize = patch_size_before_final_resize
+        self.attr_patch_size_final_resize = patch_size_final_resize
+        for transformation in allowed_transformations:
+            self.add_transformation(transformation, patch_size_before_final_resize, patch_size_final_resize)
 
     @property
-    def grid_maker(self) -> GridMaker:
-        return self.attr_grid_maker
+    def image_applier(self) -> AbstractApplier:
+        raise NotImplementedError
 
     @property
-    def label_applier(self) -> AugmentationApplierLabelPoints:
-        return self.attr_label_applier
+    def label_applier(self) -> AbstractApplier:
+        raise NotImplementedError
 
     @property
-    def image_applier(self) -> AugmentationApplierImage:
-        return self.attr_image_applier
+    def grid_maker(self) -> AbstractGridMaker:
+        raise NotImplementedError
 
-    def set_image_access_function(self, function: Callable[[str], Tuple[np.ndarray, np.ndarray]]):
-        self.attr_image_applier.access_function = function
-
-    def add_transformation(self, *args, **kwargs):
+    @abstractmethod
+    def add_transformation(self, allowed_transformations: str, patch_size_before_final_resize: int,
+                           patch_size_final_resize: int):
         """Method that map transformation names with actual classes.
 
         Args:
+            allowed_transformations: str, list of augmentations to apply. Currently supported:
+            - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
+            patch_size_before_final_resize: int, size in px of the output patch to extract
+            patch_size_final_resize: int, size in px of the output patch provided to the attr_model
         Returns:
 
         """
         pass
 
+    @abstractmethod
     def transform_image(self, image: np.ndarray, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random augmentations in the order in which they have been supplied.
@@ -82,10 +73,9 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
                     - the transformation matrix
 
                 """
-        return self.attr_image_applier.transform(image, partial_transformation_matrix,
-                                                 patch_upper_left_corner_coords)
+        pass
 
-    def transform_label(self, polygons: List[Dict], partial_transformation_matrix: np.ndarray,
+    def transform_label(self, data: Any, partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute no augmentations on points
 
@@ -93,7 +83,6 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
 
         Args:
             annotation_function: Callable that can generate the patch with the given parameters
-            image_name: str, the name of the original image
             partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
             coord_patch: coordinates of the output patch in the augmented image
 
@@ -102,7 +91,7 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
             - the annotation patch
             - the transformation matrix used (with patch extraction)
         """
-        return self.label_applier.transform(polygons, partial_transformation_matrix,
+        return self.label_applier.transform(data, partial_transformation_matrix,
                                             patch_upper_left_corner_coords)
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:

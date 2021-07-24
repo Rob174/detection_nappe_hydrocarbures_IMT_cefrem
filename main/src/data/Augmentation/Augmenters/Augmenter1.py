@@ -1,6 +1,6 @@
 """Apply all transformations at once thanks to the transformation matrix and warpAffine. """
 
-from typing import Tuple, List, Callable
+from typing import Tuple, List, Callable, Dict
 
 import numpy as np
 
@@ -9,11 +9,12 @@ from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationAp
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierLabelPoints import \
     AugmentationApplierLabelPoints
 from main.src.data.Augmentation.Augmentations.AugmentationWithMatrix.RotationResizeMirrors import RotationResizeMirrors
+from main.src.data.Augmentation.Augmenters.AbstractAugmenter import AbstractAugmenter
 from main.src.data.GridMaker.GridMaker import GridMaker
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class Augmenter1(BaseClass):
+class Augmenter1(BaseClass, AbstractAugmenter):
     """Manage and keep track of augmentations to apply on source images only to directly extract patches
 
     With this class, only one augmentation is supported combinedRotResizeMir which allows to commpute the final patch to be provided to the attr_model after
@@ -23,31 +24,40 @@ class Augmenter1(BaseClass):
     It allows to filter the global sample on the label as it costs less to generate it
 
         Args:
-            allowed_transformations: str, augmentations to apply. Currently supported:
+            allowed_transformations: List[str], augmentations to apply. Currently supported:
             - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
             patch_size_final_resize: int, size in px of the output patch provided to the attr_model
             label_access_function:Callable[[str,np.ndarray,int],np.ndarray], function to accesss the points
     """
 
-    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int, allowed_transformations: str,
-                 label_access_function:Callable[[str,np.ndarray,int],np.ndarray]):
-        self.attr_allowed_transformations = allowed_transformations
-        self.attr_transformations_class = None
-        self.attr_patch_size_before_final_resize = patch_size_before_final_resize
-        self.attr_patch_size_final_resize = patch_size_final_resize
-        self.add_transformation(allowed_transformations, patch_size_before_final_resize, patch_size_final_resize)
-        self.attr_augmented_dataset_parameters = {}
+    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int,
+                 allowed_transformations: List[str]):
+        super(Augmenter1, self).__init__(patch_size_before_final_resize, patch_size_final_resize,
+                                         allowed_transformations)
         self.attr_grid_maker = GridMaker(patch_size_final_resize=patch_size_final_resize)
-        self.attr_label_applier = AugmentationApplierLabelPoints(access_function=label_access_function,
-                                                                 grid_maker=self.attr_grid_maker,
-                                                                 patch_size_final_resize=patch_size_final_resize
-                                                                 )
-        self.attr_image_applier = AugmentationApplierImage(
-                                                           grid_maker=self.attr_grid_maker,
-                                                           patch_size_final_resize=patch_size_final_resize
+        self.attr_label_applier = AugmentationApplierLabelPoints(
+            grid_maker=self.attr_grid_maker,
+            patch_size_final_resize=patch_size_final_resize
         )
-    def set_image_access_function(self,function:Callable[[str],Tuple[np.ndarray,np.ndarray]]):
+        self.attr_image_applier = AugmentationApplierImage(
+            grid_maker=self.attr_grid_maker,
+            patch_size_final_resize=patch_size_final_resize
+        )
+
+    @property
+    def grid_maker(self) -> GridMaker:
+        return self.attr_grid_maker
+
+    @property
+    def label_applier(self) -> AugmentationApplierLabelPoints:
+        return self.attr_label_applier
+
+    @property
+    def image_applier(self) -> AugmentationApplierImage:
+        return self.attr_image_applier
+
+    def set_image_access_function(self, function: Callable[[str], Tuple[np.ndarray, np.ndarray]]):
         self.attr_image_applier.access_function = function
 
     def add_transformation(self, allowed_transformations: str, patch_size_before_final_resize: int,
@@ -94,17 +104,16 @@ class Augmenter1(BaseClass):
                     - the transformation matrix
 
                 """
-        return self.attr_image_applier.transform(image,partial_transformation_matrix,patch_upper_left_corner_coords)
+        return self.attr_image_applier.transform(image, partial_transformation_matrix, patch_upper_left_corner_coords)
 
-    def transform_label(self, annotation_function: List[Tuple[int,int]], image_name: str, partial_transformation_matrix: np.ndarray,
+    def transform_label(self, data: List[Dict], partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the random mirrors transformations at once on the annotation **points** directly
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
 
         Args:
-            annotation_function: Callable that can generate the patch with the given parameters
-            image_name: str, the name of the original image
+            data: List[Dict] List of the polygons on the patch
             partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
             coord_patch: coordinates of the output patch in the augmented image
 
@@ -113,7 +122,7 @@ class Augmenter1(BaseClass):
             - the transformed annotation patch
             - the transformation matrix used
         """
-        return self.attr_label_applier.transform(image_name,partial_transformation_matrix,patch_upper_left_corner_coords)
+        return self.attr_label_applier.transform(data, partial_transformation_matrix, patch_upper_left_corner_coords)
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
@@ -127,7 +136,7 @@ class Augmenter1(BaseClass):
             iterator that produces tuples with coordinates of each upper left corner of each patch
         """
 
-        return self.attr_grid_maker.get_grid(img_shape, partial_transformation_matrix)
+        return self.grid_maker.get_grid(img_shape, partial_transformation_matrix)
 
     def compute_transformation_matrix(self, rows, cols, angle, resize_factor, mirror):
         """ Compute the transformation matrix corresponding to the parameters supplied

@@ -1,46 +1,35 @@
+
+
 """
 The goal of this module is to manage and apply augmentations.
 
 As we will apply the same types of augmentations to all of the images,
-we have a first object Augmenter... in the package Augmenters
-which we first neeed to initialize.
-It allows us to specify the augmentations to use and in which order to apply them (cf doc)
+we have a first object of the package Augmenters
+which we first needs to be initialized.
 
+Example with Augmenter1
+
+>>> from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 >>> augmenter = Augmenter1(patch_size_before_final_resize=1000, patch_size_final_resize=256,
-...                        allowed_transformations="combinedRotResizeMir_10_0.25_4",
-...                        label_access_function=PointAnnotations().get)
+...                        allowed_transformations=["combinedRotResizeMir_10_0.25_4"])
 
-Then we can use this object to apply random transformations
-to input ⚠️ images (not batch of images).
+It allows us to specify the augmentations to use(cf doc) for a source image provided as np.ndarray and
+returns the transformation matrix combination of the affine transformations chosen
+
+>>> partial_transformation_matrix = augmenter.choose_new_augmentations(image)
+
+Then we have to choose the coordinates of the patch to extract.
+For that we can get a grid (list of upper left corners) of patch by calling
+
+>>> grid = augmenter.get_grid(image.shape,partial_transformation_matrix)
+
+Then we can use the augmenter to apply random transformations to input ️ samples (⚠⚠ not in a batch ⚠⚠).
+The input can have different types as an array or a list of points for instance (for labels)
+
+>>> augmenter.transform_image(image,partial_transformation_matrix,patch_upper_left_corner_coords)
+
+We can do the same for the label with the `transform_image` method
 
 All of the transformations are randomly chosen and can change between epochs
 
-
-We made two types of augmenters :
-
-- First type: augment step by step:
-
->>> image = ...
->>> annotation = ...
->>> image,annotation = augmenter.transform(image,annotation)
-
-- Second type: all augmentations are done at once internally thanks to warpAffine function. It is an optimized version of the
-step by step augmentations thanks to warpAffine and potential filters that can be applied on the annotations_patch
-before opening and creating the image patch
-
-Typical usage
->>> def get_label_transformed(image_name,transformation_matrix):
-...     # get points of polygons for image name
-...     # apply the transformation matrix
-...     # draw the Annotations map
-...     # return the Annotations
->>> partial_transformation_matrix = augmenter.choose_new_augmentations()
->>> for patch_upper_left_corner_coords in augmenter.get_grid(image.shape, partial_transformation_matrix)):
-...     annotations_patch,transformation_matrix = augmenter.transform_label(get_label_transformed,"017635_0212D5_0F87",
-...                                                                         partial_transformation_matrix,
-...                                                                         patch_upper_left_corner_coords)
->>>     image_patch, transformation_matrix = augmenter.transform_image(image,
-...                                                                    partial_transformation_matrix,
-...                                                                    patch_upper_left_corner_coords
-...                                                                   )
 """

@@ -12,6 +12,7 @@ from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.Annotations.FabricPreprocessedCache import FabricPreprocessedCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
@@ -45,13 +46,6 @@ class ClassificationPatch(BaseClass):
         augmentation_factor: the number of replicas of the original attr_dataset to do
         label_modifier: EnumLabelModifier
     """
-
-    attr_original_class_mapping = TwoWayDict(  # a twoway dict allowing to store pairs of hashable objects:
-        {  # Formatted in the following way: src_index in cache, name, the position encode destination index
-            0: "other",
-            1: "seep",
-            2: "spill",
-        })
     def __init__(self, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
@@ -60,19 +54,16 @@ class ClassificationPatch(BaseClass):
                  tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_global_name = "attr_dataset"
-        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
-            self.images_infos = json.load(fp)
-        self.images = File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r")
-        self.attr_class_mapping = TwoWayDict(
-            {k: v for k, v in ClassificationPatch.attr_original_class_mapping.items()})
+        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricPreprocessedCache()()
         self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
         self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_augmentation_factor = augmentation_factor
-        self.datasets = {
-            "tr":list(self.images.keys())[:int(len(self.images) * tr_percent)],
-            "valid":list(self.images.keys())[int(len(self.images) * tr_percent):]
-        }
+        with self.attr_image_dataset as images:
+            self.datasets = {
+                "tr":list(images.keys())[:int(len(images) * tr_percent)],
+                "valid":list(images.keys())[int(len(images) * tr_percent):]
+            }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
@@ -94,22 +85,19 @@ class ClassificationPatch(BaseClass):
         else:
             raise NotImplementedError
         if augmentations_img != "none":
-            self.annotations_labels = PointDataset()
             if augmenter_img == EnumAugmenter.Augmenter1:
-                self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
-                                                     patch_size_before_final_resize=
+                self.attr_augmenter = Augmenter1(allowed_transformations=augmentations_img,
+                                                 patch_size_before_final_resize=
                                                      self.attr_grid_size_px,
-                                                     patch_size_final_resize=input_size,
-                                                     label_access_function=self.annotations_labels.get
-                                                     )
+                                                 patch_size_final_resize=input_size
+                                                 )
 
             else:
-                self.attr_img_augmenter = NoAugmenter(allowed_transformations=augmentations_img,
-                                                     patch_size_before_final_resize=
+                self.attr_augmenter = NoAugmenter(allowed_transformations=augmentations_img,
+                                                  patch_size_before_final_resize=
                                                      self.attr_grid_size_px,
-                                                     patch_size_final_resize=input_size,
-                                                     label_access_function=self.annotations_labels.get
-                                                      )
+                                                  patch_size_final_resize=input_size
+                                                  )
         else:
             raise NotImplementedError(f"{augmenter_img} is not implemented")
         # Cache to store between epochs rejected images if we have no image augmenter
@@ -146,34 +134,37 @@ class ClassificationPatch(BaseClass):
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
-        for num_dataset in range(self.attr_augmentation_factor):
-            random.shuffle(images_available)
-            for item in images_available:
-                image = self.images[item]
-                image = np.array(image, dtype=np.float32)
-                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in np.random.permutation(self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                    annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
-                        image_name=item,
-                        partial_transformation_matrix=partial_transformation_matrix,
-                        patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                    )
-                    # Create the classification label with the proper technic
-                    classification = self.attr_label_modifier.make_classification_label(annotations_patch)
-                    balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
-                    if balance_reject is True:
-                        continue
-                    image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
-                        image=image,
-                        partial_transformation_matrix=partial_transformation_matrix,
-                        patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                    )
-                    reject = self.attr_check_margin_reject.check_reject(image_patch)
-                    if reject is True:
-                        continue
-                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch,)*3, axis=0)
-                    yield image_patch, classification, transformation_matrix, item
+        with self.attr_image_dataset as images_dataset:
+            with self.attr_label_dataset as labels_dataset:
+                for num_dataset in range(self.attr_augmentation_factor):
+                    random.shuffle(images_available)
+                    for item in images_available:
+                        image = images_dataset.get(item)
+                        image = np.array(image, dtype=np.float32)
+                        polygons = labels_dataset.get(item)
+                        partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
+                        for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                            annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
+                                polygons=polygons,
+                                partial_transformation_matrix=partial_transformation_matrix,
+                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                            )
+                            # Create the classification label with the proper technic
+                            classification = self.attr_label_modifier.make_classification_label(annotations_patch)
+                            balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
+                            if balance_reject is True:
+                                continue
+                            image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+                                image=image,
+                                partial_transformation_matrix=partial_transformation_matrix,
+                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                            )
+                            reject = self.attr_check_margin_reject.check_reject(image_patch)
+                            if reject is True:
+                                continue
+                            # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+                            image_patch = np.stack((image_patch,)*3, axis=0)
+                            yield image_patch, classification, transformation_matrix, item
 
     def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
                   standardizer: AbstractStandardizer,label_encoding: TwoWayDict, transformation_matrix: Optional[np.ndarray] = None
@@ -196,12 +187,12 @@ class ClassificationPatch(BaseClass):
         """
         if transformation_matrix is None:
             transformation_matrix = np.identity(3)
-        image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
+        image_patch, transformation_matrix = self.attr_augmenter.transform_image(
             image=image,
             partial_transformation_matrix=transformation_matrix,
             patch_upper_left_corner_coords=patch_upper_left_corner_coords
         )
-        annotation_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
+        annotation_patch, transformation_matrix = self.attr_augmenter.transform_image(
             image=annotation,
             partial_transformation_matrix=transformation_matrix,
             patch_upper_left_corner_coords=patch_upper_left_corner_coords

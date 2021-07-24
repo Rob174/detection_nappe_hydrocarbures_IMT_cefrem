@@ -1,7 +1,7 @@
 """
-Augmenters classes which manage and apply augmentations.
+Augmenters classes which manages augmentations.
 
-Augmenter1 apply all augmentations at once thanks to transformation matrices since we use only combinations of affine transformations
+Augmenter1 applies all augmentations at once thanks to transformation matrices since we use only combinations of affine transformations
 
 Responsabilities:
 - Create the augmentations

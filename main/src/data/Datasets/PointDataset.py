@@ -36,7 +36,7 @@ class PointDataset(BaseClass,AbstractDataset):
         polygons = []
         for i,polygon in enumerate(self.dataset[item]):
             label:int = self.attr_mapping[polygon[EnumShapeCategories.Label]]
-            color_code = "#"+f"{label:02x}"*3
+            color_code = "#"+f"{label:02x}"*3 # conversion to hexadecimal color (#FFFFFF for white for instance)
             polygons.append({EnumShapeCategories.Label:color_code,EnumShapeCategories.Points:polygon[EnumShapeCategories.Points]})
         return self.dataset[item]
 
