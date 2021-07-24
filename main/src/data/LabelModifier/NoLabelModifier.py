@@ -17,5 +17,5 @@ class NoLabelModifier(AbstractLabelModifier,BaseClass):
         self.attr_class_mapping = original_class_mapping
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
-        """Make no modifications to the annotation"""
+        """Makes no modifications to the annotation"""
         return annotation

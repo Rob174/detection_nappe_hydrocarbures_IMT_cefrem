@@ -30,10 +30,12 @@ class OtherClassPatchAdder(BaseClass, AbstractClassAdder):
         self.keys_iterator = None
 
     def reinitialize_iter(self):
+        """Method to restart from the beginning of the dataset the generation of ids"""
         random.shuffle(self.ordered_keys)
         self.keys_iterator = iter(self.ordered_keys)
 
     def next_index(self):
+        """Generates the next index in the source dataset to use"""
         try:
             id = next(self.keys_iterator)
         except (StopIteration, TypeError):
@@ -42,6 +44,13 @@ class OtherClassPatchAdder(BaseClass, AbstractClassAdder):
         return id
 
     def generate_if_required(self) -> Optional[Tuple[np.ndarray, np.ndarray, np.ndarray, str]]:
+        """Method that generates a sample if it is the turn of the patch adder based on the interval to wait provided in the constructor
+
+        Returns:
+            Optional[Tuple]
+            - if it is this dataset turn: patch_image, patch_annotation, transformation_matrix (used to build the patches), source image name
+            - else None
+        """
         if self.num_annotated_btwn == self.attr_interval:
             self.num_annotated_btwn = 0
             id = self.next_index()

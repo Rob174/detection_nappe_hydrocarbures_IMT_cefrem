@@ -13,7 +13,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class LabelModifier1(AbstractLabelModifier, BaseClass):
-    """Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
+    """Modify the source label provided by the LabelModifier0 (done internally). Allow to use less classes than other, seep, spill
     and to change their order.
 
     Args:

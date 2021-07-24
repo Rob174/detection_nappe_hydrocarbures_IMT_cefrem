@@ -1,5 +1,4 @@
-"""Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
-and to change their order."""
+"""Modify the source annotation image (2d array). Allow to transform the 2d array into a vector of probabilities of presence of each class"""
 
 import numpy as np
 
@@ -9,8 +8,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class LabelModifier0(AbstractLabelModifier,BaseClass):
-    """Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
-    and to change their order.
+    """Modify the source annotation image (2d array). Allow to transform the 2d array into a vector of probabilities of presence of each class
 
     Args:
         class_mapping: TwoWayDict, map index of class to its name
@@ -25,8 +23,6 @@ class LabelModifier0(AbstractLabelModifier,BaseClass):
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
         """Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
 
         Args:
             annotation: np.ndarray 2d containing for each pixel the class of this pixel

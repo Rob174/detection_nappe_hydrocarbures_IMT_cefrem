@@ -14,4 +14,5 @@ class NoClassPatchAdder(BaseClass):
         pass
 
     def generate_if_required(self) -> Optional[Tuple[np.ndarray, np.ndarray, np.ndarray, str]]:
+        """Generates no patchs"""
         return None

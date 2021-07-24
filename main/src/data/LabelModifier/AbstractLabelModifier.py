@@ -16,7 +16,7 @@ class AbstractLabelModifier(ABC):
         """Creates the classification label based on the annotation patch image
 
         Args:
-            annotation: np.ndarray 1d containing the probability that the patch contain the classes as specified in NoLabelModifier make_classification_label method
+            annotation: np.ndarray 2d containing the class of each pixel encoded as uint8
 
         Returns:
             annotation_modified: the classification label modified

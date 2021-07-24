@@ -12,7 +12,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class LabelModifier2(AbstractLabelModifier,BaseClass):
-    """Modify the source label provided by the source class inheriting from AbstractClassificationDataset.
+    """Modify the source label provided by the LabelModifier0 (done internally).
     Merge multiple labels the classes to use and indicate the presence or absence of one of these classes
 
     Args:
