@@ -31,23 +31,28 @@
 
 import json
 import random
-from typing import Tuple, Generator, Optional
+from typing import Tuple, Generator, Optional, Dict
 
 import numpy as np
 from h5py import File
 
 from main.FolderInfos import FolderInfos
-from main.src.data.TwoWayDict import Way
-from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
-from main.src.data.classification.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
-from main.src.data.classification.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
-from main.src.data.classification.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
-from main.src.data.classification.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
-from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
-from main.src.data.enums import EnumClasses
-from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
+from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.Annotations.FabricFilteredCache import FabricFilteredCache
+from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.PointDataset import PointDataset
+from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
+from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
+from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.TwoWayDict import TwoWayDict
+from main.src.data.classification.ClassificationPatch import ClassificationPatch
+from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
+from main.src.data.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
+from main.src.data.PatchAdder.PatchAdderCallback import PatchAdderCallback
+from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
+from main.src.data.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
+from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
+from main.src.enums import EnumClasses
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -64,7 +69,8 @@ class ClassificationCache(BaseClass):
         interval: int, interval between two un annotated patches
     &#34;&#34;&#34;
 
-    def __init__(self, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
+    def __init__(self,
+                 label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
@@ -73,32 +79,44 @@ class ClassificationCache(BaseClass):
         self.attr_standardization = True
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
-        with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5&#34;, &#34;r&#34;) as images_cache:
+        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricFilteredCache()()
+        with self.attr_image_dataset as images_cache:
             self.tr_keys = list(images_cache.keys())[:int(len(images_cache) * tr_percent)]
             if self.attr_limit_num_images is not None:
                 self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
             self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
         self.attr_global_name = &#34;attr_dataset&#34;
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier()
+            self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         else:
             raise NotImplementedError(f&#34;{label_modifier} is not implemented&#34;)
+
         if other_class_adder == EnumClassPatchAdder.OtherClassPatchAdder:
             self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheMixed(interval=interval)
         elif other_class_adder == EnumClassPatchAdder.NoClassPatchAdder:
-            self.attr_other_class_adder = NoClassPatchAdder()
+            self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
+        self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        &#34;&#34;&#34;Change the origin of the patches
 
-        with open(f&#34;{FolderInfos.input_data_folder}filtered_img_infos.json&#34;, &#34;r&#34;) as fp:
-            self.dico_infos = json.load(fp)
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
 
+        &#34;&#34;&#34;
+        self.attr_image_dataset = image_dataset
+        self.attr_label_dataset = label_dataset
+        self.dico_infos = dico_infos
     def __iter__(self, dataset=&#34;tr&#34;):
         return iter(self.generator())
 
@@ -116,50 +134,29 @@ class ClassificationCache(BaseClass):
                    item: str name of the source image
         &#34;&#34;&#34;
         images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-        with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5&#34;, &#34;r&#34;) as annotations_cache:
-            with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_images.hdf5&#34;, &#34;r&#34;) as images_cache:
+        with self.attr_image_dataset as annotations_cache:
+            with self.attr_label_dataset as images_cache:
                 random.shuffle(images_available)
-
+                self.attr_patch_adder_callback.on_epoch_start()
                 for id in images_available:
                     data = self.attr_other_class_adder.generate_if_required()
                     if data is not None:
                         image, annotation, transformation_matrix, source_img = data
                         image, annotation = self.process_infos(image, annotation)
                         yield image, annotation, transformation_matrix, source_img
+                    # Open image and annotations
                     image = np.array(images_cache[id])
                     annotation = np.array(annotations_cache[id])
                     source_img = self.dico_infos[id][&#34;source_img&#34;]
                     transformation_matrix = np.array(self.dico_infos[id][&#34;transformation_matrix&#34;])
                     image, annotation = self.process_infos(image, annotation)
                     yield image, annotation, transformation_matrix, source_img
-
     def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)
-        annotation = self.make_classification_label(annotation)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
         return image, annotation
 
-    def make_classification_label(self, annotations_patch):
-        &#34;&#34;&#34;Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
-
-        Args:
-            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-        Returns: the classification label
-
-        &#34;&#34;&#34;
-
-        output = np.zeros((len(DataSentinel1Segmentation.attr_original_class_mapping),), dtype=np.float32)
-        for value in DataSentinel1Segmentation.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):
-            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-            value = int(value)
-            #  if the class is in the patch
-            if value in annotations_patch:
-                output[value] = 1.
-        return output
 
     def len(self, dataset) -&gt; Optional[int]:
         if dataset == &#34;tr&#34;:
@@ -179,7 +176,7 @@ class ClassificationCache(BaseClass):
 <dl>
 <dt id="main.src.data.classification.ClassificationCache.ClassificationCache"><code class="flex name class">
 <span>class <span class="ident">ClassificationCache</span></span>
-<span>(</span><span>label_modifier: <a title="main.src.data.classification.enums.EnumLabelModifier" href="enums.html#main.src.data.classification.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="../enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), tr_percent: float = 0.7, limit_num_images: int = None, other_class_adder: <a title="main.src.data.classification.enums.EnumClassPatchAdder" href="enums.html#main.src.data.classification.enums.EnumClassPatchAdder">EnumClassPatchAdder</a> = EnumClassPatchAdder.NoClassPatchAdder, interval: int = 1)</span>
+<span>(</span><span>label_modifier: <a title="main.src.enums.EnumLabelModifier" href="../../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), tr_percent: float = 0.7, limit_num_images: int = None, other_class_adder: <a title="main.src.enums.EnumClassPatchAdder" href="../../enums.html#main.src.enums.EnumClassPatchAdder">EnumClassPatchAdder</a> = EnumClassPatchAdder.NoClassPatchAdder, interval: int = 1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class that takes inputs from the filtered hdf5 file to create a new dataset</p>
@@ -215,7 +212,8 @@ class ClassificationCache(BaseClass):
         interval: int, interval between two un annotated patches
     &#34;&#34;&#34;
 
-    def __init__(self, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
+    def __init__(self,
+                 label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
@@ -224,32 +222,44 @@ class ClassificationCache(BaseClass):
         self.attr_standardization = True
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
-        with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5&#34;, &#34;r&#34;) as images_cache:
+        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricFilteredCache()()
+        with self.attr_image_dataset as images_cache:
             self.tr_keys = list(images_cache.keys())[:int(len(images_cache) * tr_percent)]
             if self.attr_limit_num_images is not None:
                 self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
             self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
         self.attr_global_name = &#34;attr_dataset&#34;
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier()
+            self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         else:
             raise NotImplementedError(f&#34;{label_modifier} is not implemented&#34;)
+
         if other_class_adder == EnumClassPatchAdder.OtherClassPatchAdder:
             self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheMixed(interval=interval)
         elif other_class_adder == EnumClassPatchAdder.NoClassPatchAdder:
-            self.attr_other_class_adder = NoClassPatchAdder()
+            self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
+        self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        &#34;&#34;&#34;Change the origin of the patches
 
-        with open(f&#34;{FolderInfos.input_data_folder}filtered_img_infos.json&#34;, &#34;r&#34;) as fp:
-            self.dico_infos = json.load(fp)
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
 
+        &#34;&#34;&#34;
+        self.attr_image_dataset = image_dataset
+        self.attr_label_dataset = label_dataset
+        self.dico_infos = dico_infos
     def __iter__(self, dataset=&#34;tr&#34;):
         return iter(self.generator())
 
@@ -267,50 +277,29 @@ class ClassificationCache(BaseClass):
                    item: str name of the source image
         &#34;&#34;&#34;
         images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-        with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5&#34;, &#34;r&#34;) as annotations_cache:
-            with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_images.hdf5&#34;, &#34;r&#34;) as images_cache:
+        with self.attr_image_dataset as annotations_cache:
+            with self.attr_label_dataset as images_cache:
                 random.shuffle(images_available)
-
+                self.attr_patch_adder_callback.on_epoch_start()
                 for id in images_available:
                     data = self.attr_other_class_adder.generate_if_required()
                     if data is not None:
                         image, annotation, transformation_matrix, source_img = data
                         image, annotation = self.process_infos(image, annotation)
                         yield image, annotation, transformation_matrix, source_img
+                    # Open image and annotations
                     image = np.array(images_cache[id])
                     annotation = np.array(annotations_cache[id])
                     source_img = self.dico_infos[id][&#34;source_img&#34;]
                     transformation_matrix = np.array(self.dico_infos[id][&#34;transformation_matrix&#34;])
                     image, annotation = self.process_infos(image, annotation)
                     yield image, annotation, transformation_matrix, source_img
-
     def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)
-        annotation = self.make_classification_label(annotation)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
         return image, annotation
 
-    def make_classification_label(self, annotations_patch):
-        &#34;&#34;&#34;Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
-
-        Args:
-            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-        Returns: the classification label
-
-        &#34;&#34;&#34;
-
-        output = np.zeros((len(DataSentinel1Segmentation.attr_original_class_mapping),), dtype=np.float32)
-        for value in DataSentinel1Segmentation.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):
-            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-            value = int(value)
-            #  if the class is in the patch
-            if value in annotations_patch:
-                output[value] = 1.
-        return output
 
     def len(self, dataset) -&gt; Optional[int]:
         if dataset == &#34;tr&#34;:
@@ -362,16 +351,17 @@ item: str name of the source image</dd>
                item: str name of the source image
     &#34;&#34;&#34;
     images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-    with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_annotations.hdf5&#34;, &#34;r&#34;) as annotations_cache:
-        with File(f&#34;{FolderInfos.input_data_folder}filtered_cache_images.hdf5&#34;, &#34;r&#34;) as images_cache:
+    with self.attr_image_dataset as annotations_cache:
+        with self.attr_label_dataset as images_cache:
             random.shuffle(images_available)
-
+            self.attr_patch_adder_callback.on_epoch_start()
             for id in images_available:
                 data = self.attr_other_class_adder.generate_if_required()
                 if data is not None:
                     image, annotation, transformation_matrix, source_img = data
                     image, annotation = self.process_infos(image, annotation)
                     yield image, annotation, transformation_matrix, source_img
+                # Open image and annotations
                 image = np.array(images_cache[id])
                 annotation = np.array(annotations_cache[id])
                 source_img = self.dico_infos[id][&#34;source_img&#34;]
@@ -396,44 +386,6 @@ item: str name of the source image</dd>
         return len(self.valid_keys)</code></pre>
 </details>
 </dd>
-<dt id="main.src.data.classification.ClassificationCache.ClassificationCache.make_classification_label"><code class="name flex">
-<span>def <span class="ident">make_classification_label</span></span>(<span>self, annotations_patch)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Creates the classification label based on the annotation patch image</p>
-<p>Indicates if we need to reject the patch due to overrepresented class</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>annotations_patch</code></strong></dt>
-<dd>np.ndarray 2d containing for each pixel the class of this pixel</dd>
-</dl>
-<p>Returns: the classification label</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def make_classification_label(self, annotations_patch):
-    &#34;&#34;&#34;Creates the classification label based on the annotation patch image
-
-    Indicates if we need to reject the patch due to overrepresented class
-
-    Args:
-        annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-    Returns: the classification label
-
-    &#34;&#34;&#34;
-
-    output = np.zeros((len(DataSentinel1Segmentation.attr_original_class_mapping),), dtype=np.float32)
-    for value in DataSentinel1Segmentation.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):
-        # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-        value = int(value)
-        #  if the class is in the patch
-        if value in annotations_patch:
-            output[value] = 1.
-    return output</code></pre>
-</details>
-</dd>
 <dt id="main.src.data.classification.ClassificationCache.ClassificationCache.process_infos"><code class="name flex">
 <span>def <span class="ident">process_infos</span></span>(<span>self, image, annotation)</span>
 </code></dt>
@@ -446,9 +398,42 @@ item: str name of the source image</dd>
 <pre><code class="python">def process_infos(self, image, annotation):
     image = self.attr_standardizer.standardize(image)
     image = np.stack((image,) * 3, axis=0)
-    annotation = self.make_classification_label(annotation)
     annotation = self.attr_label_modifier.make_classification_label(annotation)
     return image, annotation</code></pre>
+</details>
+</dd>
+<dt id="main.src.data.classification.ClassificationCache.ClassificationCache.set_datasets"><code class="name flex">
+<span>def <span class="ident">set_datasets</span></span>(<span>self, image_dataset: <a title="main.src.data.Datasets.ImageDataset.ImageDataset" href="../Datasets/ImageDataset.html#main.src.data.Datasets.ImageDataset.ImageDataset">ImageDataset</a>, label_dataset: <a title="main.src.data.Datasets.AbstractDataset.AbstractDataset" href="../Datasets/AbstractDataset.html#main.src.data.Datasets.AbstractDataset.AbstractDataset">AbstractDataset</a>, dico_infos: Dict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change the origin of the patches</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>image_dataset</code></strong></dt>
+<dd>ImageDataset</dd>
+<dt><strong><code>label_dataset</code></strong></dt>
+<dd>AbstractDataset Points or Images</dd>
+<dt><strong><code>dico_infos</code></strong></dt>
+<dd>Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch</dd>
+</dl>
+<p>Returns:</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    &#34;&#34;&#34;Change the origin of the patches
+
+    Args:
+        image_dataset: ImageDataset
+        label_dataset: AbstractDataset Points or Images
+        dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+    Returns:
+
+    &#34;&#34;&#34;
+    self.attr_image_dataset = image_dataset
+    self.attr_label_dataset = label_dataset
+    self.dico_infos = dico_infos</code></pre>
 </details>
 </dd>
 </dl>
@@ -474,8 +459,8 @@ item: str name of the source image</dd>
 <ul class="">
 <li><code><a title="main.src.data.classification.ClassificationCache.ClassificationCache.generator" href="#main.src.data.classification.ClassificationCache.ClassificationCache.generator">generator</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationCache.ClassificationCache.len" href="#main.src.data.classification.ClassificationCache.ClassificationCache.len">len</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationCache.ClassificationCache.make_classification_label" href="#main.src.data.classification.ClassificationCache.ClassificationCache.make_classification_label">make_classification_label</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationCache.ClassificationCache.process_infos" href="#main.src.data.classification.ClassificationCache.ClassificationCache.process_infos">process_infos</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationCache.ClassificationCache.set_datasets" href="#main.src.data.classification.ClassificationCache.ClassificationCache.set_datasets">set_datasets</a></code></li>
 </ul>
 </li>
 </ul>

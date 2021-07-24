@@ -32,14 +32,13 @@ from typing import Tuple
 import torch
 
 from main.FolderInfos import FolderInfos
-from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
-from main.src.data.balance_classes.enums import EnumBalance
+from main.src.enums import EnumAugmenter
+from main.src.enums import EnumBalance
 from main.src.data.classification.ClassificationCache import ClassificationCache
 from main.src.data.classification.ClassificationPatch import ClassificationPatch
-from main.src.data.classification.enums import EnumLabelModifier, EnumClassPatchAdder
-from main.src.data.enums import EnumUsage, EnumClasses
-from main.src.data.patch_creator.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
-from main.src.data.patch_creator.patch_creator0 import Patch_creator0
+from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
+from main.src.enums import EnumUsage, EnumClasses
+from main.src.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -51,7 +50,6 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     Args:
         dataset_name: EnumLabelModifier,
         usage_type: EnumUsage,
-        patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the attr_model
         exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [NoLabelModifier](./classification/NoLabelModifier.html)
@@ -71,45 +69,34 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  usage_type: EnumUsage = EnumUsage.Classification,
-                 patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=1000,
                  exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
         self.attr_global_name = &#34;data&#34;
-        with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;, &#34;r&#34;) as fp:
-            dico_infos = json.load(fp)
 
         if usage_type == EnumUsage.Classification:
             if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34; and augmenter_patch == EnumAugmenter.NoAugmenter \
-                    and augmentations_patch == &#34;none&#34; and \
+                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34;  and \
                     exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
                     and grid_size == 1000 and not force_classifpatch:
                 self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                         other_class_adder=other_class_adder,interval=interval)
             else:
-                if patch_creator == EnumPatchAlgorithm.FixedPx:
-                    self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
-                                                             images_informations_preprocessed=dico_infos,
-                                                             exclusion_policy=exclusion_policy,
-                                                             exclusion_policy_threshold=exclusion_policy_threshold)
-                else:
-                    raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
-                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
+                self.attr_dataset = ClassificationPatch(input_size=input_size,
                                                         classes_to_use=classes_to_use,
                                                         balance=balance,
                                                         augmentations_img=augmentations_img,
                                                         augmenter_img=augmenter_img,
-                                                        augmentations_patch=augmentations_patch,
-                                                        augmenter_patch=augmenter_patch,
                                                         augmentation_factor=augmentation_factor,
-                                                        label_modifier=dataset_name)
+                                                        label_modifier=dataset_name,
+                                                        grid_size_px=grid_size,
+                                                        threshold_margin=exclusion_policy_threshold
+                                                        )
 
 
         elif usage_type == EnumUsage.Segmentation:
@@ -146,7 +133,7 @@ if __name__ == &#34;__main__&#34;:
 <dl>
 <dt id="main.src.data.DatasetFactory.DatasetFactory"><code class="flex name class">
 <span>class <span class="ident">DatasetFactory</span></span>
-<span>(</span><span>dataset_name: <a title="main.src.data.classification.enums.EnumLabelModifier" href="classification/enums.html#main.src.data.classification.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, usage_type: <a title="main.src.data.enums.EnumUsage" href="enums.html#main.src.data.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, patch_creator: <a title="main.src.data.patch_creator.enums.EnumPatchAlgorithm" href="patch_creator/enums.html#main.src.data.patch_creator.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a> = EnumPatchAlgorithm.FixedPx, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1, force_classifpatch=False, other_class_adder: <a title="main.src.data.classification.enums.EnumClassPatchAdder" href="classification/enums.html#main.src.data.classification.enums.EnumClassPatchAdder">EnumClassPatchAdder</a> = EnumClassPatchAdder.NoClassPatchAdder, interval: int = 1)</span>
+<span>(</span><span>dataset_name: <a title="main.src.enums.EnumLabelModifier" href="../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, usage_type: <a title="main.src.enums.EnumUsage" href="../enums.html#main.src.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.enums.EnumBalance" href="../enums.html#main.src.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.enums.EnumAugmenter" href="../enums.html#main.src.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1, force_classifpatch=False, other_class_adder: <a title="main.src.enums.EnumClassPatchAdder" href="../enums.html#main.src.enums.EnumClassPatchAdder">EnumClassPatchAdder</a> = EnumClassPatchAdder.NoClassPatchAdder, interval: int = 1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the attr_dataset creation and access with options of:
@@ -158,8 +145,6 @@ if __name__ == &#34;__main__&#34;:
 <dd>EnumLabelModifier,</dd>
 <dt><strong><code>usage_type</code></strong></dt>
 <dd>EnumUsage,</dd>
-<dt><strong><code>patch_creator</code></strong></dt>
-<dd>EnumPatchAlgorithm, for classification only</dd>
 <dt><strong><code>grid_size</code></strong></dt>
 <dd>int, classification only with fixed_px size. To specify the size of a patch</dd>
 <dt><strong><code>input_size</code></strong></dt>
@@ -203,7 +188,6 @@ if __name__ == &#34;__main__&#34;:
     Args:
         dataset_name: EnumLabelModifier,
         usage_type: EnumUsage,
-        patch_creator: EnumPatchAlgorithm, for classification only
         grid_size: int, classification only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the attr_model
         exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [NoLabelModifier](./classification/NoLabelModifier.html)
@@ -223,45 +207,34 @@ if __name__ == &#34;__main__&#34;:
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  usage_type: EnumUsage = EnumUsage.Classification,
-                 patch_creator: EnumPatchAlgorithm = EnumPatchAlgorithm.FixedPx,
                  grid_size=1000, input_size=1000,
                  exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
                  balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
         self.attr_global_name = &#34;data&#34;
-        with open(f&#34;{FolderInfos.input_data_folder}images_informations_preprocessed.json&#34;, &#34;r&#34;) as fp:
-            dico_infos = json.load(fp)
 
         if usage_type == EnumUsage.Classification:
             if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34; and augmenter_patch == EnumAugmenter.NoAugmenter \
-                    and augmentations_patch == &#34;none&#34; and \
+                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34;  and \
                     exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
                     and grid_size == 1000 and not force_classifpatch:
                 self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                         other_class_adder=other_class_adder,interval=interval)
             else:
-                if patch_creator == EnumPatchAlgorithm.FixedPx:
-                    self.attr_patch_creator = Patch_creator0(grid_size_px=grid_size,
-                                                             images_informations_preprocessed=dico_infos,
-                                                             exclusion_policy=exclusion_policy,
-                                                             exclusion_policy_threshold=exclusion_policy_threshold)
-                else:
-                    raise NotImplementedError(f&#34;{patch_creator} is not implemented&#34;)
-                self.attr_dataset = ClassificationPatch(self.attr_patch_creator, input_size=input_size,
+                self.attr_dataset = ClassificationPatch(input_size=input_size,
                                                         classes_to_use=classes_to_use,
                                                         balance=balance,
                                                         augmentations_img=augmentations_img,
                                                         augmenter_img=augmenter_img,
-                                                        augmentations_patch=augmentations_patch,
-                                                        augmenter_patch=augmenter_patch,
                                                         augmentation_factor=augmentation_factor,
-                                                        label_modifier=dataset_name)
+                                                        label_modifier=dataset_name,
+                                                        grid_size_px=grid_size,
+                                                        threshold_margin=exclusion_policy_threshold
+                                                        )
 
 
         elif usage_type == EnumUsage.Segmentation:

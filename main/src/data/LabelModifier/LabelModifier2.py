@@ -8,9 +8,10 @@ from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.enums import EnumClasses
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class LabelModifier2(AbstractLabelModifier):
+class LabelModifier2(AbstractLabelModifier,BaseClass):
     """Modify the source label provided by the source class inheriting from AbstractClassificationDataset.
     Merge multiple labels the classes to use and indicate the presence or absence of one of these classes
 

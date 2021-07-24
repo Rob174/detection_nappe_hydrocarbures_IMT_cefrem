@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python">import torch.nn as nn
 
-from main.src.models.enums import EnumFreeze
+from main.src.enums import EnumFreeze
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -88,7 +88,7 @@ class PretrainedModel(nn.Module, BaseClass):
 <dl>
 <dt id="main.src.models.models.PretrainedModel.PretrainedModel"><code class="flex name class">
 <span>class <span class="ident">PretrainedModel</span></span>
-<span>(</span><span>original_model, original_num_classes=1000, num_classes=3, out_activation='sigmoid', freeze: <a title="main.src.models.enums.EnumFreeze" href="../enums.html#main.src.models.enums.EnumFreeze">EnumFreeze</a> = EnumFreeze.AllExceptLastDense)</span>
+<span>(</span><span>original_model, original_num_classes=1000, num_classes=3, out_activation='sigmoid', freeze: <a title="main.src.enums.EnumFreeze" href="../../enums.html#main.src.enums.EnumFreeze">EnumFreeze</a> = EnumFreeze.AllExceptLastDense)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Pretrained version of resnet with an additional layer to output the correct number of classes

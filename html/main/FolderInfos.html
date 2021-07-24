@@ -65,7 +65,7 @@ class FolderInfos(BaseClass):
     &#34;&#34;&#34;str, proper separator for the operating system (linux or windows)&#34;&#34;&#34;
 
     @staticmethod
-    def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
+    def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False,with_id=None):
         &#34;&#34;&#34;Initialize some interesting pathes as static attributes.
 
         Args:
@@ -78,6 +78,8 @@ class FolderInfos(BaseClass):
             FolderInfos.separator = &#34;\\&#34;
         while True:
             FolderInfos.id = strftime(&#34;%Y-%m-%d_%Hh%Mmin%Ss&#34;, localtime())
+            if with_id is not None:
+                FolderInfos.id = with_id
             FolderInfos.root_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2]) + FolderInfos.separator
             FolderInfos.data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_out&#34;+FolderInfos.separator])
             FolderInfos.input_data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_in&#34;]) + FolderInfos.separator
@@ -87,7 +89,7 @@ class FolderInfos(BaseClass):
             FolderInfos.base_filename = FolderInfos.base_folder + FolderInfos.id+&#34;_&#34;+custom_name
             FolderInfos.data_test = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_test&#34;]) + FolderInfos.separator
             try:
-                if test_without_data is False:
+                if test_without_data is False and with_id is None:
                     os.mkdir(FolderInfos.base_folder)
                 break
             except Exception as e:
@@ -155,7 +157,7 @@ C:\....\detection_nappe_hydrocarbures_IMT_cefrem\
     &#34;&#34;&#34;str, proper separator for the operating system (linux or windows)&#34;&#34;&#34;
 
     @staticmethod
-    def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
+    def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False,with_id=None):
         &#34;&#34;&#34;Initialize some interesting pathes as static attributes.
 
         Args:
@@ -168,6 +170,8 @@ C:\....\detection_nappe_hydrocarbures_IMT_cefrem\
             FolderInfos.separator = &#34;\\&#34;
         while True:
             FolderInfos.id = strftime(&#34;%Y-%m-%d_%Hh%Mmin%Ss&#34;, localtime())
+            if with_id is not None:
+                FolderInfos.id = with_id
             FolderInfos.root_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2]) + FolderInfos.separator
             FolderInfos.data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_out&#34;+FolderInfos.separator])
             FolderInfos.input_data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_in&#34;]) + FolderInfos.separator
@@ -177,7 +181,7 @@ C:\....\detection_nappe_hydrocarbures_IMT_cefrem\
             FolderInfos.base_filename = FolderInfos.base_folder + FolderInfos.id+&#34;_&#34;+custom_name
             FolderInfos.data_test = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_test&#34;]) + FolderInfos.separator
             try:
-                if test_without_data is False:
+                if test_without_data is False and with_id is None:
                     os.mkdir(FolderInfos.base_folder)
                 break
             except Exception as e:
@@ -233,7 +237,7 @@ data_out folder path</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="main.FolderInfos.FolderInfos.init"><code class="name flex">
-<span>def <span class="ident">init</span></span>(<span>custom_name='', subdir='', test_without_data=False)</span>
+<span>def <span class="ident">init</span></span>(<span>custom_name='', subdir='', test_without_data=False, with_id=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Initialize some interesting pathes as static attributes.</p>
@@ -251,7 +255,7 @@ data_out folder path</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
+def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False,with_id=None):
     &#34;&#34;&#34;Initialize some interesting pathes as static attributes.
 
     Args:
@@ -264,6 +268,8 @@ def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
         FolderInfos.separator = &#34;\\&#34;
     while True:
         FolderInfos.id = strftime(&#34;%Y-%m-%d_%Hh%Mmin%Ss&#34;, localtime())
+        if with_id is not None:
+            FolderInfos.id = with_id
         FolderInfos.root_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2]) + FolderInfos.separator
         FolderInfos.data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_out&#34;+FolderInfos.separator])
         FolderInfos.input_data_folder = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_in&#34;]) + FolderInfos.separator
@@ -273,7 +279,7 @@ def init(custom_name=&#34;&#34;,subdir=&#34;&#34;,test_without_data=False):
         FolderInfos.base_filename = FolderInfos.base_folder + FolderInfos.id+&#34;_&#34;+custom_name
         FolderInfos.data_test = FolderInfos.separator.join(os.path.realpath(__file__).split(FolderInfos.separator)[:-2] + [&#34;data_test&#34;]) + FolderInfos.separator
         try:
-            if test_without_data is False:
+            if test_without_data is False and with_id is None:
                 os.mkdir(FolderInfos.base_folder)
             break
         except Exception as e:

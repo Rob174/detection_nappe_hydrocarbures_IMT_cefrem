@@ -42,9 +42,9 @@ class MetadataManager:
             except:
                 pass
         return None
-    def extract_from_uniq_function(self,function,dico_data):
+    def extract_from_uniq_function(self,function,dico):
         try:
-            value = self.formatter.format(eval(function)(dico_data))
+            value = self.formatter.format(eval(function)(dico))
             return value
         except:
             return None
@@ -118,9 +118,9 @@ class MetadataManager:
             except:
                 pass
         return None
-    def extract_from_uniq_function(self,function,dico_data):
+    def extract_from_uniq_function(self,function,dico):
         try:
-            value = self.formatter.format(eval(function)(dico_data))
+            value = self.formatter.format(eval(function)(dico))
             return value
         except:
             return None
@@ -164,7 +164,7 @@ class MetadataManager:
 </details>
 </dd>
 <dt id="main.src.analysis.analysis.metadata.MetadataManager.MetadataManager.extract_from_uniq_function"><code class="name flex">
-<span>def <span class="ident">extract_from_uniq_function</span></span>(<span>self, function, dico_data)</span>
+<span>def <span class="ident">extract_from_uniq_function</span></span>(<span>self, function, dico)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -172,9 +172,9 @@ class MetadataManager:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def extract_from_uniq_function(self,function,dico_data):
+<pre><code class="python">def extract_from_uniq_function(self,function,dico):
     try:
-        value = self.formatter.format(eval(function)(dico_data))
+        value = self.formatter.format(eval(function)(dico))
         return value
     except:
         return None</code></pre>

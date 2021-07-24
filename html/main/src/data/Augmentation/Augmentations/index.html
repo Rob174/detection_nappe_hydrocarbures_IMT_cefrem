@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>main.src.data.Augmentation.Augmentations API documentation</title>
-<meta name="description" content="Contains one class per augmentation with two types of augmentations depending of the augmenter" />
+<meta name="description" content="Allow to compute transformation matrices and then apply them on np.ndarray or polygons" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,26 +22,28 @@
 <h1 class="title">Module <code>main.src.data.Augmentation.Augmentations</code></h1>
 </header>
 <section id="section-intro">
-<p>Contains one class per augmentation with two types of augmentations depending of the augmenter</p>
+<p>Allow to compute transformation matrices and then apply them on np.ndarray or polygons</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Contains one class per augmentation with two types of augmentations depending of the augmenter
+Allow to compute transformation matrices and then apply them on np.ndarray or polygons
 &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
+<dt><code class="name"><a title="main.src.data.Augmentation.Augmentations.AugmentationApplier" href="AugmentationApplier/index.html">main.src.data.Augmentation.Augmentations.AugmentationApplier</a></code></dt>
+<dd>
+<div class="desc"><p>Objects that allows to apply the transformation matrix to the correct object (image or polygons).
+Return the np.ndarray augmented</p></div>
+</dd>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmentations.AugmentationWithMatrix" href="AugmentationWithMatrix/index.html">main.src.data.Augmentation.Augmentations.AugmentationWithMatrix</a></code></dt>
 <dd>
-<div class="desc"><p>Classes inheriting from AbstractAugmentationWithMatrix for Augmenter1</p></div>
-</dd>
-<dt><code class="name"><a title="main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix" href="AugmentationWithoutMatrix/index.html">main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix</a></code></dt>
-<dd>
-<div class="desc"><p>Classes inheriting from AbstractAugmentationWithoutMatrix for Augmenter0</p></div>
+<div class="desc"><p>Classes inheriting from AbstractAugmentationWithMatrix for Augmenter1
+Rsponsability: compute the transformation matrix to apply</p></div>
 </dd>
 </dl>
 </section>
@@ -65,8 +67,8 @@ Contains one class per augmentation with two types of augmentations depending of
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
+<li><code><a title="main.src.data.Augmentation.Augmentations.AugmentationApplier" href="AugmentationApplier/index.html">main.src.data.Augmentation.Augmentations.AugmentationApplier</a></code></li>
 <li><code><a title="main.src.data.Augmentation.Augmentations.AugmentationWithMatrix" href="AugmentationWithMatrix/index.html">main.src.data.Augmentation.Augmentations.AugmentationWithMatrix</a></code></li>
-<li><code><a title="main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix" href="AugmentationWithoutMatrix/index.html">main.src.data.Augmentation.Augmentations.AugmentationWithoutMatrix</a></code></li>
 </ul>
 </li>
 </ul>

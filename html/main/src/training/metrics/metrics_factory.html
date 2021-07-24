@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import re
 from enum import Enum
+from functools import partial
 
 import numpy as np
 
@@ -76,13 +77,17 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
                     &#34;valid_values&#34;: []
                 }
                 threshold = float(re.sub(&#34;^accuracy_threshold-([0-9]\\.[0-9]+)$&#34;, &#34;\\1&#34;, metric))
-                def f(pred,true):
-                    pred[pred &gt; threshold] = 1.
-                    pred[pred &lt;= threshold] = 0.
-                    true[true &gt; threshold] = 1.
-                    true[true &lt;= threshold] = 0.
-                    return np.sum(np.abs(pred-true))
-                self.functions_metrics.append(f)
+                def f(pred,true,threshold):
+                    new_pred = np.copy(pred)
+                    new_true = np.copy(true)
+                    new_pred[pred &gt; threshold] = 1.
+                    new_pred[pred &lt;= threshold] = 0.
+                    new_true[true &gt; threshold] = 1.
+                    new_true[true &lt;= threshold] = 0.
+                    return np.sum(np.abs(new_pred-new_true))
+
+                function = partial(f,threshold=threshold)
+                self.functions_metrics.append(function)
                 # si proba &gt; 0.5 compte comme présent sinon non présent
             else:
                 raise NotImplementedError(f&#34;{metric} has not been implemented&#34;)
@@ -172,13 +177,17 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
                     &#34;valid_values&#34;: []
                 }
                 threshold = float(re.sub(&#34;^accuracy_threshold-([0-9]\\.[0-9]+)$&#34;, &#34;\\1&#34;, metric))
-                def f(pred,true):
-                    pred[pred &gt; threshold] = 1.
-                    pred[pred &lt;= threshold] = 0.
-                    true[true &gt; threshold] = 1.
-                    true[true &lt;= threshold] = 0.
-                    return np.sum(np.abs(pred-true))
-                self.functions_metrics.append(f)
+                def f(pred,true,threshold):
+                    new_pred = np.copy(pred)
+                    new_true = np.copy(true)
+                    new_pred[pred &gt; threshold] = 1.
+                    new_pred[pred &lt;= threshold] = 0.
+                    new_true[true &gt; threshold] = 1.
+                    new_true[true &lt;= threshold] = 0.
+                    return np.sum(np.abs(new_pred-new_true))
+
+                function = partial(f,threshold=threshold)
+                self.functions_metrics.append(function)
                 # si proba &gt; 0.5 compte comme présent sinon non présent
             else:
                 raise NotImplementedError(f&#34;{metric} has not been implemented&#34;)

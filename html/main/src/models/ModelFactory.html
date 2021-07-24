@@ -29,7 +29,7 @@
 <pre><code class="python">import torchvision.models as models
 from efficientnet_pytorch import EfficientNet
 
-from main.src.models.enums import *
+from main.src.enums import *
 from main.src.models.models.PretrainedModel import PretrainedModel
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -53,6 +53,10 @@ class ModelFactory(BaseClass):
             self.model = PretrainedModel(original_model=models.resnet18(pretrained=True),
                                          original_num_classes=1000,
                                          num_classes=num_classes, out_activation=&#34;sigmoid&#34;, freeze=freeze)
+        elif model_name == EnumModels.Resnet152:
+            self.model = PretrainedModel(original_model=models.resnet152(pretrained=True),
+                                         original_num_classes=1000,
+                                         num_classes=num_classes, out_activation=&#34;sigmoid&#34;, freeze=freeze)
         elif model_name == EnumModels.Vgg16:
             self.model = PretrainedModel(original_model=models.vgg16(pretrained=True),
                                          original_num_classes=1000,
@@ -65,7 +69,7 @@ class ModelFactory(BaseClass):
         self.attr_num_classes = num_classes
 
     def call(self):
-        &#34;&#34;&#34;Returns the pytorch attr_model&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns the pytorch model&#34;&#34;&#34;
         return self.model
 
     def __call__(self):
@@ -83,7 +87,7 @@ class ModelFactory(BaseClass):
 <dl>
 <dt id="main.src.models.ModelFactory.ModelFactory"><code class="flex name class">
 <span>class <span class="ident">ModelFactory</span></span>
-<span>(</span><span>model_name: <a title="main.src.models.enums.EnumModels" href="enums.html#main.src.models.enums.EnumModels">EnumModels</a>, num_classes: int = 2, freeze: <a title="main.src.models.enums.EnumFreeze" href="enums.html#main.src.models.enums.EnumFreeze">EnumFreeze</a> = EnumFreeze.AllExceptLastDense)</span>
+<span>(</span><span>model_name: <a title="main.src.enums.EnumModels" href="../enums.html#main.src.enums.EnumModels">EnumModels</a>, num_classes: int = 2, freeze: <a title="main.src.enums.EnumFreeze" href="../enums.html#main.src.enums.EnumFreeze">EnumFreeze</a> = EnumFreeze.AllExceptLastDense)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Object creating desired attr_model</p>
@@ -119,6 +123,10 @@ class ModelFactory(BaseClass):
             self.model = PretrainedModel(original_model=models.resnet18(pretrained=True),
                                          original_num_classes=1000,
                                          num_classes=num_classes, out_activation=&#34;sigmoid&#34;, freeze=freeze)
+        elif model_name == EnumModels.Resnet152:
+            self.model = PretrainedModel(original_model=models.resnet152(pretrained=True),
+                                         original_num_classes=1000,
+                                         num_classes=num_classes, out_activation=&#34;sigmoid&#34;, freeze=freeze)
         elif model_name == EnumModels.Vgg16:
             self.model = PretrainedModel(original_model=models.vgg16(pretrained=True),
                                          original_num_classes=1000,
@@ -131,7 +139,7 @@ class ModelFactory(BaseClass):
         self.attr_num_classes = num_classes
 
     def call(self):
-        &#34;&#34;&#34;Returns the pytorch attr_model&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns the pytorch model&#34;&#34;&#34;
         return self.model
 
     def __call__(self):
@@ -147,13 +155,13 @@ class ModelFactory(BaseClass):
 <span>def <span class="ident">call</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the pytorch attr_model</p></div>
+<div class="desc"><p>Returns the pytorch model</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def call(self):
-    &#34;&#34;&#34;Returns the pytorch attr_model&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns the pytorch model&#34;&#34;&#34;
     return self.model</code></pre>
 </details>
 </dd>

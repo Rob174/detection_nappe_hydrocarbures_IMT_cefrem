@@ -31,36 +31,39 @@ filter them</p>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
 filter them&#34;&#34;&#34;
-
+import json
 import random
-from typing import Optional
+from typing import Optional, List, Union, Dict
 from typing import Tuple
 
 import numpy as np
-from rasterio.transform import Affine, rowcol
+from h5py import File
 
-from main.src.data.Augmentation.Augmenters.Augmenter0 import Augmenter0
+from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
-from main.src.data.Augmentation.Augmenters.enums import EnumAugmenter
-from main.src.data.TwoWayDict import Way
+from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.Annotations.FabricPreprocessedCache import FabricPreprocessedCache
+from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.TwoWayDict import TwoWayDict
+from main.src.enums import EnumAugmenter
 from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
-from main.src.data.balance_classes.enums import EnumBalance
-from main.src.data.balance_classes.no_balance import NoBalance
 from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
-from main.src.data.classification.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.classification.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.classification.LabelModifier.NoLabelModifier import NoLabelModifier
-from main.src.data.classification.enums import EnumLabelModifier
-from main.src.data.enums import EnumClasses
-from main.src.data.patch_creator.patch_creator0 import Patch_creator0
-from main.src.data.resizer import Resizer
-from main.src.data.segmentation.DataSegmentation import DataSentinel1Segmentation
-from main.src.data.segmentation.NumpyAnnotations import NumpyAnnotations
-from main.src.data.segmentation.PointAnnotations import PointAnnotations
+from main.src.enums import EnumBalance
+from main.src.data.balance_classes.no_balance import NoBalance
+from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
+from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
+from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
+from main.src.enums import EnumLabelModifier
+from main.src.enums import EnumClasses
+from main.src.data.MarginCheck import MarginCheck
+from main.src.data.Datasets import PointDataset
+from main.src.enums import EnumDataset
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class ClassificationPatch(DataSentinel1Segmentation):
+class ClassificationPatch(BaseClass):
     &#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
     filter them.
 
@@ -71,36 +74,36 @@ class ClassificationPatch(DataSentinel1Segmentation):
         balance: EnumBalance indicating the class used to balance images
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_img: opt EnumAugmenter, name of the augmenter to use on source image
-        augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
-        augmenter_patch: opt EnumAugmenter, name of the augmenter to use on patches
         augmentation_factor: the number of replicas of the original attr_dataset to do
         label_modifier: EnumLabelModifier
     &#34;&#34;&#34;
-
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
+    def __init__(self, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
-                 tr_percent=0.7):
+                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
-        self.patch_creator = patch_creator
+        self.attr_global_name = &#34;attr_dataset&#34;
+        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricPreprocessedCache()()
+        self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
-        self.attr_resizer = Resizer(out_size_w=input_size)
+        self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_augmentation_factor = augmentation_factor
-        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
-        self.tr_keys = list(self.images.keys())[:int(len(self.images) * tr_percent)]
-        self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
+        with self.attr_image_dataset as images:
+            self.datasets = {
+                &#34;tr&#34;:list(images.keys())[:int(len(images) * tr_percent)],
+                &#34;valid&#34;:list(images.keys())[int(len(images) * tr_percent):]
+            }
         self.attr_global_name = &#34;attr_dataset&#34;
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier()
+            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         else:
             raise NotImplementedError(f&#34;{label_modifier} is not implemented&#34;)
         if balance == EnumBalance.NoBalance:
@@ -113,60 +116,44 @@ class ClassificationPatch(DataSentinel1Segmentation):
         else:
             raise NotImplementedError
         if augmentations_img != &#34;none&#34;:
-            if augmenter_img == EnumAugmenter.Augmenter0:
-                self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
-                self.generator = self.generate_item_step_by_step
-                self.annotations_labels = NumpyAnnotations()
-            elif augmenter_img == EnumAugmenter.Augmenter1:
-                self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
-                                                     patch_size_before_final_resize=
-                                                     self.patch_creator.attr_grid_size_px,
-                                                     patch_size_final_resize=input_size
-                                                     )
-                self.generator = self.generate_item_with_augmentation_at_once
-                self.annotations_labels = PointAnnotations()
+            if augmenter_img == EnumAugmenter.Augmenter1:
+                self.attr_augmenter = Augmenter1(allowed_transformations=augmentations_img,
+                                                 patch_size_before_final_resize=
+                                                     self.attr_grid_size_px,
+                                                 patch_size_final_resize=input_size
+                                                 )
 
             else:
-                self.generator = self.generate_item_step_by_step
-                raise NotImplementedError(f&#34;{augmenter_img} is not implemented&#34;)
+                self.attr_augmenter = NoAugmenter(allowed_transformations=augmentations_img,
+                                                  patch_size_before_final_resize=
+                                                     self.attr_grid_size_px,
+                                                  patch_size_final_resize=input_size
+                                                  )
         else:
-            self.generator = self.generate_item_step_by_step
-            self.attr_img_augmenter = NoAugmenter()
-        if augmentations_patch != &#34;none&#34;:
-            if augmenter_patch == EnumAugmenter.Augmenter0:
-                self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmentations_patch)
-            else:
-                raise NotImplementedError(f&#34;{augmenter_patch} is not implemented&#34;)
-        else:
-            self.attr_patch_augmenter = NoAugmenter()
+            raise NotImplementedError(f&#34;{augmenter_img} is not implemented&#34;)
         # Cache to store between epochs rejected images if we have no image augmenter
         self.cache_img_id_rejected = []
-
-    def get_geographic_coords_of_patch(self, name_src_img, patch_id):
-        &#34;&#34;&#34;Get the coordinates of the upper left pixel of the patch specified
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        &#34;&#34;&#34;Change the origin of the patches
 
         Args:
-            name_src_img: str, uniq id of the source image
-            patch_id: int, id of the patch to get coordinates
-
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:
-            tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
+
         &#34;&#34;&#34;
-        img = self.getimage(name_src_img)  # read image from the hdf5 file
-        transform_array = self.images_infos[name_src_img][&#34;transform&#34;]  # get the corresponding transformation array
-        transform_array = np.array(transform_array)
-        # transfer it into a rasterio AffineTransformation object
-        transform = Affine.from_gdal(a=transform_array[0, 0], b=transform_array[0, 1], c=transform_array[0, 2],
-                                     d=transform_array[1, 0], e=transform_array[1, 1], f=transform_array[1, 2])
-        # Get the position of the upperleft pixel on the global image
-        posx, posy = self.patch_creator.get_position_patch(patch_id=patch_id, input_shape=img.shape)
-        # Get the corresponding geographical coordinates
-        return rowcol(transform, posx, posy)
+        self.attr_image_dataset = image_dataset
+        self.attr_label_dataset = label_dataset
+        self.dico_infos = dico_infos
+    def __iter__(self, dataset: Union[EnumDataset,List[str]] = EnumDataset.Train):
+        if isinstance(dataset,list):
+            keys = dataset
+        else:
+            keys = self.datasets[dataset]
+        return iter(self.generator(keys))
 
-    def __iter__(self, dataset=&#34;tr&#34;):
-        return iter(self.generator(dataset))
-
-    def generate_item_with_augmentation_at_once(self, dataset=&#34;tr&#34;):
+    def generator(self, images_available):
         &#34;&#34;&#34;
 
         Args:
@@ -178,150 +165,79 @@ class ClassificationPatch(DataSentinel1Segmentation):
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         &#34;&#34;&#34;
-        if isinstance(self.attr_img_augmenter, Augmenter1) is False:
-            raise Exception(&#34;Only augmenter1 is supported with this method of attr_dataset generation&#34;)
-        if isinstance(self.attr_patch_augmenter, NoAugmenter) is False:
-            raise Exception(&#34;The patch augmenter is not supported when you choose augmenter1 for image augmenter&#34;)
-        images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-        for num_dataset in range(self.attr_augmentation_factor):
-            random.shuffle(images_available)
-            for item in images_available:
-                image = self.images[item]
-                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in np.random.permutation(
-                        self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                    annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
-                        self.annotations_labels.get, item,
-                        partial_transformation_matrix, patch_upper_left_corner_coords)
-                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                    if balance_reject is True:
-                        continue
-                    image = np.array(image, dtype=np.float32)
-                    image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
-                        image=image,
-                        partial_transformation_matrix=partial_transformation_matrix,
-                        patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                    )
-                    reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
-                    if reject is True:
-                        continue
-                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
-                    # yield image_patch, annotations, transformation_matrix, item
-                    yield image_patch, classification, transformation_matrix, item
+        with self.attr_image_dataset as images_dataset:
+            with self.attr_label_dataset as labels_dataset:
+                for num_dataset in range(self.attr_augmentation_factor):
+                    random.shuffle(images_available)
+                    for item in images_available:
+                        image = images_dataset.get(item)
+                        image = np.array(image, dtype=np.float32)
+                        polygons = labels_dataset.get(item)
+                        partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
+                        for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                            annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
+                                polygons=polygons,
+                                partial_transformation_matrix=partial_transformation_matrix,
+                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                            )
+                            # Create the classification label with the proper technic
+                            classification = self.attr_label_modifier.make_classification_label(annotations_patch)
+                            balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
+                            if balance_reject is True:
+                                continue
+                            image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+                                image=image,
+                                partial_transformation_matrix=partial_transformation_matrix,
+                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                            )
+                            reject = self.attr_check_margin_reject.check_reject(image_patch)
+                            if reject is True:
+                                continue
+                            # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+                            image_patch = np.stack((image_patch,)*3, axis=0)
+                            yield image_patch, classification, transformation_matrix, item
 
-    def generate_item_step_by_step(self, dataset=&#34;tr&#34;):  # btwn 25 and 50 ms
-        &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
+    def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
+                  standardizer: AbstractStandardizer,label_encoding: TwoWayDict, transformation_matrix: Optional[np.ndarray] = None
+                  ) -&gt; Tuple[np.ndarray,np.ndarray,np.ndarray]:
+        &#34;&#34;&#34;Generate image patch and corresponding annotation for the given parameters
 
-        get the patch of global int id id
         Args:
-            dataset:
+            image: np.ndarray, image on which to apply the transformations
+            annotation: np.ndarray, annotation on which to apply the transformations
+            patch_upper_left_corner_coords: coordinates of the upper left corner to get
+            standardizer: object giving allowing to standardize the patch
+            label_encoding: TwoWayDict mapping between labels names and encoding as uint8
+            transformation_matrix: Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation
 
         Returns:
-            generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
-            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
-                   classif: np.ndarray (shape (num_classes,), classification patch ;
-                   None:  no transformation matrix is available for this method
-                   item: str name of the source image
+            Tuple[np.ndarray,np.ndarray,np.ndarray]
+            - image_patch: patch extracted from the image
+            - classification: vector containing true probabilities of presence of annotation
+            - transformation_matrix: 3,3 transformation matrix applied
         &#34;&#34;&#34;
-        if isinstance(self.attr_img_augmenter, Augmenter1) is True:
-            raise Exception(&#34;Augmenter1 is not supported with this method of attr_dataset generation. Use Augmenter0&#34;)
-        images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-        # images_available = list(self.images.keys())
-        for num_dataset in range(self.attr_augmentation_factor):
-            random.shuffle(images_available)
-            for item in images_available:
-                image = self.images[item]
-                annotations = self.annotations_labels[item]
-                for patch_id in np.random.permutation(range(self.patch_creator.num_available_patches(image))):
-
-                    if isinstance(self.attr_img_augmenter, NoAugmenter) and \
-                            [item, patch_id] in self.cache_img_id_rejected:
-                        continue  # to save computation time and keep np array output
-                    # Make augmentations on input image if necessary (thanks to NoAugment class)
-                    image, annotations = self.attr_img_augmenter.transform(image, annotations)
-                    # get the patch with the selected id for the input image and the annotation
-                    ## two lines: btwn 21 and 54 ms
-                    img_patch, reject = self.patch_creator(image, item, patch_id=patch_id)  # btwn 10 ms and 50 ms
-                    if reject is True:
-                        continue  # to save computation time and keep np array output
-                    annotations_patch, _ = self.patch_creator(annotations, item,
-                                                              patch_id=patch_id)  # btwn 10 ms and 30 ms (10 ms most of the time)
-                    # Make augmentations on patch if necessary (thanks to NoAugment class) and if it is not rejected
-                    img_patch, annotations_patch = self.attr_patch_augmenter.transform(img_patch, annotations_patch)
-                    # we reject an image if it contains margins (cf patchcreator)
-                    # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
-                    input = self.attr_resizer(img_patch)  # ~ 0 ns most of the time, 1 ms sometimes
-                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    input = np.stack((input, input, input), axis=0)  # 0 ns most of the time
-                    input = (input - self.pixel_stats[&#34;mean&#34;]) / self.pixel_stats[&#34;std&#34;]
-                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classif, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                    # As the balancing operation are done in the make_classification_label method, we reject an image
-                    # if it is rejected due to margins or balancing
-                    reject = reject or balance_reject
-                    if isinstance(self.attr_img_augmenter, NoAugmenter) and reject is True:
-                        self.cache_img_id_rejected.append([item, patch_id])
-                        continue
-                    yield input, classif, None, item
-
-    def make_classification_label(self, annotations_patch):
-        &#34;&#34;&#34;Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
-
-        Args:
-            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-        Returns: the classification label
-
-        &#34;&#34;&#34;
-
-        output = np.zeros((len(self.attr_original_class_mapping),), dtype=np.float32)  # 0 ns
-        for value in self.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):  # btwn 1 and 2 ms for the for loop
-            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-            value = int(value)
-            #  if the class is in the patch
-            if value in annotations_patch:
-                output[value] = 1.
-        # Check if we need to reject the patch due to overrepresented class
-        balance_reject = self.attr_balance.filter(output)
-        # Modify the label if require
-        output = self.attr_label_modifier.make_classification_label(output)
-        return output, balance_reject
-
+        if transformation_matrix is None:
+            transformation_matrix = np.identity(3)
+        image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+            image=image,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        annotation_patch, transformation_matrix = self.attr_augmenter.transform_image(
+            image=annotation,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        classification = self.attr_label_modifier.make_classification_label(annotation_patch)
+        image_patch = np.stack((image_patch,)*3, axis=0)
+        image_patch = standardizer.standardize(image_patch)
+        return image_patch,classification,transformation_matrix
     def __len__(self):
         return None
-
-    def make_patches_of_image(self, name: str):
-        &#34;&#34;&#34;Creates and returns all patches of an image
-
-        Args:
-            name: uniq str id of the image
-
-        Returns:
-            list of list of:
-
-            - patch: np.ndarray
-            - classif: np.ndarray classification label as returned by make_classification_label
-            - reject: bool reject only based on margins
-        &#34;&#34;&#34;
-        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
-        liste_patches = []
-        num_patches = self.patch_creator.num_available_patches(last_image)
-        # Create all the patches of input images
-        for id in range(num_patches):
-            patch, reject = self.patch_creator(last_image, name, patch_id=id)
-            liste_patches.append([patch])
-            liste_patches[id].append(reject)
-        annotations = np.array(self.annotations_labels[name], dtype=np.float32)
-        for id in range(num_patches):
-            patch, reject = self.patch_creator(annotations, name, patch_id=id)
-            classif = self.make_classification_label(patch)
-            # we ignore balancing rejects
-            liste_patches[id].insert(1, classif[0])
-        return liste_patches
+    def set_standardizer(self, standardizer: AbstractStandardizer):
+        self.attr_standardizer = standardizer
+    def set_annotator(self,annotations):
+        self.annotations_labels = annotations
 
     def len(self, dataset: str) -&gt; Optional[int]:
         return None</code></pre>
@@ -338,7 +254,7 @@ class ClassificationPatch(DataSentinel1Segmentation):
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch"><code class="flex name class">
 <span>class <span class="ident">ClassificationPatch</span></span>
-<span>(</span><span>patch_creator: <a title="main.src.data.patch_creator.patch_creator0.Patch_creator0" href="../patch_creator/patch_creator0.html#main.src.data.patch_creator.patch_creator0.Patch_creator0">Patch_creator0</a>, input_size: int = None, limit_num_images: int = None, balance: <a title="main.src.data.balance_classes.enums.EnumBalance" href="../balance_classes/enums.html#main.src.data.balance_classes.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentations_patch='none', augmenter_patch: <a title="main.src.data.Augmentation.Augmenters.enums.EnumAugmenter" href="../Augmentation/Augmenters/enums.html#main.src.data.Augmentation.Augmenters.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, label_modifier: <a title="main.src.data.classification.enums.EnumLabelModifier" href="enums.html#main.src.data.classification.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, classes_to_use: Tuple[<a title="main.src.data.enums.EnumClasses" href="../enums.html#main.src.data.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), tr_percent=0.7)</span>
+<span>(</span><span>input_size: int = None, limit_num_images: int = None, balance: <a title="main.src.enums.EnumBalance" href="../../enums.html#main.src.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.enums.EnumAugmenter" href="../../enums.html#main.src.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, label_modifier: <a title="main.src.enums.EnumLabelModifier" href="../../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), tr_percent=0.7, grid_size_px: int = 1000, threshold_margin: int = 1000)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
@@ -357,28 +273,16 @@ filter them.</p>
 <dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
 <dt><strong><code>augmenter_img</code></strong></dt>
 <dd>opt EnumAugmenter, name of the augmenter to use on source image</dd>
-<dt><strong><code>augmentations_patch</code></strong></dt>
-<dd>opt str, list of augmentations to apply separated by commas to apply to source image</dd>
-<dt><strong><code>augmenter_patch</code></strong></dt>
-<dd>opt EnumAugmenter, name of the augmenter to use on patches</dd>
 <dt><strong><code>augmentation_factor</code></strong></dt>
 <dd>the number of replicas of the original attr_dataset to do</dd>
 <dt><strong><code>label_modifier</code></strong></dt>
 <dd>EnumLabelModifier</dd>
-</dl>
-<p>Class giving access and managing the original attr_dataset stored in the hdf5 and json files</p>
-<h2 id="args_1">Args</h2>
-<dl>
-<dt><strong><code>limit_num_images</code></strong></dt>
-<dd>limit the number of image in the attr_dataset per epoch (before filtering)</dd>
-<dt><strong><code>input_size</code></strong></dt>
-<dd>the size of the image provided as input to the attr_model ⚠️</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ClassificationPatch(DataSentinel1Segmentation):
+<pre><code class="python">class ClassificationPatch(BaseClass):
     &#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
     filter them.
 
@@ -389,36 +293,36 @@ filter them.</p>
         balance: EnumBalance indicating the class used to balance images
         augmentations_img: opt str, list of augmentations to apply separated by commas to apply to source image
         augmenter_img: opt EnumAugmenter, name of the augmenter to use on source image
-        augmentations_patch: opt str, list of augmentations to apply separated by commas to apply to source image
-        augmenter_patch: opt EnumAugmenter, name of the augmenter to use on patches
         augmentation_factor: the number of replicas of the original attr_dataset to do
         label_modifier: EnumLabelModifier
     &#34;&#34;&#34;
-
-    def __init__(self, patch_creator: Patch_creator0, input_size: int = None,
+    def __init__(self, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
-                 augmentations_patch=&#34;none&#34;, augmenter_patch: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
-                 tr_percent=0.7):
+                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
-        self.patch_creator = patch_creator
+        self.attr_global_name = &#34;attr_dataset&#34;
+        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricPreprocessedCache()()
+        self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
-        self.attr_resizer = Resizer(out_size_w=input_size)
+        self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_augmentation_factor = augmentation_factor
-        super(ClassificationPatch, self).__init__(limit_num_images, input_size=input_size, )
-        self.tr_keys = list(self.images.keys())[:int(len(self.images) * tr_percent)]
-        self.valid_keys = list(self.images.keys())[int(len(self.images) * tr_percent):]
+        with self.attr_image_dataset as images:
+            self.datasets = {
+                &#34;tr&#34;:list(images.keys())[:int(len(images) * tr_percent)],
+                &#34;valid&#34;:list(images.keys())[int(len(images) * tr_percent):]
+            }
         self.attr_global_name = &#34;attr_dataset&#34;
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier()
+            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=DataSentinel1Segmentation.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
         else:
             raise NotImplementedError(f&#34;{label_modifier} is not implemented&#34;)
         if balance == EnumBalance.NoBalance:
@@ -431,60 +335,44 @@ filter them.</p>
         else:
             raise NotImplementedError
         if augmentations_img != &#34;none&#34;:
-            if augmenter_img == EnumAugmenter.Augmenter0:
-                self.attr_img_augmenter = Augmenter0(allowed_transformations=augmentations_img)
-                self.generator = self.generate_item_step_by_step
-                self.annotations_labels = NumpyAnnotations()
-            elif augmenter_img == EnumAugmenter.Augmenter1:
-                self.attr_img_augmenter = Augmenter1(allowed_transformations=augmentations_img,
-                                                     patch_size_before_final_resize=
-                                                     self.patch_creator.attr_grid_size_px,
-                                                     patch_size_final_resize=input_size
-                                                     )
-                self.generator = self.generate_item_with_augmentation_at_once
-                self.annotations_labels = PointAnnotations()
+            if augmenter_img == EnumAugmenter.Augmenter1:
+                self.attr_augmenter = Augmenter1(allowed_transformations=augmentations_img,
+                                                 patch_size_before_final_resize=
+                                                     self.attr_grid_size_px,
+                                                 patch_size_final_resize=input_size
+                                                 )
 
             else:
-                self.generator = self.generate_item_step_by_step
-                raise NotImplementedError(f&#34;{augmenter_img} is not implemented&#34;)
+                self.attr_augmenter = NoAugmenter(allowed_transformations=augmentations_img,
+                                                  patch_size_before_final_resize=
+                                                     self.attr_grid_size_px,
+                                                  patch_size_final_resize=input_size
+                                                  )
         else:
-            self.generator = self.generate_item_step_by_step
-            self.attr_img_augmenter = NoAugmenter()
-        if augmentations_patch != &#34;none&#34;:
-            if augmenter_patch == EnumAugmenter.Augmenter0:
-                self.attr_patch_augmenter = Augmenter0(allowed_transformations=augmentations_patch)
-            else:
-                raise NotImplementedError(f&#34;{augmenter_patch} is not implemented&#34;)
-        else:
-            self.attr_patch_augmenter = NoAugmenter()
+            raise NotImplementedError(f&#34;{augmenter_img} is not implemented&#34;)
         # Cache to store between epochs rejected images if we have no image augmenter
         self.cache_img_id_rejected = []
-
-    def get_geographic_coords_of_patch(self, name_src_img, patch_id):
-        &#34;&#34;&#34;Get the coordinates of the upper left pixel of the patch specified
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        &#34;&#34;&#34;Change the origin of the patches
 
         Args:
-            name_src_img: str, uniq id of the source image
-            patch_id: int, id of the patch to get coordinates
-
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:
-            tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
+
         &#34;&#34;&#34;
-        img = self.getimage(name_src_img)  # read image from the hdf5 file
-        transform_array = self.images_infos[name_src_img][&#34;transform&#34;]  # get the corresponding transformation array
-        transform_array = np.array(transform_array)
-        # transfer it into a rasterio AffineTransformation object
-        transform = Affine.from_gdal(a=transform_array[0, 0], b=transform_array[0, 1], c=transform_array[0, 2],
-                                     d=transform_array[1, 0], e=transform_array[1, 1], f=transform_array[1, 2])
-        # Get the position of the upperleft pixel on the global image
-        posx, posy = self.patch_creator.get_position_patch(patch_id=patch_id, input_shape=img.shape)
-        # Get the corresponding geographical coordinates
-        return rowcol(transform, posx, posy)
+        self.attr_image_dataset = image_dataset
+        self.attr_label_dataset = label_dataset
+        self.dico_infos = dico_infos
+    def __iter__(self, dataset: Union[EnumDataset,List[str]] = EnumDataset.Train):
+        if isinstance(dataset,list):
+            keys = dataset
+        else:
+            keys = self.datasets[dataset]
+        return iter(self.generator(keys))
 
-    def __iter__(self, dataset=&#34;tr&#34;):
-        return iter(self.generator(dataset))
-
-    def generate_item_with_augmentation_at_once(self, dataset=&#34;tr&#34;):
+    def generator(self, images_available):
         &#34;&#34;&#34;
 
         Args:
@@ -496,241 +384,91 @@ filter them.</p>
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         &#34;&#34;&#34;
-        if isinstance(self.attr_img_augmenter, Augmenter1) is False:
-            raise Exception(&#34;Only augmenter1 is supported with this method of attr_dataset generation&#34;)
-        if isinstance(self.attr_patch_augmenter, NoAugmenter) is False:
-            raise Exception(&#34;The patch augmenter is not supported when you choose augmenter1 for image augmenter&#34;)
-        images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-        for num_dataset in range(self.attr_augmentation_factor):
-            random.shuffle(images_available)
-            for item in images_available:
-                image = self.images[item]
-                partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in np.random.permutation(
-                        self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                    annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
-                        self.annotations_labels.get, item,
-                        partial_transformation_matrix, patch_upper_left_corner_coords)
-                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                    if balance_reject is True:
-                        continue
-                    image = np.array(image, dtype=np.float32)
-                    image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
-                        image=image,
-                        partial_transformation_matrix=partial_transformation_matrix,
-                        patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                    )
-                    reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
-                    if reject is True:
-                        continue
-                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
-                    # yield image_patch, annotations, transformation_matrix, item
-                    yield image_patch, classification, transformation_matrix, item
+        with self.attr_image_dataset as images_dataset:
+            with self.attr_label_dataset as labels_dataset:
+                for num_dataset in range(self.attr_augmentation_factor):
+                    random.shuffle(images_available)
+                    for item in images_available:
+                        image = images_dataset.get(item)
+                        image = np.array(image, dtype=np.float32)
+                        polygons = labels_dataset.get(item)
+                        partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
+                        for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                            annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
+                                polygons=polygons,
+                                partial_transformation_matrix=partial_transformation_matrix,
+                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                            )
+                            # Create the classification label with the proper technic
+                            classification = self.attr_label_modifier.make_classification_label(annotations_patch)
+                            balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
+                            if balance_reject is True:
+                                continue
+                            image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+                                image=image,
+                                partial_transformation_matrix=partial_transformation_matrix,
+                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                            )
+                            reject = self.attr_check_margin_reject.check_reject(image_patch)
+                            if reject is True:
+                                continue
+                            # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+                            image_patch = np.stack((image_patch,)*3, axis=0)
+                            yield image_patch, classification, transformation_matrix, item
 
-    def generate_item_step_by_step(self, dataset=&#34;tr&#34;):  # btwn 25 and 50 ms
-        &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
+    def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
+                  standardizer: AbstractStandardizer,label_encoding: TwoWayDict, transformation_matrix: Optional[np.ndarray] = None
+                  ) -&gt; Tuple[np.ndarray,np.ndarray,np.ndarray]:
+        &#34;&#34;&#34;Generate image patch and corresponding annotation for the given parameters
 
-        get the patch of global int id id
         Args:
-            dataset:
+            image: np.ndarray, image on which to apply the transformations
+            annotation: np.ndarray, annotation on which to apply the transformations
+            patch_upper_left_corner_coords: coordinates of the upper left corner to get
+            standardizer: object giving allowing to standardize the patch
+            label_encoding: TwoWayDict mapping between labels names and encoding as uint8
+            transformation_matrix: Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation
 
         Returns:
-            generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
-            tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
-                   classif: np.ndarray (shape (num_classes,), classification patch ;
-                   None:  no transformation matrix is available for this method
-                   item: str name of the source image
+            Tuple[np.ndarray,np.ndarray,np.ndarray]
+            - image_patch: patch extracted from the image
+            - classification: vector containing true probabilities of presence of annotation
+            - transformation_matrix: 3,3 transformation matrix applied
         &#34;&#34;&#34;
-        if isinstance(self.attr_img_augmenter, Augmenter1) is True:
-            raise Exception(&#34;Augmenter1 is not supported with this method of attr_dataset generation. Use Augmenter0&#34;)
-        images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-        # images_available = list(self.images.keys())
-        for num_dataset in range(self.attr_augmentation_factor):
-            random.shuffle(images_available)
-            for item in images_available:
-                image = self.images[item]
-                annotations = self.annotations_labels[item]
-                for patch_id in np.random.permutation(range(self.patch_creator.num_available_patches(image))):
-
-                    if isinstance(self.attr_img_augmenter, NoAugmenter) and \
-                            [item, patch_id] in self.cache_img_id_rejected:
-                        continue  # to save computation time and keep np array output
-                    # Make augmentations on input image if necessary (thanks to NoAugment class)
-                    image, annotations = self.attr_img_augmenter.transform(image, annotations)
-                    # get the patch with the selected id for the input image and the annotation
-                    ## two lines: btwn 21 and 54 ms
-                    img_patch, reject = self.patch_creator(image, item, patch_id=patch_id)  # btwn 10 ms and 50 ms
-                    if reject is True:
-                        continue  # to save computation time and keep np array output
-                    annotations_patch, _ = self.patch_creator(annotations, item,
-                                                              patch_id=patch_id)  # btwn 10 ms and 30 ms (10 ms most of the time)
-                    # Make augmentations on patch if necessary (thanks to NoAugment class) and if it is not rejected
-                    img_patch, annotations_patch = self.attr_patch_augmenter.transform(img_patch, annotations_patch)
-                    # we reject an image if it contains margins (cf patchcreator)
-                    # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
-                    input = self.attr_resizer(img_patch)  # ~ 0 ns most of the time, 1 ms sometimes
-                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    input = np.stack((input, input, input), axis=0)  # 0 ns most of the time
-                    input = (input - self.pixel_stats[&#34;mean&#34;]) / self.pixel_stats[&#34;std&#34;]
-                    # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                    classif, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                    # As the balancing operation are done in the make_classification_label method, we reject an image
-                    # if it is rejected due to margins or balancing
-                    reject = reject or balance_reject
-                    if isinstance(self.attr_img_augmenter, NoAugmenter) and reject is True:
-                        self.cache_img_id_rejected.append([item, patch_id])
-                        continue
-                    yield input, classif, None, item
-
-    def make_classification_label(self, annotations_patch):
-        &#34;&#34;&#34;Creates the classification label based on the annotation patch image
-
-        Indicates if we need to reject the patch due to overrepresented class
-
-        Args:
-            annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-        Returns: the classification label
-
-        &#34;&#34;&#34;
-
-        output = np.zeros((len(self.attr_original_class_mapping),), dtype=np.float32)  # 0 ns
-        for value in self.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):  # btwn 1 and 2 ms for the for loop
-            # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-            value = int(value)
-            #  if the class is in the patch
-            if value in annotations_patch:
-                output[value] = 1.
-        # Check if we need to reject the patch due to overrepresented class
-        balance_reject = self.attr_balance.filter(output)
-        # Modify the label if require
-        output = self.attr_label_modifier.make_classification_label(output)
-        return output, balance_reject
-
+        if transformation_matrix is None:
+            transformation_matrix = np.identity(3)
+        image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+            image=image,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        annotation_patch, transformation_matrix = self.attr_augmenter.transform_image(
+            image=annotation,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        classification = self.attr_label_modifier.make_classification_label(annotation_patch)
+        image_patch = np.stack((image_patch,)*3, axis=0)
+        image_patch = standardizer.standardize(image_patch)
+        return image_patch,classification,transformation_matrix
     def __len__(self):
         return None
-
-    def make_patches_of_image(self, name: str):
-        &#34;&#34;&#34;Creates and returns all patches of an image
-
-        Args:
-            name: uniq str id of the image
-
-        Returns:
-            list of list of:
-
-            - patch: np.ndarray
-            - classif: np.ndarray classification label as returned by make_classification_label
-            - reject: bool reject only based on margins
-        &#34;&#34;&#34;
-        last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
-        liste_patches = []
-        num_patches = self.patch_creator.num_available_patches(last_image)
-        # Create all the patches of input images
-        for id in range(num_patches):
-            patch, reject = self.patch_creator(last_image, name, patch_id=id)
-            liste_patches.append([patch])
-            liste_patches[id].append(reject)
-        annotations = np.array(self.annotations_labels[name], dtype=np.float32)
-        for id in range(num_patches):
-            patch, reject = self.patch_creator(annotations, name, patch_id=id)
-            classif = self.make_classification_label(patch)
-            # we ignore balancing rejects
-            liste_patches[id].insert(1, classif[0])
-        return liste_patches
+    def set_standardizer(self, standardizer: AbstractStandardizer):
+        self.attr_standardizer = standardizer
+    def set_annotator(self,annotations):
+        self.annotations_labels = annotations
 
     def len(self, dataset: str) -&gt; Optional[int]:
         return None</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation" href="../segmentation/DataSegmentation.html#main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation">DataSentinel1Segmentation</a></li>
 <li><a title="main.src.param_savers.BaseClass.BaseClass" href="../../param_savers/BaseClass.html#main.src.param_savers.BaseClass.BaseClass">BaseClass</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step"><code class="name flex">
-<span>def <span class="ident">generate_item_step_by_step</span></span>(<span>self, dataset='tr')</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Magic method of python called by the object[id] syntax.</p>
-<p>get the patch of global int id id</p>
-<h2 id="args">Args</h2>
-<p>dataset:</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt>generator of the attr_dataset (object that support <strong>iter</strong> and <strong>next</strong> magic methods)</dt>
-<dt><code>tuple</code></dt>
-<dd>input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
-classif: np.ndarray (shape (num_classes,), classification patch ;
-None:
-no transformation matrix is available for this method
-item: str name of the source image</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def generate_item_step_by_step(self, dataset=&#34;tr&#34;):  # btwn 25 and 50 ms
-    &#34;&#34;&#34;Magic method of python called by the object[id] syntax.
-
-    get the patch of global int id id
-    Args:
-        dataset:
-
-    Returns:
-        generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
-        tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
-               classif: np.ndarray (shape (num_classes,), classification patch ;
-               None:  no transformation matrix is available for this method
-               item: str name of the source image
-    &#34;&#34;&#34;
-    if isinstance(self.attr_img_augmenter, Augmenter1) is True:
-        raise Exception(&#34;Augmenter1 is not supported with this method of attr_dataset generation. Use Augmenter0&#34;)
-    images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-    # images_available = list(self.images.keys())
-    for num_dataset in range(self.attr_augmentation_factor):
-        random.shuffle(images_available)
-        for item in images_available:
-            image = self.images[item]
-            annotations = self.annotations_labels[item]
-            for patch_id in np.random.permutation(range(self.patch_creator.num_available_patches(image))):
-
-                if isinstance(self.attr_img_augmenter, NoAugmenter) and \
-                        [item, patch_id] in self.cache_img_id_rejected:
-                    continue  # to save computation time and keep np array output
-                # Make augmentations on input image if necessary (thanks to NoAugment class)
-                image, annotations = self.attr_img_augmenter.transform(image, annotations)
-                # get the patch with the selected id for the input image and the annotation
-                ## two lines: btwn 21 and 54 ms
-                img_patch, reject = self.patch_creator(image, item, patch_id=patch_id)  # btwn 10 ms and 50 ms
-                if reject is True:
-                    continue  # to save computation time and keep np array output
-                annotations_patch, _ = self.patch_creator(annotations, item,
-                                                          patch_id=patch_id)  # btwn 10 ms and 30 ms (10 ms most of the time)
-                # Make augmentations on patch if necessary (thanks to NoAugment class) and if it is not rejected
-                img_patch, annotations_patch = self.attr_patch_augmenter.transform(img_patch, annotations_patch)
-                # we reject an image if it contains margins (cf patchcreator)
-                # resize the image at the provided size in the constructor (with the magic method __call__ of the Resizer object
-                input = self.attr_resizer(img_patch)  # ~ 0 ns most of the time, 1 ms sometimes
-                # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                input = np.stack((input, input, input), axis=0)  # 0 ns most of the time
-                input = (input - self.pixel_stats[&#34;mean&#34;]) / self.pixel_stats[&#34;std&#34;]
-                # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                classif, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                # As the balancing operation are done in the make_classification_label method, we reject an image
-                # if it is rejected due to margins or balancing
-                reject = reject or balance_reject
-                if isinstance(self.attr_img_augmenter, NoAugmenter) and reject is True:
-                    self.cache_img_id_rejected.append([item, patch_id])
-                    continue
-                yield input, classif, None, item</code></pre>
-</details>
-</dd>
-<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once"><code class="name flex">
-<span>def <span class="ident">generate_item_with_augmentation_at_once</span></span>(<span>self, dataset='tr')</span>
+<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.generator"><code class="name flex">
+<span>def <span class="ident">generator</span></span>(<span>self, images_available)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Args:</p>
@@ -748,7 +486,7 @@ item: str name of the source image</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def generate_item_with_augmentation_at_once(self, dataset=&#34;tr&#34;):
+<pre><code class="python">def generator(self, images_available):
     &#34;&#34;&#34;
 
     Args:
@@ -760,78 +498,103 @@ item: str name of the source image</dd>
                transformation_matrix:  the transformation matrix to transform the source image
                item: str name of the source image
     &#34;&#34;&#34;
-    if isinstance(self.attr_img_augmenter, Augmenter1) is False:
-        raise Exception(&#34;Only augmenter1 is supported with this method of attr_dataset generation&#34;)
-    if isinstance(self.attr_patch_augmenter, NoAugmenter) is False:
-        raise Exception(&#34;The patch augmenter is not supported when you choose augmenter1 for image augmenter&#34;)
-    images_available = self.tr_keys if dataset == &#34;tr&#34; else self.valid_keys
-    for num_dataset in range(self.attr_augmentation_factor):
-        random.shuffle(images_available)
-        for item in images_available:
-            image = self.images[item]
-            partial_transformation_matrix = self.attr_img_augmenter.choose_new_augmentations(image)
-            for patch_upper_left_corner_coords in np.random.permutation(
-                    self.attr_img_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                annotations_patch, transformation_matrix = self.attr_img_augmenter.transform_label(
-                    self.annotations_labels.get, item,
-                    partial_transformation_matrix, patch_upper_left_corner_coords)
-                # Create the classification label with the proper technic ⚠️⚠️ inheritance
-                classification, balance_reject = self.make_classification_label(annotations_patch)  # ~ 2 ms
-                if balance_reject is True:
-                    continue
-                image = np.array(image, dtype=np.float32)
-                image_patch, transformation_matrix = self.attr_img_augmenter.transform_image(
-                    image=image,
-                    partial_transformation_matrix=partial_transformation_matrix,
-                    patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                )
-                reject = self.patch_creator.check_reject(image_patch, threshold_px=10)
-                if reject is True:
-                    continue
-                # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                image_patch = np.stack((image_patch, image_patch, image_patch), axis=0)  # 0 ns most of the time
-                # yield image_patch, annotations, transformation_matrix, item
-                yield image_patch, classification, transformation_matrix, item</code></pre>
+    with self.attr_image_dataset as images_dataset:
+        with self.attr_label_dataset as labels_dataset:
+            for num_dataset in range(self.attr_augmentation_factor):
+                random.shuffle(images_available)
+                for item in images_available:
+                    image = images_dataset.get(item)
+                    image = np.array(image, dtype=np.float32)
+                    polygons = labels_dataset.get(item)
+                    partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
+                    for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                        annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
+                            polygons=polygons,
+                            partial_transformation_matrix=partial_transformation_matrix,
+                            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                        )
+                        # Create the classification label with the proper technic
+                        classification = self.attr_label_modifier.make_classification_label(annotations_patch)
+                        balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
+                        if balance_reject is True:
+                            continue
+                        image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+                            image=image,
+                            partial_transformation_matrix=partial_transformation_matrix,
+                            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                        )
+                        reject = self.attr_check_margin_reject.check_reject(image_patch)
+                        if reject is True:
+                            continue
+                        # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+                        image_patch = np.stack((image_patch,)*3, axis=0)
+                        yield image_patch, classification, transformation_matrix, item</code></pre>
 </details>
 </dd>
-<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch"><code class="name flex">
-<span>def <span class="ident">get_geographic_coords_of_patch</span></span>(<span>self, name_src_img, patch_id)</span>
+<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_patch"><code class="name flex">
+<span>def <span class="ident">get_patch</span></span>(<span>self, image: numpy.ndarray, annotation: numpy.ndarray, patch_upper_left_corner_coords: Tuple[int, int], standardizer: <a title="main.src.data.Standardizer.AbstractStandardizer.AbstractStandardizer" href="../Standardizer/AbstractStandardizer.html#main.src.data.Standardizer.AbstractStandardizer.AbstractStandardizer">AbstractStandardizer</a>, label_encoding: <a title="main.src.data.TwoWayDict.TwoWayDict" href="../TwoWayDict.html#main.src.data.TwoWayDict.TwoWayDict">TwoWayDict</a>, transformation_matrix: Union[numpy.ndarray, NoneType] = None) ‑> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the coordinates of the upper left pixel of the patch specified</p>
+<div class="desc"><p>Generate image patch and corresponding annotation for the given parameters</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>name_src_img</code></strong></dt>
-<dd>str, uniq id of the source image</dd>
-<dt><strong><code>patch_id</code></strong></dt>
-<dd>int, id of the patch to get coordinates</dd>
+<dt><strong><code>image</code></strong></dt>
+<dd>np.ndarray, image on which to apply the transformations</dd>
+<dt><strong><code>annotation</code></strong></dt>
+<dd>np.ndarray, annotation on which to apply the transformations</dd>
+<dt><strong><code>patch_upper_left_corner_coords</code></strong></dt>
+<dd>coordinates of the upper left corner to get</dd>
+<dt><strong><code>standardizer</code></strong></dt>
+<dd>object giving allowing to standardize the patch</dd>
+<dt><strong><code>label_encoding</code></strong></dt>
+<dd>TwoWayDict mapping between labels names and encoding as uint8</dd>
+<dt><strong><code>transformation_matrix</code></strong></dt>
+<dd>Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified</p></div>
+<p>Tuple[np.ndarray,np.ndarray,np.ndarray]
+- image_patch: patch extracted from the image
+- classification: vector containing true probabilities of presence of annotation
+- transformation_matrix: 3,3 transformation matrix applied</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_geographic_coords_of_patch(self, name_src_img, patch_id):
-    &#34;&#34;&#34;Get the coordinates of the upper left pixel of the patch specified
+<pre><code class="python">def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
+              standardizer: AbstractStandardizer,label_encoding: TwoWayDict, transformation_matrix: Optional[np.ndarray] = None
+              ) -&gt; Tuple[np.ndarray,np.ndarray,np.ndarray]:
+    &#34;&#34;&#34;Generate image patch and corresponding annotation for the given parameters
 
     Args:
-        name_src_img: str, uniq id of the source image
-        patch_id: int, id of the patch to get coordinates
+        image: np.ndarray, image on which to apply the transformations
+        annotation: np.ndarray, annotation on which to apply the transformations
+        patch_upper_left_corner_coords: coordinates of the upper left corner to get
+        standardizer: object giving allowing to standardize the patch
+        label_encoding: TwoWayDict mapping between labels names and encoding as uint8
+        transformation_matrix: Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation
 
     Returns:
-        tuple xcoord,ycoord coordinates of the upper left pixel of the patch specified
+        Tuple[np.ndarray,np.ndarray,np.ndarray]
+        - image_patch: patch extracted from the image
+        - classification: vector containing true probabilities of presence of annotation
+        - transformation_matrix: 3,3 transformation matrix applied
     &#34;&#34;&#34;
-    img = self.getimage(name_src_img)  # read image from the hdf5 file
-    transform_array = self.images_infos[name_src_img][&#34;transform&#34;]  # get the corresponding transformation array
-    transform_array = np.array(transform_array)
-    # transfer it into a rasterio AffineTransformation object
-    transform = Affine.from_gdal(a=transform_array[0, 0], b=transform_array[0, 1], c=transform_array[0, 2],
-                                 d=transform_array[1, 0], e=transform_array[1, 1], f=transform_array[1, 2])
-    # Get the position of the upperleft pixel on the global image
-    posx, posy = self.patch_creator.get_position_patch(patch_id=patch_id, input_shape=img.shape)
-    # Get the corresponding geographical coordinates
-    return rowcol(transform, posx, posy)</code></pre>
+    if transformation_matrix is None:
+        transformation_matrix = np.identity(3)
+    image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+        image=image,
+        partial_transformation_matrix=transformation_matrix,
+        patch_upper_left_corner_coords=patch_upper_left_corner_coords
+    )
+    annotation_patch, transformation_matrix = self.attr_augmenter.transform_image(
+        image=annotation,
+        partial_transformation_matrix=transformation_matrix,
+        patch_upper_left_corner_coords=patch_upper_left_corner_coords
+    )
+    classification = self.attr_label_modifier.make_classification_label(annotation_patch)
+    image_patch = np.stack((image_patch,)*3, axis=0)
+    image_patch = standardizer.standardize(image_patch)
+    return image_patch,classification,transformation_matrix</code></pre>
 </details>
 </dd>
 <dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.len"><code class="name flex">
@@ -847,110 +610,67 @@ item: str name of the source image</dd>
     return None</code></pre>
 </details>
 </dd>
-<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label"><code class="name flex">
-<span>def <span class="ident">make_classification_label</span></span>(<span>self, annotations_patch)</span>
+<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_annotator"><code class="name flex">
+<span>def <span class="ident">set_annotator</span></span>(<span>self, annotations)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Creates the classification label based on the annotation patch image</p>
-<p>Indicates if we need to reject the patch due to overrepresented class</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>annotations_patch</code></strong></dt>
-<dd>np.ndarray 2d containing for each pixel the class of this pixel</dd>
-</dl>
-<p>Returns: the classification label</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def make_classification_label(self, annotations_patch):
-    &#34;&#34;&#34;Creates the classification label based on the annotation patch image
-
-    Indicates if we need to reject the patch due to overrepresented class
-
-    Args:
-        annotations_patch: np.ndarray 2d containing for each pixel the class of this pixel
-
-    Returns: the classification label
-
-    &#34;&#34;&#34;
-
-    output = np.zeros((len(self.attr_original_class_mapping),), dtype=np.float32)  # 0 ns
-    for value in self.attr_original_class_mapping.keys(Way.ORIGINAL_WAY):  # btwn 1 and 2 ms for the for loop
-        # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
-        value = int(value)
-        #  if the class is in the patch
-        if value in annotations_patch:
-            output[value] = 1.
-    # Check if we need to reject the patch due to overrepresented class
-    balance_reject = self.attr_balance.filter(output)
-    # Modify the label if require
-    output = self.attr_label_modifier.make_classification_label(output)
-    return output, balance_reject</code></pre>
+<pre><code class="python">def set_annotator(self,annotations):
+    self.annotations_labels = annotations</code></pre>
 </details>
 </dd>
-<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image"><code class="name flex">
-<span>def <span class="ident">make_patches_of_image</span></span>(<span>self, name: str)</span>
+<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_datasets"><code class="name flex">
+<span>def <span class="ident">set_datasets</span></span>(<span>self, image_dataset: <a title="main.src.data.Datasets.ImageDataset.ImageDataset" href="../Datasets/ImageDataset.html#main.src.data.Datasets.ImageDataset.ImageDataset">ImageDataset</a>, label_dataset: <a title="main.src.data.Datasets.AbstractDataset.AbstractDataset" href="../Datasets/AbstractDataset.html#main.src.data.Datasets.AbstractDataset.AbstractDataset">AbstractDataset</a>, dico_infos: Dict)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Creates and returns all patches of an image</p>
+<div class="desc"><p>Change the origin of the patches</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>name</code></strong></dt>
-<dd>uniq str id of the image</dd>
+<dt><strong><code>image_dataset</code></strong></dt>
+<dd>ImageDataset</dd>
+<dt><strong><code>label_dataset</code></strong></dt>
+<dd>AbstractDataset Points or Images</dd>
+<dt><strong><code>dico_infos</code></strong></dt>
+<dd>Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch</dd>
 </dl>
-<h2 id="returns">Returns</h2>
-<p>list of list of:</p>
-<ul>
-<li>patch: np.ndarray</li>
-<li>classif: np.ndarray classification label as returned by make_classification_label</li>
-<li>reject: bool reject only based on margins</li>
-</ul></div>
+<p>Returns:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def make_patches_of_image(self, name: str):
-    &#34;&#34;&#34;Creates and returns all patches of an image
+<pre><code class="python">def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    &#34;&#34;&#34;Change the origin of the patches
 
     Args:
-        name: uniq str id of the image
-
+        image_dataset: ImageDataset
+        label_dataset: AbstractDataset Points or Images
+        dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
     Returns:
-        list of list of:
 
-        - patch: np.ndarray
-        - classif: np.ndarray classification label as returned by make_classification_label
-        - reject: bool reject only based on margins
     &#34;&#34;&#34;
-    last_image = np.copy(np.array(self.getimage(name), dtype=np.float32))
-    liste_patches = []
-    num_patches = self.patch_creator.num_available_patches(last_image)
-    # Create all the patches of input images
-    for id in range(num_patches):
-        patch, reject = self.patch_creator(last_image, name, patch_id=id)
-        liste_patches.append([patch])
-        liste_patches[id].append(reject)
-    annotations = np.array(self.annotations_labels[name], dtype=np.float32)
-    for id in range(num_patches):
-        patch, reject = self.patch_creator(annotations, name, patch_id=id)
-        classif = self.make_classification_label(patch)
-        # we ignore balancing rejects
-        liste_patches[id].insert(1, classif[0])
-    return liste_patches</code></pre>
+    self.attr_image_dataset = image_dataset
+    self.attr_label_dataset = label_dataset
+    self.dico_infos = dico_infos</code></pre>
+</details>
+</dd>
+<dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_standardizer"><code class="name flex">
+<span>def <span class="ident">set_standardizer</span></span>(<span>self, standardizer: <a title="main.src.data.Standardizer.AbstractStandardizer.AbstractStandardizer" href="../Standardizer/AbstractStandardizer.html#main.src.data.Standardizer.AbstractStandardizer.AbstractStandardizer">AbstractStandardizer</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_standardizer(self, standardizer: AbstractStandardizer):
+    self.attr_standardizer = standardizer</code></pre>
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation" href="../segmentation/DataSegmentation.html#main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation">DataSentinel1Segmentation</a></b></code>:
-<ul class="hlist">
-<li><code><a title="main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation.close" href="../segmentation/DataSegmentation.html#main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation.close">close</a></code></li>
-<li><code><a title="main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation.get_all_items" href="../segmentation/DataSegmentation.html#main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation.get_all_items">get_all_items</a></code></li>
-<li><code><a title="main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation.getitem" href="../segmentation/DataSegmentation.html#main.src.data.segmentation.DataSegmentation.DataSentinel1Segmentation.getitem">getitem</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -970,13 +690,13 @@ item: str name of the source image</dd>
 <ul>
 <li>
 <h4><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationPatch</a></code></h4>
-<ul class="">
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_step_by_step">generate_item_step_by_step</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.generate_item_with_augmentation_at_once">generate_item_with_augmentation_at_once</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_geographic_coords_of_patch">get_geographic_coords_of_patch</a></code></li>
+<ul class="two-column">
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generator" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.generator">generator</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_patch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_patch">get_patch</a></code></li>
 <li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.len" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.len">len</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_classification_label">make_classification_label</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.make_patches_of_image">make_patches_of_image</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_annotator" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_annotator">set_annotator</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_datasets" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_datasets">set_datasets</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_standardizer" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_standardizer">set_standardizer</a></code></li>
 </ul>
 </li>
 </ul>

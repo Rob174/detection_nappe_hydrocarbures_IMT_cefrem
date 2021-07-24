@@ -32,9 +32,8 @@ from typing import Optional, List, Dict
 import torch
 import numpy as np
 
-from main.src.data.enums import EnumUsage
+from main.src.enums import *
 from main.src.param_savers.BaseClass import BaseClass
-from main.src.training.enums import EnumLoss, EnumDataset
 from main.src.training.metrics.AbstractMetricManager import AbstractMetricManager
 from main.src.training.optimizers_factory import OptimizersFactory
 
@@ -102,7 +101,7 @@ class LossFactory(BaseClass, AbstractMetricManager):
 <dl>
 <dt id="main.src.training.metrics.loss_factory.LossFactory"><code class="flex name class">
 <span>class <span class="ident">LossFactory</span></span>
-<span>(</span><span>optimizer: <a title="main.src.training.optimizers_factory.OptimizersFactory" href="../optimizers_factory.html#main.src.training.optimizers_factory.OptimizersFactory">OptimizersFactory</a>, usage_type: <a title="main.src.data.enums.EnumUsage" href="../../data/enums.html#main.src.data.enums.EnumUsage">EnumUsage</a>, preference: Union[<a title="main.src.training.enums.EnumLoss" href="../enums.html#main.src.training.enums.EnumLoss">EnumLoss</a>, NoneType] = None)</span>
+<span>(</span><span>optimizer: <a title="main.src.training.optimizers_factory.OptimizersFactory" href="../optimizers_factory.html#main.src.training.optimizers_factory.OptimizersFactory">OptimizersFactory</a>, usage_type: <a title="main.src.enums.EnumUsage" href="../../enums.html#main.src.enums.EnumUsage">EnumUsage</a>, preference: Union[<a title="main.src.enums.EnumLoss" href="../../enums.html#main.src.enums.EnumLoss">EnumLoss</a>, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing possible losses</p>
@@ -177,7 +176,7 @@ class LossFactory(BaseClass, AbstractMetricManager):
 <h3>Methods</h3>
 <dl>
 <dt id="main.src.training.metrics.loss_factory.LossFactory.call"><code class="name flex">
-<span>def <span class="ident">call</span></span>(<span>self, prediction_gpu, output_gpu, prediction_npy, output_npy, dataset: <a title="main.src.training.enums.EnumDataset" href="../enums.html#main.src.training.enums.EnumDataset">EnumDataset</a> = EnumDataset.Train) ‑> float</span>
+<span>def <span class="ident">call</span></span>(<span>self, prediction_gpu, output_gpu, prediction_npy, output_npy, dataset: <a title="main.src.enums.EnumDataset" href="../../enums.html#main.src.enums.EnumDataset">EnumDataset</a> = EnumDataset.Train) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"></div>

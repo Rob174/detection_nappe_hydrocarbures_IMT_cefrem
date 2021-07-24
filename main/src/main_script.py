@@ -23,8 +23,8 @@ from main.src.training.metrics.loss_factory import LossFactory
 from main.src.training.optimizers_factory import OptimizersFactory
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
-from main.src.parsers.ParserClassificationCache import Parser0
-from main.src.parsers.ParserClassificationPatch import Parser1
+from main.src.parsers.ParserClassificationCache import ParserClassificationCache
+from main.src.parsers.ParserClassificationPatch import ParserClassificationPatch
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
 from main.src.enums import EnumLabelModifier
@@ -33,7 +33,7 @@ from main.src.enums import EnumGitCheck
 if __name__ == "__main__":
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + "parameters.json")
-    parser = Parser0()
+    parser = ParserClassificationCache()
     saver(parser)
     arguments = parser()
     saver["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()

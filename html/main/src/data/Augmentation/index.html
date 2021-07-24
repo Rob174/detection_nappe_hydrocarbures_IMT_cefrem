@@ -24,43 +24,27 @@
 <section id="section-intro">
 <p>The goal of this module is to manage and apply augmentations.</p>
 <p>As we will apply the same types of augmentations to all of the images,
-we have a first object Augmenter&hellip; in the package Augmenters
-which we first neeed to initialize.
-It allows us to specify the augmentations to use and in which order to apply them (cf doc)</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; augmenter = Augmenter0(allowed_transformations=&quot;mirrors,rotations&quot;)
+we have a first object of the package Augmenters
+which we first needs to be initialized.</p>
+<p>Example with Augmenter1</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
+&gt;&gt;&gt; augmenter = Augmenter1(patch_size_before_final_resize=1000, patch_size_final_resize=256,
+...                        allowed_transformations=[&quot;combinedRotResizeMir_10_0.25_4&quot;])
 </code></pre>
-<p>Then we can use this object to apply random transformations
-to input ⚠️ images (not batch of images).</p>
+<p>It allows us to specify the augmentations to use(cf doc) for a source image provided as np.ndarray and
+returns the transformation matrix combination of the affine transformations chosen</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; partial_transformation_matrix = augmenter.choose_new_augmentations(image)
+</code></pre>
+<p>Then we have to choose the coordinates of the patch to extract.
+For that we can get a grid (list of upper left corners) of patch by calling</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; grid = augmenter.get_grid(image.shape,partial_transformation_matrix)
+</code></pre>
+<p>Then we can use the augmenter to apply random transformations to input ️ samples (⚠⚠ not in a batch ⚠⚠).
+The input can have different types as an array or a list of points for instance (for labels)</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; augmenter.transform_image(image,partial_transformation_matrix,patch_upper_left_corner_coords)
+</code></pre>
+<p>We can do the same for the label with the <code>transform_image</code> method</p>
 <p>All of the transformations are randomly chosen and can change between epochs</p>
-<p>We made two types of augmenters :</p>
-<ul>
-<li>First type: augment step by step:</li>
-</ul>
-<pre><code class="language-python-repl">&gt;&gt;&gt; image = ...
-&gt;&gt;&gt; annotation = ...
-&gt;&gt;&gt; image,annotation = augmenter.transform(image,annotation)
-</code></pre>
-<ul>
-<li>Second type: all augmentations are done at once internally thanks to warpAffine function. It is an optimized version of the
-step by step augmentations thanks to warpAffine and potential filters that can be applied on the annotations_patch
-before opening and creating the image patch</li>
-</ul>
-<p>Typical usage</p>
-<pre><code class="language-python-repl">&gt;&gt;&gt; def get_label_transformed(image_name,transformation_matrix):
-...     # get points of polygons for image name
-...     # apply the transformation matrix
-...     # draw the segmentation map
-...     # return the segmentation
-&gt;&gt;&gt; partial_transformation_matrix = augmenter.choose_new_augmentations()
-&gt;&gt;&gt; for patch_upper_left_corner_coords in augmenter.get_grid(image.shape, partial_transformation_matrix)):
-...     annotations_patch,transformation_matrix = augmenter.transform_label(get_label_transformed,&quot;017635_0212D5_0F87&quot;,
-...                                                                         partial_transformation_matrix,
-...                                                                         patch_upper_left_corner_coords)
-&gt;&gt;&gt;     image_patch, transformation_matrix = augmenter.transform_image(image,
-...                                                                    partial_transformation_matrix,
-...                                                                    patch_upper_left_corner_coords
-...                                                                   )
-</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -69,45 +53,34 @@ before opening and creating the image patch</li>
 The goal of this module is to manage and apply augmentations.
 
 As we will apply the same types of augmentations to all of the images,
-we have a first object Augmenter... in the package Augmenters
-which we first neeed to initialize.
-It allows us to specify the augmentations to use and in which order to apply them (cf doc)
+we have a first object of the package Augmenters
+which we first needs to be initialized.
 
-&gt;&gt;&gt; augmenter = Augmenter0(allowed_transformations=&#34;mirrors,rotations&#34;)
+Example with Augmenter1
 
-Then we can use this object to apply random transformations
-to input ⚠️ images (not batch of images).
+&gt;&gt;&gt; from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
+&gt;&gt;&gt; augmenter = Augmenter1(patch_size_before_final_resize=1000, patch_size_final_resize=256,
+...                        allowed_transformations=[&#34;combinedRotResizeMir_10_0.25_4&#34;])
+
+It allows us to specify the augmentations to use(cf doc) for a source image provided as np.ndarray and
+returns the transformation matrix combination of the affine transformations chosen
+
+&gt;&gt;&gt; partial_transformation_matrix = augmenter.choose_new_augmentations(image)
+
+Then we have to choose the coordinates of the patch to extract.
+For that we can get a grid (list of upper left corners) of patch by calling
+
+&gt;&gt;&gt; grid = augmenter.get_grid(image.shape,partial_transformation_matrix)
+
+Then we can use the augmenter to apply random transformations to input ️ samples (⚠⚠ not in a batch ⚠⚠).
+The input can have different types as an array or a list of points for instance (for labels)
+
+&gt;&gt;&gt; augmenter.transform_image(image,partial_transformation_matrix,patch_upper_left_corner_coords)
+
+We can do the same for the label with the `transform_image` method
 
 All of the transformations are randomly chosen and can change between epochs
 
-
-We made two types of augmenters :
-
-- First type: augment step by step:
-
-&gt;&gt;&gt; image = ...
-&gt;&gt;&gt; annotation = ...
-&gt;&gt;&gt; image,annotation = augmenter.transform(image,annotation)
-
-- Second type: all augmentations are done at once internally thanks to warpAffine function. It is an optimized version of the
-step by step augmentations thanks to warpAffine and potential filters that can be applied on the annotations_patch
-before opening and creating the image patch
-
-Typical usage
-&gt;&gt;&gt; def get_label_transformed(image_name,transformation_matrix):
-...     # get points of polygons for image name
-...     # apply the transformation matrix
-...     # draw the segmentation map
-...     # return the segmentation
-&gt;&gt;&gt; partial_transformation_matrix = augmenter.choose_new_augmentations()
-&gt;&gt;&gt; for patch_upper_left_corner_coords in augmenter.get_grid(image.shape, partial_transformation_matrix)):
-...     annotations_patch,transformation_matrix = augmenter.transform_label(get_label_transformed,&#34;017635_0212D5_0F87&#34;,
-...                                                                         partial_transformation_matrix,
-...                                                                         patch_upper_left_corner_coords)
-&gt;&gt;&gt;     image_patch, transformation_matrix = augmenter.transform_image(image,
-...                                                                    partial_transformation_matrix,
-...                                                                    patch_upper_left_corner_coords
-...                                                                   )
 &#34;&#34;&#34;</code></pre>
 </details>
 </section>
@@ -116,11 +89,11 @@ Typical usage
 <dl>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmentations" href="Augmentations/index.html">main.src.data.Augmentation.Augmentations</a></code></dt>
 <dd>
-<div class="desc"><p>Contains one class per augmentation with two types of augmentations depending of the augmenter</p></div>
+<div class="desc"><p>Allow to compute transformation matrices and then apply them on np.ndarray or polygons</p></div>
 </dd>
 <dt><code class="name"><a title="main.src.data.Augmentation.Augmenters" href="Augmenters/index.html">main.src.data.Augmentation.Augmenters</a></code></dt>
 <dd>
-<div class="desc"><p>Augmenters classes which manage and apply augmentations …</p></div>
+<div class="desc"><p>Augmenters classes which manages augmentations …</p></div>
 </dd>
 </dl>
 </section>

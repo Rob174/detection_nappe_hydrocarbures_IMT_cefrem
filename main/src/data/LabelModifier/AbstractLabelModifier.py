@@ -7,7 +7,7 @@ import numpy as np
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class AbstractLabelModifier(ABC, BaseClass):
+class AbstractLabelModifier(ABC):
     def __init__(self):
         self.initial_label = None
 

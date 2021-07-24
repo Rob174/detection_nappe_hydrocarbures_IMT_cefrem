@@ -32,13 +32,16 @@
 import subprocess
 import sys
 
-from main.src.training.early_stopping.EarlyStopping import EarlyStopping
-from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
+from main.src.training.TrainerTest import TrainerTest
 
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main\src&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets&#34;)
+
+from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
+from main.src.training.early_stopping.EarlyStopping import EarlyStopping
+from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
 from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
@@ -49,27 +52,28 @@ from main.src.training.metrics.loss_factory import LossFactory
 from main.src.training.optimizers_factory import OptimizersFactory
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
-from main.src.parsers.Parser0 import Parser0
+from main.src.parsers.ParserClassificationCache import ParserClassificationCache
+from main.src.parsers.ParserClassificationPatch import ParserClassificationPatch
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
-from main.src.data.classification.enums import EnumLabelModifier
+from main.src.enums import EnumLabelModifier
 from main.src.enums import EnumGitCheck
 
 if __name__ == &#34;__main__&#34;:
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + &#34;parameters.json&#34;)
-    parser = Parser0()
+    parser = ParserClassificationCache()
     saver(parser)
-    arguments = Parser0()()
+    arguments = parser()
     saver[&#34;commit&#34;] = subprocess.check_output([&#39;git&#39;, &#39;rev-parse&#39;, &#39;HEAD&#39;]).decode(&#34;utf-8&#34;).strip()
     changes = subprocess.check_output([&#39;git&#39;, &#39;diff&#39;, &#39;--name-only&#39;, &#34;--&#34;, &#34;*.py&#34;]).decode(&#34;ascii&#34;).split(&#34;\n&#34;)[:-1]
     if arguments.no_security == EnumGitCheck.GITCHECK and len(changes):
         changes_str = &#34;\n&#34;.join(list(map(lambda x: &#39;\t- &#39; + x, changes)))
         input(
             f&#34;There are {len(changes)} uncommitted python files:\n{changes_str}\n Are you sure you want to continue ?&#34;)
+
     dataset = DatasetFactory(dataset_name=arguments.attr_dataset,
                              usage_type=arguments.usage_type,
-                             patch_creator=arguments.patch,
                              grid_size=arguments.grid_size,
                              input_size=arguments.input_size,
                              exclusion_policy=arguments.patch_exclude_policy,
@@ -78,8 +82,6 @@ if __name__ == &#34;__main__&#34;:
                              balance=arguments.balance,
                              augmenter_img=arguments.augmenter_img,
                              augmentations_img=arguments.augmentations_img,
-                             augmenter_patch=arguments.augmenter_patch,
-                             augmentations_patch=arguments.augmentations_patch,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
                              interval=arguments.interval
@@ -93,16 +95,27 @@ if __name__ == &#34;__main__&#34;:
     loss = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference,optimizer=optimizer)
     metrics = MetricsFactory(&#34;accuracy_classification-0.25&#34;, &#34;accuracy_classification-0.1&#34;, &#34;mae&#34;, &#34;accuracy_threshold-0.5&#34;)
     model_saver = ModelSaver1(loss, loss.attr_loss)
-    early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=3)
+    early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
 
+    rgb_overlay = RGB_Overlay2(
+        standardizer=dataset.attr_dataset.attr_standardizer
+                                    )
     print(&#34;start&#34;)
 
-    Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
+    # Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
+    #          dataset=dataset, model=model,
+    #          optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
+    #          saver=saver,
+    #          eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
+    import torch
+    path_pt_file = r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-23_04h17min51s_\2021-07-23_04h17min51s__model_epoch-9_it-15923.pt&#34;
+    model.model.load_state_dict(torch.load(path_pt_file))
+    TrainerTest(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,
-             eval_step=arguments.eval_step, debug=arguments.debug)()
+             eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
     print(&#34;end&#34;)</code></pre>
 </details>
 </section>

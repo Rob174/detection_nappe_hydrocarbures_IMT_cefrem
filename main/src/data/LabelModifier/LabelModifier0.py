@@ -5,9 +5,10 @@ import numpy as np
 
 from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
+from main.src.param_savers.BaseClass import BaseClass
 
 
-class LabelModifier0(AbstractLabelModifier):
+class LabelModifier0(AbstractLabelModifier,BaseClass):
     """Modify the source label provided by the source class inheriting. Allow to use less classes than other, seep, spill
     and to change their order.
 

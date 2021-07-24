@@ -34,7 +34,85 @@ from enum import Enum
 
 class EnumGitCheck(str, Enum):
     GITCHECK = &#34;gitcheck&#34;
-    NOGITCHECK = &#34;nogitcheck&#34;</code></pre>
+    NOGITCHECK = &#34;nogitcheck&#34;
+
+class EnumLoss(str, Enum):
+    MulticlassnonExlusivCrossentropy = &#34;multiclassnonexlusivcrossentropy&#34;
+    BinaryCrossentropy = &#34;binarycrossentropy&#34;
+    MSE = &#34;mse&#34;
+
+
+class EnumDataset(str, Enum):
+    Train = &#34;tr&#34;
+    Valid = &#34;valid&#34;
+
+class EnumModels(str, Enum):
+    Efficientnetv4 = &#34;efficientnetv4&#34;
+    &#34;&#34;&#34;Version b0&#34;&#34;&#34;
+    Resnet18 = &#34;resnet18&#34;
+    Vgg16 = &#34;vgg16&#34;
+    Deeplabv3 = &#34;deeplabv3&#34;
+    Resnet152 = &#34;resnet152&#34;
+
+
+class EnumOptimizer(str, Enum):
+    Adam = &#34;adam&#34;
+    SGD = &#34;sgd&#34;
+
+
+class EnumFreeze(str, Enum):
+    AllExceptLastDense = &#34;allexceptlastdense&#34;
+    NoFreeze = &#34;nofreeze&#34;
+
+class EnumAugmenter(str, Enum):
+    Augmenter0 = &#34;augmenter0&#34;
+    &#34;&#34;&#34;A step by step augmenter. See [Augmenter0](./Augmenter0.html)&#34;&#34;&#34;
+    Augmenter1 = &#34;augmenter1&#34;
+    &#34;&#34;&#34;A one step augmenter. See [Augmenter1](./Augmenter1.html)&#34;&#34;&#34;
+    NoAugmenter = &#34;noaugmenter&#34;
+    &#34;&#34;&#34;No augmentation applied&#34;&#34;&#34;
+
+class EnumBalance(str, Enum):
+    BalanceClasses2 = &#34;balanceclasses2&#34;
+    &#34;&#34;&#34;Exclude patches with classes other than the other category&#34;&#34;&#34;
+    BalanceClasses1 = &#34;balanceclasses1&#34;
+    &#34;&#34;&#34;Exclude patches with only the other category&#34;&#34;&#34;
+    NoBalance = &#34;nobalance&#34;
+    &#34;&#34;&#34;Does not filter pataches&#34;&#34;&#34;
+
+class EnumLabelModifier(str, Enum):
+    NoLabelModifier = &#34;nolabelmodifier&#34;
+    &#34;&#34;&#34;class other,seep,spill label&#34;&#34;&#34;
+    LabelModifier1 = &#34;labelmodifier1&#34;
+    &#34;&#34;&#34;classes constructed to allow to choose classes to use&#34;&#34;&#34;
+    LabelModifier2 = &#34;labelmodifier2&#34;
+    &#34;&#34;&#34;1 class constructed to allow to search if a combination of classes is present&#34;&#34;&#34;
+
+
+class EnumClassPatchAdder(str, Enum):
+    OtherClassPatchAdder = &#34;other_class_patch_adder&#34;
+    NoClassPatchAdder = &#34;no_class_patch_adder&#34;
+
+class EnumPatchAlgorithm(str, Enum):
+    FixedPx = &#34;fixed_px&#34;
+    &#34;&#34;&#34;create the PatchCreator0 class which generate fixed px size patches. See [patch_creator0](./patch_creator0.html)&#34;&#34;&#34;
+
+
+class EnumPatchExcludePolicy(str, Enum):
+    MarginMoreThan = &#34;marginmorethan&#34;
+    &#34;&#34;&#34;Choose the option to exclude patches that have more than ... px at 0 in order to exclude patches with margins&#34;&#34;&#34;
+
+class EnumUsage(str, Enum):
+    Classification = &#34;classification&#34;
+    &#34;&#34;&#34;attr_dataset to classify patches&#34;&#34;&#34;
+    Segmentation = &#34;Annotations&#34;
+    &#34;&#34;&#34;attr_dataset to segment an image&#34;&#34;&#34;
+
+
+class EnumClasses(str, Enum):
+    Other = &#34;other&#34;
+    Seep = &#34;seep&#34;
+    Spill = &#34;spill&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -46,6 +124,213 @@ class EnumGitCheck(str, Enum):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="main.src.enums.EnumAugmenter"><code class="flex name class">
+<span>class <span class="ident">EnumAugmenter</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumAugmenter(str, Enum):
+    Augmenter0 = &#34;augmenter0&#34;
+    &#34;&#34;&#34;A step by step augmenter. See [Augmenter0](./Augmenter0.html)&#34;&#34;&#34;
+    Augmenter1 = &#34;augmenter1&#34;
+    &#34;&#34;&#34;A one step augmenter. See [Augmenter1](./Augmenter1.html)&#34;&#34;&#34;
+    NoAugmenter = &#34;noaugmenter&#34;
+    &#34;&#34;&#34;No augmentation applied&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumAugmenter.Augmenter0"><code class="name">var <span class="ident">Augmenter0</span></code></dt>
+<dd>
+<div class="desc"><p>A step by step augmenter. See <a href="./Augmenter0.html">Augmenter0</a></p></div>
+</dd>
+<dt id="main.src.enums.EnumAugmenter.Augmenter1"><code class="name">var <span class="ident">Augmenter1</span></code></dt>
+<dd>
+<div class="desc"><p>A one step augmenter. See <a href="./Augmenter1.html">Augmenter1</a></p></div>
+</dd>
+<dt id="main.src.enums.EnumAugmenter.NoAugmenter"><code class="name">var <span class="ident">NoAugmenter</span></code></dt>
+<dd>
+<div class="desc"><p>No augmentation applied</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumBalance"><code class="flex name class">
+<span>class <span class="ident">EnumBalance</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumBalance(str, Enum):
+    BalanceClasses2 = &#34;balanceclasses2&#34;
+    &#34;&#34;&#34;Exclude patches with classes other than the other category&#34;&#34;&#34;
+    BalanceClasses1 = &#34;balanceclasses1&#34;
+    &#34;&#34;&#34;Exclude patches with only the other category&#34;&#34;&#34;
+    NoBalance = &#34;nobalance&#34;
+    &#34;&#34;&#34;Does not filter pataches&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumBalance.BalanceClasses1"><code class="name">var <span class="ident">BalanceClasses1</span></code></dt>
+<dd>
+<div class="desc"><p>Exclude patches with only the other category</p></div>
+</dd>
+<dt id="main.src.enums.EnumBalance.BalanceClasses2"><code class="name">var <span class="ident">BalanceClasses2</span></code></dt>
+<dd>
+<div class="desc"><p>Exclude patches with classes other than the other category</p></div>
+</dd>
+<dt id="main.src.enums.EnumBalance.NoBalance"><code class="name">var <span class="ident">NoBalance</span></code></dt>
+<dd>
+<div class="desc"><p>Does not filter pataches</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumClassPatchAdder"><code class="flex name class">
+<span>class <span class="ident">EnumClassPatchAdder</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumClassPatchAdder(str, Enum):
+    OtherClassPatchAdder = &#34;other_class_patch_adder&#34;
+    NoClassPatchAdder = &#34;no_class_patch_adder&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumClassPatchAdder.NoClassPatchAdder"><code class="name">var <span class="ident">NoClassPatchAdder</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumClassPatchAdder.OtherClassPatchAdder"><code class="name">var <span class="ident">OtherClassPatchAdder</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumClasses"><code class="flex name class">
+<span>class <span class="ident">EnumClasses</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumClasses(str, Enum):
+    Other = &#34;other&#34;
+    Seep = &#34;seep&#34;
+    Spill = &#34;spill&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumClasses.Other"><code class="name">var <span class="ident">Other</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumClasses.Seep"><code class="name">var <span class="ident">Seep</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumClasses.Spill"><code class="name">var <span class="ident">Spill</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumDataset"><code class="flex name class">
+<span>class <span class="ident">EnumDataset</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumDataset(str, Enum):
+    Train = &#34;tr&#34;
+    Valid = &#34;valid&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumDataset.Train"><code class="name">var <span class="ident">Train</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumDataset.Valid"><code class="name">var <span class="ident">Valid</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumFreeze"><code class="flex name class">
+<span>class <span class="ident">EnumFreeze</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumFreeze(str, Enum):
+    AllExceptLastDense = &#34;allexceptlastdense&#34;
+    NoFreeze = &#34;nofreeze&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumFreeze.AllExceptLastDense"><code class="name">var <span class="ident">AllExceptLastDense</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumFreeze.NoFreeze"><code class="name">var <span class="ident">NoFreeze</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="main.src.enums.EnumGitCheck"><code class="flex name class">
 <span>class <span class="ident">EnumGitCheck</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -77,6 +362,246 @@ class EnumGitCheck(str, Enum):
 </dd>
 </dl>
 </dd>
+<dt id="main.src.enums.EnumLabelModifier"><code class="flex name class">
+<span>class <span class="ident">EnumLabelModifier</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumLabelModifier(str, Enum):
+    NoLabelModifier = &#34;nolabelmodifier&#34;
+    &#34;&#34;&#34;class other,seep,spill label&#34;&#34;&#34;
+    LabelModifier1 = &#34;labelmodifier1&#34;
+    &#34;&#34;&#34;classes constructed to allow to choose classes to use&#34;&#34;&#34;
+    LabelModifier2 = &#34;labelmodifier2&#34;
+    &#34;&#34;&#34;1 class constructed to allow to search if a combination of classes is present&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumLabelModifier.LabelModifier1"><code class="name">var <span class="ident">LabelModifier1</span></code></dt>
+<dd>
+<div class="desc"><p>classes constructed to allow to choose classes to use</p></div>
+</dd>
+<dt id="main.src.enums.EnumLabelModifier.LabelModifier2"><code class="name">var <span class="ident">LabelModifier2</span></code></dt>
+<dd>
+<div class="desc"><p>1 class constructed to allow to search if a combination of classes is present</p></div>
+</dd>
+<dt id="main.src.enums.EnumLabelModifier.NoLabelModifier"><code class="name">var <span class="ident">NoLabelModifier</span></code></dt>
+<dd>
+<div class="desc"><p>class other,seep,spill label</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumLoss"><code class="flex name class">
+<span>class <span class="ident">EnumLoss</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumLoss(str, Enum):
+    MulticlassnonExlusivCrossentropy = &#34;multiclassnonexlusivcrossentropy&#34;
+    BinaryCrossentropy = &#34;binarycrossentropy&#34;
+    MSE = &#34;mse&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumLoss.BinaryCrossentropy"><code class="name">var <span class="ident">BinaryCrossentropy</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumLoss.MSE"><code class="name">var <span class="ident">MSE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumLoss.MulticlassnonExlusivCrossentropy"><code class="name">var <span class="ident">MulticlassnonExlusivCrossentropy</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumModels"><code class="flex name class">
+<span>class <span class="ident">EnumModels</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumModels(str, Enum):
+    Efficientnetv4 = &#34;efficientnetv4&#34;
+    &#34;&#34;&#34;Version b0&#34;&#34;&#34;
+    Resnet18 = &#34;resnet18&#34;
+    Vgg16 = &#34;vgg16&#34;
+    Deeplabv3 = &#34;deeplabv3&#34;
+    Resnet152 = &#34;resnet152&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumModels.Deeplabv3"><code class="name">var <span class="ident">Deeplabv3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumModels.Efficientnetv4"><code class="name">var <span class="ident">Efficientnetv4</span></code></dt>
+<dd>
+<div class="desc"><p>Version b0</p></div>
+</dd>
+<dt id="main.src.enums.EnumModels.Resnet152"><code class="name">var <span class="ident">Resnet152</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumModels.Resnet18"><code class="name">var <span class="ident">Resnet18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumModels.Vgg16"><code class="name">var <span class="ident">Vgg16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumOptimizer"><code class="flex name class">
+<span>class <span class="ident">EnumOptimizer</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumOptimizer(str, Enum):
+    Adam = &#34;adam&#34;
+    SGD = &#34;sgd&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumOptimizer.Adam"><code class="name">var <span class="ident">Adam</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="main.src.enums.EnumOptimizer.SGD"><code class="name">var <span class="ident">SGD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumPatchAlgorithm"><code class="flex name class">
+<span>class <span class="ident">EnumPatchAlgorithm</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumPatchAlgorithm(str, Enum):
+    FixedPx = &#34;fixed_px&#34;
+    &#34;&#34;&#34;create the PatchCreator0 class which generate fixed px size patches. See [patch_creator0](./patch_creator0.html)&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumPatchAlgorithm.FixedPx"><code class="name">var <span class="ident">FixedPx</span></code></dt>
+<dd>
+<div class="desc"><p>create the PatchCreator0 class which generate fixed px size patches. See <a href="./patch_creator0.html">patch_creator0</a></p></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumPatchExcludePolicy"><code class="flex name class">
+<span>class <span class="ident">EnumPatchExcludePolicy</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumPatchExcludePolicy(str, Enum):
+    MarginMoreThan = &#34;marginmorethan&#34;
+    &#34;&#34;&#34;Choose the option to exclude patches that have more than ... px at 0 in order to exclude patches with margins&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumPatchExcludePolicy.MarginMoreThan"><code class="name">var <span class="ident">MarginMoreThan</span></code></dt>
+<dd>
+<div class="desc"><p>Choose the option to exclude patches that have more than &hellip; px at 0 in order to exclude patches with margins</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="main.src.enums.EnumUsage"><code class="flex name class">
+<span>class <span class="ident">EnumUsage</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnumUsage(str, Enum):
+    Classification = &#34;classification&#34;
+    &#34;&#34;&#34;attr_dataset to classify patches&#34;&#34;&#34;
+    Segmentation = &#34;Annotations&#34;
+    &#34;&#34;&#34;attr_dataset to segment an image&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.str</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="main.src.enums.EnumUsage.Classification"><code class="name">var <span class="ident">Classification</span></code></dt>
+<dd>
+<div class="desc"><p>attr_dataset to classify patches</p></div>
+</dd>
+<dt id="main.src.enums.EnumUsage.Segmentation"><code class="name">var <span class="ident">Segmentation</span></code></dt>
+<dd>
+<div class="desc"><p>attr_dataset to segment an image</p></div>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -94,10 +619,107 @@ class EnumGitCheck(str, Enum):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="main.src.enums.EnumAugmenter" href="#main.src.enums.EnumAugmenter">EnumAugmenter</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumAugmenter.Augmenter0" href="#main.src.enums.EnumAugmenter.Augmenter0">Augmenter0</a></code></li>
+<li><code><a title="main.src.enums.EnumAugmenter.Augmenter1" href="#main.src.enums.EnumAugmenter.Augmenter1">Augmenter1</a></code></li>
+<li><code><a title="main.src.enums.EnumAugmenter.NoAugmenter" href="#main.src.enums.EnumAugmenter.NoAugmenter">NoAugmenter</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumBalance" href="#main.src.enums.EnumBalance">EnumBalance</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumBalance.BalanceClasses1" href="#main.src.enums.EnumBalance.BalanceClasses1">BalanceClasses1</a></code></li>
+<li><code><a title="main.src.enums.EnumBalance.BalanceClasses2" href="#main.src.enums.EnumBalance.BalanceClasses2">BalanceClasses2</a></code></li>
+<li><code><a title="main.src.enums.EnumBalance.NoBalance" href="#main.src.enums.EnumBalance.NoBalance">NoBalance</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumClassPatchAdder" href="#main.src.enums.EnumClassPatchAdder">EnumClassPatchAdder</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumClassPatchAdder.NoClassPatchAdder" href="#main.src.enums.EnumClassPatchAdder.NoClassPatchAdder">NoClassPatchAdder</a></code></li>
+<li><code><a title="main.src.enums.EnumClassPatchAdder.OtherClassPatchAdder" href="#main.src.enums.EnumClassPatchAdder.OtherClassPatchAdder">OtherClassPatchAdder</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumClasses" href="#main.src.enums.EnumClasses">EnumClasses</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumClasses.Other" href="#main.src.enums.EnumClasses.Other">Other</a></code></li>
+<li><code><a title="main.src.enums.EnumClasses.Seep" href="#main.src.enums.EnumClasses.Seep">Seep</a></code></li>
+<li><code><a title="main.src.enums.EnumClasses.Spill" href="#main.src.enums.EnumClasses.Spill">Spill</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumDataset" href="#main.src.enums.EnumDataset">EnumDataset</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumDataset.Train" href="#main.src.enums.EnumDataset.Train">Train</a></code></li>
+<li><code><a title="main.src.enums.EnumDataset.Valid" href="#main.src.enums.EnumDataset.Valid">Valid</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumFreeze" href="#main.src.enums.EnumFreeze">EnumFreeze</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumFreeze.AllExceptLastDense" href="#main.src.enums.EnumFreeze.AllExceptLastDense">AllExceptLastDense</a></code></li>
+<li><code><a title="main.src.enums.EnumFreeze.NoFreeze" href="#main.src.enums.EnumFreeze.NoFreeze">NoFreeze</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="main.src.enums.EnumGitCheck" href="#main.src.enums.EnumGitCheck">EnumGitCheck</a></code></h4>
 <ul class="">
 <li><code><a title="main.src.enums.EnumGitCheck.GITCHECK" href="#main.src.enums.EnumGitCheck.GITCHECK">GITCHECK</a></code></li>
 <li><code><a title="main.src.enums.EnumGitCheck.NOGITCHECK" href="#main.src.enums.EnumGitCheck.NOGITCHECK">NOGITCHECK</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumLabelModifier" href="#main.src.enums.EnumLabelModifier">EnumLabelModifier</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumLabelModifier.LabelModifier1" href="#main.src.enums.EnumLabelModifier.LabelModifier1">LabelModifier1</a></code></li>
+<li><code><a title="main.src.enums.EnumLabelModifier.LabelModifier2" href="#main.src.enums.EnumLabelModifier.LabelModifier2">LabelModifier2</a></code></li>
+<li><code><a title="main.src.enums.EnumLabelModifier.NoLabelModifier" href="#main.src.enums.EnumLabelModifier.NoLabelModifier">NoLabelModifier</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumLoss" href="#main.src.enums.EnumLoss">EnumLoss</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumLoss.BinaryCrossentropy" href="#main.src.enums.EnumLoss.BinaryCrossentropy">BinaryCrossentropy</a></code></li>
+<li><code><a title="main.src.enums.EnumLoss.MSE" href="#main.src.enums.EnumLoss.MSE">MSE</a></code></li>
+<li><code><a title="main.src.enums.EnumLoss.MulticlassnonExlusivCrossentropy" href="#main.src.enums.EnumLoss.MulticlassnonExlusivCrossentropy">MulticlassnonExlusivCrossentropy</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumModels" href="#main.src.enums.EnumModels">EnumModels</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumModels.Deeplabv3" href="#main.src.enums.EnumModels.Deeplabv3">Deeplabv3</a></code></li>
+<li><code><a title="main.src.enums.EnumModels.Efficientnetv4" href="#main.src.enums.EnumModels.Efficientnetv4">Efficientnetv4</a></code></li>
+<li><code><a title="main.src.enums.EnumModels.Resnet152" href="#main.src.enums.EnumModels.Resnet152">Resnet152</a></code></li>
+<li><code><a title="main.src.enums.EnumModels.Resnet18" href="#main.src.enums.EnumModels.Resnet18">Resnet18</a></code></li>
+<li><code><a title="main.src.enums.EnumModels.Vgg16" href="#main.src.enums.EnumModels.Vgg16">Vgg16</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumOptimizer" href="#main.src.enums.EnumOptimizer">EnumOptimizer</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumOptimizer.Adam" href="#main.src.enums.EnumOptimizer.Adam">Adam</a></code></li>
+<li><code><a title="main.src.enums.EnumOptimizer.SGD" href="#main.src.enums.EnumOptimizer.SGD">SGD</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumPatchAlgorithm" href="#main.src.enums.EnumPatchAlgorithm">EnumPatchAlgorithm</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumPatchAlgorithm.FixedPx" href="#main.src.enums.EnumPatchAlgorithm.FixedPx">FixedPx</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumPatchExcludePolicy" href="#main.src.enums.EnumPatchExcludePolicy">EnumPatchExcludePolicy</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumPatchExcludePolicy.MarginMoreThan" href="#main.src.enums.EnumPatchExcludePolicy.MarginMoreThan">MarginMoreThan</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="main.src.enums.EnumUsage" href="#main.src.enums.EnumUsage">EnumUsage</a></code></h4>
+<ul class="">
+<li><code><a title="main.src.enums.EnumUsage.Classification" href="#main.src.enums.EnumUsage.Classification">Classification</a></code></li>
+<li><code><a title="main.src.enums.EnumUsage.Segmentation" href="#main.src.enums.EnumUsage.Segmentation">Segmentation</a></code></li>
 </ul>
 </li>
 </ul>

@@ -29,7 +29,7 @@
 <pre><code class="python">import torch.optim as optim
 
 from main.src.models.ModelFactory import ModelFactory
-from main.src.models.enums import EnumOptimizer
+from main.src.enums import EnumOptimizer
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -76,7 +76,7 @@ class OptimizersFactory(BaseClass):
 <dl>
 <dt id="main.src.training.optimizers_factory.OptimizersFactory"><code class="flex name class">
 <span>class <span class="ident">OptimizersFactory</span></span>
-<span>(</span><span>model: <a title="main.src.models.ModelFactory.ModelFactory" href="../models/ModelFactory.html#main.src.models.ModelFactory.ModelFactory">ModelFactory</a>, name: <a title="main.src.models.enums.EnumOptimizer" href="../models/enums.html#main.src.models.enums.EnumOptimizer">EnumOptimizer</a> = EnumOptimizer.Adam, **params)</span>
+<span>(</span><span>model: <a title="main.src.models.ModelFactory.ModelFactory" href="../models/ModelFactory.html#main.src.models.ModelFactory.ModelFactory">ModelFactory</a>, name: <a title="main.src.enums.EnumOptimizer" href="../enums.html#main.src.enums.EnumOptimizer">EnumOptimizer</a> = EnumOptimizer.Adam, **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the optimizers</p>
