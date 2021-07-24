@@ -1,4 +1,4 @@
-"""Annotations access thanks to the images_preprocessed_points.pkl file containing points of annotations polygons"""
+"""Fabrics access thanks to the images_preprocessed_points.pkl file containing points of annotations polygons"""
 
 import pickle
 import numpy as np
@@ -13,7 +13,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class PointDataset(BaseClass,AbstractDataset):
-    """Annotations access thanks to the images_preprocessed_points.pkl file containing points of annotations polygons"""
+    """Fabrics access thanks to the images_preprocessed_points.pkl file containing points of annotations polygons"""
     def __init__(self,path_pkl:str,mapping: TwoWayDict):
         super(PointDataset, self).__init__(mapping)
         self.attr_path = path_pkl
@@ -42,9 +42,5 @@ class PointDataset(BaseClass,AbstractDataset):
 
     def __len__(self):
         return len(self.dataset)
-    def values(self):
-        return self.dataset.values()
-    def keys(self):
-        return self.dataset.keys()
     def __iter__(self):
         return self.dataset.__iter__()

@@ -12,14 +12,14 @@ from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
-from main.src.data.Datasets.Annotations.FabricPreprocessedCache import FabricPreprocessedCache
+from main.src.data.Datasets.Fabrics.FabricPreprocessedCache import FabricPreprocessedCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
-from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
-from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
+from main.src.data.balance_classes.BalanceClassesNoOther import BalanceClassesNoOther
+from main.src.data.balance_classes.BalanceClassesOnlyOther import BalanceClassesOnlyOther
 from main.src.enums import EnumBalance
-from main.src.data.balance_classes.no_balance import NoBalance
+from main.src.data.balance_classes.BalanceNoBalance import BalanceNoBalance
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
@@ -32,7 +32,7 @@ from main.src.enums import EnumDataset
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class ClassificationPatch(BaseClass):
+class ClassificationGeneratorPatch(BaseClass):
     """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
     filter them.
 
@@ -66,22 +66,22 @@ class ClassificationPatch(BaseClass):
             }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
         if balance == EnumBalance.NoBalance:
-            self.attr_balance = NoBalance()
+            self.attr_balance = BalanceNoBalance()
         elif balance == EnumBalance.BalanceClasses1:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
-            self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping["other"])
+            self.attr_balance = BalanceClassesNoOther(other_index=self.attr_original_class_mapping["other"])
         elif balance == EnumBalance.BalanceClasses2:
-            self.attr_balance = BalanceClasses2(other_index=self.attr_original_class_mapping["other"])
+            self.attr_balance = BalanceClassesOnlyOther(other_index=self.attr_original_class_mapping["other"])
         else:
             raise NotImplementedError
         if augmentations_img != "none":
@@ -167,7 +167,7 @@ class ClassificationPatch(BaseClass):
                             yield image_patch, classification, transformation_matrix, item
 
     def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
-                  standardizer: AbstractStandardizer,label_encoding: TwoWayDict, transformation_matrix: Optional[np.ndarray] = None
+                  standardizer: AbstractStandardizer, transformation_matrix: Optional[np.ndarray] = None
                   ) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
         """Generate image patch and corresponding annotation for the given parameters
 
@@ -205,8 +205,6 @@ class ClassificationPatch(BaseClass):
         return None
     def set_standardizer(self, standardizer: AbstractStandardizer):
         self.attr_standardizer = standardizer
-    def set_annotator(self,annotations):
-        self.annotations_labels = annotations
 
     def len(self, dataset: str) -> Optional[int]:
         return None

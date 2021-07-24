@@ -61,7 +61,7 @@ if __name__ == &#34;__main__&#34;:
 
     &#34;&#34;&#34;
     - images.hdf5: future main inputs of the network, numpy arrays of shape (height,width,1) dtype = np.float32
-    - annotations_labels.hdf5: reference for the output of the Annotations network: numpy array of shape (height,width,3) dtype = np.uint8 !.
+    - annotations_labels.hdf5: reference for the output of the Fabrics network: numpy array of shape (height,width,3) dtype = np.uint8 !.
     
     The value 3 correspond respectively (in this order) to oil seep, oil spill and others.
     - class_mappings.json: will store mapping between class names (oil seep, oil spill and others) and index in the array of the annotations_labels.hdf5 file (this file is created manually in the data_in folder)
@@ -165,7 +165,7 @@ if __name__ == &#34;__main__&#34;:
                                          **dico_infos_img[
                                              name]}  # **dictionary = dictionnary unpacking: we add the content of the dict to the other dict
 
-        # Shapefile Annotations map computation
+        # Shapefile Fabrics map computation
         ## Create empty array with the same shape as the original image
         segmentation_map = np.zeros(shape=image_array.shape, dtype=np.uint8)
         segmentation_map = Image.fromarray(segmentation_map)

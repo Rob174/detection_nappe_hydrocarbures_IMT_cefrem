@@ -1,4 +1,4 @@
-"""Class that takes inputs from the filtered hdf5 file to create a new dataset. Far quicker than the original ClassificationCache."""
+"""Class that takes inputs from the filtered hdf5 file to create a new dataset. Far quicker than the original ClassificationGeneratorCache."""
 
 import json
 import random
@@ -9,14 +9,14 @@ from h5py import File
 
 from main.FolderInfos import FolderInfos
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
-from main.src.data.Datasets.Annotations.FabricFilteredCache import FabricFilteredCache
+from main.src.data.Datasets.Fabrics.FabricFilteredCache import FabricFilteredCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.Datasets.PointDataset import PointDataset
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.TwoWayDict import TwoWayDict
-from main.src.data.classification.ClassificationPatch import ClassificationPatch
+from main.src.data.classification.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
 from main.src.data.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
 from main.src.data.PatchAdder.PatchAdderCallback import PatchAdderCallback
@@ -27,7 +27,7 @@ from main.src.enums import EnumClasses
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class ClassificationCache(BaseClass):
+class ClassificationGeneratorCache(BaseClass):
     """Class that takes inputs from the filtered hdf5 file to create a new dataset
 
     Args:
@@ -46,7 +46,7 @@ class ClassificationCache(BaseClass):
                  tr_percent: float = 0.7, limit_num_images: int = None,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1):
-        print("Using ClassificationCache")
+        print("Using ClassificationGeneratorCache")
         self.attr_standardization = True
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images

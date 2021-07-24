@@ -1,3 +1,5 @@
+"""Class to get the a grid of patches in an image with affine transformations"""
+
 import numpy as np
 from typing import List, Tuple
 
@@ -6,7 +8,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class GridMaker(BaseClass, AbstractGridMaker):
-    """Class to get the a grid of patches in an image
+    """Class to get the a grid of patches in an image with affine transformations
     Args:
         patch_size_final_resize: int, final size of the patch before providing it to the model
     """

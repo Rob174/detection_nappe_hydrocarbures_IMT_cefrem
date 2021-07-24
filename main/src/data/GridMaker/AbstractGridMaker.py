@@ -1,3 +1,4 @@
+"""BaseClass to build a grid maker allowing to build a grid (list of coordinates) and get the coordinates of a patch"""
 from abc import ABC,abstractmethod
 
 from typing import List, Tuple, Any

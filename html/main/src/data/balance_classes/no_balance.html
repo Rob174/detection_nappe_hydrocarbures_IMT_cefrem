@@ -33,12 +33,12 @@ from main.src.data.balance_classes.AbstractBalance import AbstractBalance
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class NoBalance(BaseClass, AbstractBalance):
+class BalanceNoBalance(BaseClass, AbstractBalance):
     def __init__(self):
         &#34;&#34;&#34;
         Class used to indicate that no balancing operation has been applied
         &#34;&#34;&#34;
-        super(NoBalance, self).__init__()
+        super(BalanceNoBalance, self).__init__()
         self.attr_name = self.__class__.__name__
         self.attr_global_name = &#34;balance&#34;
 
@@ -56,7 +56,7 @@ class NoBalance(BaseClass, AbstractBalance):
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
 <dt id="main.src.data.balance_classes.no_balance.NoBalance"><code class="flex name class">
-<span>class <span class="ident">NoBalance</span></span>
+<span>class <span class="ident">BalanceNoBalance</span></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p>
@@ -65,12 +65,12 @@ class NoBalance(BaseClass, AbstractBalance):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class NoBalance(BaseClass, AbstractBalance):
+<pre><code class="python">class BalanceNoBalance(BaseClass, AbstractBalance):
     def __init__(self):
         &#34;&#34;&#34;
         Class used to indicate that no balancing operation has been applied
         &#34;&#34;&#34;
-        super(NoBalance, self).__init__()
+        super(BalanceNoBalance, self).__init__()
         self.attr_name = self.__class__.__name__
         self.attr_global_name = &#34;balance&#34;
 
@@ -109,7 +109,7 @@ class NoBalance(BaseClass, AbstractBalance):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="main.src.data.balance_classes.no_balance.NoBalance" href="#main.src.data.balance_classes.no_balance.NoBalance">NoBalance</a></code></h4>
+<h4><code><a title="main.src.data.balance_classes.no_balance.BalanceNoBalance" href="#main.src.data.balance_classes.no_balance.NoBalance">BalanceNoBalance</a></code></h4>
 </li>
 </ul>
 </li>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>main.src.data.classification.ClassificationPatch API documentation</title>
+<title>main.src.data.classification.ClassificationGeneratorPatch API documentation</title>
 <meta name="description" content="Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
 filter them" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -20,7 +20,7 @@ filter them" />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>main.src.data.classification.ClassificationPatch</code></h1>
+<h1 class="title">Module <code>main.src.data.classification.ClassificationGeneratorPatch</code></h1>
 </header>
 <section id="section-intro">
 <p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
@@ -47,10 +47,10 @@ from main.src.data.Datasets.Annotations.FabricPreprocessedCache import FabricPre
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
-from main.src.data.balance_classes.BalanceClasses1 import BalanceClasses1
-from main.src.data.balance_classes.BalanceClasses2 import BalanceClasses2
+from main.src.data.balance_classes.BalanceClassesNoOther import BalanceClassesNoOther
+from main.src.data.balance_classes.BalanceClassesOnlyOther import BalanceClassesOnlyOther
 from main.src.enums import EnumBalance
-from main.src.data.balance_classes.no_balance import NoBalance
+from main.src.data.balance_classes.no_balance import BalanceNoBalance
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
@@ -63,7 +63,7 @@ from main.src.enums import EnumDataset
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class ClassificationPatch(BaseClass):
+class ClassificationGeneratorPatch(BaseClass):
     &#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
     filter them.
 
@@ -78,7 +78,7 @@ class ClassificationPatch(BaseClass):
         label_modifier: EnumLabelModifier
     &#34;&#34;&#34;
     def __init__(self, input_size: int = None,
-                 limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
+                 limit_num_images: int = None, balance: EnumBalance = EnumBalance.BalanceNoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
@@ -97,22 +97,22 @@ class ClassificationPatch(BaseClass):
             }
         self.attr_global_name = &#34;attr_dataset&#34;
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationGeneratorPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationGeneratorPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationGeneratorPatch.attr_original_class_mapping)
         else:
             raise NotImplementedError(f&#34;{label_modifier} is not implemented&#34;)
-        if balance == EnumBalance.NoBalance:
-            self.attr_balance = NoBalance()
-        elif balance == EnumBalance.BalanceClasses1:
+        if balance == EnumBalance.BalanceNoBalance:
+            self.attr_balance = BalanceNoBalance()
+        elif balance == EnumBalance.BalanceClassesNoOther:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
-            self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping[&#34;other&#34;])
-        elif balance == EnumBalance.BalanceClasses2:
-            self.attr_balance = BalanceClasses2(other_index=self.attr_original_class_mapping[&#34;other&#34;])
+            self.attr_balance = BalanceClassesNoOther(other_index=self.attr_original_class_mapping[&#34;other&#34;])
+        elif balance == EnumBalance.BalanceClassesOnlyOther:
+            self.attr_balance = BalanceClassesOnlyOther(other_index=self.attr_original_class_mapping[&#34;other&#34;])
         else:
             raise NotImplementedError
         if augmentations_img != &#34;none&#34;:
@@ -253,8 +253,8 @@ class ClassificationPatch(BaseClass):
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
 <dt id="main.src.data.classification.ClassificationPatch.ClassificationPatch"><code class="flex name class">
-<span>class <span class="ident">ClassificationPatch</span></span>
-<span>(</span><span>input_size: int = None, limit_num_images: int = None, balance: <a title="main.src.enums.EnumBalance" href="../../enums.html#main.src.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.enums.EnumAugmenter" href="../../enums.html#main.src.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, label_modifier: <a title="main.src.enums.EnumLabelModifier" href="../../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), tr_percent=0.7, grid_size_px: int = 1000, threshold_margin: int = 1000)</span>
+<span>class <span class="ident">ClassificationGeneratorPatch</span></span>
+<span>(</span><span>input_size: int = None, limit_num_images: int = None, balance: <a title="main.src.enums.EnumBalance" href="../../enums.html#main.src.enums.EnumBalance">EnumBalance</a> = EnumBalance.BalanceNoBalance, augmentations_img='none', augmenter_img: <a title="main.src.enums.EnumAugmenter" href="../../enums.html#main.src.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor: int = 100, label_modifier: <a title="main.src.enums.EnumLabelModifier" href="../../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), tr_percent=0.7, grid_size_px: int = 1000, threshold_margin: int = 1000)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
@@ -282,7 +282,7 @@ filter them.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ClassificationPatch(BaseClass):
+<pre><code class="python">class ClassificationGeneratorPatch(BaseClass):
     &#34;&#34;&#34;Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
     filter them.
 
@@ -297,7 +297,7 @@ filter them.</p>
         label_modifier: EnumLabelModifier
     &#34;&#34;&#34;
     def __init__(self, input_size: int = None,
-                 limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
+                 limit_num_images: int = None, balance: EnumBalance = EnumBalance.BalanceNoBalance,
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
@@ -316,22 +316,22 @@ filter them.</p>
             }
         self.attr_global_name = &#34;attr_dataset&#34;
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationPatch.attr_original_class_mapping)
+            self.attr_label_modifier = LabelModifier0(class_mapping=ClassificationGeneratorPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationGeneratorPatch.attr_original_class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
             self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=ClassificationPatch.attr_original_class_mapping)
+                                                      original_class_mapping=ClassificationGeneratorPatch.attr_original_class_mapping)
         else:
             raise NotImplementedError(f&#34;{label_modifier} is not implemented&#34;)
-        if balance == EnumBalance.NoBalance:
-            self.attr_balance = NoBalance()
-        elif balance == EnumBalance.BalanceClasses1:
+        if balance == EnumBalance.BalanceNoBalance:
+            self.attr_balance = BalanceNoBalance()
+        elif balance == EnumBalance.BalanceClassesNoOther:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
-            self.attr_balance = BalanceClasses1(other_index=self.attr_original_class_mapping[&#34;other&#34;])
-        elif balance == EnumBalance.BalanceClasses2:
-            self.attr_balance = BalanceClasses2(other_index=self.attr_original_class_mapping[&#34;other&#34;])
+            self.attr_balance = BalanceClassesNoOther(other_index=self.attr_original_class_mapping[&#34;other&#34;])
+        elif balance == EnumBalance.BalanceClassesOnlyOther:
+            self.attr_balance = BalanceClassesOnlyOther(other_index=self.attr_original_class_mapping[&#34;other&#34;])
         else:
             raise NotImplementedError
         if augmentations_img != &#34;none&#34;:
@@ -689,14 +689,14 @@ item: str name of the source image</dd>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationPatch</a></code></h4>
+<h4><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch">ClassificationGeneratorPatch</a></code></h4>
 <ul class="two-column">
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.generator" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.generator">generator</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.get_patch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_patch">get_patch</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.len" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.len">len</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_annotator" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_annotator">set_annotator</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_datasets" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_datasets">set_datasets</a></code></li>
-<li><code><a title="main.src.data.classification.ClassificationPatch.ClassificationPatch.set_standardizer" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_standardizer">set_standardizer</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch.generator" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.generator">generator</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch.get_patch" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.get_patch">get_patch</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch.len" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.len">len</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch.set_annotator" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_annotator">set_annotator</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch.set_datasets" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_datasets">set_datasets</a></code></li>
+<li><code><a title="main.src.data.classification.ClassificationGeneratorPatch.ClassificationGeneratorPatch.set_standardizer" href="#main.src.data.classification.ClassificationPatch.ClassificationPatch.set_standardizer">set_standardizer</a></code></li>
 </ul>
 </li>
 </ul>

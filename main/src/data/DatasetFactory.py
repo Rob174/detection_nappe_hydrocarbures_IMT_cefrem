@@ -6,8 +6,8 @@ import torch
 from main.FolderInfos import FolderInfos
 from main.src.enums import EnumAugmenter
 from main.src.enums import EnumBalance
-from main.src.data.classification.ClassificationCache import ClassificationCache
-from main.src.data.classification.ClassificationPatch import ClassificationPatch
+from main.src.data.classification.ClassificationGeneratorCache import ClassificationGeneratorCache
+from main.src.data.classification.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.enums import EnumUsage, EnumClasses
 from main.src.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
@@ -28,7 +28,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
         classes_to_use: Tuple[EnumClasses], the classes to use
         balance: EnumBalance,
-        margin: int, additionnal parameter to balance classes, cf doc in NoLabelModifier or in BalanceClasses1
+        margin: int, additionnal parameter to balance classes, cf doc in NoLabelModifier or in BalanceClassesNoOther
         augmentations_img: opt str, list of augmentations to apply seprated by commas
         augmenter_img: opt EnumAugmenter,
         augmentations_patch: opt str, list of augmentations to apply seprated by commas
@@ -56,19 +56,19 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                     and augmentations_img == "combinedRotResizeMir_10_0.25_4"  and \
                     exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
                     and grid_size == 1000 and not force_classifpatch:
-                self.attr_dataset = ClassificationCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
-                                                        other_class_adder=other_class_adder,interval=interval)
+                self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
+                                                                 other_class_adder=other_class_adder, interval=interval)
             else:
-                self.attr_dataset = ClassificationPatch(input_size=input_size,
-                                                        classes_to_use=classes_to_use,
-                                                        balance=balance,
-                                                        augmentations_img=augmentations_img,
-                                                        augmenter_img=augmenter_img,
-                                                        augmentation_factor=augmentation_factor,
-                                                        label_modifier=dataset_name,
-                                                        grid_size_px=grid_size,
-                                                        threshold_margin=exclusion_policy_threshold
-                                                        )
+                self.attr_dataset = ClassificationGeneratorPatch(input_size=input_size,
+                                                                 classes_to_use=classes_to_use,
+                                                                 balance=balance,
+                                                                 augmentations_img=augmentations_img,
+                                                                 augmenter_img=augmenter_img,
+                                                                 augmentation_factor=augmentation_factor,
+                                                                 label_modifier=dataset_name,
+                                                                 grid_size_px=grid_size,
+                                                                 threshold_margin=exclusion_policy_threshold
+                                                                 )
 
 
         elif usage_type == EnumUsage.Segmentation:

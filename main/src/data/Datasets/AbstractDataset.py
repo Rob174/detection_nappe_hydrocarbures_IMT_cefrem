@@ -11,6 +11,7 @@ class AbstractDataset(ABC):
 
     @property
     def dataset(self):
+        """property to map to the dataset object mappping to the file (hdf5 object, ...)"""
         raise NotImplementedError
 
     def get(self,id: str) -> Any:
@@ -25,7 +26,14 @@ class AbstractDataset(ABC):
         """
     def __len__(self):
         return self.dataset
+    def keys(self):
+        return self.dataset.keys()
+    def values(self):
+        return self.dataset.values()
     def __enter__(self):
-        pass
+        """Method for context manager (with ... statement)"""
+        self.dataset.__enter__()
+        return self
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        """Method for context manager (with ... statement)"""
+        self.dataset.__exit__(exc_type,exc_val,exc_tb)

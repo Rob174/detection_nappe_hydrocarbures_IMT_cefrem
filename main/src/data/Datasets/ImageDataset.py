@@ -12,18 +12,16 @@ class ImageDataset(BaseClass,AbstractDataset):
         self._dataset = File(src_hdf5,"r")
     @property
     def dataset(self):
+        """mapping to the HDF5 object file"""
         return self._dataset
     def get(self,id:str):
+        """Get the object representing the array of id name
+
+        Args:
+            id: id of the sample in the dataset
+
+        Returns:
+            np.ndarray, representing the sample extracted from the dataset
+
+        """
         return self.dataset[id]
-    def keys(self):
-        return self.dataset.keys()
-    def values(self):
-        return self.dataset.values()
-
-    def __enter__(self):
-        self.dataset.__enter__()
-        return self
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.dataset.__exit__(exc_type,exc_val,exc_tb)
-
-

@@ -38,12 +38,12 @@ class CacheMetadataManager:
         self.metric_manager = MetadataManager(dico_metadata,dico_data, formatter)
     def extract_from_list_of_possibilities(self,functions_list,dico_data):
         value = self.metric_manager.extract_from_list_of_possibilities(functions_list,dico_data)
-        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationCache&#34;:
+        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationGeneratorCache&#34;:
             value = self.metric_manager.extract_from_list_of_possibilities(functions_list,self.dico_data_cache)
         return value
     def extract_from_uniq_function(self,function,dico_data):
         value = self.metric_manager.extract_from_uniq_function(function,dico_data)
-        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationCache&#34;:
+        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationGeneratorCache&#34;:
             value = self.metric_manager.extract_from_uniq_function(function,self.dico_data_cache)
         return value
     def get(self,metadata_name):
@@ -87,12 +87,12 @@ class CacheMetadataManager:
         self.metric_manager = MetadataManager(dico_metadata,dico_data, formatter)
     def extract_from_list_of_possibilities(self,functions_list,dico_data):
         value = self.metric_manager.extract_from_list_of_possibilities(functions_list,dico_data)
-        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationCache&#34;:
+        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationGeneratorCache&#34;:
             value = self.metric_manager.extract_from_list_of_possibilities(functions_list,self.dico_data_cache)
         return value
     def extract_from_uniq_function(self,function,dico_data):
         value = self.metric_manager.extract_from_uniq_function(function,dico_data)
-        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationCache&#34;:
+        if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationGeneratorCache&#34;:
             value = self.metric_manager.extract_from_uniq_function(function,self.dico_data_cache)
         return value
     def get(self,metadata_name):
@@ -121,7 +121,7 @@ class CacheMetadataManager:
 </summary>
 <pre><code class="python">def extract_from_list_of_possibilities(self,functions_list,dico_data):
     value = self.metric_manager.extract_from_list_of_possibilities(functions_list,dico_data)
-    if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationCache&#34;:
+    if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationGeneratorCache&#34;:
         value = self.metric_manager.extract_from_list_of_possibilities(functions_list,self.dico_data_cache)
     return value</code></pre>
 </details>
@@ -137,7 +137,7 @@ class CacheMetadataManager:
 </summary>
 <pre><code class="python">def extract_from_uniq_function(self,function,dico_data):
     value = self.metric_manager.extract_from_uniq_function(function,dico_data)
-    if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationCache&#34;:
+    if value is None and self.dico_metadata[&#34;dataset&#34;] == &#34;ClassificationGeneratorCache&#34;:
         value = self.metric_manager.extract_from_uniq_function(function,self.dico_data_cache)
     return value</code></pre>
 </details>

@@ -27,7 +27,7 @@ class AugmentationApplierLabelPoints(BaseClass, AbstractApplier):
         """Draw the polygons transformed thanks to the transformation matrix to build the annotation of the patch
 
         Args:
-            polygons: List[Dict] containing the "points" and the "label" keys containing respectively a list of points defining the polygon and the color hexadecimal code to use
+            data: List[Dict] containing the "points" and the "label" keys containing respectively a list of points defining the polygon and the color hexadecimal code to use
             partial_transformation_matrix: np.ndarray, transformation to apply without the translation to get the correct patch
             patch_upper_left_corner_coords: Tuple[int,int], coordinates of the upper left corner of the patch to take
 
@@ -41,7 +41,7 @@ class AugmentationApplierLabelPoints(BaseClass, AbstractApplier):
         segmentation_map = np.zeros((self.patch_size_final_resize, self.patch_size_final_resize), dtype=np.uint8)
         segmentation_map = Image.fromarray(segmentation_map)
         draw = ImageDraw.ImageDraw(segmentation_map)  # draw the base image
-        for shape_dico in polygons:
+        for shape_dico in data:
             liste_points_shape = [tuple(transformation_matrix.dot([*point, 1])[:2]) for point in
                                   shape_dico[EnumShapeCategories.Points]]
             color = shape_dico[EnumShapeCategories.Label]
