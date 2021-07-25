@@ -23,7 +23,7 @@ class PointDataset(BaseClass,AbstractDataset):
     @property
     def dataset(self):
         return self._dataset
-    def get(self,item: str) -> List[Tuple[int,int]]:
+    def __getitem__(self,item: str) -> List[Tuple[int,int]]:
         """Gives access to the data and can simultenaously perform augmentations to constitute the final augmented annotation
         (give identity matrix for no transformation)
 

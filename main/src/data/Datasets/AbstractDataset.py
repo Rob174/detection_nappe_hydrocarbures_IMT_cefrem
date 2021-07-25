@@ -15,7 +15,7 @@ class AbstractDataset(ABC):
         """property to map to the dataset object mappping to the file (hdf5 object, ...)"""
         raise NotImplementedError
 
-    def get(self,id: str) -> Any:
+    def __getitem__(self,id: str) -> Any:
         """Get the object representing the array of id name
 
         Args:
@@ -36,7 +36,7 @@ class AbstractDataset(ABC):
         return self.dataset.__iter__()
     def __enter__(self):
         """Method for context manager (with ... statement)"""
-        self.dataset.__enter__()
+        self.dataset_opened = self.dataset.__enter__()
         return self
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Method for context manager (with ... statement)"""

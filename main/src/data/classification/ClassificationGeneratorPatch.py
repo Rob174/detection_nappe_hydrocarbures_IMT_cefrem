@@ -139,9 +139,9 @@ class ClassificationGeneratorPatch(BaseClass):
                 for num_dataset in range(self.attr_augmentation_factor):
                     random.shuffle(images_available)
                     for item in images_available:
-                        image = images_dataset.get(item)
+                        image = images_dataset[item]
                         image = np.array(image, dtype=np.float32)
-                        polygons = labels_dataset.get(item)
+                        polygons = labels_dataset[item]
                         partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
                         for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
                             annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(

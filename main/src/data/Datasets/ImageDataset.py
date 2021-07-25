@@ -12,11 +12,12 @@ class ImageDataset(BaseClass,AbstractDataset):
         super().__init__(mapping)
         self.attr_path = src_hdf5
         self._dataset = File(src_hdf5,"r")
+
     @property
     def dataset(self):
         """mapping to the HDF5 object file"""
         return self._dataset
-    def get(self,id:str):
+    def __getitem__(self, id:str):
         """Get the object representing the array of id name
 
         Args:
@@ -26,7 +27,11 @@ class ImageDataset(BaseClass,AbstractDataset):
             np.ndarray, representing the sample extracted from the dataset
 
         """
-        return self.dataset[id]
+        raise Exception("Directly managed by the hdf5 file")
+    def __enter__(self,*args,**kwargs):
+        return self.dataset.__enter__(*args,**kwargs)
+    def __exit__(self, *args, **kwargs):
+        return self.dataset.__exit__( *args, **kwargs)
     def __iter__(self):
         """Allow to use for loop on this object"""
         raise NotImplementedError

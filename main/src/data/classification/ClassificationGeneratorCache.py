@@ -120,8 +120,8 @@ class ClassificationGeneratorCache(BaseClass):
                         image, annotation = self.process_infos(image, annotation)
                         yield image, annotation, transformation_matrix, source_img
                     # Open image and annotations
-                    image = np.array(images_cache.get(id))
-                    annotation = np.array(annotations_cache.get(id))
+                    image = np.array(images_cache[id])
+                    annotation = np.array(annotations_cache[id])
                     source_img = self.dico_infos[id]["source_img"]
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
                     image, annotation = self.process_infos(image, annotation)
