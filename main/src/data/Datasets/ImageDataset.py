@@ -30,3 +30,5 @@ class ImageDataset(BaseClass,AbstractDataset):
     def __iter__(self):
         """Allow to use for loop on this object"""
         raise NotImplementedError
+    def __len__(self):
+        return len(self.dataset)
