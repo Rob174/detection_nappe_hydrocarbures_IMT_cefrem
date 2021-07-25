@@ -82,24 +82,23 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
         return self.attr_image_applier.transform(image, partial_transformation_matrix,
                                                  patch_upper_left_corner_coords)
 
-    def transform_label(self, polygons: List[Dict], partial_transformation_matrix: np.ndarray,
+    def transform_label(self, data: List[Dict], partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -> Tuple[np.ndarray, np.ndarray]:
         """Compute no augmentations on points
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
 
         Args:
-            annotation_function: Callable that can generate the patch with the given parameters
-            image_name: str, the name of the original image
+            data: List[Dict] List of the polygons on the patch
             partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
-            coord_patch: coordinates of the output patch in the augmented image
+            patch_upper_left_corner_coords: coordinates of the output patch in the augmented image
 
         Returns:
             tuple of np.ndarray
             - the annotation patch
             - the transformation matrix used (with patch extraction)
         """
-        return self.label_applier.transform(polygons, partial_transformation_matrix,
+        return self.label_applier.transform(data, partial_transformation_matrix,
                                             patch_upper_left_corner_coords)
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -> List[Tuple[int, int]]:

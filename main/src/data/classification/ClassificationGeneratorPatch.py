@@ -141,7 +141,7 @@ class ClassificationGeneratorPatch(BaseClass):
                 partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
                 for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
                     annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
-                        polygons=polygons,
+                        data=polygons,
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )

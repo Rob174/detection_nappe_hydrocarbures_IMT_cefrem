@@ -3,6 +3,7 @@
 import subprocess
 import sys
 
+from main.src.data.Standardizer.NoStandardizer import NoStandardizer
 
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
@@ -69,8 +70,8 @@ if __name__ == "__main__":
     saver.save()
 
     rgb_overlay = RGB_Overlay2(
-        standardizer=dataset.attr_dataset.attr_standardizer
-                                    )
+        standardizer=NoStandardizer()
+    )
     print("start")
 
     # Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
