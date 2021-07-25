@@ -1,5 +1,12 @@
+"""Class managing the attr_dataset creation and access with options of:
+- different attr_dataset possible
+- different patch creator possible
+"""
+
 import json
 from typing import Tuple
+
+
 
 import torch
 
@@ -83,12 +90,3 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def len(self, dataset):
         return self.attr_dataset.len(dataset)
 
-
-if __name__ == "__main__":
-    FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name=EnumLabelModifier.NoLabelModifier,
-                                     usage_type=EnumUsage.Classification, patch_creator=EnumPatchAlgorithm.FixedPx,
-                                     grid_size=1000, input_size=256)
-
-    for input, output, transformation_matrix, name in dataset_factory:
-        print("done")

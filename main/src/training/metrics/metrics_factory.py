@@ -66,10 +66,13 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
         self.attr_global_name = "metrics"
 
     def __call__(self, prediction, true_value, dataset_type):
+        """Execute on loss computation both on the model side for backward propagation and another  cpu computation
+         to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) """
         prediction = prediction
         true_value = true_value
         for name, function in zip(self.attr_list_metrics.keys(), self.functions_metrics):
             self.attr_list_metrics[name][dataset_type + "_values"].append(float(function(prediction, true_value)))
 
     def get_last_metric(self, name: Enum) -> float:
+        """Get last value of specified metric"""
         return self.attr_list_metrics[name]["valid_values"][-1]

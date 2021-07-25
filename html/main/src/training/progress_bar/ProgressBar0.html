@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>main.src.training.progress_bar.ProgressBar0 API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Progress bar with a known number of iterations (case of ClassificationCache) (and a known number of epochs)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,17 +22,26 @@
 <h1 class="title">Module <code>main.src.training.progress_bar.ProgressBar0</code></h1>
 </header>
 <section id="section-intro">
+<p>Progress bar with a known number of iterations (case of ClassificationCache) (and a known number of epochs)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from rich.progress import TextColumn, Progress
+<pre><code class="python">&#34;&#34;&#34;Progress bar with a known number of iterations (case of ClassificationCache) (and a known number of epochs)&#34;&#34;&#34;
+
+from rich.progress import TextColumn, Progress
 
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.progress_bar.AbstractProgressBar import AbstractProgressBar
 
 
 class ProgressBar0(BaseClass, AbstractProgressBar):
+    &#34;&#34;&#34;Progress bar with a known number of iterations (case of ClassificationCache) (and a known number of epochs)
+
+    Args:
+        length: int, length of the dataset
+        num_epochs: int, number of epochs
+    &#34;&#34;&#34;
     def __init__(self, length: int, num_epochs: int):
         super(ProgressBar0, self).__init__()
         self._progress_bar = Progress(*self.columns)
@@ -44,9 +53,29 @@ class ProgressBar0(BaseClass, AbstractProgressBar):
                                                                   status=0)
 
     def end_iteration(self, loss: float, it_tr: int, tr_batch_size: int, **kwargs):
+        &#34;&#34;&#34;Update iteration progress bar
+
+        Args:
+            loss:float, loss of the model
+            it_tr:it_tr, number of iterations of training elapsed
+            tr_batch_size:int to update the number of samples provided to the model
+            **kwargs:
+
+        Returns:
+
+        &#34;&#34;&#34;
         self._progress_bar.update(self._progress_bar_iterations, advance=tr_batch_size, loss=loss, status=it_tr)
 
     def end_epoch(self, loss: int, epoch: int, **kwargs):
+        &#34;&#34;&#34;Update epoch progress bar
+
+        Args:
+            loss:float, loss of the model
+            epoch, int
+            **kwargs:
+
+        Returns:
+        &#34;&#34;&#34;
         self._progress_bar.update(self._progress_bar_epochs, advance=1, loss=loss, status=epoch)
 
     @property
@@ -68,12 +97,25 @@ class ProgressBar0(BaseClass, AbstractProgressBar):
 <span>(</span><span>length: int, num_epochs: int)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p></div>
+<div class="desc"><p>Progress bar with a known number of iterations (case of ClassificationCache) (and a known number of epochs)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>length</code></strong></dt>
+<dd>int, length of the dataset</dd>
+<dt><strong><code>num_epochs</code></strong></dt>
+<dd>int, number of epochs</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ProgressBar0(BaseClass, AbstractProgressBar):
+    &#34;&#34;&#34;Progress bar with a known number of iterations (case of ClassificationCache) (and a known number of epochs)
+
+    Args:
+        length: int, length of the dataset
+        num_epochs: int, number of epochs
+    &#34;&#34;&#34;
     def __init__(self, length: int, num_epochs: int):
         super(ProgressBar0, self).__init__()
         self._progress_bar = Progress(*self.columns)
@@ -85,9 +127,29 @@ class ProgressBar0(BaseClass, AbstractProgressBar):
                                                                   status=0)
 
     def end_iteration(self, loss: float, it_tr: int, tr_batch_size: int, **kwargs):
+        &#34;&#34;&#34;Update iteration progress bar
+
+        Args:
+            loss:float, loss of the model
+            it_tr:it_tr, number of iterations of training elapsed
+            tr_batch_size:int to update the number of samples provided to the model
+            **kwargs:
+
+        Returns:
+
+        &#34;&#34;&#34;
         self._progress_bar.update(self._progress_bar_iterations, advance=tr_batch_size, loss=loss, status=it_tr)
 
     def end_epoch(self, loss: int, epoch: int, **kwargs):
+        &#34;&#34;&#34;Update epoch progress bar
+
+        Args:
+            loss:float, loss of the model
+            epoch, int
+            **kwargs:
+
+        Returns:
+        &#34;&#34;&#34;
         self._progress_bar.update(self._progress_bar_epochs, advance=1, loss=loss, status=epoch)
 
     @property
@@ -100,33 +162,32 @@ class ProgressBar0(BaseClass, AbstractProgressBar):
 <li><a title="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar" href="AbstractProgressBar.html#main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar">AbstractProgressBar</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="main.src.training.progress_bar.ProgressBar0.ProgressBar0.progress_bar"><code class="name">var <span class="ident">progress_bar</span> : rich.progress.Progress</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def progress_bar(self) -&gt; Progress:
-    return self._progress_bar</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="main.src.training.progress_bar.ProgressBar0.ProgressBar0.end_epoch"><code class="name flex">
 <span>def <span class="ident">end_epoch</span></span>(<span>self, loss: int, epoch: int, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Update epoch progress bar</p>
+<h2 id="args">Args</h2>
+<p>loss:float, loss of the model
+epoch, int
+**kwargs:
+Returns:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def end_epoch(self, loss: int, epoch: int, **kwargs):
+    &#34;&#34;&#34;Update epoch progress bar
+
+    Args:
+        loss:float, loss of the model
+        epoch, int
+        **kwargs:
+
+    Returns:
+    &#34;&#34;&#34;
     self._progress_bar.update(self._progress_bar_epochs, advance=1, loss=loss, status=epoch)</code></pre>
 </details>
 </dd>
@@ -134,16 +195,43 @@ def progress_bar(self) -&gt; Progress:
 <span>def <span class="ident">end_iteration</span></span>(<span>self, loss: float, it_tr: int, tr_batch_size: int, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Update iteration progress bar</p>
+<h2 id="args">Args</h2>
+<p>loss:float, loss of the model
+it_tr:it_tr, number of iterations of training elapsed
+tr_batch_size:int to update the number of samples provided to the model
+**kwargs:
+Returns:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def end_iteration(self, loss: float, it_tr: int, tr_batch_size: int, **kwargs):
+    &#34;&#34;&#34;Update iteration progress bar
+
+    Args:
+        loss:float, loss of the model
+        it_tr:it_tr, number of iterations of training elapsed
+        tr_batch_size:int to update the number of samples provided to the model
+        **kwargs:
+
+    Returns:
+
+    &#34;&#34;&#34;
     self._progress_bar.update(self._progress_bar_iterations, advance=tr_batch_size, loss=loss, status=it_tr)</code></pre>
 </details>
 </dd>
 </dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar" href="AbstractProgressBar.html#main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar">AbstractProgressBar</a></b></code>:
+<ul class="hlist">
+<li><code><a title="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar" href="AbstractProgressBar.html#main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar">progress_bar</a></code></li>
+<li><code><a title="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar_epochs" href="AbstractProgressBar.html#main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar_epochs">progress_bar_epochs</a></code></li>
+<li><code><a title="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar_iterations" href="AbstractProgressBar.html#main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar_iterations">progress_bar_iterations</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -166,7 +254,6 @@ def progress_bar(self) -&gt; Progress:
 <ul class="">
 <li><code><a title="main.src.training.progress_bar.ProgressBar0.ProgressBar0.end_epoch" href="#main.src.training.progress_bar.ProgressBar0.ProgressBar0.end_epoch">end_epoch</a></code></li>
 <li><code><a title="main.src.training.progress_bar.ProgressBar0.ProgressBar0.end_iteration" href="#main.src.training.progress_bar.ProgressBar0.ProgressBar0.end_iteration">end_iteration</a></code></li>
-<li><code><a title="main.src.training.progress_bar.ProgressBar0.ProgressBar0.progress_bar" href="#main.src.training.progress_bar.ProgressBar0.ProgressBar0.progress_bar">progress_bar</a></code></li>
 </ul>
 </li>
 </ul>

@@ -94,12 +94,15 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
         self.attr_global_name = &#34;metrics&#34;
 
     def __call__(self, prediction, true_value, dataset_type):
+        &#34;&#34;&#34;Execute on loss computation both on the model side for backward propagation and another  cpu computation
+         to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) &#34;&#34;&#34;
         prediction = prediction
         true_value = true_value
         for name, function in zip(self.attr_list_metrics.keys(), self.functions_metrics):
             self.attr_list_metrics[name][dataset_type + &#34;_values&#34;].append(float(function(prediction, true_value)))
 
     def get_last_metric(self, name: Enum) -&gt; float:
+        &#34;&#34;&#34;Get last value of specified metric&#34;&#34;&#34;
         return self.attr_list_metrics[name][&#34;valid_values&#34;][-1]</code></pre>
 </details>
 </section>
@@ -194,12 +197,15 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
         self.attr_global_name = &#34;metrics&#34;
 
     def __call__(self, prediction, true_value, dataset_type):
+        &#34;&#34;&#34;Execute on loss computation both on the model side for backward propagation and another  cpu computation
+         to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) &#34;&#34;&#34;
         prediction = prediction
         true_value = true_value
         for name, function in zip(self.attr_list_metrics.keys(), self.functions_metrics):
             self.attr_list_metrics[name][dataset_type + &#34;_values&#34;].append(float(function(prediction, true_value)))
 
     def get_last_metric(self, name: Enum) -&gt; float:
+        &#34;&#34;&#34;Get last value of specified metric&#34;&#34;&#34;
         return self.attr_list_metrics[name][&#34;valid_values&#34;][-1]</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -214,12 +220,13 @@ class MetricsFactory(BaseClass, AbstractMetricManager):
 <span>def <span class="ident">get_last_metric</span></span>(<span>self, name: enum.Enum) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get last value of specified metric</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_last_metric(self, name: Enum) -&gt; float:
+    &#34;&#34;&#34;Get last value of specified metric&#34;&#34;&#34;
     return self.attr_list_metrics[name][&#34;valid_values&#34;][-1]</code></pre>
 </details>
 </dd>

@@ -75,6 +75,8 @@ class LossFactory(BaseClass, AbstractMetricManager):
         self.attr_loss_values: Dict[str, List[float]] = {EnumDataset.Train: [], EnumDataset.Valid: []}
 
     def call(self, prediction_gpu, output_gpu, prediction_npy,output_npy, dataset: EnumDataset = EnumDataset.Train) -&gt; float:
+        &#34;&#34;&#34;Execute on loss computation both on the model side for backward propagation and another  cpu computation
+         to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) &#34;&#34;&#34;
         loss = self.loss(prediction_gpu, output_gpu)
         if dataset == EnumDataset.Train:
             loss.backward()
@@ -87,6 +89,7 @@ class LossFactory(BaseClass, AbstractMetricManager):
         return self.call(prediction_gpu, output_gpu,prediction_npy,output_npy, dataset)
 
     def get_last_metric(self, name: Enum) -&gt; float:
+        &#34;&#34;&#34;Get last values of the metric asked&#34;&#34;&#34;
         return self.attr_loss_values[EnumDataset.Valid][-1]</code></pre>
 </details>
 </section>
@@ -153,6 +156,8 @@ class LossFactory(BaseClass, AbstractMetricManager):
         self.attr_loss_values: Dict[str, List[float]] = {EnumDataset.Train: [], EnumDataset.Valid: []}
 
     def call(self, prediction_gpu, output_gpu, prediction_npy,output_npy, dataset: EnumDataset = EnumDataset.Train) -&gt; float:
+        &#34;&#34;&#34;Execute on loss computation both on the model side for backward propagation and another  cpu computation
+         to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) &#34;&#34;&#34;
         loss = self.loss(prediction_gpu, output_gpu)
         if dataset == EnumDataset.Train:
             loss.backward()
@@ -165,6 +170,7 @@ class LossFactory(BaseClass, AbstractMetricManager):
         return self.call(prediction_gpu, output_gpu,prediction_npy,output_npy, dataset)
 
     def get_last_metric(self, name: Enum) -&gt; float:
+        &#34;&#34;&#34;Get last values of the metric asked&#34;&#34;&#34;
         return self.attr_loss_values[EnumDataset.Valid][-1]</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -179,12 +185,16 @@ class LossFactory(BaseClass, AbstractMetricManager):
 <span>def <span class="ident">call</span></span>(<span>self, prediction_gpu, output_gpu, prediction_npy, output_npy, dataset: <a title="main.src.enums.EnumDataset" href="../../enums.html#main.src.enums.EnumDataset">EnumDataset</a> = EnumDataset.Train) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Execute on loss computation both on the model side for backward propagation and another
+cpu computation
+to avoid the slow gpu cpu transfer (it is faster to recompute on my computer)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def call(self, prediction_gpu, output_gpu, prediction_npy,output_npy, dataset: EnumDataset = EnumDataset.Train) -&gt; float:
+    &#34;&#34;&#34;Execute on loss computation both on the model side for backward propagation and another  cpu computation
+     to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) &#34;&#34;&#34;
     loss = self.loss(prediction_gpu, output_gpu)
     if dataset == EnumDataset.Train:
         loss.backward()
@@ -198,12 +208,13 @@ class LossFactory(BaseClass, AbstractMetricManager):
 <span>def <span class="ident">get_last_metric</span></span>(<span>self, name: enum.Enum) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get last values of the metric asked</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_last_metric(self, name: Enum) -&gt; float:
+    &#34;&#34;&#34;Get last values of the metric asked&#34;&#34;&#34;
     return self.attr_loss_values[EnumDataset.Valid][-1]</code></pre>
 </details>
 </dd>

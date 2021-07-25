@@ -1,3 +1,5 @@
+"""Creates a confusion matrix on each validation sample provided with the update_matrix """
+
 import numpy as np
 
 from typing import Dict, List
@@ -21,6 +23,7 @@ class ConfusionMatrix(BaseClass):
         self.tot_true = np.zeros((self.num_matrix_classes,))
         self.attr_full_matrix = None
     def apply_threshold(self,image: np.ndarray):
+        """Function the apply a 0.5 threshold to the label"""
         new_image = np.copy(image)
         new_image[image > 0.5] = 1.
         new_image[image < 0.5] = 0.

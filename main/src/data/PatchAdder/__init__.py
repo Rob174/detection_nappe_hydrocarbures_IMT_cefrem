@@ -7,4 +7,7 @@ For that we have to choose the number of the main dataset samples to wait before
 
 Used in the internship project to balance a dataset by splitting it into a main dataset and another PatchAdder dataset
 to add patches without any annotation
+
+Contains the PatchAdderCallback class to dynamically modify the number of steps before introducing the new datasets patch between two epochs
+
 """

@@ -14,7 +14,6 @@ from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
-from main.src.training.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
 # from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
@@ -24,7 +23,6 @@ from main.src.training.optimizers_factory import OptimizersFactory
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.parsers.ParserClassificationCache import ParserClassificationCache
-from main.src.parsers.ParserClassificationPatch import ParserClassificationPatch
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.saver0 import Saver0
 from main.src.enums import EnumLabelModifier

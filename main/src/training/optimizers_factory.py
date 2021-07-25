@@ -28,9 +28,11 @@ class OptimizersFactory(BaseClass):
         self.attr_global_name = "optimizer"
 
     def zero_grad(self):
+        """Put the gradient to 0"""
         self.optimizer.zero_grad()
 
     def call(self):
+        """Get the pytorch optimizer"""
         return self.optimizer
 
     def __call__(self):

@@ -1,3 +1,3 @@
 """
-Module that gathers all parsers avaialable. Only one parser is necessary for the moment
+Module that gathers all parsers available depending of the usecase
 """

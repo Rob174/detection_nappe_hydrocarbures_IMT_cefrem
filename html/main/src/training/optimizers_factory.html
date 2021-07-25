@@ -56,9 +56,11 @@ class OptimizersFactory(BaseClass):
         self.attr_global_name = &#34;optimizer&#34;
 
     def zero_grad(self):
+        &#34;&#34;&#34;Put the gradient to 0&#34;&#34;&#34;
         self.optimizer.zero_grad()
 
     def call(self):
+        &#34;&#34;&#34;Get the pytorch optimizer&#34;&#34;&#34;
         return self.optimizer
 
     def __call__(self):
@@ -116,9 +118,11 @@ class OptimizersFactory(BaseClass):
         self.attr_global_name = &#34;optimizer&#34;
 
     def zero_grad(self):
+        &#34;&#34;&#34;Put the gradient to 0&#34;&#34;&#34;
         self.optimizer.zero_grad()
 
     def call(self):
+        &#34;&#34;&#34;Get the pytorch optimizer&#34;&#34;&#34;
         return self.optimizer
 
     def __call__(self):
@@ -134,12 +138,13 @@ class OptimizersFactory(BaseClass):
 <span>def <span class="ident">call</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get the pytorch optimizer</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def call(self):
+    &#34;&#34;&#34;Get the pytorch optimizer&#34;&#34;&#34;
     return self.optimizer</code></pre>
 </details>
 </dd>
@@ -147,12 +152,13 @@ class OptimizersFactory(BaseClass):
 <span>def <span class="ident">zero_grad</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Put the gradient to 0</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def zero_grad(self):
+    &#34;&#34;&#34;Put the gradient to 0&#34;&#34;&#34;
     self.optimizer.zero_grad()</code></pre>
 </details>
 </dd>

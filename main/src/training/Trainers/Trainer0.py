@@ -1,3 +1,4 @@
+"""Main trainer use for training purposes"""
 import numpy as np
 import torch
 from typing import List
@@ -6,6 +7,7 @@ from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass
+from main.src.param_savers.saver0 import Saver0
 from main.src.training.AbstractCallback import AbstractCallback
 from main.src.training.TrValidSplit import trvalidsplit
 from main.src.training.confusion_matrix.ConfusionMatrixCallback import ConfusionMatrixCallback
@@ -19,19 +21,19 @@ from main.src.training.progress_bar.ProgressBarFactory import ProgressBarFactory
 
 
 class Trainer0(BaseClass):
-    """Class managing the training process
+    """Main trainer use for training purposes
 
     Args:
-        batch_size: int, the training batch size: number of sample passed together to the attr_model
-        num_epochs: int, number of complete processing of the attr_dataset by the attr_model
-        tr_prct: float ∈ [0.,1.], percentage of the full attr_dataset dedicated to training
+        batch_size:
+        num_epochs:
+        tr_prct:
         dataset: DatasetFactory object to access data
-        model: pytorch attr_model to train
-        optimizer: optimizer factory
-        loss: loss factory
-        metrics: metrics factory
-        saver: Saver0 object (see its documentation)
-        eval_step: number of training batches between two validation steps
+        model:
+        optimizer:
+        loss:
+        metrics:
+        saver:
+        eval_step:
         debug: str enum ("true" or "false") if "true", save prediction and annotation during training process. ⚠️ can slow down the training process
     """
 
@@ -43,10 +45,28 @@ class Trainer0(BaseClass):
                  metrics: MetricsFactory,
                  early_stopping: AbstractEarlyStopping,
                  model_saver: AbstractModelSaver,
-                 saver,
-                 eval_step,
+                 saver: Saver0,
+                 eval_step: int,
                  rgb_overlay: RGB_Overlay2,
-                 debug="false"):
+                 debug: str="false"):
+        """
+
+        Args:
+            batch_size: int, the training batch size: number of sample passed together to the attr_model
+            num_epochs: int, number of complete processing of the attr_dataset by the attr_model
+            tr_prct: float ∈ [0.,1.], percentage of the full attr_dataset dedicated to training
+            dataset: DatasetFactory object to access data
+            model: pytorch attr_model to train
+            optimizer: optimizer factory
+            loss: loss factory
+            metrics: metrics factory
+            early_stopping: AbstractEarlyStopping to use
+            model_saver: AbstractModelSaver
+            saver: Saver0 object (see its documentation)
+            eval_step: number of training batches between two validation steps
+            rgb_overlay: RGB_Overlay2, to build an overlay of the classification on a sample
+            debug: "false" or "true"  to store the predictions and the true values for the model in the json file
+        """
 
         self.attr_debug = debug
         if debug == "true":

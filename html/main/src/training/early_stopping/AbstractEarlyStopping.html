@@ -33,13 +33,20 @@ from main.src.training.metrics.AbstractMetricManager import AbstractMetricManage
 
 
 class AbstractEarlyStopping(ABC):
-    def __init__(self, metric: AbstractMetricManager, name_metric_chosen):
+    &#34;&#34;&#34;Base class to build an early stopping algorithm
+
+    Args:
+        metric: AbstractMetricManager, object storing the metric used for the early stopping
+        name_metric_chosen: str name of the metric chosen inside this metric manager
+    &#34;&#34;&#34;
+    def __init__(self, metric: AbstractMetricManager, name_metric_chosen: str):
         self.epochs_metric_values = []
         self.metric: AbstractMetricManager = metric
         self.attr_name_metric_chosen = name_metric_chosen
 
     @abstractmethod
     def stop_training(self) -&gt; bool:
+        &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process&#34;&#34;&#34;
         pass</code></pre>
 </details>
 </section>
@@ -54,23 +61,36 @@ class AbstractEarlyStopping(ABC):
 <dl>
 <dt id="main.src.training.early_stopping.AbstractEarlyStopping.AbstractEarlyStopping"><code class="flex name class">
 <span>class <span class="ident">AbstractEarlyStopping</span></span>
-<span>(</span><span>metric: <a title="main.src.training.metrics.AbstractMetricManager.AbstractMetricManager" href="../metrics/AbstractMetricManager.html#main.src.training.metrics.AbstractMetricManager.AbstractMetricManager">AbstractMetricManager</a>, name_metric_chosen)</span>
+<span>(</span><span>metric: <a title="main.src.training.metrics.AbstractMetricManager.AbstractMetricManager" href="../metrics/AbstractMetricManager.html#main.src.training.metrics.AbstractMetricManager.AbstractMetricManager">AbstractMetricManager</a>, name_metric_chosen: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>Base class to build an early stopping algorithm</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>metric</code></strong></dt>
+<dd>AbstractMetricManager, object storing the metric used for the early stopping</dd>
+<dt><strong><code>name_metric_chosen</code></strong></dt>
+<dd>str name of the metric chosen inside this metric manager</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AbstractEarlyStopping(ABC):
-    def __init__(self, metric: AbstractMetricManager, name_metric_chosen):
+    &#34;&#34;&#34;Base class to build an early stopping algorithm
+
+    Args:
+        metric: AbstractMetricManager, object storing the metric used for the early stopping
+        name_metric_chosen: str name of the metric chosen inside this metric manager
+    &#34;&#34;&#34;
+    def __init__(self, metric: AbstractMetricManager, name_metric_chosen: str):
         self.epochs_metric_values = []
         self.metric: AbstractMetricManager = metric
         self.attr_name_metric_chosen = name_metric_chosen
 
     @abstractmethod
     def stop_training(self) -&gt; bool:
+        &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process&#34;&#34;&#34;
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -87,13 +107,14 @@ inheritance.</p></div>
 <span>def <span class="ident">stop_training</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Checks the precedent metrics and determine if we have to stop the training process</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def stop_training(self) -&gt; bool:
+    &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>

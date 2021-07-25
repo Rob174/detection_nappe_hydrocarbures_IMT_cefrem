@@ -34,6 +34,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class AbstractProgressBar( ABC):
+    &#34;&#34;&#34;Base class to build a progressbar&#34;&#34;&#34;
     def __init__(self):
         self.columns = [
             TextColumn(&#34;{task.fields[name]}&#34;, justify=&#34;right&#34;),
@@ -51,28 +52,35 @@ class AbstractProgressBar( ABC):
 
     @property
     def progress_bar_iterations(self) -&gt; TaskID:
+        &#34;&#34;&#34;Returns the progress bar for iterations inside an epochs&#34;&#34;&#34;
         raise NotImplementedError
 
     @property
     def progress_bar_epochs(self) -&gt; TaskID:
+        &#34;&#34;&#34;Returns the progress bar for epochs&#34;&#34;&#34;
         raise NotImplementedError
 
     @property
     def progress_bar(self) -&gt; Progress:
+        &#34;&#34;&#34;Global progress bar object (with multiple progress bar potentially inside)&#34;&#34;&#34;
         raise NotImplementedError
 
     def __enter__(self, *args, **kwargs):
+        &#34;&#34;&#34;Context manager (with statement)&#34;&#34;&#34;
         return self.progress_bar.__enter__()
 
     def __exit__(self, *args, **kwargs):
+        &#34;&#34;&#34;Context manager (with statement)&#34;&#34;&#34;
         return self.progress_bar.__exit__(*args, **kwargs)
 
     @abstractmethod
     def end_epoch(self, loss: int, epoch: int, **kwargs):
+        &#34;&#34;&#34;Update method for the epoch progress bar&#34;&#34;&#34;
         return NotImplementedError
 
     @abstractmethod
     def end_iteration(self, loss: float, status: int, **kargs):
+        &#34;&#34;&#34;Update method for the iteration progressbar&#34;&#34;&#34;
         return NotImplementedError</code></pre>
 </details>
 </section>
@@ -89,13 +97,13 @@ class AbstractProgressBar( ABC):
 <span>class <span class="ident">AbstractProgressBar</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>Base class to build a progressbar</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AbstractProgressBar( ABC):
+    &#34;&#34;&#34;Base class to build a progressbar&#34;&#34;&#34;
     def __init__(self):
         self.columns = [
             TextColumn(&#34;{task.fields[name]}&#34;, justify=&#34;right&#34;),
@@ -113,28 +121,35 @@ inheritance.</p></div>
 
     @property
     def progress_bar_iterations(self) -&gt; TaskID:
+        &#34;&#34;&#34;Returns the progress bar for iterations inside an epochs&#34;&#34;&#34;
         raise NotImplementedError
 
     @property
     def progress_bar_epochs(self) -&gt; TaskID:
+        &#34;&#34;&#34;Returns the progress bar for epochs&#34;&#34;&#34;
         raise NotImplementedError
 
     @property
     def progress_bar(self) -&gt; Progress:
+        &#34;&#34;&#34;Global progress bar object (with multiple progress bar potentially inside)&#34;&#34;&#34;
         raise NotImplementedError
 
     def __enter__(self, *args, **kwargs):
+        &#34;&#34;&#34;Context manager (with statement)&#34;&#34;&#34;
         return self.progress_bar.__enter__()
 
     def __exit__(self, *args, **kwargs):
+        &#34;&#34;&#34;Context manager (with statement)&#34;&#34;&#34;
         return self.progress_bar.__exit__(*args, **kwargs)
 
     @abstractmethod
     def end_epoch(self, loss: int, epoch: int, **kwargs):
+        &#34;&#34;&#34;Update method for the epoch progress bar&#34;&#34;&#34;
         return NotImplementedError
 
     @abstractmethod
     def end_iteration(self, loss: float, status: int, **kargs):
+        &#34;&#34;&#34;Update method for the iteration progressbar&#34;&#34;&#34;
         return NotImplementedError</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -150,37 +165,40 @@ inheritance.</p></div>
 <dl>
 <dt id="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar"><code class="name">var <span class="ident">progress_bar</span> : rich.progress.Progress</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Global progress bar object (with multiple progress bar potentially inside)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def progress_bar(self) -&gt; Progress:
+    &#34;&#34;&#34;Global progress bar object (with multiple progress bar potentially inside)&#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>
 <dt id="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar_epochs"><code class="name">var <span class="ident">progress_bar_epochs</span> : TaskID</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the progress bar for epochs</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def progress_bar_epochs(self) -&gt; TaskID:
+    &#34;&#34;&#34;Returns the progress bar for epochs&#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>
 <dt id="main.src.training.progress_bar.AbstractProgressBar.AbstractProgressBar.progress_bar_iterations"><code class="name">var <span class="ident">progress_bar_iterations</span> : TaskID</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the progress bar for iterations inside an epochs</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def progress_bar_iterations(self) -&gt; TaskID:
+    &#34;&#34;&#34;Returns the progress bar for iterations inside an epochs&#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>
@@ -191,13 +209,14 @@ def progress_bar_iterations(self) -&gt; TaskID:
 <span>def <span class="ident">end_epoch</span></span>(<span>self, loss: int, epoch: int, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Update method for the epoch progress bar</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def end_epoch(self, loss: int, epoch: int, **kwargs):
+    &#34;&#34;&#34;Update method for the epoch progress bar&#34;&#34;&#34;
     return NotImplementedError</code></pre>
 </details>
 </dd>
@@ -205,13 +224,14 @@ def end_epoch(self, loss: int, epoch: int, **kwargs):
 <span>def <span class="ident">end_iteration</span></span>(<span>self, loss: float, status: int, **kargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Update method for the iteration progressbar</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def end_iteration(self, loss: float, status: int, **kargs):
+    &#34;&#34;&#34;Update method for the iteration progressbar&#34;&#34;&#34;
     return NotImplementedError</code></pre>
 </details>
 </dd>

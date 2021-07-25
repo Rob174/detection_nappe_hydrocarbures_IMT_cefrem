@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>main.src.training.early_stopping.EarlyStopping API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Checks the precedent metrics and determine if we have to stop the training process based on a min_delta per epoch and a patience
+If the metric does …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +23,16 @@
 <h1 class="title">Module <code>main.src.training.early_stopping.EarlyStopping</code></h1>
 </header>
 <section id="section-intro">
+<p>Checks the precedent metrics and determine if we have to stop the training process based on a min_delta per epoch and a patience
+If the metric does not diminish from more than min_delta during more than patience, we stop the training process</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from enum import Enum
+<pre><code class="python">&#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process based on a min_delta per epoch and a patience
+If the metric does not diminish from more than min_delta during more than patience, we stop the training process&#34;&#34;&#34;
+
+from enum import Enum
 
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.early_stopping.AbstractEarlyStopping import AbstractEarlyStopping
@@ -34,6 +40,9 @@ from main.src.training.metrics.AbstractMetricManager import AbstractMetricManage
 
 
 class EarlyStopping(BaseClass, AbstractEarlyStopping):
+    &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process based on a min_delta per epoch and a patience
+        If the metric does not diminish from more than min_delta during more than patience, we stop the training process
+    &#34;&#34;&#34;
     def __init__(self, metric: AbstractMetricManager, name_metric_chosen: Enum, patience: int = 10, min_delta: float = 0.1):
         super(EarlyStopping, self).__init__(metric, name_metric_chosen)
         self.attr_name = self.__class__.__name__
@@ -46,6 +55,9 @@ class EarlyStopping(BaseClass, AbstractEarlyStopping):
         self.status = 0
 
     def stop_training(self) -&gt; bool:
+        &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process
+        If the metric does not diminish from more than min_delta during more than patience, we stop the training process
+        &#34;&#34;&#34;
         metric_value = self.metric.get_last_metric(self.attr_name_metric_chosen)
         if self.last_epoch_metric_value != -1 and (self.last_epoch_metric_value-metric_value) &lt;= self.attr_min_delta:
             self.status += 1
@@ -72,12 +84,16 @@ class EarlyStopping(BaseClass, AbstractEarlyStopping):
 <span>(</span><span>metric: <a title="main.src.training.metrics.AbstractMetricManager.AbstractMetricManager" href="../metrics/AbstractMetricManager.html#main.src.training.metrics.AbstractMetricManager.AbstractMetricManager">AbstractMetricManager</a>, name_metric_chosen: enum.Enum, patience: int = 10, min_delta: float = 0.1)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class used to indicate to the saver that we can save data in all object inheriting from this class</p></div>
+<div class="desc"><p>Checks the precedent metrics and determine if we have to stop the training process based on a min_delta per epoch and a patience
+If the metric does not diminish from more than min_delta during more than patience, we stop the training process</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EarlyStopping(BaseClass, AbstractEarlyStopping):
+    &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process based on a min_delta per epoch and a patience
+        If the metric does not diminish from more than min_delta during more than patience, we stop the training process
+    &#34;&#34;&#34;
     def __init__(self, metric: AbstractMetricManager, name_metric_chosen: Enum, patience: int = 10, min_delta: float = 0.1):
         super(EarlyStopping, self).__init__(metric, name_metric_chosen)
         self.attr_name = self.__class__.__name__
@@ -90,6 +106,9 @@ class EarlyStopping(BaseClass, AbstractEarlyStopping):
         self.status = 0
 
     def stop_training(self) -&gt; bool:
+        &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process
+        If the metric does not diminish from more than min_delta during more than patience, we stop the training process
+        &#34;&#34;&#34;
         metric_value = self.metric.get_last_metric(self.attr_name_metric_chosen)
         if self.last_epoch_metric_value != -1 and (self.last_epoch_metric_value-metric_value) &lt;= self.attr_min_delta:
             self.status += 1
@@ -113,12 +132,16 @@ class EarlyStopping(BaseClass, AbstractEarlyStopping):
 <span>def <span class="ident">stop_training</span></span>(<span>self) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Checks the precedent metrics and determine if we have to stop the training process
+If the metric does not diminish from more than min_delta during more than patience, we stop the training process</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def stop_training(self) -&gt; bool:
+    &#34;&#34;&#34;Checks the precedent metrics and determine if we have to stop the training process
+    If the metric does not diminish from more than min_delta during more than patience, we stop the training process
+    &#34;&#34;&#34;
     metric_value = self.metric.get_last_metric(self.attr_name_metric_chosen)
     if self.last_epoch_metric_value != -1 and (self.last_epoch_metric_value-metric_value) &lt;= self.attr_min_delta:
         self.status += 1

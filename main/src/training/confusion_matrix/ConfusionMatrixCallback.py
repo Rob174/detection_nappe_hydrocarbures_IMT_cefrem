@@ -1,3 +1,4 @@
+"""Class to be called during the training process to update the confusion matrix"""
 from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.AbstractCallback import AbstractCallback
@@ -7,6 +8,7 @@ from itertools import combinations,product
 
 
 class ConfusionMatrixCallback(BaseClass,AbstractCallback):
+    """Class to be called during the training process to update the confusion matrix"""
     def __init__(self,dico_class_mappings: TwoWayDict):
         super(ConfusionMatrixCallback, self).__init__()
         class_mappings = {}
@@ -32,4 +34,5 @@ class ConfusionMatrixCallback(BaseClass,AbstractCallback):
         self.class_names = class_names
         self.attr_confusion_matrix = ConfusionMatrix(class_mappings,class_names)
     def on_valid_batch_end(self,prediction_batch,true_batch):
+        """Method to be called at each end of a validation step"""
         self.attr_confusion_matrix.update_matrix(prediction_batch,true_batch)
