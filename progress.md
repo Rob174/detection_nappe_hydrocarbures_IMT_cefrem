@@ -234,6 +234,10 @@ As no parameters produces better performances, we will investigate:
 - ⏳ model problem debugging
 - ⏲️ doc
 
+# 23-07-2021
+
+- 🔨 Parameterized dataset to be provided by user
+
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
