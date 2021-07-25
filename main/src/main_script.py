@@ -3,7 +3,6 @@
 import subprocess
 import sys
 
-from main.src.training.TrainerTest import TrainerTest
 
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
@@ -14,6 +13,7 @@ from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
+from main.src.training.Trainers.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
 # from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     import torch
     path_pt_file = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-23_04h17min51s_\2021-07-23_04h17min51s__model_epoch-9_it-15923.pt"
     model.model.load_state_dict(torch.load(path_pt_file))
-    TrainerTest(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
+    Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,
