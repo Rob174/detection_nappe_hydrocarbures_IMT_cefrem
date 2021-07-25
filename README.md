@@ -1,5 +1,10 @@
 # Oil detection with neural networks
-## Sommaire
+
+This work has been realized as part of my internship at the IMT / CEFREM.
+The state of the project at the end of it is available on the endInternship branch.
+To further improve it I will continue to develop new code on the dev branch
+
+## Summary
 
 [1. Data](https://github.com/Rob174/detection_nappe_hydrocarbures_inria_cefrem/blob/main/README.md#1-data)
 
