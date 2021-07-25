@@ -15,7 +15,7 @@ from main.src.training.metrics.metrics_factory import MetricsFactory
 
 class AbstractModelSaver( ABC):
     """Base class to build a model saver"""
-    def __init__(self, metric_used: AbstractMetricManager, metric_name: Enum):
+    def __init__(self):
 
         pass
 
