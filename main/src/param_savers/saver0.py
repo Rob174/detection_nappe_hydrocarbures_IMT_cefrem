@@ -1,3 +1,6 @@
+"""Object used to automatically save attributes of classes beginning by attr_... recursively:
+    if an object has an attr_ attribute and this attribute is a class inherited from the BaseClass, the saver will also scan attributes in this class"""
+
 import json
 
 from main.FolderInfos import FolderInfos

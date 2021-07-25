@@ -1,3 +1,4 @@
+"""Object creating desired pytroch model and store it in the attr_model attribute"""
 import torchvision.models as models
 from efficientnet_pytorch import EfficientNet
 

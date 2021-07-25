@@ -1,5 +1,5 @@
 """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
-filter them"""
+filter them on the fly (slow if many patches to exclude)"""
 import json
 import random
 from typing import Optional, List, Union, Dict

@@ -1,3 +1,6 @@
+"""Pretrained version of resnet with an additional layer to output the correct number of classes
+Done thanks to https://discuss.pytorch.org/t/changing-the-number-of-output-classes-of-fc-layer-of-vgg16/14346/3"""
+
 import torch.nn as nn
 
 from main.src.enums import EnumFreeze

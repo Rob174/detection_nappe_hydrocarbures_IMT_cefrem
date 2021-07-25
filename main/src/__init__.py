@@ -1,4 +1,5 @@
 """
+⚠⚠⚠ With the automatic tool used to build this html documentation magic methods (`__init__`, `__call__`, ...) are not shown directly as other methods. You need to expand the code to see them for the moment ⚠⚠⚠
 # Quickstart
 
 ## Automatic configuration

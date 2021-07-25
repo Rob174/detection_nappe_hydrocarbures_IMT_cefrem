@@ -32,7 +32,6 @@
 import subprocess
 import sys
 
-from main.src.training.TrainerTest import TrainerTest
 
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem&#34;)
 sys.path.append(r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main&#34;)
@@ -43,6 +42,7 @@ from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
+from main.src.training.Trainers.Trainer0 import Trainer0
 # from main.src.training.TrainerGenerateCacheOther import Trainer0
 # from main.src.training.TrainerGenerateCache import Trainer0
 from main.src.training.metrics.metrics_factory import MetricsFactory
@@ -82,7 +82,8 @@ if __name__ == &#34;__main__&#34;:
                              augmentations_img=arguments.augmentations_img,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
-                             interval=arguments.interval
+                             interval=arguments.interval,
+                             choose_dataset=&#34;patch&#34;
                              )
     saver[&#34;date&#34;] = FolderInfos.id
 
@@ -109,7 +110,7 @@ if __name__ == &#34;__main__&#34;:
     import torch
     path_pt_file = r&#34;C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-23_04h17min51s_\2021-07-23_04h17min51s__model_epoch-9_it-15923.pt&#34;
     model.model.load_state_dict(torch.load(path_pt_file))
-    TrainerTest(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
+    Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
              saver=saver,

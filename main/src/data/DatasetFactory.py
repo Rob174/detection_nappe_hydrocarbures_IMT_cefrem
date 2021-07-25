@@ -1,6 +1,4 @@
-"""Class managing the attr_dataset creation and access with options of:
-- different attr_dataset possible
-- different patch creator possible
+"""Class managing the attr_dataset creation and access with different type of dataset possible
 """
 
 import json
@@ -22,9 +20,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
-    """Class managing the attr_dataset creation and access with options of:
-    - different attr_dataset possible
-    - different patch creator possible
+    """Class managing the attr_dataset creation and access with different type of dataset possible
 
     Args:
         dataset_name: EnumLabelModifier,
@@ -35,11 +31,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
         classes_to_use: Tuple[EnumClasses], the classes to use
         balance: EnumBalance,
-        margin: int, additionnal parameter to balance classes, cf doc in NoLabelModifier or in BalanceClassesNoOther
         augmentations_img: opt str, list of augmentations to apply seprated by commas
         augmenter_img: opt EnumAugmenter,
-        augmentations_patch: opt str, list of augmentations to apply seprated by commas
-        augmenter_patch: opt EnumAugmenter,
         augmentation_factor: int, the number of times that the source image is augmented
         force_classifpatch: bool, force to use the class classificattionpatch
         other_class_adder: EnumClassPatchAdder to select classadder object
@@ -47,16 +40,22 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         choose_dataset, Optional[str] "cache" to use the ClassificationCache method "patch"
     """
 
-    def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
+    def __init__(self,
+                 dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  usage_type: EnumUsage = EnumUsage.Classification,
-                 grid_size=1000, input_size=1000,
-                 exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000,
+                 grid_size: int =1000,
+                 input_size: int =1000,
+                 exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,
+                 exclusion_policy_threshold: int = 1000,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
                  balance: EnumBalance = EnumBalance.NoBalance,
-                 augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
+                 augmentations_img: str="none",
+                 augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
-                 interval: int = 1, choose_dataset: Optional[str] = None):
+                 interval: int = 1,
+                 choose_dataset: Optional[str] = None
+                 ):
         self.attr_global_name = "data"
 
         if usage_type == EnumUsage.Classification:

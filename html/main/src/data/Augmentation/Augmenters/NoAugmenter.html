@@ -111,24 +111,23 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
         return self.attr_image_applier.transform(image, partial_transformation_matrix,
                                                  patch_upper_left_corner_coords)
 
-    def transform_label(self, polygons: List[Dict], partial_transformation_matrix: np.ndarray,
+    def transform_label(self, data: List[Dict], partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -&gt; Tuple[np.ndarray, np.ndarray]:
         &#34;&#34;&#34;Compute no augmentations on points
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
 
         Args:
-            annotation_function: Callable that can generate the patch with the given parameters
-            image_name: str, the name of the original image
+            data: List[Dict] List of the polygons on the patch
             partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
-            coord_patch: coordinates of the output patch in the augmented image
+            patch_upper_left_corner_coords: coordinates of the output patch in the augmented image
 
         Returns:
             tuple of np.ndarray
             - the annotation patch
             - the transformation matrix used (with patch extraction)
         &#34;&#34;&#34;
-        return self.label_applier.transform(polygons, partial_transformation_matrix,
+        return self.label_applier.transform(data, partial_transformation_matrix,
                                             patch_upper_left_corner_coords)
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -&gt; List[Tuple[int, int]]:
@@ -251,24 +250,23 @@ It allows to filter the global sample on the label as it costs less to generate 
         return self.attr_image_applier.transform(image, partial_transformation_matrix,
                                                  patch_upper_left_corner_coords)
 
-    def transform_label(self, polygons: List[Dict], partial_transformation_matrix: np.ndarray,
+    def transform_label(self, data: List[Dict], partial_transformation_matrix: np.ndarray,
                         patch_upper_left_corner_coords: Tuple[int, int]) -&gt; Tuple[np.ndarray, np.ndarray]:
         &#34;&#34;&#34;Compute no augmentations on points
 
         It is indeed the only way to avoid new classes introductionn due to interpolation
 
         Args:
-            annotation_function: Callable that can generate the patch with the given parameters
-            image_name: str, the name of the original image
+            data: List[Dict] List of the polygons on the patch
             partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
-            coord_patch: coordinates of the output patch in the augmented image
+            patch_upper_left_corner_coords: coordinates of the output patch in the augmented image
 
         Returns:
             tuple of np.ndarray
             - the annotation patch
             - the transformation matrix used (with patch extraction)
         &#34;&#34;&#34;
-        return self.label_applier.transform(polygons, partial_transformation_matrix,
+        return self.label_applier.transform(data, partial_transformation_matrix,
                                             patch_upper_left_corner_coords)
 
     def get_grid(self, img_shape, partial_transformation_matrix: np.ndarray) -&gt; List[Tuple[int, int]]:
@@ -378,20 +376,18 @@ Returns:</p></div>
 </details>
 </dd>
 <dt id="main.src.data.Augmentation.Augmenters.NoAugmenter.NoAugmenter.transform_label"><code class="name flex">
-<span>def <span class="ident">transform_label</span></span>(<span>self, polygons: List[Dict], partial_transformation_matrix: numpy.ndarray, patch_upper_left_corner_coords: Tuple[int, int]) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
+<span>def <span class="ident">transform_label</span></span>(<span>self, data: List[Dict], partial_transformation_matrix: numpy.ndarray, patch_upper_left_corner_coords: Tuple[int, int]) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compute no augmentations on points</p>
 <p>It is indeed the only way to avoid new classes introductionn due to interpolation</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>annotation_function</code></strong></dt>
-<dd>Callable that can generate the patch with the given parameters</dd>
-<dt><strong><code>image_name</code></strong></dt>
-<dd>str, the name of the original image</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>List[Dict] List of the polygons on the patch</dd>
 <dt><strong><code>partial_transformation_matrix</code></strong></dt>
 <dd>transformation matrix include all augmentations (return values of choose_new_augmentation)</dd>
-<dt><strong><code>coord_patch</code></strong></dt>
+<dt><strong><code>patch_upper_left_corner_coords</code></strong></dt>
 <dd>coordinates of the output patch in the augmented image</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -402,24 +398,23 @@ Returns:</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def transform_label(self, polygons: List[Dict], partial_transformation_matrix: np.ndarray,
+<pre><code class="python">def transform_label(self, data: List[Dict], partial_transformation_matrix: np.ndarray,
                     patch_upper_left_corner_coords: Tuple[int, int]) -&gt; Tuple[np.ndarray, np.ndarray]:
     &#34;&#34;&#34;Compute no augmentations on points
 
     It is indeed the only way to avoid new classes introductionn due to interpolation
 
     Args:
-        annotation_function: Callable that can generate the patch with the given parameters
-        image_name: str, the name of the original image
+        data: List[Dict] List of the polygons on the patch
         partial_transformation_matrix: transformation matrix include all augmentations (return values of choose_new_augmentation)
-        coord_patch: coordinates of the output patch in the augmented image
+        patch_upper_left_corner_coords: coordinates of the output patch in the augmented image
 
     Returns:
         tuple of np.ndarray
         - the annotation patch
         - the transformation matrix used (with patch extraction)
     &#34;&#34;&#34;
-    return self.label_applier.transform(polygons, partial_transformation_matrix,
+    return self.label_applier.transform(data, partial_transformation_matrix,
                                         patch_upper_left_corner_coords)</code></pre>
 </details>
 </dd>

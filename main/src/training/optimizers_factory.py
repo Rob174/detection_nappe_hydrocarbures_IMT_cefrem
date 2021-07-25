@@ -1,3 +1,4 @@
+"""Class managing the optimizers"""
 import torch.optim as optim
 
 from main.src.models.ModelFactory import ModelFactory

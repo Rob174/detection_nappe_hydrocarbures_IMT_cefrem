@@ -1,3 +1,5 @@
+"""Script to launch after running the first cell of the analysis.ipynb notebook to view all trainings available for analysis"""
+
 import pandas as pd
 import tabloo
 

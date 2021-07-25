@@ -1,3 +1,4 @@
+"""An object allowing to map two values together and access to them directly as in a dict. It can contains additionnal informations linked to pairs"""
 from enum import Enum
 
 from main.src.param_savers.BaseClass import BaseClass
