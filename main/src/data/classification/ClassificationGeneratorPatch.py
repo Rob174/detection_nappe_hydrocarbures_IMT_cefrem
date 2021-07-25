@@ -59,11 +59,10 @@ class ClassificationGeneratorPatch(BaseClass):
         self.attr_limit_num_images = limit_num_images
         self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_augmentation_factor = augmentation_factor
-        with self.attr_image_dataset as images:
-            self.datasets = {
-                "tr":list(images.keys())[:int(len(images) * tr_percent)],
-                "valid":list(images.keys())[int(len(images) * tr_percent):]
-            }
+        self.datasets = {
+            "tr":list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * tr_percent)],
+            "valid":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):]
+        }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
@@ -134,37 +133,34 @@ class ClassificationGeneratorPatch(BaseClass):
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
-        with self.attr_image_dataset as images_dataset:
-            with self.attr_label_dataset as labels_dataset:
-                for num_dataset in range(self.attr_augmentation_factor):
-                    random.shuffle(images_available)
-                    for item in images_available:
-                        image = images_dataset[item]
-                        image = np.array(image, dtype=np.float32)
-                        polygons = labels_dataset[item]
-                        partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
-                        for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
-                            annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
-                                polygons=polygons,
-                                partial_transformation_matrix=partial_transformation_matrix,
-                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                            )
-                            # Create the classification label with the proper technic
-                            classification = self.attr_label_modifier.make_classification_label(annotations_patch)
-                            balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
-                            if balance_reject is True:
-                                continue
-                            image_patch, transformation_matrix = self.attr_augmenter.transform_image(
-                                image=image,
-                                partial_transformation_matrix=partial_transformation_matrix,
-                                patch_upper_left_corner_coords=patch_upper_left_corner_coords
-                            )
-                            reject = self.attr_check_margin_reject.check_reject(image_patch)
-                            if reject is True:
-                                continue
-                            # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                            image_patch = np.stack((image_patch,)*3, axis=0)
-                            yield image_patch, classification, transformation_matrix, item
+        for num_dataset in range(self.attr_augmentation_factor):
+            random.shuffle(images_available)
+            for item in images_available:
+                image = self.attr_image_dataset.get(item)
+                polygons = self.attr_label_dataset.get(item)
+                partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
+                for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                    annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
+                        polygons=polygons,
+                        partial_transformation_matrix=partial_transformation_matrix,
+                        patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                    )
+                    # Create the classification label with the proper technic
+                    classification = self.attr_label_modifier.make_classification_label(annotations_patch)
+                    balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
+                    if balance_reject is True:
+                        continue
+                    image_patch, transformation_matrix = self.attr_augmenter.transform_image(
+                        image=image,
+                        partial_transformation_matrix=partial_transformation_matrix,
+                        patch_upper_left_corner_coords=patch_upper_left_corner_coords
+                    )
+                    reject = self.attr_check_margin_reject.check_reject(image_patch)
+                    if reject is True:
+                        continue
+                    # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
+                    image_patch = np.stack((image_patch,)*3, axis=0)
+                    yield image_patch, classification, transformation_matrix, item
 
     def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
                   standardizer: AbstractStandardizer, transformation_matrix: Optional[np.ndarray] = None

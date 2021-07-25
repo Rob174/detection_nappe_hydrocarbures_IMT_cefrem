@@ -55,11 +55,10 @@ class ClassificationGeneratorCache(BaseClass):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
         self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricFilteredCache()()
-        with self.attr_image_dataset as images_cache:
-            self.tr_keys = list(images_cache.keys())[:int(len(images_cache) * tr_percent)]
-            if self.attr_limit_num_images is not None:
-                self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
-            self.valid_keys = list(images_cache.keys())[int(len(images_cache) * tr_percent):]
+        self.tr_keys = list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * tr_percent)]
+        if self.attr_limit_num_images is not None:
+            self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
+        self.valid_keys = list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):]
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
@@ -109,23 +108,21 @@ class ClassificationGeneratorCache(BaseClass):
                    item: str name of the source image
         """
         images_available = self.tr_keys if dataset == "tr" else self.valid_keys
-        with self.attr_image_dataset as annotations_cache:
-            with self.attr_label_dataset as images_cache:
-                random.shuffle(images_available)
-                self.attr_patch_adder_callback.on_epoch_start()
-                for id in images_available:
-                    data = self.attr_other_class_adder.generate_if_required()
-                    if data is not None:
-                        image, annotation, transformation_matrix, source_img = data
-                        image, annotation = self.process_infos(image, annotation)
-                        yield image, annotation, transformation_matrix, source_img
-                    # Open image and annotations
-                    image = np.array(images_cache[id])
-                    annotation = np.array(annotations_cache[id])
-                    source_img = self.dico_infos[id]["source_img"]
-                    transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
-                    image, annotation = self.process_infos(image, annotation)
-                    yield image, annotation, transformation_matrix, source_img
+        random.shuffle(images_available)
+        self.attr_patch_adder_callback.on_epoch_start()
+        for id in images_available:
+            data = self.attr_other_class_adder.generate_if_required()
+            if data is not None:
+                image, annotation, transformation_matrix, source_img = data
+                image, annotation = self.process_infos(image, annotation)
+                yield image, annotation, transformation_matrix, source_img
+            # Open image and annotations
+            image = self.attr_image_dataset.get(id)
+            annotation = self.attr_label_dataset.get(id)
+            source_img = self.dico_infos[id]["source_img"]
+            transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
+            image, annotation = self.process_infos(image, annotation)
+            yield image, annotation, transformation_matrix, source_img
     def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)

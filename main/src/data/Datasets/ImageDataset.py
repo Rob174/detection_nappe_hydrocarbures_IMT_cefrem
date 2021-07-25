@@ -1,4 +1,6 @@
 """A dataset to manage hdf5 files for 2d np.ndarrays"""
+import numpy as np
+
 from h5py import File
 
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
@@ -11,13 +13,8 @@ class ImageDataset(BaseClass,AbstractDataset):
     def __init__(self, src_hdf5: str, mapping:TwoWayDict):
         super().__init__(mapping)
         self.attr_path = src_hdf5
-        self._dataset = File(src_hdf5,"r")
 
-    @property
-    def dataset(self):
-        """mapping to the HDF5 object file"""
-        return self._dataset
-    def __getitem__(self, id:str):
+    def get(self, id:str):
         """Get the object representing the array of id name
 
         Args:
@@ -27,13 +24,18 @@ class ImageDataset(BaseClass,AbstractDataset):
             np.ndarray, representing the sample extracted from the dataset
 
         """
-        raise Exception("Directly managed by the hdf5 file")
-    def __enter__(self,*args,**kwargs):
-        return self.dataset.__enter__(*args,**kwargs)
-    def __exit__(self, *args, **kwargs):
-        return self.dataset.__exit__( *args, **kwargs)
+        with File(self.attr_path,"r") as file:
+            return np.array(file,dtype=np.float32)
     def __iter__(self):
         """Allow to use for loop on this object"""
         raise NotImplementedError
+    def keys(self):
+        with File(self.attr_path,"r") as file:
+            return list(file.keys())
+    def values(self):
+        with File(self.attr_path,"r") as file:
+            return list(file.values())
+
     def __len__(self):
-        return len(self.dataset)
+        with File(self.attr_path,"r") as dataset:
+            return len(dataset)
