@@ -168,7 +168,7 @@ class Trainer0(BaseClass):
                         self.attr_metrics(prediction_npy, output_npy, "tr")
 
                         self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
-                                                         it_tr=it_tr, img_processed=i)
+                                                         it_tr=it_tr, img_processed=i,epoch=epoch)
                         # Validation step
                         if it_tr % self.attr_eval_step == 0:
                             opt_valid_batch = None
