@@ -79,21 +79,21 @@ class ClassificationGeneratorPatch(BaseClass):
             self.attr_balance = BalanceNoBalance()
         elif balance == EnumBalance.BalanceClasses1:
             # see class DataSentinel1Segmentation for documentation on attr_class_mapping storage and access to values
-            self.attr_balance = BalanceClassesNoOther(other_index=self.attr_original_class_mapping["other"])
+            self.attr_balance = BalanceClassesNoOther(other_index=self.attr_label_dataset.attr_mapping["other"])
         elif balance == EnumBalance.BalanceClasses2:
-            self.attr_balance = BalanceClassesOnlyOther(other_index=self.attr_original_class_mapping["other"])
+            self.attr_balance = BalanceClassesOnlyOther(other_index=self.attr_label_dataset.attr_mapping["other"])
         else:
             raise NotImplementedError
         if augmentations_img != "none":
             if augmenter_img == EnumAugmenter.Augmenter1:
-                self.attr_augmenter = Augmenter1(allowed_transformations=augmentations_img,
+                self.attr_augmenter = Augmenter1(allowed_transformations=[augmentations_img],
                                                  patch_size_before_final_resize=
                                                      self.attr_grid_size_px,
                                                  patch_size_final_resize=input_size
                                                  )
 
             else:
-                self.attr_augmenter = NoAugmenter(allowed_transformations=augmentations_img,
+                self.attr_augmenter = NoAugmenter(allowed_transformations=[augmentations_img],
                                                   patch_size_before_final_resize=
                                                      self.attr_grid_size_px,
                                                   patch_size_final_resize=input_size
@@ -176,7 +176,6 @@ class ClassificationGeneratorPatch(BaseClass):
             annotation: np.ndarray, annotation on which to apply the transformations
             patch_upper_left_corner_coords: coordinates of the upper left corner to get
             standardizer: object giving allowing to standardize the patch
-            label_encoding: TwoWayDict mapping between labels names and encoding as uint8
             transformation_matrix: Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation
 
         Returns:

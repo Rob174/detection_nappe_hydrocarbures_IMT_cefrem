@@ -49,17 +49,14 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
     It allows to filter the global sample on the label as it costs less to generate it
 
         Args:
-            allowed_transformations: List[str], augmentations to apply. Currently supported:
-            - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
             patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 
     &#34;&#34;&#34;
 
-    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int,
-                 allowed_transformations: List[str]):
+    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int):
         super(NoAugmenter, self).__init__(patch_size_before_final_resize, patch_size_final_resize,
-                                          allowed_transformations)
+                                          [])
         self.attr_grid_maker = GridMaker(patch_size_final_resize=patch_size_final_resize)
         self.attr_label_applier = AugmentationApplierLabelPoints(
             grid_maker=self.attr_grid_maker,
@@ -171,15 +168,13 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
 <dl>
 <dt id="main.src.data.Augmentation.Augmenters.NoAugmenter.NoAugmenter"><code class="flex name class">
 <span>class <span class="ident">NoAugmenter</span></span>
-<span>(</span><span>patch_size_before_final_resize: int, patch_size_final_resize: int, allowed_transformations: List[str])</span>
+<span>(</span><span>patch_size_before_final_resize: int, patch_size_final_resize: int)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Manage and keep track of augmentations to apply on source images only to directly extract patches</p>
 <p>This class splits annotation generation and image generation.
 It allows to filter the global sample on the label as it costs less to generate it</p>
 <pre><code>Args:
-    allowed_transformations: List[str], augmentations to apply. Currently supported:
-    - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
     patch_size_before_final_resize: int, size in px of the output patch to extract
     patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 </code></pre></div>
@@ -194,17 +189,14 @@ It allows to filter the global sample on the label as it costs less to generate 
     It allows to filter the global sample on the label as it costs less to generate it
 
         Args:
-            allowed_transformations: List[str], augmentations to apply. Currently supported:
-            - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
             patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 
     &#34;&#34;&#34;
 
-    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int,
-                 allowed_transformations: List[str]):
+    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int):
         super(NoAugmenter, self).__init__(patch_size_before_final_resize, patch_size_final_resize,
-                                          allowed_transformations)
+                                          [])
         self.attr_grid_maker = GridMaker(patch_size_final_resize=patch_size_final_resize)
         self.attr_label_applier = AugmentationApplierLabelPoints(
             grid_maker=self.attr_grid_maker,

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>main.src API documentation</title>
-<meta name="description" content="Main module of this project with all of the code necessary to run and analyse the results" />
+<meta name="description" content="Quickstart …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,12 +22,308 @@
 <h1 class="title">Module <code>main.src</code></h1>
 </header>
 <section id="section-intro">
-<p>Main module of this project with all of the code necessary to run and analyse the results</p>
+<h1 id="quickstart">Quickstart</h1>
+<h2 id="automatic-configuration">Automatic configuration</h2>
+<p>In this project the user can directly use the main_script file to train a desired model on a dataset.
+To choose all of the options the user can provide parameters in the console or can create a custom Parser
+with default value according to
+his/her choice. An premade parser is provided in
+the main/src/parsers module.</p>
+<p>We can also want to modify some options for the system. That is why we can have the following questions:</p>
+<p><strong>I.</strong>
+How to supply my own dataset ?</p>
+<p><strong>II.</strong>
+How create patches outside of the system ?</p>
+<p><strong>III.</strong>
+How to create a custom training process ?</p>
+<p><strong>IV.</strong>
+How to predict on new patches ?</p>
+<h2 id="i-how-to-supply-my-own-dataset">I. How to supply my own dataset</h2>
+<p>The system requires 3 subdatasets to build a dataset: the image subdataset, the corresponding annotations (2d annotations)
+and an information file.</p>
+<h3 id="building-the-files">Building the files</h3>
+<h3 id="images">Images</h3>
+<p>They must be provided as np.ndarrays in an hdf5 file following the same method as for annotations</p>
+<h4 id="annotations">Annotations</h4>
+<p>Annotations can be provided as np.ndarrays or polygons respectively to store in an hdf5 or pickle file</p>
+<h5 id="hdf5">HDF5</h5>
+<p>The user has to create one hdf5 dataset (with the create_dataset function, cf hdf5 package doc) per image.
+The name of the dataset must be an uniq id</p>
+<h5 id="polygons">Polygons</h5>
+<p>Stored under a dict form:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; {
+...     &quot;id_image_1&quot;: [
+...         polygon1,
+...         polygon2,
+...         ...
+...     ]
+... }
+</code></pre>
+<p>with polygon a dict with:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; polygon1 = {
+...     &quot;label&quot;:&quot;...&quot;, #(ex: seep, spill...),
+...     &quot;points&quot;:[(...,...),(...,...),...]
+... }
+</code></pre>
+<h4 id="information-file-structure">Information file structure</h4>
+<p>The information file is a json file containing at least:
+- for a dataset to build patch (as for images_informations_preprocessed.json):
+- under the key "transformation" the transformation matrix from geographic coordinates to pixel coordinates as proposed by rasterio</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; {
+...     &quot;image_id1&quot;:{
+...         &quot;transformation&quot;:...,
+...         ...
+...     },
+...     ...
+... }
+</code></pre>
+<ul>
+<li>for a dataset of premade patches (as for filtered_img_infos.json):</li>
+<li>under the key "transformation_matrix" the transformation matrix from the source image to the patch (with augmentations)</li>
+<li>under the key "source_img": the id in the origin dataset from which the patch has been built</li>
+</ul>
+<pre><code class="language-python-repl">&gt;&gt;&gt; {
+...     &quot;image_id1&quot;:{
+...         &quot;transformation_matrix&quot;:...,
+...         &quot;source_img&quot;:&quot;...&quot;
+...     },
+...     ...
+... }
+</code></pre>
+<h3 id="managing-the-files-in-the-system">Managing the files in the system</h3>
+<h4 id="1-build-subdatasets">1. Build subdatasets</h4>
+<p>It is mandatory to create/use a class to manage the image and annotation subdataset.</p>
+<p>The user can use premade classes
+of the <a href="./data/Datasets/index.html">main/src/data/Datasets module</a> to manage hdf5 files or polygon annotations</p>
+<p>The user can also build a custom dataset y following the structure of the <a href="./data/Datasets/AbstractDataset.html">AbstractDataset class</a></p>
+<p>⚠⚠ go to the original python code to build your own as this documentation does not allow to show python magic functions. Some of them are required to implement for a custom dataset</p>
+<h4 id="2-build-a-fabric">2. Build a fabric</h4>
+<p>To associate the subdatasets together and open the json information file the user has to create a Fabric class creating all of them.</p>
+<p>The expected structure is following the <a href="./data/Datasets/Fabrics/AbstractFabricDatasets.html">AbstractFabricDatasets class</a></p>
+<h3 id="providing-it-to-the-system">Providing it to the system</h3>
+<p>The user has first to provide the relevant arguments to the <a href="./data/DatasetFactory.html">DatasetFactory constructor</a> for the <a href="./data/classification/ClassificationGeneratorCache.html">ClassificationGeneratorCache</a>
+or <a href="|./data/classification/ClassificationGeneratorPatch.html">ClassificationGeneratorPatch</a> class</p>
+<p>The user can specify in this same constructor the algorithm to use with the <code>choose_dataset</code> argument and pass it the result
+of the custom made Factory call function (the user can use arguments unpacking to use less lines of code)</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; dataset_factory.set_datasets(*CustomDatasetFactory()())
+</code></pre>
+<h2 id="ii-how-to-create-patches-outside-of-the-system">II. How to create patches outside of the system</h2>
+<p>The user can create patches on preopened image by using the <a href="./data/Augmentation/Augmenters/NoAugmenter.py">NoAugmenter</a> class</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+&gt;&gt;&gt; augmenter = NoAugmenter(patch_size_before_final_resize=1000,patch_size_final_resize=256)
+</code></pre>
+<p>We can then get the partial transformation matrix for the size reduction:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; partial_transformation_matrix = augmenter.choose_new_augmentations(custom_image)
+</code></pre>
+<p>Then we have to choose the coordinates of the patch to extract.
+For that we can get a grid (list of upper left corners) of patch by calling</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; grid = augmenter.get_grid(custom_image.shape,partial_transformation_matrix)
+</code></pre>
+<p>Then we can use the augmenter to apply the transformation to get the patch desired in the upper left corner of the view.</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; augmenter.transform_image(custom_image,partial_transformation_matrix,patch_upper_left_corner_coords)[:256,:256]
+</code></pre>
+<h2 id="iii-how-to-create-a-custom-training-process">III. How to create a custom training process</h2>
+<p>The user has a premade training object <a href="./training/Trainers/Trainer0.html">Trainer0</a>.
+We can provide it the DatasetFactory with a custom dataset, a custom model, a custom optimizer ....
+more details in <a href="./training/Trainers/Trainer0.html">Trainer0</a> constructor</p>
+<p>The user can also build a custom trainer and using the object relevant to the goal pursued.</p>
+<p>No specific structure is required. The user can iterator with a for loop over the dataset factory object (see Trainer0 example)
+and has to keep in mind that the values produced by the Datasetfactory for loop correspond to individual samples, not batches.</p>
+<p>It is the responsability of the Trainer object to build batches for the moment. You can use the Trainer0 structure as an example</p>
+<h2 id="iv-how-to-build-and-predict-on-new-patches">IV. How to build and predict on new patches ?</h2>
+<p>The user can build new patches by using the datasetfacotry and calling</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; dataset_factory.attr_dataset.get_patch(....)
+patch_img,patch_annotation,transformation_matrix
+</code></pre>
+<p>The arguments then differs for the type of dataset create (ClassificationGeneratorCache or ClassificationGeneratorPatch)</p>
+<p>Refers to their documentation to get specific arguments required</p>
+<p>Then one can get the model of the ModelFactory by using its model property</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; my_pytorch_model = model_factory.model
+</code></pre>
+<p>and can then predict the result as usual in pytorch</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import torch
+&gt;&gt;&gt; with torch.no_grad():
+...     my_pytorch_model.eval()
+...     input_gpu = torch.Tensor(patch_img).to(torch.device(&quot;cuda&quot;))
+...     prediction = my_pytorch_model(input_gpu).cpu().detach().numpy()
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;Main module of this project with all of the code necessary to run and analyse the results&#34;&#34;&#34;</code></pre>
+<pre><code class="python">&#34;&#34;&#34;
+# Quickstart
+
+## Automatic configuration
+
+In this project the user can directly use the main_script file to train a desired model on a dataset.
+To choose all of the options the user can provide parameters in the console or can create a custom Parser
+with default value according to  his/her choice. An premade parser is provided in  the main/src/parsers module.
+
+We can also want to modify some options for the system. That is why we can have the following questions:
+
+**I.**      How to supply my own dataset ?
+
+**II.**     How create patches outside of the system ?
+
+**III.**    How to create a custom training process ?
+
+**IV.**     How to predict on new patches ?
+
+## I. How to supply my own dataset
+
+The system requires 3 subdatasets to build a dataset: the image subdataset, the corresponding annotations (2d annotations)
+and an information file.
+
+
+### Building the files
+
+### Images
+
+They must be provided as np.ndarrays in an hdf5 file following the same method as for annotations
+
+
+#### Annotations
+
+Annotations can be provided as np.ndarrays or polygons respectively to store in an hdf5 or pickle file
+
+##### HDF5
+
+The user has to create one hdf5 dataset (with the create_dataset function, cf hdf5 package doc) per image.
+The name of the dataset must be an uniq id
+
+##### Polygons
+
+Stored under a dict form:
+
+&gt;&gt;&gt; {
+...     &#34;id_image_1&#34;: [
+...         polygon1,
+...         polygon2,
+...         ...
+...     ]
+... }
+
+with polygon a dict with:
+
+&gt;&gt;&gt; polygon1 = {
+...     &#34;label&#34;:&#34;...&#34;, #(ex: seep, spill...),
+...     &#34;points&#34;:[(...,...),(...,...),...]
+... }
+
+#### Information file structure
+
+The information file is a json file containing at least:
+- for a dataset to build patch (as for images_informations_preprocessed.json):
+  - under the key &#34;transformation&#34; the transformation matrix from geographic coordinates to pixel coordinates as proposed by rasterio
+
+&gt;&gt;&gt; {
+...     &#34;image_id1&#34;:{
+...         &#34;transformation&#34;:...,
+...         ...
+...     },
+...     ...
+... }
+
+- for a dataset of premade patches (as for filtered_img_infos.json):
+  - under the key &#34;transformation_matrix&#34; the transformation matrix from the source image to the patch (with augmentations)
+  - under the key &#34;source_img&#34;: the id in the origin dataset from which the patch has been built
+
+&gt;&gt;&gt; {
+...     &#34;image_id1&#34;:{
+...         &#34;transformation_matrix&#34;:...,
+...         &#34;source_img&#34;:&#34;...&#34;
+...     },
+...     ...
+... }
+
+### Managing the files in the system
+
+#### 1. Build subdatasets
+
+It is mandatory to create/use a class to manage the image and annotation subdataset.
+
+The user can use premade classes  of the [main/src/data/Datasets module](./data/Datasets/index.html) to manage hdf5 files or polygon annotations
+
+The user can also build a custom dataset y following the structure of the [AbstractDataset class](./data/Datasets/AbstractDataset.html)
+
+⚠⚠ go to the original python code to build your own as this documentation does not allow to show python magic functions. Some of them are required to implement for a custom dataset
+
+
+#### 2. Build a fabric
+
+To associate the subdatasets together and open the json information file the user has to create a Fabric class creating all of them.
+
+The expected structure is following the [AbstractFabricDatasets class](./data/Datasets/Fabrics/AbstractFabricDatasets.html)
+
+### Providing it to the system
+
+
+The user has first to provide the relevant arguments to the [DatasetFactory constructor](./data/DatasetFactory.html) for the [ClassificationGeneratorCache](./data/classification/ClassificationGeneratorCache.html)
+or [ClassificationGeneratorPatch](|./data/classification/ClassificationGeneratorPatch.html) class
+
+The user can specify in this same constructor the algorithm to use with the `choose_dataset` argument and pass it the result
+of the custom made Factory call function (the user can use arguments unpacking to use less lines of code)
+
+&gt;&gt;&gt; dataset_factory.set_datasets(*CustomDatasetFactory()())
+
+
+## II. How to create patches outside of the system
+
+The user can create patches on preopened image by using the [NoAugmenter](./data/Augmentation/Augmenters/NoAugmenter.py) class
+
+&gt;&gt;&gt; from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+&gt;&gt;&gt; augmenter = NoAugmenter(patch_size_before_final_resize=1000,patch_size_final_resize=256)
+
+We can then get the partial transformation matrix for the size reduction:
+
+&gt;&gt;&gt; partial_transformation_matrix = augmenter.choose_new_augmentations(custom_image)
+
+
+Then we have to choose the coordinates of the patch to extract.
+For that we can get a grid (list of upper left corners) of patch by calling
+
+&gt;&gt;&gt; grid = augmenter.get_grid(custom_image.shape,partial_transformation_matrix)
+
+Then we can use the augmenter to apply the transformation to get the patch desired in the upper left corner of the view.
+
+&gt;&gt;&gt; augmenter.transform_image(custom_image,partial_transformation_matrix,patch_upper_left_corner_coords)[:256,:256]
+
+## III. How to create a custom training process
+
+The user has a premade training object [Trainer0](./training/Trainers/Trainer0.html).
+We can provide it the DatasetFactory with a custom dataset, a custom model, a custom optimizer ....
+more details in [Trainer0](./training/Trainers/Trainer0.html) constructor
+
+The user can also build a custom trainer and using the object relevant to the goal pursued.
+
+No specific structure is required. The user can iterator with a for loop over the dataset factory object (see Trainer0 example)
+and has to keep in mind that the values produced by the Datasetfactory for loop correspond to individual samples, not batches.
+
+It is the responsability of the Trainer object to build batches for the moment. You can use the Trainer0 structure as an example
+
+## IV. How to build and predict on new patches ?
+
+The user can build new patches by using the datasetfacotry and calling
+
+&gt;&gt;&gt; dataset_factory.attr_dataset.get_patch(....)
+patch_img,patch_annotation,transformation_matrix
+
+The arguments then differs for the type of dataset create (ClassificationGeneratorCache or ClassificationGeneratorPatch)
+
+Refers to their documentation to get specific arguments required
+
+Then one can get the model of the ModelFactory by using its model property
+
+&gt;&gt;&gt; my_pytorch_model = model_factory.model
+
+and can then predict the result as usual in pytorch
+&gt;&gt;&gt; import torch
+&gt;&gt;&gt; with torch.no_grad():
+...     my_pytorch_model.eval()
+...     input_gpu = torch.Tensor(patch_img).to(torch.device(&#34;cuda&#34;))
+...     prediction = my_pytorch_model(input_gpu).cpu().detach().numpy()
+&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -77,7 +373,34 @@
 <nav id="sidebar">
 <h1>Index</h1>
 <div class="toc">
-<ul></ul>
+<ul>
+<li><a href="#quickstart">Quickstart</a><ul>
+<li><a href="#automatic-configuration">Automatic configuration</a></li>
+<li><a href="#i-how-to-supply-my-own-dataset">I. How to supply my own dataset</a><ul>
+<li><a href="#building-the-files">Building the files</a></li>
+<li><a href="#images">Images</a><ul>
+<li><a href="#annotations">Annotations</a><ul>
+<li><a href="#hdf5">HDF5</a></li>
+<li><a href="#polygons">Polygons</a></li>
+</ul>
+</li>
+<li><a href="#information-file-structure">Information file structure</a></li>
+</ul>
+</li>
+<li><a href="#managing-the-files-in-the-system">Managing the files in the system</a><ul>
+<li><a href="#1-build-subdatasets">1. Build subdatasets</a></li>
+<li><a href="#2-build-a-fabric">2. Build a fabric</a></li>
+</ul>
+</li>
+<li><a href="#providing-it-to-the-system">Providing it to the system</a></li>
+</ul>
+</li>
+<li><a href="#ii-how-to-create-patches-outside-of-the-system">II. How to create patches outside of the system</a></li>
+<li><a href="#iii-how-to-create-a-custom-training-process">III. How to create a custom training process</a></li>
+<li><a href="#iv-how-to-build-and-predict-on-new-patches">IV. How to build and predict on new patches ?</a></li>
+</ul>
+</li>
+</ul>
 </div>
 <ul id="index">
 <li><h3>Super-module</h3>

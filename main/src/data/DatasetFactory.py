@@ -4,13 +4,13 @@
 """
 
 import json
-from typing import Tuple
-
-
+from typing import Tuple, Dict, Optional
 
 import torch
 
 from main.FolderInfos import FolderInfos
+from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.enums import EnumAugmenter
 from main.src.enums import EnumBalance
 from main.src.data.classification.ClassificationGeneratorCache import ClassificationGeneratorCache
@@ -44,6 +44,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         force_classifpatch: bool, force to use the class classificattionpatch
         other_class_adder: EnumClassPatchAdder to select classadder object
         interval: int, interval between two un annotated patches
+        choose_dataset, Optional[str] "cache" to use the ClassificationCache method "patch"
     """
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
@@ -55,14 +56,14 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
-                 interval: int = 1):
+                 interval: int = 1, choose_dataset: Optional[str] = None):
         self.attr_global_name = "data"
 
         if usage_type == EnumUsage.Classification:
-            if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-                    and augmentations_img == "combinedRotResizeMir_10_0.25_4"  and \
-                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
-                    and grid_size == 1000 and not force_classifpatch:
+            if (input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1
+                    and augmentations_img == "combinedRotResizeMir_10_0.25_4"  and
+                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10
+                    and grid_size == 1000 and not force_classifpatch or choose_dataset == "cache") and choose_dataset != "patch":
                 self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                                  other_class_adder=other_class_adder, interval=interval)
             else:
@@ -90,3 +91,14 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def len(self, dataset):
         return self.attr_dataset.len(dataset)
 
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        """Change the origin of the patches
+
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
+
+        """
+        self.attr_dataset.set_datasets(image_dataset, label_dataset, dico_infos)

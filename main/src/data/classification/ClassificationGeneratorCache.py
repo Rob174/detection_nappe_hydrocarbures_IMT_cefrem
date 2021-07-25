@@ -8,13 +8,17 @@ import numpy as np
 from h5py import File
 
 from main.FolderInfos import FolderInfos
+from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierImage import \
+    AugmentationApplierImage
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricFilteredCache import FabricFilteredCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.Datasets.PointDataset import PointDataset
+from main.src.data.GridMaker.GridMaker import GridMaker
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.data.classification.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
@@ -116,8 +120,8 @@ class ClassificationGeneratorCache(BaseClass):
                         image, annotation = self.process_infos(image, annotation)
                         yield image, annotation, transformation_matrix, source_img
                     # Open image and annotations
-                    image = np.array(images_cache[id])
-                    annotation = np.array(annotations_cache[id])
+                    image = np.array(images_cache.get(id))
+                    annotation = np.array(annotations_cache.get(id))
                     source_img = self.dico_infos[id]["source_img"]
                     transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
                     image, annotation = self.process_infos(image, annotation)
@@ -127,6 +131,41 @@ class ClassificationGeneratorCache(BaseClass):
         image = np.stack((image,) * 3, axis=0)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
         return image, annotation
+    def get_patch(self,image: np.ndarray,annotation: np.ndarray,
+                  patch_size_after_resize: int,
+                  patch_upper_left_corner_coords: Tuple[int,int],
+                  transformation_matrix: Optional[np.ndarray] = None
+                  ) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
+        """Generate image patch and corresponding annotation for the given parameters
+
+        Args:
+            image: np.ndarray, image on which to apply the transformations
+            annotation: np.ndarray, annotation on which to apply the transformations
+            patch_upper_left_corner_coords: coordinates of the upper left corner to get
+            transformation_matrix: Optional[np.ndarray] (3,3) transformation matrix to apply to the image and annotation ⚠️⚠️ no rotation allowed as we have an array annotation
+
+        Returns:
+            Tuple[np.ndarray,np.ndarray,np.ndarray]
+            - image_patch: patch extracted from the image
+            - classification: vector containing true probabilities of presence of annotation
+            - transformation_matrix: 3,3 transformation matrix applied
+        """
+        if transformation_matrix is None:
+            transformation_matrix = np.identity(3)
+        applier = AugmentationApplierImage(grid_maker=GridMaker(patch_size_final_resize=patch_size_after_resize),
+                                           patch_size_final_resize=patch_size_after_resize)
+        image_patch, transformation_matrix = applier.transform(
+            data=image,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        annotation_patch, transformation_matrix = applier.transform(
+            data=annotation,
+            partial_transformation_matrix=transformation_matrix,
+            patch_upper_left_corner_coords=patch_upper_left_corner_coords
+        )
+        image_patch,classification = self.process_infos(image,annotation)
+        return image_patch,classification,transformation_matrix
 
 
     def len(self, dataset) -> Optional[int]:

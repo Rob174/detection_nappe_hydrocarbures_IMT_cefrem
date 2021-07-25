@@ -37,13 +37,13 @@
 &#34;&#34;&#34;
 
 import json
-from typing import Tuple
-
-
+from typing import Tuple, Dict, Optional
 
 import torch
 
 from main.FolderInfos import FolderInfos
+from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.enums import EnumAugmenter
 from main.src.enums import EnumBalance
 from main.src.data.classification.ClassificationGeneratorCache import ClassificationGeneratorCache
@@ -77,6 +77,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         force_classifpatch: bool, force to use the class classificattionpatch
         other_class_adder: EnumClassPatchAdder to select classadder object
         interval: int, interval between two un annotated patches
+        choose_dataset, Optional[str] &#34;cache&#34; to use the ClassificationCache method &#34;patch&#34;
     &#34;&#34;&#34;
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
@@ -88,14 +89,14 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
-                 interval: int = 1):
+                 interval: int = 1, choose_dataset: Optional[str] = None):
         self.attr_global_name = &#34;data&#34;
 
         if usage_type == EnumUsage.Classification:
-            if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34;  and \
-                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
-                    and grid_size == 1000 and not force_classifpatch:
+            if (input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1
+                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34;  and
+                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10
+                    and grid_size == 1000 and not force_classifpatch or choose_dataset == &#34;cache&#34;) and choose_dataset != &#34;patch&#34;:
                 self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                                  other_class_adder=other_class_adder, interval=interval)
             else:
@@ -121,7 +122,19 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         return self.attr_dataset.__iter__(dataset)
 
     def len(self, dataset):
-        return self.attr_dataset.len(dataset)</code></pre>
+        return self.attr_dataset.len(dataset)
+
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        &#34;&#34;&#34;Change the origin of the patches
+
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
+
+        &#34;&#34;&#34;
+        self.attr_dataset.set_datasets(image_dataset, label_dataset, dico_infos)</code></pre>
 </details>
 </section>
 <section>
@@ -135,7 +148,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 <dl>
 <dt id="main.src.data.DatasetFactory.DatasetFactory"><code class="flex name class">
 <span>class <span class="ident">DatasetFactory</span></span>
-<span>(</span><span>dataset_name: <a title="main.src.enums.EnumLabelModifier" href="../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, usage_type: <a title="main.src.enums.EnumUsage" href="../enums.html#main.src.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.enums.EnumBalance" href="../enums.html#main.src.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.enums.EnumAugmenter" href="../enums.html#main.src.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1, force_classifpatch=False, other_class_adder: <a title="main.src.enums.EnumClassPatchAdder" href="../enums.html#main.src.enums.EnumClassPatchAdder">EnumClassPatchAdder</a> = EnumClassPatchAdder.NoClassPatchAdder, interval: int = 1)</span>
+<span>(</span><span>dataset_name: <a title="main.src.enums.EnumLabelModifier" href="../enums.html#main.src.enums.EnumLabelModifier">EnumLabelModifier</a> = EnumLabelModifier.NoLabelModifier, usage_type: <a title="main.src.enums.EnumUsage" href="../enums.html#main.src.enums.EnumUsage">EnumUsage</a> = EnumUsage.Classification, grid_size=1000, input_size=1000, exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan, exclusion_policy_threshold: int = 1000, classes_to_use: Tuple[<a title="main.src.enums.EnumClasses" href="../enums.html#main.src.enums.EnumClasses">EnumClasses</a>] = (&lt;EnumClasses.Other: &#x27;other&#x27;&gt;, &lt;EnumClasses.Seep: &#x27;seep&#x27;&gt;, &lt;EnumClasses.Spill: &#x27;spill&#x27;&gt;), balance: <a title="main.src.enums.EnumBalance" href="../enums.html#main.src.enums.EnumBalance">EnumBalance</a> = EnumBalance.NoBalance, augmentations_img='none', augmenter_img: <a title="main.src.enums.EnumAugmenter" href="../enums.html#main.src.enums.EnumAugmenter">EnumAugmenter</a> = EnumAugmenter.NoAugmenter, augmentation_factor=1, force_classifpatch=False, other_class_adder: <a title="main.src.enums.EnumClassPatchAdder" href="../enums.html#main.src.enums.EnumClassPatchAdder">EnumClassPatchAdder</a> = EnumClassPatchAdder.NoClassPatchAdder, interval: int = 1, choose_dataset: Union[str, NoneType] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Class managing the attr_dataset creation and access with options of:
@@ -177,7 +190,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 <dd>EnumClassPatchAdder to select classadder object</dd>
 <dt><strong><code>interval</code></strong></dt>
 <dd>int, interval between two un annotated patches</dd>
-</dl></div>
+</dl>
+<p>choose_dataset, Optional[str] "cache" to use the ClassificationCache method "patch"</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -205,6 +219,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         force_classifpatch: bool, force to use the class classificattionpatch
         other_class_adder: EnumClassPatchAdder to select classadder object
         interval: int, interval between two un annotated patches
+        choose_dataset, Optional[str] &#34;cache&#34; to use the ClassificationCache method &#34;patch&#34;
     &#34;&#34;&#34;
 
     def __init__(self, dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
@@ -216,14 +231,14 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  augmentations_img=&#34;none&#34;, augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
-                 interval: int = 1):
+                 interval: int = 1, choose_dataset: Optional[str] = None):
         self.attr_global_name = &#34;data&#34;
 
         if usage_type == EnumUsage.Classification:
-            if input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1 \
-                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34;  and \
-                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10 \
-                    and grid_size == 1000 and not force_classifpatch:
+            if (input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1
+                    and augmentations_img == &#34;combinedRotResizeMir_10_0.25_4&#34;  and
+                    exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10
+                    and grid_size == 1000 and not force_classifpatch or choose_dataset == &#34;cache&#34;) and choose_dataset != &#34;patch&#34;:
                 self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
                                                                  other_class_adder=other_class_adder, interval=interval)
             else:
@@ -249,7 +264,19 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         return self.attr_dataset.__iter__(dataset)
 
     def len(self, dataset):
-        return self.attr_dataset.len(dataset)</code></pre>
+        return self.attr_dataset.len(dataset)
+
+    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+        &#34;&#34;&#34;Change the origin of the patches
+
+        Args:
+            image_dataset: ImageDataset
+            label_dataset: AbstractDataset Points or Images
+            dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+        Returns:
+
+        &#34;&#34;&#34;
+        self.attr_dataset.set_datasets(image_dataset, label_dataset, dico_infos)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -271,6 +298,38 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 </summary>
 <pre><code class="python">def len(self, dataset):
     return self.attr_dataset.len(dataset)</code></pre>
+</details>
+</dd>
+<dt id="main.src.data.DatasetFactory.DatasetFactory.set_datasets"><code class="name flex">
+<span>def <span class="ident">set_datasets</span></span>(<span>self, image_dataset: <a title="main.src.data.Datasets.ImageDataset.ImageDataset" href="Datasets/ImageDataset.html#main.src.data.Datasets.ImageDataset.ImageDataset">ImageDataset</a>, label_dataset: <a title="main.src.data.Datasets.AbstractDataset.AbstractDataset" href="Datasets/AbstractDataset.html#main.src.data.Datasets.AbstractDataset.AbstractDataset">AbstractDataset</a>, dico_infos: Dict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change the origin of the patches</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>image_dataset</code></strong></dt>
+<dd>ImageDataset</dd>
+<dt><strong><code>label_dataset</code></strong></dt>
+<dd>AbstractDataset Points or Images</dd>
+<dt><strong><code>dico_infos</code></strong></dt>
+<dd>Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch</dd>
+</dl>
+<p>Returns:</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    &#34;&#34;&#34;Change the origin of the patches
+
+    Args:
+        image_dataset: ImageDataset
+        label_dataset: AbstractDataset Points or Images
+        dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
+    Returns:
+
+    &#34;&#34;&#34;
+    self.attr_dataset.set_datasets(image_dataset, label_dataset, dico_infos)</code></pre>
 </details>
 </dd>
 </dl>
@@ -295,6 +354,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
 <h4><code><a title="main.src.data.DatasetFactory.DatasetFactory" href="#main.src.data.DatasetFactory.DatasetFactory">DatasetFactory</a></code></h4>
 <ul class="">
 <li><code><a title="main.src.data.DatasetFactory.DatasetFactory.len" href="#main.src.data.DatasetFactory.DatasetFactory.len">len</a></code></li>
+<li><code><a title="main.src.data.DatasetFactory.DatasetFactory.set_datasets" href="#main.src.data.DatasetFactory.DatasetFactory.set_datasets">set_datasets</a></code></li>
 </ul>
 </li>
 </ul>

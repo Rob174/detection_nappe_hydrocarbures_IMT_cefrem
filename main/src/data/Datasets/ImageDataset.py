@@ -1,3 +1,4 @@
+"""A dataset to manage hdf5 files for 2d np.ndarrays"""
 from h5py import File
 
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
@@ -6,6 +7,7 @@ from main.src.param_savers.BaseClass import BaseClass
 
 
 class ImageDataset(BaseClass,AbstractDataset):
+    """A dataset to manage hdf5 files for 2d np.ndarrays"""
     def __init__(self, src_hdf5: str, mapping:TwoWayDict):
         super().__init__(mapping)
         self.attr_path = src_hdf5
@@ -25,3 +27,6 @@ class ImageDataset(BaseClass,AbstractDataset):
 
         """
         return self.dataset[id]
+    def __iter__(self):
+        """Allow to use for loop on this object"""
+        raise NotImplementedError

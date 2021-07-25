@@ -1,3 +1,9 @@
+"""Creates the group of datasets representing the filtred cache with
+
+    - filtered_cache_images.hdf5
+    - filtered_cache_annotations.hdf5
+    - filtered_img_infos.json
+    """
 import json
 from typing import Tuple, Dict
 

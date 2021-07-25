@@ -20,17 +20,14 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
     It allows to filter the global sample on the label as it costs less to generate it
 
         Args:
-            allowed_transformations: List[str], augmentations to apply. Currently supported:
-            - combinedRotResizeMir_{rotation_step}_{resize_lower_fact_float}_{resize_upper_fact_float}
             patch_size_before_final_resize: int, size in px of the output patch to extract
             patch_size_final_resize: int, size in px of the output patch provided to the attr_model
 
     """
 
-    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int,
-                 allowed_transformations: List[str]):
+    def __init__(self, patch_size_before_final_resize: int, patch_size_final_resize: int):
         super(NoAugmenter, self).__init__(patch_size_before_final_resize, patch_size_final_resize,
-                                          allowed_transformations)
+                                          [])
         self.attr_grid_maker = GridMaker(patch_size_final_resize=patch_size_final_resize)
         self.attr_label_applier = AugmentationApplierLabelPoints(
             grid_maker=self.attr_grid_maker,

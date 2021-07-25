@@ -1,4 +1,5 @@
 """Creates the group of datasets representing the filtred cache with
+
     - images_preprocessed.hdf5
     - images_preprocessed_points.pkl
     - images_informations_preprocessed.json

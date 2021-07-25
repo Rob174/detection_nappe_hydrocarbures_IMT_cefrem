@@ -1,3 +1,4 @@
+"""Base class to build your own dataset"""
 from abc import ABC
 from typing import Any
 
@@ -5,7 +6,7 @@ from main.src.data.TwoWayDict import TwoWayDict
 
 
 class AbstractDataset(ABC):
-    """Object representing a dataset"""
+    """Base class to build your own dataset"""
     def __init__(self,mapping: TwoWayDict,*args,**kwargs):
         self.attr_mapping = mapping
 
@@ -30,6 +31,9 @@ class AbstractDataset(ABC):
         return self.dataset.keys()
     def values(self):
         return self.dataset.values()
+    def __iter__(self):
+        """Allow to use for loop on this object"""
+        return self.dataset.__iter__()
     def __enter__(self):
         """Method for context manager (with ... statement)"""
         self.dataset.__enter__()
