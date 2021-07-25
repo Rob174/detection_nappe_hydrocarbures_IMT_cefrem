@@ -3,7 +3,7 @@
 import pickle
 import numpy as np
 from PIL import Image,ImageDraw
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Union
 
 from main.FolderInfos import FolderInfos
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
@@ -23,7 +23,7 @@ class PointDataset(BaseClass,AbstractDataset):
     @property
     def dataset(self):
         return self._dataset
-    def get(self,item: str) -> List[Tuple[int,int]]:
+    def get(self,item: str) -> List[Dict[EnumShapeCategories, Union[str, List]]]:
         """Gives access to the data and can simultenaously perform augmentations to constitute the final augmented annotation
         (give identity matrix for no transformation)
 
@@ -38,7 +38,7 @@ class PointDataset(BaseClass,AbstractDataset):
             label:int = self.attr_mapping[polygon[EnumShapeCategories.Label]]
             color_code = "#"+f"{label:02x}"*3 # conversion to hexadecimal color (#FFFFFF for white for instance)
             polygons.append({EnumShapeCategories.Label:color_code,EnumShapeCategories.Points:polygon[EnumShapeCategories.Points]})
-        return self.dataset[item]
+        return polygons
 
     def __len__(self):
         return len(self.dataset)
