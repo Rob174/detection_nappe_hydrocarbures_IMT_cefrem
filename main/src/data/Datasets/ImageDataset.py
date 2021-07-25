@@ -25,7 +25,7 @@ class ImageDataset(BaseClass,AbstractDataset):
 
         """
         with File(self.attr_path,"r") as file:
-            return np.array(file,dtype=np.float32)
+            return np.array(file[id],dtype=np.float32)
     def __iter__(self):
         """Allow to use for loop on this object"""
         raise NotImplementedError
