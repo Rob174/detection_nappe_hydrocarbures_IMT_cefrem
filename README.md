@@ -2,7 +2,7 @@
 
 This work has been realized as part of my internship at the IMT / CEFREM.
 The state of the project at the end of it is available on the endInternship branch.
-To further improve it I will continue to develop new code on the dev branch
+To further improve it I have decided to continue to develop new code on the dev branch
 
 ## Summary
 
