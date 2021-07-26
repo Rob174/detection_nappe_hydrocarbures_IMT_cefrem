@@ -101,6 +101,6 @@ if __name__ == "__main__":
     print(s)
 
     FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px",
+    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="Generators", patch_creator="fixed_px",
                                      patch_padding="no", grid_size=1000, input_size=256)
     print(Saver0("")(dataset_factory))

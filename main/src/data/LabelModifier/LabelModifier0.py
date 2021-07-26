@@ -22,12 +22,12 @@ class LabelModifier0(AbstractLabelModifier,BaseClass):
         return self.attr_class_mapping
 
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
-        """Creates the classification label based on the annotation patch image
+        """Creates the Generators label based on the annotation patch image
 
         Args:
             annotation: np.ndarray 2d containing for each pixel the class of this pixel
 
-        Returns: the classification label
+        Returns: the Generators label
 
         """
 

@@ -13,13 +13,13 @@ class AbstractLabelModifier(ABC):
 
     @abstractmethod
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
-        """Creates the classification label based on the annotation patch image
+        """Creates the Generators label based on the annotation patch image
 
         Args:
             annotation: np.ndarray 2d containing the class of each pixel encoded as uint8
 
         Returns:
-            annotation_modified: the classification label modified
+            annotation_modified: the Generators label modified
 
         """
         pass

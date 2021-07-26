@@ -17,7 +17,7 @@ class LabelModifier1(AbstractLabelModifier, BaseClass):
     and to change their order.
 
     Args:
-        classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
+        classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final Generators label
     """
 
     def __init__(self, original_class_mapping: TwoWayDict,
@@ -38,18 +38,18 @@ class LabelModifier1(AbstractLabelModifier, BaseClass):
             dico[dest_id, Way.ORIGINAL_WAY] = name
         return dico
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
-        """Creates the classification label based on the annotation patch image
+        """Creates the Generators label based on the annotation patch image
 
         Args:
             annotation:  np.ndarray 2d containing for each pixel the class of this pixel
 
         Returns:
-            annotation_modified: the classification label modified
+            annotation_modified: the Generators label modified
 
         """
         self.initial_label = self.label_modifier0.make_classification_label(annotation)
         annotation = self.initial_label
-        # Create a classification label with less classes
+        # Create a Generators label with less classes
         annotation_modified = np.zeros((len(self.attr_class_mapping.keys()),))
         # {index_src_0:(class0,index_dest0),index_src_1:(class1,index_dest1),....}
         for src_index, (_, dest_index) in self.attr_class_mapping.items(Way.ORIGINAL_WAY):

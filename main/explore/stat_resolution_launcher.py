@@ -3,7 +3,7 @@ from main.src.data.DatasetFactory import DatasetFactory
 
 if __name__ == "__main__":
     FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="classification", patch_creator="fixed_px",
+    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="Generators", patch_creator="fixed_px",
                                      patch_padding="no", grid_size=500, input_size=256)
     length = len(dataset_factory)
     print(f"{length} items in this dataset")

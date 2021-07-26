@@ -20,7 +20,7 @@ from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.TwoWayDict import TwoWayDict
-from main.src.data.classification.ClassificationGeneratorPatch import ClassificationGeneratorPatch
+from main.src.data.Generators.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
 from main.src.data.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
 from main.src.data.PatchAdder.PatchAdderCallback import PatchAdderCallback
@@ -103,7 +103,7 @@ class ClassificationGeneratorCache(BaseClass):
         Returns:
             generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
             tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
-                   classif: np.ndarray (shape (num_classes,), classification patch ;
+                   classif: np.ndarray (shape (num_classes,), Generators patch ;
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
@@ -144,7 +144,7 @@ class ClassificationGeneratorCache(BaseClass):
         Returns:
             Tuple[np.ndarray,np.ndarray,np.ndarray]
             - image_patch: patch extracted from the image
-            - classification: vector containing true probabilities of presence of annotation
+            - Generators: vector containing true probabilities of presence of annotation
             - transformation_matrix: 3,3 transformation matrix applied
         """
         if transformation_matrix is None:

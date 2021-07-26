@@ -74,7 +74,7 @@ class EnumPatchExcludePolicy(str, Enum):
     """Choose the option to exclude patches that have more than ... px at 0 in order to exclude patches with margins"""
 
 class EnumUsage(str, Enum):
-    Classification = "classification"
+    Classification = "Generators"
     """attr_dataset to classify patches"""
     Segmentation = "Fabrics"
     """attr_dataset to segment an image"""

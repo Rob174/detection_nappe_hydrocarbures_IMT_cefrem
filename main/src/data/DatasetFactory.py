@@ -11,8 +11,8 @@ from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.enums import EnumAugmenter
 from main.src.enums import EnumBalance
-from main.src.data.classification.ClassificationGeneratorCache import ClassificationGeneratorCache
-from main.src.data.classification.ClassificationGeneratorPatch import ClassificationGeneratorPatch
+from main.src.data.Generators.ClassificationGeneratorCache import ClassificationGeneratorCache
+from main.src.data.Generators.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
 from main.src.enums import EnumUsage, EnumClasses
 from main.src.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
@@ -25,9 +25,9 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     Args:
         dataset_name: EnumLabelModifier,
         usage_type: EnumUsage,
-        grid_size: int, classification only with fixed_px size. To specify the size of a patch
+        grid_size: int, Generators only with fixed_px size. To specify the size of a patch
         input_size: int, size of the image given to the attr_model
-        exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [NoLabelModifier](./classification/NoLabelModifier.html)
+        exclusion_policy: EnumPatchExcludePolicy, policy to exclude patches. See [NoLabelModifier](./Generators/NoLabelModifier.html)
         exclusion_policy_threshold: int, parameter for EnumPatchExcludePolicy.MarginMoreThan
         classes_to_use: Tuple[EnumClasses], the classes to use
         balance: EnumBalance,

@@ -64,7 +64,7 @@ class Trainer0(BaseClass):
             model_saver: AbstractModelSaver
             saver: Saver0 object (see its documentation)
             eval_step: number of training batches between two validation steps
-            rgb_overlay: RGB_Overlay2, to build an overlay of the classification on a sample
+            rgb_overlay: RGB_Overlay2, to build an overlay of the Generators on a sample
             debug: "false" or "true"  to store the predictions and the true values for the model in the json file
         """
 

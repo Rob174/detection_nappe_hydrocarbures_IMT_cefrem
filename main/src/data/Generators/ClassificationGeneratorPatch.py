@@ -61,7 +61,8 @@ class ClassificationGeneratorPatch(BaseClass):
         self.attr_augmentation_factor = augmentation_factor
         self.datasets = {
             "tr":list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * tr_percent)],
-            "valid":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):]
+            "valid":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):],
+            "all":list(self.attr_image_dataset.keys())
         }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
@@ -129,7 +130,7 @@ class ClassificationGeneratorPatch(BaseClass):
         Returns:
             generator of the attr_dataset (object that support __iter__ and __next__ magic methods)
             tuple: input: np.ndarray (shape (grid_size,grid_size,3)), input image for the attr_model ;
-                   classif: np.ndarray (shape (num_classes,), classification patch ;
+                   classif: np.ndarray (shape (num_classes,), Generators patch ;
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
@@ -145,7 +146,7 @@ class ClassificationGeneratorPatch(BaseClass):
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )
-                    # Create the classification label with the proper technic
+                    # Create the Generators label with the proper technic
                     classification = self.attr_label_modifier.make_classification_label(annotations_patch)
                     balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
                     if balance_reject is True:
@@ -177,7 +178,7 @@ class ClassificationGeneratorPatch(BaseClass):
         Returns:
             Tuple[np.ndarray,np.ndarray,np.ndarray]
             - image_patch: patch extracted from the image
-            - classification: vector containing true probabilities of presence of annotation
+            - Generators: vector containing true probabilities of presence of annotation
             - transformation_matrix: 3,3 transformation matrix applied
         """
         if transformation_matrix is None:

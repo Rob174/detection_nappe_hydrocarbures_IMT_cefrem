@@ -16,8 +16,8 @@ class LabelModifier2(AbstractLabelModifier,BaseClass):
     Merge multiple labels the classes to use and indicate the presence or absence of one of these classes
 
     Args:
-        original_class_mapping: TwoWayDict mapping other, seep, spill... categories to their ids in the original 1d classification label
-        classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final classification label
+        original_class_mapping: TwoWayDict mapping other, seep, spill... categories to their ids in the original 1d Generators label
+        classes_to_use: Tuple[EnumClasses], indicates the classes to use in the final Generators label
     """
 
     def __init__(self, original_class_mapping: TwoWayDict,
@@ -40,7 +40,7 @@ class LabelModifier2(AbstractLabelModifier,BaseClass):
         self.attr_global_name = "attr_dataset"
 
     def make_classification_label(self, annotation: np.ndarray):
-        """Creates the classification label based on the annotation patch image
+        """Creates the Generators label based on the annotation patch image
 
         Merge specified classes together
 
@@ -48,7 +48,7 @@ class LabelModifier2(AbstractLabelModifier,BaseClass):
             annotation: np.ndarray 2d containing for each pixel the class of this pixel
 
         Returns:
-            annotation_modified: the classification label modified
+            annotation_modified: the Generators label modified
 
         """
         self.initial_label = self.label_modifier0.make_classification_label(annotation)

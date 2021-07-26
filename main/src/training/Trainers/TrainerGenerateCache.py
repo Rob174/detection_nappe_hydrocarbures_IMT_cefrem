@@ -4,7 +4,6 @@
 import json
 
 import h5py
-from rich.progress import Progress, BarColumn, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
 from main.FolderInfos import FolderInfos as FI
 from main.src.param_savers.BaseClass import BaseClass

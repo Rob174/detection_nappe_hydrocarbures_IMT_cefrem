@@ -107,8 +107,8 @@ The expected structure is following the [AbstractFabricDatasets class](./data/Da
 ### Providing it to the system
 
 
-The user has first to provide the relevant arguments to the [DatasetFactory constructor](./data/DatasetFactory.html) for the [ClassificationGeneratorCache](./data/classification/ClassificationGeneratorCache.html)
-or [ClassificationGeneratorPatch](|./data/classification/ClassificationGeneratorPatch.html) class
+The user has first to provide the relevant arguments to the [DatasetFactory constructor](./data/DatasetFactory.html) for the [ClassificationGeneratorCache](./data/Generators/ClassificationGeneratorCache.html)
+or [ClassificationGeneratorPatch](|./data/Generators/ClassificationGeneratorPatch.html) class
 
 The user can specify in this same constructor the algorithm to use with the `choose_dataset` argument and pass it the result
 of the custom made Factory call function (the user can use arguments unpacking to use less lines of code)
