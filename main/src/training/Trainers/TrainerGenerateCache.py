@@ -42,6 +42,7 @@ class TrainerGenerateCache(BaseClass):
         Returns:
 
         """
+        print(self.__class__.__name__+" chosen. Launching loop...")
         with h5py.File(FI.input_data_folder + name+"_image.hdf5", "w") as cache_images:
             with h5py.File(FI.input_data_folder + name+"_annotations.hdf5", "w") as cache_annotations:
                 dico_info = {}
