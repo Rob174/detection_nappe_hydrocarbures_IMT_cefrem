@@ -232,18 +232,23 @@ As no parameters produces better performances, we will investigate:
 # 20-07-2021
 
 - ⏳ model problem debugging
-- ⏲️ doc
+- ✔️ doc
 
 # 23-07-2021
 
-- 🔨 Parameterized dataset to be provided by user
+- ✔️ Parameterized dataset to be provided by user
+
+## 26-07-2021
+
+- split metrics 
 
 ✔️ done and tested ; 🔨 done not tested ; ⏲️ in progress ; ⏳ waiting for other scripts to finish ; 🚩 problem ; 🐛 bug ; 〰️ ok does the job but maybe to improve ; 🛑 pause ; 🛰️ release
 
 ## TODO
 
 Priorities 1️⃣: high priority ; 9️⃣low priority
-- 2️⃣ Update the documentation
 - 9️⃣ Find a way not to write all the dict of preprocessings/metrics at each save step
+- debug progress bar iteration bug
+- transform into callback system
 - 9️⃣ Hyperparameters optimization
 - Question : convert predicted annotated image back to raster ?
