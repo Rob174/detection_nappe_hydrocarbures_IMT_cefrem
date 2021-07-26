@@ -37,6 +37,7 @@ class NoAugmenter(BaseClass, AbstractAugmenter):
             grid_maker=self.attr_grid_maker,
             patch_size_final_resize=patch_size_final_resize)
 
+
     @property
     def grid_maker(self) -> GridMaker:
         return self.attr_grid_maker

@@ -28,6 +28,7 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
         self.attr_rotation_step = rotation_step
         self.attr_resize_upper_fact_float = resize_upper_fact_float
         self.attr_resize_lower_fact_float = resize_lower_fact_float
+        self.first = True
 
 
     def choose_parameters(self) -> Tuple[float, float, int]:
@@ -39,6 +40,10 @@ class RotationResizeMirrors(AbstractAugmentationWithMatrix):
             mirror, int 0 = fliplr ; 1 = flipud ; -1 = noflip
 
         """
+        if self.first:
+            # If it is the first augmentation of the image, we use no augmentations
+            self.first = False
+            return 0,self.attr_patch_size_final_resize / self.attr_patch_size_before_final_resize,-1
         angle = np.random.choice(np.arange(0, 361, self.attr_rotation_step))
         resize_factor = np.random.rand() * (
                 self.attr_resize_upper_fact_float - self.attr_resize_lower_fact_float) + self.attr_resize_lower_fact_float
