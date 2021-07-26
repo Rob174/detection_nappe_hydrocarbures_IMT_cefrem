@@ -3,76 +3,41 @@ from enum import Enum
 from functools import partial
 
 import numpy as np
+from typing import List
 
-from main.src.param_savers.BaseClass import BaseClass
-from main.src.training.metrics.AbstractMetricManager import AbstractMetricManager
+from main.src.training.metrics.metrics.AbstractMetric import AbstractMetric
+from main.src.training.metrics.metrics.AccuracyClassification import AccuracyClassification
+from main.src.training.metrics.metrics.ErrorWithThreshold import ErrorWithThreshold
+from main.src.training.metrics.metrics.MAE import MAE
 
 
-class MetricsFactory(BaseClass, AbstractMetricManager):
+class MetricsFactory:
     """Class managing metrics
 
     Args:
         metrics_names: iterable of metrics as str. Currently supported metrics:
 
-    - "accuracy_classification-[0-9]": mean of the the mean number of times where the difference between prediction and reference are less than the threashold provided after accuracy_classification-
+    - "accuracy_classification-[0-9]\.[0-9]+": mean of the the mean number of times where the difference between prediction and reference are less than the threashold provided after accuracy_classification-
+    - "error_threshold-[0-9]\.[0-9]+
     - "mae": mean average error
 
     Example:
-        >>> MetricsFactory("accuracy_classification-0.9",
+        >>> MetricsFactory.create("accuracy_classification-0.9",
         ...                "mae","accuracy_classification-0.95")
         ...                # this is the way to provide the iterable of metrics
     """
-
-    def __init__(self, *metrics_names):
-        super(MetricsFactory, self).__init__()
-        self.attr_list_metrics = {}
-        self.functions_metrics = []
+    @staticmethod
+    def create(*metrics_names: str) -> List[AbstractMetric]:
+        available_metrics = [
+            AccuracyClassification,
+            ErrorWithThreshold,
+            MAE
+        ]
+        list_metrics = []
         for metric in metrics_names:
             metric = metric.lower()
-            if re.match("^accuracy_classification-[0-9]\\.[0-9]+$", metric):
-                self.attr_list_metrics[metric] = {
-                    "description": "Indicate the mean number of times accross batches where one probability of one image is equal to another with a margin of error of precision",
-                    "tr_values": [], "valid_values": []}
-                precision = float(re.sub("^accuracy_classification-([0-9]\\.[0-9]+)$", "\\1", metric))
-                # in average what purcentage of value are less than .25 near the reference
-                self.functions_metrics.append(
-                    lambda pred, true: np.mean(np.mean((np.abs(pred - true) < precision).astype(np.float), axis=1)))
-            elif re.match("^mae$", metric):
-                self.attr_list_metrics[metric] = {
-                    "description": "Indicate the mean mean absolute error accross batches", "tr_values": [],
-                    "valid_values": []}
-                self.functions_metrics.append(lambda pred, true: np.mean(np.mean(np.abs(pred - true), axis=1)))
-            elif re.match("^accuracy_threshold-[0-9]\\.[0-9]+$", metric):
-                self.attr_list_metrics[metric] = {
-                    "description": "Indicate the mean mean absolute error accross batches",
-                    "tr_values": [],
-                    "valid_values": []
-                }
-                threshold = float(re.sub("^accuracy_threshold-([0-9]\\.[0-9]+)$", "\\1", metric))
-                def f(pred,true,threshold):
-                    new_pred = np.copy(pred)
-                    new_true = np.copy(true)
-                    new_pred[pred > threshold] = 1.
-                    new_pred[pred <= threshold] = 0.
-                    new_true[true > threshold] = 1.
-                    new_true[true <= threshold] = 0.
-                    return np.sum(np.abs(new_pred-new_true))
-
-                function = partial(f,threshold=threshold)
-                self.functions_metrics.append(function)
-                # si proba > 0.5 compte comme présent sinon non présent
-            else:
-                raise NotImplementedError(f"{metric} has not been implemented")
-        self.attr_global_name = "metrics"
-
-    def __call__(self, prediction, true_value, dataset_type):
-        """Execute on loss computation both on the model side for backward propagation and another  cpu computation
-         to avoid the slow gpu cpu transfer (it is faster to recompute on my computer) """
-        prediction = prediction
-        true_value = true_value
-        for name, function in zip(self.attr_list_metrics.keys(), self.functions_metrics):
-            self.attr_list_metrics[name][dataset_type + "_values"].append(float(function(prediction, true_value)))
-
-    def get_last_metric(self, name: Enum) -> float:
-        """Get last value of specified metric"""
-        return self.attr_list_metrics[name]["valid_values"][-1]
+            for Metric_class in available_metrics:
+                args = Metric_class.parser(metric)
+                if args is not None:
+                    list_metrics.append(Metric_class(*args))
+        return list_metrics

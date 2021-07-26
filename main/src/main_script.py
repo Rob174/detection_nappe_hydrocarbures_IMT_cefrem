@@ -64,9 +64,9 @@ if __name__ == "__main__":
     model = ModelFactory(model_name=arguments.attr_model, num_classes=num_classes, freeze=arguments.freeze)
     optimizer = OptimizersFactory(model, name=arguments.optimizer,
                                   lr=arguments.lr, eps=arguments.eps)
-    loss = LossFactory(usage_type=arguments.usage_type, preference=arguments.loss_preference,optimizer=optimizer)
-    metrics = MetricsFactory("accuracy_classification-0.25", "accuracy_classification-0.1", "mae", "accuracy_threshold-0.5")
-    model_saver = ModelSaver1(loss, loss.attr_loss)
+    loss = LossFactory.create(usage_type=arguments.usage_type, preference=arguments.loss_preference,optimizer=optimizer)
+    metrics = MetricsFactory.create("accuracy_classification-0.25", "accuracy_classification-0.1", "mae", "accuracy_threshold-0.5")
+    model_saver = ModelSaver1(loss)
     early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
     try:
