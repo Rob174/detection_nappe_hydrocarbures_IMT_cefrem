@@ -14,6 +14,7 @@ from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricPreprocessedCache import FabricPreprocessedCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.LabelModifier.NoLabelModifier import NoLabelModifier
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
 from main.src.data.balance_classes.BalanceClassesNoOther import BalanceClassesNoOther
@@ -66,6 +67,8 @@ class ClassificationGeneratorPatch(BaseClass):
         }
         self.attr_global_name = "attr_dataset"
         if label_modifier == EnumLabelModifier.NoLabelModifier:
+            self.attr_label_modifier = NoLabelModifier(original_class_mapping=self.attr_label_dataset.attr_mapping)
+        elif label_modifier == EnumLabelModifier.LabelModifier0:
             self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,

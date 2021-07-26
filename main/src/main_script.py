@@ -3,6 +3,7 @@
 import subprocess
 import sys
 
+from main.src.parsers.ParserGenerateFilteredCache import ParserGenerateFilteredCache
 
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
@@ -13,9 +14,8 @@ from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 
-from main.src.training.Trainers.Trainer0 import Trainer0
-# from main.src.training.TrainerGenerateCacheOther import Trainer0
-# from main.src.training.TrainerGenerateCache import Trainer0
+# from main.src.training.Trainers.TrainerGenerateCache import TrainerGenerateCache
+from main.src.training.Trainers.TrainerGenerateCache import TrainerGenerateCache
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory
@@ -31,7 +31,7 @@ from main.src.enums import EnumGitCheck
 if __name__ == "__main__":
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + "parameters.json")
-    parser = ParserClassificationCache()
+    parser = ParserGenerateFilteredCache()
     saver(parser)
     arguments = parser()
     saver["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
@@ -54,7 +54,8 @@ if __name__ == "__main__":
                              augmentations_img=arguments.augmentations_img,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
-                             interval=arguments.interval
+                             interval=arguments.interval,
+                             choose_dataset="patch"
                              )
     saver["date"] = FolderInfos.id
 
@@ -70,11 +71,22 @@ if __name__ == "__main__":
 
     rgb_overlay = RGB_Overlay2(
         standardizer=dataset.attr_dataset.attr_standardizer
-                                    )
+    )
     print("start")
-    Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
-             dataset=dataset, model=model,
-             optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
-             saver=saver,
-             eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
+    TrainerGenerateCache(
+        batch_size=arguments.batch_size,
+        num_epochs=arguments.num_epochs,
+        tr_prct=0.7,
+        dataset=dataset,
+        model=model,
+        optimizer=optimizer,
+        loss=loss,
+        metrics=metrics,
+        early_stopping=early_stopping,
+        model_saver=model_saver,
+        saver=saver,
+        eval_step=arguments.eval_step,
+        debug=arguments.debug,
+        rgb_overlay=rgb_overlay
+    )(name="filtered_cache")
     print("end")

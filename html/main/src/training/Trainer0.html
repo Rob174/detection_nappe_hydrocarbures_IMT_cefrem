@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
-<title>main.src.training.Trainer0 API documentation</title>
+<title>main.src.training.TrainerGenerateCache API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>main.src.training.Trainer0</code></h1>
+<h1 class="title">Module <code>main.src.training.TrainerGenerateCache</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -46,7 +46,7 @@ from main.src.training.periodic_model_saver.AbstractModelSaver import AbstractMo
 from main.src.training.progress_bar.ProgressBarFactory import ProgressBarFactory
 
 
-class Trainer0(BaseClass):
+class TrainerGenerateCache(BaseClass):
     &#34;&#34;&#34;Class managing the training process
 
     Args:
@@ -221,7 +221,7 @@ class Trainer0(BaseClass):
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
 <dt id="main.src.training.Trainer0.Trainer0"><code class="flex name class">
-<span>class <span class="ident">Trainer0</span></span>
+<span>class <span class="ident">TrainerGenerateCache</span></span>
 <span>(</span><span>batch_size, num_epochs, tr_prct, dataset: <a title="main.src.data.DatasetFactory.DatasetFactory" href="../data/DatasetFactory.html#main.src.data.DatasetFactory.DatasetFactory">DatasetFactory</a>, model: <a title="main.src.models.ModelFactory.ModelFactory" href="../models/ModelFactory.html#main.src.models.ModelFactory.ModelFactory">ModelFactory</a>, optimizer: <a title="main.src.training.optimizers_factory.OptimizersFactory" href="optimizers_factory.html#main.src.training.optimizers_factory.OptimizersFactory">OptimizersFactory</a>, loss: <a title="main.src.training.metrics.loss_factory.LossFactory" href="metrics/loss_factory.html#main.src.training.metrics.loss_factory.LossFactory">LossFactory</a>, metrics: <a title="main.src.training.metrics.metrics_factory.MetricsFactory" href="metrics/metrics_factory.html#main.src.training.metrics.metrics_factory.MetricsFactory">MetricsFactory</a>, early_stopping: <a title="main.src.training.early_stopping.AbstractEarlyStopping.AbstractEarlyStopping" href="early_stopping/AbstractEarlyStopping.html#main.src.training.early_stopping.AbstractEarlyStopping.AbstractEarlyStopping">AbstractEarlyStopping</a>, model_saver: <a title="main.src.training.periodic_model_saver.AbstractModelSaver.AbstractModelSaver" href="periodic_model_saver/AbstractModelSaver.html#main.src.training.periodic_model_saver.AbstractModelSaver.AbstractModelSaver">AbstractModelSaver</a>, saver, eval_step, rgb_overlay: <a title="main.src.analysis.analysis.RGB_Overlay2.RGB_Overlay2" href="../analysis/analysis/RGB_Overlay2.html#main.src.analysis.analysis.RGB_Overlay2.RGB_Overlay2">RGB_Overlay2</a>, debug='false')</span>
 </code></dt>
 <dd>
@@ -255,7 +255,7 @@ class Trainer0(BaseClass):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Trainer0(BaseClass):
+<pre><code class="python">class TrainerGenerateCache(BaseClass):
     &#34;&#34;&#34;Class managing the training process
 
     Args:
@@ -566,11 +566,11 @@ class Trainer0(BaseClass):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="main.src.training.Trainer0.Trainer0" href="#main.src.training.Trainer0.Trainer0">Trainer0</a></code></h4>
+<h4><code><a title="main.src.training.TrainerGenerateCache.TrainerGenerateCache" href="#main.src.training.Trainer0.Trainer0">TrainerGenerateCache</a></code></h4>
 <ul class="">
-<li><code><a title="main.src.training.Trainer0.Trainer0.add_to_batch_tr" href="#main.src.training.Trainer0.Trainer0.add_to_batch_tr">add_to_batch_tr</a></code></li>
-<li><code><a title="main.src.training.Trainer0.Trainer0.add_to_batch_valid" href="#main.src.training.Trainer0.Trainer0.add_to_batch_valid">add_to_batch_valid</a></code></li>
-<li><code><a title="main.src.training.Trainer0.Trainer0.call" href="#main.src.training.Trainer0.Trainer0.call">call</a></code></li>
+<li><code><a title="main.src.training.TrainerGenerateCache.TrainerGenerateCache.add_to_batch_tr" href="#main.src.training.Trainer0.Trainer0.add_to_batch_tr">add_to_batch_tr</a></code></li>
+<li><code><a title="main.src.training.TrainerGenerateCache.TrainerGenerateCache.add_to_batch_valid" href="#main.src.training.Trainer0.Trainer0.add_to_batch_valid">add_to_batch_valid</a></code></li>
+<li><code><a title="main.src.training.TrainerGenerateCache.TrainerGenerateCache.call" href="#main.src.training.Trainer0.Trainer0.call">call</a></code></li>
 </ul>
 </li>
 </ul>

@@ -139,16 +139,16 @@ Then we can use the augmenter to apply the transformation to get the patch desir
 
 ## III. How to create a custom training process
 
-The user has a premade training object [Trainer0](./training/Trainers/Trainer0.html).
+The user has a premade training object [TrainerGenerateCache](./training/Trainers/TrainerGenerateCache.html).
 We can provide it the DatasetFactory with a custom dataset, a custom model, a custom optimizer ....
-more details in [Trainer0](./training/Trainers/Trainer0.html) constructor
+more details in [TrainerGenerateCache](./training/Trainers/TrainerGenerateCache.html) constructor
 
 The user can also build a custom trainer and using the object relevant to the goal pursued.
 
-No specific structure is required. The user can iterator with a for loop over the dataset factory object (see Trainer0 example)
+No specific structure is required. The user can iterator with a for loop over the dataset factory object (see TrainerGenerateCache example)
 and has to keep in mind that the values produced by the Datasetfactory for loop correspond to individual samples, not batches.
 
-It is the responsability of the Trainer object to build batches for the moment. You can use the Trainer0 structure as an example
+It is the responsability of the Trainer object to build batches for the moment. You can use the TrainerGenerateCache structure as an example
 
 ## IV. How to build and predict on new patches ?
 

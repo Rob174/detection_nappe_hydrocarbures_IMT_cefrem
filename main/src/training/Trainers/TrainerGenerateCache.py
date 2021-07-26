@@ -9,7 +9,7 @@ from main.FolderInfos import FolderInfos as FI
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class Trainer0(BaseClass):
+class TrainerGenerateCache(BaseClass):
     """Class dedicated to create a dataset of patches. Open for modifications to generate custom cache
 
     Args:
@@ -30,8 +30,8 @@ class Trainer0(BaseClass):
         self.attr_global_name = "trainer"
         self.saver(self).save()
 
-    def __call__(self):
-        return self.call()
+    def __call__(self,name: str):
+        return self.call(name)
 
     def call(self,name: str):
         """Save the input and outputs with metadata
