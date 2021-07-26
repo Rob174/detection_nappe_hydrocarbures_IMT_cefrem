@@ -53,8 +53,7 @@ if __name__ == "__main__":
                              augmentations_img=arguments.augmentations_img,
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
-                             interval=arguments.interval,
-                             choose_dataset="patch"
+                             interval=arguments.interval
                              )
     saver["date"] = FolderInfos.id
 
@@ -72,15 +71,6 @@ if __name__ == "__main__":
         standardizer=dataset.attr_dataset.attr_standardizer
                                     )
     print("start")
-
-    # Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
-    #          dataset=dataset, model=model,
-    #          optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
-    #          saver=saver,
-    #          eval_step=arguments.eval_step, debug=arguments.debug,rgb_overlay=rgb_overlay)()
-    import torch
-    path_pt_file = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-23_04h17min51s_\2021-07-23_04h17min51s__model_epoch-9_it-15923.pt"
-    model.model.load_state_dict(torch.load(path_pt_file))
     Trainer0(batch_size=arguments.batch_size, num_epochs=arguments.num_epochs, tr_prct=0.7,
              dataset=dataset, model=model,
              optimizer=optimizer, loss=loss, metrics=metrics, early_stopping=early_stopping, model_saver=model_saver,
