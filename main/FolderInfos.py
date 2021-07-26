@@ -63,7 +63,7 @@ class FolderInfos(BaseClass):
                 if test_without_data is False and with_id is None:
                     os.mkdir(FolderInfos.base_folder)
                 break
-            except Exception as e:
+            except FileExistsError as e:
                 print(e)
                 print("waiting..... folder name already taken")
                 time.sleep(4)
