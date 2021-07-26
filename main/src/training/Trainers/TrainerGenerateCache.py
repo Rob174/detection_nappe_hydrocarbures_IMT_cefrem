@@ -6,7 +6,7 @@ import json
 import h5py
 from rich.progress import Progress, BarColumn, TextColumn, TimeElapsedColumn, TimeRemainingColumn
 
-from main.FolderInfos import FolderInfos
+from main.FolderInfos import FolderInfos as FI
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -34,10 +34,17 @@ class Trainer0(BaseClass):
     def __call__(self):
         return self.call()
 
-    def call(self):
-        """Save the input and outputs with metadata"""
-        with h5py.File(FolderInfos.input_data_folder + "test_cache_image.hdf5", "w") as cache_images:
-            with h5py.File(FolderInfos.input_data_folder + "test_cache_annotations.hdf5", "w") as cache_annotations:
+    def call(self,name: str):
+        """Save the input and outputs with metadata
+
+        Args:
+            name: str, identifier of the cache
+
+        Returns:
+
+        """
+        with h5py.File(FI.input_data_folder + name+"_image.hdf5", "w") as cache_images:
+            with h5py.File(FI.input_data_folder + name+"_annotations.hdf5", "w") as cache_annotations:
                 dico_info = {}
 
                 class Wrapper:
@@ -53,10 +60,10 @@ class Trainer0(BaseClass):
                     cache_annotations.create_dataset(str(i), shape=output.shape, dtype='i', data=output)
                     if i % 1000 == 0:
                         print(i,end="\r")
-                        with open(FolderInfos.input_data_folder + "test_cache_img_infos.json", "w") as fp:
+                        with open(FI.input_data_folder + name + "_img_infos.json", "w") as fp:
                             json.dump(dico_info, fp)
 
-        with open(FolderInfos.input_data_folder + "test_cache_img_infos.json", "w") as fp:
+        with open(FI.input_data_folder + name + "_img_infos.json", "w") as fp:
             json.dump(dico_info, fp)
 
         self.saver(self.dataset)

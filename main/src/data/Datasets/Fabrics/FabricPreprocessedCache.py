@@ -8,7 +8,7 @@
 import json
 from typing import Tuple, Dict
 
-from main.FolderInfos import FolderInfos
+from main.FolderInfos import FolderInfos as FI
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.Datasets.PointDataset import PointDataset
@@ -28,8 +28,8 @@ class FabricPreprocessedCache:
                                 1: "seep",
                                 2: "spill",
                             })
-        images = ImageDataset(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5",mapping=mapping)
-        annotations = PointDataset(FolderInfos.input_data_folder+"images_preprocessed_points.pkl",mapping=mapping)
-        with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", "r") as fp:
+        images = ImageDataset(f"{FI.input_data_folder+FI.separator}preprocessed_cache{FI.separator}images_preprocessed.hdf5",mapping=mapping)
+        annotations = PointDataset(FI.input_data_folder+FI.separator+"preprocessed_cache"+FI.separator+"images_preprocessed_points.pkl",mapping=mapping)
+        with open(f"{FI.input_data_folder}preprocessed_cache{FI.separator}images_informations_preprocessed.json", "r") as fp:
             informations = json.load(fp)
         return images,annotations,informations
