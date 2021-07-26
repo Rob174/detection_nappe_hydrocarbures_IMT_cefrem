@@ -3,7 +3,6 @@
 import subprocess
 import sys
 
-from main.src.parsers.ParserGenerateFilteredCache import ParserGenerateFilteredCache
 
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem")
 sys.path.append(r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\main")
@@ -13,6 +12,8 @@ sys.path.append(r"C:\Users\robin\Documents\projets")
 from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.training.early_stopping.EarlyStopping import EarlyStopping
 from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
+from main.src.data.Standardizer.NoStandardizer import NoStandardizer
+from main.src.parsers.ParserGenerateFilteredCache import ParserGenerateFilteredCache
 
 # from main.src.training.Trainers.TrainerGenerateCache import TrainerGenerateCache
 from main.src.training.Trainers.TrainerGenerateCache import TrainerGenerateCache
@@ -68,9 +69,12 @@ if __name__ == "__main__":
     model_saver = ModelSaver1(loss, loss.attr_loss)
     early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
     saver.save()
-
+    try:
+        standardizer = dataset.attr_dataset.attr_standardizer
+    except AttributeError:
+        standardizer = NoStandardizer()
     rgb_overlay = RGB_Overlay2(
-        standardizer=dataset.attr_dataset.attr_standardizer
+        standardizer=standardizer
     )
     print("start")
     TrainerGenerateCache(
