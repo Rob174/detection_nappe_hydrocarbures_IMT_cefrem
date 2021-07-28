@@ -159,6 +159,7 @@ class ClassificationGeneratorPatch(BaseClass):
                     image_patch = np.stack((image_patch,) * 3, axis=0)
                     yield image_patch, classification, transformation_matrix, item
 
+
     def get_patch(self, image: np.ndarray, annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int, int],
                   standardizer: AbstractStandardizer, transformation_matrix: Optional[np.ndarray] = None
                   ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:

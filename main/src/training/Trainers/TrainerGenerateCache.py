@@ -59,6 +59,7 @@ class TrainerGenerateCache(BaseClass):
                         print(i, end="\r")
                         with open(FI.input_data_folder + name + "_img_infos.json", "w") as fp:
                             json.dump(dico_info, fp)
+                self.dataset.attr_dataset.attr_image_dataset.close()
 
         with open(FI.input_data_folder + name + "_img_infos.json", "w") as fp:
             json.dump(dico_info, fp)
