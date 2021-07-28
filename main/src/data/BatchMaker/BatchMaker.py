@@ -23,4 +23,5 @@ class BatchMaker(BaseClass):
                         stacked_return.append(list)
                     else:
                         raise TypeError(f"Unsupported type of data yielded {type(list[0])}")
+                to_stack = [[] for _ in range(self.num_elements_generated)]
                 yield stacked_return
