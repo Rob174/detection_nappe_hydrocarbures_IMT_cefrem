@@ -2,18 +2,21 @@ from abc import ABC, abstractmethod
 
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn, TaskID
 
-from main.src.param_savers.BaseClass import BaseClass
+from main.src.training.AbstractCallback import AbstractCallback
+from main.src.training.IterationManager import IterationManager
+from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 
 
-class AbstractProgressBar( ABC):
+class AbstractProgressBar(ABC,AbstractCallback):
     """Base class to build a progressbar"""
-    def __init__(self):
+
+    def __init__(self, iteration_manager: IterationManager, loss: AbstractLoss):
         self.columns = [
             TextColumn("{task.fields[name]}", justify="right"),
             BarColumn(bar_width=None),
             "[progress.percentage]{task.percentage:>3.1f}%",
             "•",
-            TextColumn("[bold blue]status: {task.fields[status]}", justify="right"),
+            TextColumn("[bold blue]status_patience: {task.fields[status_patience]}", justify="right"),
             "•",
             TextColumn("[bold blue]last_loss: {task.fields[loss]:.4e}", justify="right"),
             "•",
@@ -21,6 +24,8 @@ class AbstractProgressBar( ABC):
             "•",
             TimeRemainingColumn()
         ]
+        self.iteration_manager = iteration_manager
+        self.loss: AbstractLoss = loss
 
     @property
     def progress_bar_iterations(self) -> TaskID:

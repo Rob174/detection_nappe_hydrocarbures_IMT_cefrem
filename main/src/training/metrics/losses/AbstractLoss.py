@@ -41,3 +41,5 @@ class AbstractLoss(ABC,AbstractMetric,AbstractCallback):
     @property
     def name(self):
         return self.attr_name
+    def get_last_tr_loss(self):
+        return self.attr_values[EnumDataset.Train][-1]

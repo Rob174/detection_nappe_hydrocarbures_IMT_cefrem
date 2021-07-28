@@ -35,15 +35,15 @@ class Trainer0(BaseClass,ObservableTrainer):
         debug: str enum ("true" or "false") if "true", save prediction and annotation during training process. ⚠️ can slow down the training process
     """
 
-    def __init__(self, batch_size, num_epochs, tr_prct,
+    def __init__(self,
+                 num_epochs,
                  dataset: DatasetFactory,
                  model: ModelFactory,
                  loss: AbstractLoss,
                  iteration_manager: IterationManager,
                  callbacks: List[AbstractCallback],
-                 early_stopping: AbstractEarlyStopping,
-                 eval_step: int,
-                 debug: str="false"):
+                 early_stopping: AbstractEarlyStopping
+                 ):
         """
 
         Args:
@@ -59,27 +59,22 @@ class Trainer0(BaseClass,ObservableTrainer):
             debug: "false" or "true"  to store the predictions and the true values for the model in the json file
         """
         super(Trainer0, self).__init__(callbacks)
+        self.attr_progress = ProgressBarFactory.create(self.attr_dataset.len("tr"),iteration_manager)
+        callbacks.append(self.attr_progress)
         self.attr_callbacks: List[AbstractCallback] = callbacks
-        self.attr_debug = debug
-        if debug == "true":
-            self.attr_tr_vals_true = []
-            self.attr_tr_vals_pred = []
+
         self.attr_iteration_manager = iteration_manager
 
         self.attr_dataset = dataset
         self.attr_loss: AbstractLoss = loss
-        self.attr_early_stopping: AbstractEarlyStopping = early_stopping
-        self.attr_progress = ProgressBarFactory(self.attr_dataset.len("tr"), num_epochs=num_epochs)
+        self.early_stopping: AbstractEarlyStopping = early_stopping
         self.attr_model = model
 
         # split the datasets into train and validation
-        [dataset_tr, dataset_valid] = trvalidsplit(dataset)
-        # create the dataloader classes to automatically generate the samples
-        self.dataset_tr = dataset_tr  # there will be a total of 2 * num_workers samples prefetched across all workers
-        self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
-
+        [self.dataset_tr, self.dataset_valid] = trvalidsplit(dataset)
         self.attr_global_name = "trainer"
-        self.saver(self).save()
+
+        assert isinstance(self.attr_callbacks[0],IterationManager), "First callback must be IterationManger"
 
     def __call__(self):
         return self.call()
@@ -97,9 +92,6 @@ class Trainer0(BaseClass,ObservableTrainer):
 
         prediction_npy: np.ndarray = prediction_gpu.cpu().detach().numpy()
         self.on_train_end(prediction_npy, output_npy)
-
-        # self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
-        #                                  attr_it_tr=attr_it_tr, img_processed=i,epoch=epoch)
     def valid(self,input_npy, output_npy, transformation_matrix, item,device):
         self.attr_model.model.eval()
         with torch.no_grad():
@@ -109,9 +101,6 @@ class Trainer0(BaseClass,ObservableTrainer):
             prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
             self.on_valid_start(prediction_npy, output_npy)
             self.on_valid_end(prediction_npy, output_npy)
-
-            # self.attr_loss(prediction, output_gpu, prediction_npy,output_npy, EnumDataset.Valid)
-        # self.attr_metrics(prediction_npy, output_npy, EnumDataset.Valid)
     def call(self):
         """Train the attr_model"""
         with self.attr_progress:
@@ -132,14 +121,8 @@ class Trainer0(BaseClass,ObservableTrainer):
                             dataset_valid_iter = iter(self.dataset_valid)
                             input_npy, output_npy, transformation_matrix, item = next(dataset_valid_iter)
                         it_val += 1
-                        self.attr_iteration_manager.on_valid_start(epoch, it_val)
                         self.valid(input_npy,output_npy,transformation_matrix,item,device)
-                        self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
-                self.on_epoch_end(output_npy,prediction_npy,epoch,i)
-                self.attr_progress.end_epoch(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], epoch=epoch, img_processed=i)
-                self.attr_model_saver.save_model(self.attr_model, epoch, i)
-                self.saver(self).save()
-                if self.attr_early_stopping.stop_training():
+                self.on_epoch_end()
+                if self.early_stopping.stop_training():
                     break
-            self.rgb_overlay(model=self.attr_model.model,
-                             device = device)
+            self.on_end()

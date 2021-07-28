@@ -2,13 +2,15 @@
     if an object has an attr_ attribute and this attribute is a class inherited from the BaseClass, the saver will also scan attributes in this class"""
 
 import json
+from typing import Optional
 
 from main.FolderInfos import FolderInfos
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.param_savers.BaseClass import BaseClass
+from main.src.training.AbstractCallback import AbstractCallback
 
 
-class Saver0:
+class Saver0(AbstractCallback):
     """Object used to automatically save attributes of classes beginning by attr_... recursively:
     if an object has an attr_ attribute and this attribute is a class inherited from the BaseClass, the saver will also scan attributes in this class
 
@@ -16,13 +18,17 @@ class Saver0:
         outpath: str, outpath of the json file
     """
 
-    def __init__(self, outpath):
+    def __init__(self, outpath, target: Optional = None):
         """
 
 
         """
+        super().__init__()
         self.outpath = outpath
         self.data = {}
+        self.target = target
+    def set_target(self,target):
+        self.target = target
 
     def recursive_dict(self, object):
         """Function scanning an attribute. if this is a class inheriting from BaseClass,
@@ -86,21 +92,9 @@ class Saver0:
         """Save data to the json file specified in the constructor"""
         with open(self.outpath, "w") as fp:
             json.dump(self.data, fp, indent=4)
+    def on_valid_end(self, prediction_batch, true_batch):
+        self.call(self.target)
 
+    def on_epoch_end(self, prediction_batch, true_batch):
+        self.call(self.target)
 
-if __name__ == "__main__":
-    class Test(BaseClass):
-        def __init__(self, a, b, c):
-            self.attr_a = a
-            self.attr_b = b
-            self.c = c
-
-
-    t = Test(1, Test(4, 5, 6), 3)
-    s = Saver0("")(t)
-    print(s)
-
-    FolderInfos.init(test_without_data=False)
-    dataset_factory = DatasetFactory(dataset_name="sentinel1", usage_type="Generators", patch_creator="fixed_px",
-                                     patch_padding="no", grid_size=1000, input_size=256)
-    print(Saver0("")(dataset_factory))

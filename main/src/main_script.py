@@ -62,6 +62,11 @@ if __name__ == "__main__":
                              valid_batch_size=arguments.batch_size * arguments.eval_step
                              )
     saver["date"] = FolderInfos.id
+    iteration_manager = IterationManager(
+        valid_batch_size=arguments.batch_size * arguments.eval_step,
+        train_batch_size=arguments.batch_size,
+        num_epochs=arguments.num_epochs
+    )
 
     num_classes = len(arguments.classes) if arguments.attr_dataset != EnumLabelModifier.LabelModifier2 else 1
     model = ModelFactory(model_name=arguments.attr_model, num_classes=num_classes, freeze=arguments.freeze)
@@ -71,8 +76,8 @@ if __name__ == "__main__":
                               optimizer=optimizer)
     metrics = MetricsFactory.create("accuracy_classification-0.25", "accuracy_classification-0.1", "mae",
                                     "accuracy_threshold-0.5")
-    model_saver = ModelSaver1(loss)
-    early_stopping = EarlyStopping(loss, name_metric_chosen=loss.attr_loss, patience=5)
+    model_saver = ModelSaver1(loss,model,iteration_manager)
+    early_stopping = EarlyStopping(loss, patience=5)
     saver.save()
     try:
         standardizer = dataset.attr_dataset.attr_standardizer
@@ -81,25 +86,18 @@ if __name__ == "__main__":
     rgb_overlay = RGB_Overlay2(
         standardizer=standardizer
     )
-    iteration_manager = IterationManager(
-        valid_batch_size=arguments.batch_size * arguments.eval_step,
-        train_batch_size=arguments.batch_size,
-        num_epochs=arguments.num_epochs
-    )
 
     confusion_matrix = ConfusionMatrixCallback(dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
-    print("start")
-    Trainer0(
-        batch_size=arguments.batch_size,
+    trainer = Trainer0(
         num_epochs=arguments.num_epochs,
-        tr_prct=0.7,
         dataset=dataset,
         model=model,
         loss=loss,
         early_stopping=early_stopping,
-        eval_step=arguments.eval_step,
-        debug=arguments.debug,
-        callbacks=[iteration_manager,loss,metrics,saver,model_saver,early_stopping,confusion_matrix],
+        callbacks=[iteration_manager,loss,metrics,saver,model_saver,early_stopping,rgb_overlay,confusion_matrix],
         iteration_manager=iteration_manager
-    )()
+    )
+    saver.set_target(trainer)
+    print("start")
+    trainer()
     print("end")

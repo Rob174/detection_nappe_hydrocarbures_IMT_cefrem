@@ -33,3 +33,7 @@ class ObservableTrainer:
     def on_epoch_end(self):
         for callback in self.attr_callbacks:
             callback.on_epoch_end()
+
+    def on_end(self):
+        for callback in self.attr_callbacks:
+            callback.on_end()

@@ -29,9 +29,12 @@ class AbstractCallback(ABC):
         """Called after a valid batch has been tested on the model and metrics has been calculated"""
 
     @abstractmethod
-    def on_epoch_end(self, prediction_batch, true_batch):
+    def on_epoch_end(self):
         """called when an epoch ends"""
 
     @abstractmethod
     def on_epoch_start(self, epoch):
+        """called when an epoch ends"""
+    @abstractmethod
+    def on_end(self):
         """called when an epoch ends"""
