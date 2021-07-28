@@ -29,7 +29,7 @@ class ImageDataset(BaseClass, AbstractDataset):
 
     def __iter__(self):
         """Allow to use for loop on this object"""
-        raise NotImplementedError
+        return (k for k in self.keys())
 
     def keys(self):
         with File(self.attr_path, "r") as file:
