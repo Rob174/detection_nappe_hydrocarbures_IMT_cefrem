@@ -2,22 +2,24 @@
 
 import numpy as np
 
-from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
+from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class LabelModifier0(AbstractLabelModifier,BaseClass):
+class LabelModifier0(AbstractLabelModifier, BaseClass):
     """Modify the source annotation image (2d array). Allow to transform the 2d array into a vector of probabilities of presence of each class
 
     Args:
         class_mapping: TwoWayDict, map index of class to its name
     """
-    def __init__(self,class_mapping: TwoWayDict):
+
+    def __init__(self, class_mapping: TwoWayDict):
         super().__init__()
 
         self.attr_name = self.__class__.__name__
         self.attr_class_mapping = class_mapping
+
     def get_final_class_mapping(self):
         return self.attr_class_mapping
 

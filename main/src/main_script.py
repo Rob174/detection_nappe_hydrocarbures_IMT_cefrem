@@ -30,6 +30,8 @@ from main.src.param_savers.saver0 import Saver0
 from main.src.enums import EnumLabelModifier
 from main.src.enums import EnumGitCheck
 
+import torch
+
 if __name__ == "__main__":
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + "parameters.json")
@@ -78,18 +80,18 @@ if __name__ == "__main__":
                                     "accuracy_threshold-0.5")
     model_saver = ModelSaver1(loss,model,iteration_manager)
     early_stopping = EarlyStopping(loss, patience=5)
-    saver.save()
     try:
         standardizer = dataset.attr_dataset.attr_standardizer
     except AttributeError:
         standardizer = NoStandardizer()
     rgb_overlay = RGB_Overlay2(
-        standardizer=standardizer
+        standardizer=standardizer,
+        model=model,
+        device=torch.device("cuda")
     )
 
     confusion_matrix = ConfusionMatrixCallback(dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
     trainer = Trainer0(
-        num_epochs=arguments.num_epochs,
         dataset=dataset,
         model=model,
         loss=loss,
@@ -101,3 +103,4 @@ if __name__ == "__main__":
     print("start")
     trainer()
     print("end")
+import torch

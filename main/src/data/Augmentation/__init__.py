@@ -1,5 +1,3 @@
-
-
 """
 The goal of this module is to manage and apply augmentations.
 

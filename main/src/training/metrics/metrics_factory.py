@@ -1,8 +1,3 @@
-import re
-from enum import Enum
-from functools import partial
-
-import numpy as np
 from typing import List
 
 from main.src.training.metrics.metrics.AbstractMetric import AbstractMetric
@@ -26,6 +21,7 @@ class MetricsFactory:
         ...                "mae","accuracy_classification-0.95")
         ...                # this is the way to provide the iterable of metrics
     """
+
     @staticmethod
     def create(*metrics_names: str) -> List[AbstractMetric]:
         available_metrics = [

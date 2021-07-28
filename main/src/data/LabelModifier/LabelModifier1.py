@@ -5,9 +5,9 @@ from typing import Tuple
 
 import numpy as np
 
-from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
+from main.src.data.TwoWayDict import TwoWayDict, Way
 from main.src.enums import EnumClasses
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -32,11 +32,13 @@ class LabelModifier1(AbstractLabelModifier, BaseClass):
             tmp_mapping[original_class_mapping[name.value], Way.ORIGINAL_WAY] = name.value, i
         self.attr_class_mapping = tmp_mapping
         self.initial_label = None
+
     def get_final_class_mapping(self):
         dico = TwoWayDict({})
-        for original_id,(name,dest_id) in self.attr_class_mapping.items(dico_chosen=Way.ORIGINAL_WAY):
+        for original_id, (name, dest_id) in self.attr_class_mapping.items(dico_chosen=Way.ORIGINAL_WAY):
             dico[dest_id, Way.ORIGINAL_WAY] = name
         return dico
+
     def make_classification_label(self, annotation: np.ndarray) -> np.ndarray:
         """Creates the Generators label based on the annotation patch image
 

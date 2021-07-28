@@ -7,7 +7,8 @@ from main.src.param_savers.BaseClass import BaseClass
 class MarginCheck(BaseClass):
     """Class to check if a patch is in the margin of the image based on the number of pixel to exactly 0
     """
-    def __init__(self,threshold: int = 1000):
+
+    def __init__(self, threshold: int = 1000):
         """
 
         Args:
@@ -15,7 +16,7 @@ class MarginCheck(BaseClass):
         """
         self.attr_threshold = threshold
 
-    def check_reject(self,patch: np.ndarray):
+    def check_reject(self, patch: np.ndarray):
         """Check if a patch is in the margin
 
         Args:

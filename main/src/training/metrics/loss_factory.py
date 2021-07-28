@@ -8,13 +8,14 @@ from main.src.training.metrics.losses.BinaryCrossEntropy import BinaryCrossEntro
 from main.src.training.metrics.losses.MSE import MSE
 from main.src.training.metrics.losses.MultiClassNonExclusivCrossEntropy import MultiClassNonExclusivCrossEntropy
 from main.src.training.optimizers.optimizers.AbstractOptimizer import AbstractOptimizer
-from main.src.training.optimizers.optimizers_factory import OptimizersFactory
 
 
 class LossFactory(BaseClass):
     """Class managing possible losses to objects"""
+
     @staticmethod
-    def create(optimizer: AbstractOptimizer, usage_type: EnumUsage, preference: Optional[EnumLoss] = None) -> AbstractLoss:
+    def create(optimizer: AbstractOptimizer, usage_type: EnumUsage,
+               preference: Optional[EnumLoss] = None) -> AbstractLoss:
         """Create the loss required by the user
         Args:
             optimizer: optimizer to use
@@ -30,7 +31,7 @@ class LossFactory(BaseClass):
                 EnumLoss.BinaryCrossentropy: BinaryCrossEntropy(optimizer),
                 EnumLoss.MSE: MSE(optimizer)
             },
-            EnumUsage.Segmentation:{}
+            EnumUsage.Segmentation: {}
         }
         if usage_type == EnumUsage.Classification:
             if preference is None:

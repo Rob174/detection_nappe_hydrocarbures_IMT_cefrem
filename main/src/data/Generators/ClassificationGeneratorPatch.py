@@ -1,14 +1,10 @@
 """Class that adapt the inputs from the hdf5 file (input image, label image), and manage other objects to create patches and
 filter them on the fly (slow if many patches to exclude)"""
-import json
 import random
-from typing import Optional, List, Union, Dict
-from typing import Tuple
+from typing import Optional, List, Union, Dict, Tuple
 
 import numpy as np
-from h5py import File
 
-from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.BatchMaker.BatchMaker import BatchMaker
@@ -16,22 +12,12 @@ from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricPreprocessedCache import FabricPreprocessedCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.LabelModifier.LabelModifierFactory import LabelModifierFactory
-from main.src.data.LabelModifier.NoLabelModifier import NoLabelModifier
-from main.src.data.TwoWayDict import TwoWayDict
-from main.src.enums import EnumAugmenter
+from main.src.data.MarginCheck import MarginCheck
+from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.balance_classes.BalanceClassesNoOther import BalanceClassesNoOther
 from main.src.data.balance_classes.BalanceClassesOnlyOther import BalanceClassesOnlyOther
-from main.src.enums import EnumBalance
 from main.src.data.balance_classes.BalanceNoBalance import BalanceNoBalance
-from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
-from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
-from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
-from main.src.enums import EnumLabelModifier
-from main.src.enums import EnumClasses
-from main.src.data.MarginCheck import MarginCheck
-from main.src.data.Datasets import PointDataset
-from main.src.enums import EnumDataset
+from main.src.enums import EnumAugmenter, EnumBalance, EnumLabelModifier, EnumClasses, EnumDataset
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -49,31 +35,32 @@ class ClassificationGeneratorPatch(BaseClass):
         augmentation_factor: the number of replicas of the original attr_dataset to do
         label_modifier: EnumLabelModifier
     """
+
     def __init__(self, input_size: int = None,
                  limit_num_images: int = None, balance: EnumBalance = EnumBalance.NoBalance,
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
-                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000,
+                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin: int = 1000,
                  tr_batch_size: int = 10, valid_batch_size: int = 100):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_global_name = "attr_dataset"
-        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricPreprocessedCache()()
+        self.attr_image_dataset, self.attr_label_dataset, self.dico_infos = FabricPreprocessedCache()()
         self.attr_grid_size_px = grid_size_px
         self.attr_limit_num_images = limit_num_images
         self.attr_check_margin_reject = MarginCheck(threshold=threshold_margin)
         self.attr_augmentation_factor = augmentation_factor
         self.datasets = {
-            "tr":list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * tr_percent)],
-            "valid":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):],
-            "all":list(self.attr_image_dataset.keys())
+            "tr": list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * tr_percent)],
+            "valid": list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):],
+            "all": list(self.attr_image_dataset.keys())
         }
-        self.attr_tr_batch_maker = BatchMaker(batch_size=tr_batch_size,num_elems_gen=4)
-        self.attr_valid_batch_maker = BatchMaker(batch_size=valid_batch_size,num_elems_gen=4)
+        self.attr_tr_batch_maker = BatchMaker(batch_size=tr_batch_size, num_elems_gen=4)
+        self.attr_valid_batch_maker = BatchMaker(batch_size=valid_batch_size, num_elems_gen=4)
         self.batch_makers = {
-            "tr":self.attr_tr_batch_maker,
-            "valid":self.attr_valid_batch_maker,
-            "all":BatchMaker(batch_size=1,num_elems_gen=4)
+            "tr": self.attr_tr_batch_maker,
+            "valid": self.attr_valid_batch_maker,
+            "all": BatchMaker(batch_size=1, num_elems_gen=4)
         }
         self.attr_global_name = "attr_dataset"
         self.attr_label_modifier = LabelModifierFactory().create(label_modifier, self.attr_label_dataset.attr_mapping,
@@ -92,21 +79,22 @@ class ClassificationGeneratorPatch(BaseClass):
             if augmenter_img == EnumAugmenter.Augmenter1:
                 self.attr_augmenter = Augmenter1(allowed_transformations=[augmentations_img],
                                                  patch_size_before_final_resize=
-                                                     self.attr_grid_size_px,
+                                                 self.attr_grid_size_px,
                                                  patch_size_final_resize=input_size
                                                  )
 
             else:
                 self.attr_augmenter = NoAugmenter(allowed_transformations=[augmentations_img],
                                                   patch_size_before_final_resize=
-                                                     self.attr_grid_size_px,
+                                                  self.attr_grid_size_px,
                                                   patch_size_final_resize=input_size
                                                   )
         else:
             raise NotImplementedError(f"{augmenter_img} is not implemented")
         # Cache to store between epochs rejected images if we have no image augmenter
         self.cache_img_id_rejected = []
-    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+
+    def set_datasets(self, image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
         """Change the origin of the patches
 
         Args:
@@ -119,8 +107,9 @@ class ClassificationGeneratorPatch(BaseClass):
         self.attr_image_dataset = image_dataset
         self.attr_label_dataset = label_dataset
         self.dico_infos = dico_infos
-    def __iter__(self, dataset: Union[EnumDataset,List[str]] = EnumDataset.Train):
-        if isinstance(dataset,list):
+
+    def __iter__(self, dataset: Union[EnumDataset, List[str]] = EnumDataset.Train):
+        if isinstance(dataset, list):
             keys = dataset
             batch_maker = self.batch_makers["all"]
         else:
@@ -146,7 +135,8 @@ class ClassificationGeneratorPatch(BaseClass):
                 image = self.attr_image_dataset.get(item)
                 polygons = self.attr_label_dataset.get(item)
                 partial_transformation_matrix = self.attr_augmenter.choose_new_augmentations(image)
-                for patch_upper_left_corner_coords in np.random.permutation(self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
+                for patch_upper_left_corner_coords in np.random.permutation(
+                        self.attr_augmenter.get_grid(image.shape, partial_transformation_matrix)):
                     annotations_patch, transformation_matrix = self.attr_augmenter.transform_label(
                         data=polygons,
                         partial_transformation_matrix=partial_transformation_matrix,
@@ -166,12 +156,12 @@ class ClassificationGeneratorPatch(BaseClass):
                     if reject is True:
                         continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
-                    image_patch = np.stack((image_patch,)*3, axis=0)
+                    image_patch = np.stack((image_patch,) * 3, axis=0)
                     yield image_patch, classification, transformation_matrix, item
 
-    def get_patch(self,image: np.ndarray,annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int,int],
+    def get_patch(self, image: np.ndarray, annotation: np.ndarray, patch_upper_left_corner_coords: Tuple[int, int],
                   standardizer: AbstractStandardizer, transformation_matrix: Optional[np.ndarray] = None
-                  ) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
+                  ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Generate image patch and corresponding annotation for the given parameters
 
         Args:
@@ -200,11 +190,13 @@ class ClassificationGeneratorPatch(BaseClass):
             patch_upper_left_corner_coords=patch_upper_left_corner_coords
         )
         classification = self.attr_label_modifier.make_classification_label(annotation_patch)
-        image_patch = np.stack((image_patch,)*3, axis=0)
+        image_patch = np.stack((image_patch,) * 3, axis=0)
         image_patch = standardizer.standardize(image_patch)
-        return image_patch,classification,transformation_matrix
+        return image_patch, classification, transformation_matrix
+
     def __len__(self):
         return None
+
     def set_standardizer(self, standardizer: AbstractStandardizer):
         self.attr_standardizer = standardizer
 

@@ -1,7 +1,6 @@
 """BaseClass to build a Augmentation that returns the matrix of transformation"""
 
-from abc import ABC, abstractmethod
-from typing import Tuple, Dict, Any, Callable
+from abc import ABC
 
 import numpy as np
 

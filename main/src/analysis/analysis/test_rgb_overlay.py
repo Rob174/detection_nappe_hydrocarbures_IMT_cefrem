@@ -1,12 +1,12 @@
-from main.src.models.ModelFactory import ModelFactory
-from main.src.enums import *
+import torch
+
+from main.FolderInfos import FolderInfos
 from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
-import torch
-from main.FolderInfos import FolderInfos
+from main.src.enums import *
+from main.src.models.ModelFactory import ModelFactory
 
 if __name__ == '__main__':
-
     id = "2021-07-22_16h46min16s"
     path_pt_file = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-22_16h46min16s_\2021-07-22_16h46min16s__model_epoch-9_it-15923.pt"
     FolderInfos.init(with_id=id)

@@ -7,7 +7,7 @@ from main.src.training.IterationManager import IterationManager
 from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 
 
-class AbstractProgressBar(ABC,AbstractCallback):
+class AbstractProgressBar(ABC, AbstractCallback):
     """Base class to build a progressbar"""
 
     def __init__(self, iteration_manager: IterationManager, loss: AbstractLoss):

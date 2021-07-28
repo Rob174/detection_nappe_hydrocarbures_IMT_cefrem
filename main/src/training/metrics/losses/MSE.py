@@ -1,7 +1,8 @@
+import numpy as np
+import torch
+
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
-import torch
-import numpy as np
 
 
 class MSE(BaseClass, AbstractLoss):
@@ -9,4 +10,4 @@ class MSE(BaseClass, AbstractLoss):
         return torch.nn.MSELoss()
 
     def npy_compute(self, true_batch, pred_batch):
-        return np.mean(np.power(pred_batch-true_batch,2))
+        return np.mean(np.power(pred_batch - true_batch, 2))

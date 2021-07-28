@@ -15,6 +15,3 @@ Usage:
 >>> modifier.make_classification_label(annotation_2d)
 np.ndarray([proba_seep,proba_spill])
 """
-
-
-

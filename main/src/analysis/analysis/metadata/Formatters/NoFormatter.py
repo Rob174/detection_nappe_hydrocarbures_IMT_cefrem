@@ -1,3 +1,3 @@
 class NoFormatter:
-    def format(self,value):
+    def format(self, value):
         return value

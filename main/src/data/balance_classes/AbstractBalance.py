@@ -5,6 +5,7 @@ from abc import ABC
 
 class AbstractBalance(ABC):
     """Base class to build a balancer """
+
     def __init__(self, *args, **kwargs):
         pass
 

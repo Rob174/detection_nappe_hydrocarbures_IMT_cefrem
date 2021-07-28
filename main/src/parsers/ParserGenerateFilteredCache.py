@@ -1,6 +1,5 @@
 import argparse
 
-
 from main.src.enums import *
 from main.src.param_savers.BaseClass import BaseClass
 
@@ -28,7 +27,7 @@ class ParserGenerateFilteredCache(BaseClass):
                 "default": EnumGitCheck.GITCHECK, "type": EnumGitCheck,
                 "help": "Indicate if you want to check if all python files have been commited before launching the training process true to disable the security",
                 "choices": list(EnumGitCheck)
-             },
+            },
             # Dataset
             '-attr_dataset': {
                 "dest": 'attr_dataset',
@@ -89,7 +88,7 @@ class ParserGenerateFilteredCache(BaseClass):
                 "help": "Indicate the policy to balance classes",
                 "choices": list(EnumBalance)
             },
-            '-classAdder':{
+            '-classAdder': {
                 "dest": 'other_class_adder',
                 "default": EnumClassPatchAdder.NoClassPatchAdder,
                 "type": EnumClassPatchAdder,

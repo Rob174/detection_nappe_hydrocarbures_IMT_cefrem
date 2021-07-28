@@ -7,6 +7,7 @@ class EnumGitCheck(str, Enum):
     GITCHECK = "gitcheck"
     NOGITCHECK = "nogitcheck"
 
+
 class EnumLoss(str, Enum):
     MulticlassnonExlusivCrossentropy = "multiclassnonexlusivcrossentropy"
     BinaryCrossentropy = "binarycrossentropy"
@@ -16,6 +17,7 @@ class EnumLoss(str, Enum):
 class EnumDataset(str, Enum):
     Train = "tr"
     Valid = "valid"
+
 
 class EnumModels(str, Enum):
     Efficientnetv4 = "efficientnetv4"
@@ -35,6 +37,7 @@ class EnumFreeze(str, Enum):
     AllExceptLastDense = "allexceptlastdense"
     NoFreeze = "nofreeze"
 
+
 class EnumAugmenter(str, Enum):
     Augmenter0 = "augmenter0"
     """A step by step augmenter. See [Augmenter0](./Augmenter0.html)"""
@@ -43,6 +46,7 @@ class EnumAugmenter(str, Enum):
     NoAugmenter = "noaugmenter"
     """No augmentation applied"""
 
+
 class EnumBalance(str, Enum):
     BalanceClasses2 = "balanceclasses2"
     """Exclude patches with classes other than the other category"""
@@ -50,6 +54,7 @@ class EnumBalance(str, Enum):
     """Exclude patches with only the other category"""
     NoBalance = "nobalance"
     """Does not filter pataches"""
+
 
 class EnumLabelModifier(str, Enum):
     NoLabelModifier = "nolabelmodifier"
@@ -64,6 +69,7 @@ class EnumClassPatchAdder(str, Enum):
     OtherClassPatchAdder = "other_class_patch_adder"
     NoClassPatchAdder = "no_class_patch_adder"
 
+
 class EnumPatchAlgorithm(str, Enum):
     FixedPx = "fixed_px"
     """create the PatchCreator0 class which generate fixed px size patches. See [patch_creator0](./patch_creator0.html)"""
@@ -72,6 +78,7 @@ class EnumPatchAlgorithm(str, Enum):
 class EnumPatchExcludePolicy(str, Enum):
     MarginMoreThan = "marginmorethan"
     """Choose the option to exclude patches that have more than ... px at 0 in order to exclude patches with margins"""
+
 
 class EnumUsage(str, Enum):
     Classification = "Generators"

@@ -1,35 +1,24 @@
 """Class that takes inputs from the filtered hdf5 file to create a new dataset. Far quicker than the original ClassificationGeneratorCache."""
 
-import json
 import random
 from typing import Tuple, Generator, Optional, Dict
 
 import numpy as np
-from h5py import File
 
-from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierImage import \
     AugmentationApplierImage
 from main.src.data.BatchMaker.BatchMaker import BatchMaker
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricFilteredCache import FabricFilteredCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
-from main.src.data.Datasets.PointDataset import PointDataset
 from main.src.data.GridMaker.GridMaker import GridMaker
-from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
-from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
-from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
 from main.src.data.LabelModifier.LabelModifierFactory import LabelModifierFactory
-from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
-from main.src.data.TwoWayDict import TwoWayDict
-from main.src.data.Generators.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
 from main.src.data.PatchAdder.OtherClassPatchAdder import OtherClassPatchAdder
 from main.src.data.PatchAdder.PatchAdderCallback import PatchAdderCallback
 from main.src.data.Standardizer.StandardizerCacheMixed import StandardizerCacheMixed
 from main.src.data.Standardizer.StandardizerCacheSeepSpill import StandardizerCacheSeepSpill
-from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
-from main.src.enums import EnumClasses
+from main.src.enums import EnumLabelModifier, EnumClassPatchAdder, EnumClasses
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -59,21 +48,23 @@ class ClassificationGeneratorCache(BaseClass):
         self.attr_standardization = True
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
-        self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricFilteredCache()()
+        self.attr_image_dataset, self.attr_label_dataset, self.dico_infos = FabricFilteredCache()()
         self.datasets = {
-            "tr":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * (1-tr_percent)):][:self.attr_limit_num_images],
-            "valid":list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * (1-tr_percent))],
-            "all":list(self.attr_image_dataset.keys())
+            "tr": list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * (1 - tr_percent)):][
+                  :self.attr_limit_num_images],
+            "valid": list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * (1 - tr_percent))],
+            "all": list(self.attr_image_dataset.keys())
         }
         self.attr_global_name = "attr_dataset"
-        self.attr_tr_batch_maker = BatchMaker(batch_size=tr_batch_size,num_elems_gen=4)
-        self.attr_valid_batch_maker = BatchMaker(batch_size=valid_batch_size,num_elems_gen=4)
+        self.attr_tr_batch_maker = BatchMaker(batch_size=tr_batch_size, num_elems_gen=4)
+        self.attr_valid_batch_maker = BatchMaker(batch_size=valid_batch_size, num_elems_gen=4)
         self.batch_makers = {
-            "tr":self.attr_tr_batch_maker,
-            "valid":self.attr_valid_batch_maker,
-            "all":BatchMaker(batch_size=1,num_elems_gen=4)
+            "tr": self.attr_tr_batch_maker,
+            "valid": self.attr_valid_batch_maker,
+            "all": BatchMaker(batch_size=1, num_elems_gen=4)
         }
-        self.attr_label_modifier = LabelModifierFactory().create(label_modifier,self.attr_label_dataset.attr_mapping,classes_to_use)
+        self.attr_label_modifier = LabelModifierFactory().create(label_modifier, self.attr_label_dataset.attr_mapping,
+                                                                 classes_to_use)
 
         if other_class_adder == EnumClassPatchAdder.OtherClassPatchAdder:
             self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
@@ -82,7 +73,8 @@ class ClassificationGeneratorCache(BaseClass):
             self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
         self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
-    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+
+    def set_datasets(self, image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
         """Change the origin of the patches
 
         Args:
@@ -95,8 +87,9 @@ class ClassificationGeneratorCache(BaseClass):
         self.attr_image_dataset = image_dataset
         self.attr_label_dataset = label_dataset
         self.dico_infos = dico_infos
+
     def __iter__(self, dataset="tr"):
-        if isinstance(dataset,list):
+        if isinstance(dataset, list):
             keys = dataset
             batch_maker = self.batch_makers["all"]
         else:
@@ -132,16 +125,18 @@ class ClassificationGeneratorCache(BaseClass):
             transformation_matrix = np.array(self.dico_infos[id]["transformation_matrix"])
             image, annotation = self.process_infos(image, annotation)
             yield image, annotation, transformation_matrix, source_img
+
     def process_infos(self, image, annotation):
         image = self.attr_standardizer.standardize(image)
         image = np.stack((image,) * 3, axis=0)
         annotation = self.attr_label_modifier.make_classification_label(annotation)
         return image, annotation
-    def get_patch(self,image: np.ndarray,annotation: np.ndarray,
+
+    def get_patch(self, image: np.ndarray, annotation: np.ndarray,
                   patch_size_after_resize: int,
-                  patch_upper_left_corner_coords: Tuple[int,int],
+                  patch_upper_left_corner_coords: Tuple[int, int],
                   transformation_matrix: Optional[np.ndarray] = None
-                  ) -> Tuple[np.ndarray,np.ndarray,np.ndarray]:
+                  ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Generate image patch and corresponding annotation for the given parameters
 
         Args:
@@ -170,9 +165,8 @@ class ClassificationGeneratorCache(BaseClass):
             partial_transformation_matrix=transformation_matrix,
             patch_upper_left_corner_coords=patch_upper_left_corner_coords
         )
-        image_patch,classification = self.process_infos(image,annotation)
-        return image_patch,classification,transformation_matrix
-
+        image_patch, classification = self.process_infos(image, annotation)
+        return image_patch, classification, transformation_matrix
 
     def len(self, dataset) -> Optional[int]:
         if dataset == "tr":

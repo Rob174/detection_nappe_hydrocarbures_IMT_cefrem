@@ -1,7 +1,8 @@
 """Class to get the a grid of patches in an image with affine transformations"""
 
-import numpy as np
 from typing import List, Tuple
+
+import numpy as np
 
 from main.src.data.GridMaker.AbstractGridMaker import AbstractGridMaker
 from main.src.param_savers.BaseClass import BaseClass
@@ -16,7 +17,8 @@ class GridMaker(BaseClass, AbstractGridMaker):
     def __init__(self, patch_size_final_resize: int):
         super(GridMaker, self).__init__(patch_size_final_resize)
 
-    def get_grid(self, img_shape: Tuple[int, ...], partial_transformation_matrix: np.ndarray = None) -> List[Tuple[int, int]]:
+    def get_grid(self, img_shape: Tuple[int, ...], partial_transformation_matrix: np.ndarray = None) -> List[
+        Tuple[int, int]]:
         """Allow to create the adapted grid to the transformation as resize and rotation are involved in the process.
 
 

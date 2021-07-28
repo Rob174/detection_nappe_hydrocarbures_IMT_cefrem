@@ -2,14 +2,14 @@
 
 import numpy as np
 
+from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.TwoWayDict import TwoWayDict
-from main.src.data.LabelModifier.AbstractLabelModifier import AbstractLabelModifier
 from main.src.enums import EnumClasses
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class NoLabelModifier(AbstractLabelModifier,BaseClass):
+class NoLabelModifier(AbstractLabelModifier, BaseClass):
     """Class use to have the same interface. Makes no modifications"""
 
     def __init__(self, original_class_mapping: TwoWayDict, *args, **kwargs):

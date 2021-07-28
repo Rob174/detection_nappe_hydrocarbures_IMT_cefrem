@@ -1,8 +1,7 @@
 """Class managing the optimizers"""
-import torch.optim as optim
 
-from main.src.models.ModelFactory import ModelFactory
 from main.src.enums import EnumOptimizer
+from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.optimizers.optimizers.AbstractOptimizer import AbstractOptimizer
 from main.src.training.optimizers.optimizers.Adam import Adam
@@ -21,8 +20,8 @@ class OptimizersFactory(BaseClass):
 
     def create(self, model: ModelFactory, name: EnumOptimizer = EnumOptimizer.Adam, **params) -> AbstractOptimizer:
         if name == EnumOptimizer.Adam:
-            return Adam(model,**params)
+            return Adam(model, **params)
         elif name == EnumOptimizer.SGD:
-            return SGD(model,**params)
+            return SGD(model, **params)
         else:
             raise NotImplementedError(f"{name} has not been implemented")

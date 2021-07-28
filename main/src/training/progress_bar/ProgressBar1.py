@@ -1,4 +1,5 @@
 """Progress bar for a dataset with an unknwon number of samples and a known number of epochs (ClassificationPatch because it filters some unknwon patches)"""
+import numpy as np
 from rich.progress import Progress, TextColumn
 
 from main.src.param_savers.BaseClass import BaseClass
@@ -6,13 +7,11 @@ from main.src.training.IterationManager import IterationManager
 from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 from main.src.training.progress_bar.AbstractProgressBar import AbstractProgressBar
 
-import numpy as np
-
 
 class ProgressBar1(BaseClass, AbstractProgressBar):
     """Progress bar for a dataset with an unknwon number of samples and a known number of epochs (ClassificationPatch because it filters some unknwon patches)"""
 
-    def __init__(self, iteration_manager: IterationManager,loss: AbstractLoss):
+    def __init__(self, iteration_manager: IterationManager, loss: AbstractLoss):
         super(ProgressBar1, self).__init__(iteration_manager, loss)
         self.columns.insert(8, TextColumn("[bold blue]num_processed_img: {task.fields[img_processed]:.4e}",
                                           justify="right"))

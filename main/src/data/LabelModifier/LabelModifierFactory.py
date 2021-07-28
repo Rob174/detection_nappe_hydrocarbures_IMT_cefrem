@@ -8,7 +8,7 @@ from main.src.enums import EnumLabelModifier, EnumClasses
 
 
 class LabelModifierFactory:
-    def create(self,label_modifier: EnumLabelModifier, class_mapping,
+    def create(self, label_modifier: EnumLabelModifier, class_mapping,
                classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill)):
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             self.attr_label_modifier = NoLabelModifier(original_class_mapping=class_mapping)

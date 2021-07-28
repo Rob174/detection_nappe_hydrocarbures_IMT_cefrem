@@ -1,21 +1,16 @@
 """Class managing the attr_dataset creation and access with different type of dataset possible
 """
 
-import json
 from typing import Tuple, Dict, Optional
 
 import torch
 
-from main.FolderInfos import FolderInfos
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.ImageDataset import ImageDataset
-from main.src.enums import EnumAugmenter
-from main.src.enums import EnumBalance
 from main.src.data.Generators.ClassificationGeneratorCache import ClassificationGeneratorCache
 from main.src.data.Generators.ClassificationGeneratorPatch import ClassificationGeneratorPatch
-from main.src.enums import EnumLabelModifier, EnumClassPatchAdder
-from main.src.enums import EnumUsage, EnumClasses
-from main.src.enums import EnumPatchAlgorithm, EnumPatchExcludePolicy
+from main.src.enums import EnumAugmenter, EnumBalance, EnumLabelModifier, EnumClassPatchAdder, EnumUsage, EnumClasses, \
+    EnumPatchExcludePolicy
 from main.src.param_savers.BaseClass import BaseClass
 
 
@@ -43,13 +38,13 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def __init__(self,
                  dataset_name: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  usage_type: EnumUsage = EnumUsage.Classification,
-                 grid_size: int =1000,
-                 input_size: int =1000,
+                 grid_size: int = 1000,
+                 input_size: int = 1000,
                  exclusion_policy=EnumPatchExcludePolicy.MarginMoreThan,
                  exclusion_policy_threshold: int = 1000,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Other, EnumClasses.Seep, EnumClasses.Spill),
                  balance: EnumBalance = EnumBalance.NoBalance,
-                 augmentations_img: str="none",
+                 augmentations_img: str = "none",
                  augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
@@ -62,13 +57,16 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
         self.attr_global_name = "data"
 
         if usage_type == EnumUsage.Classification:
-            if (input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1
-                    and augmentations_img == "combinedRotResizeMir_10_0.25_4"  and
+            if (
+                    input_size == 256 and balance == EnumBalance.BalanceClasses1 and augmenter_img == EnumAugmenter.Augmenter1
+                    and augmentations_img == "combinedRotResizeMir_10_0.25_4" and
                     exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10
                     and grid_size == 1000 and not force_classifpatch or choose_dataset == "cache") and choose_dataset != "patch":
-                self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
+                self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name,
+                                                                 classes_to_use=classes_to_use,
                                                                  other_class_adder=other_class_adder, interval=interval,
-                                                                 tr_batch_size=tr_batch_size,valid_batch_size=valid_batch_size)
+                                                                 tr_batch_size=tr_batch_size,
+                                                                 valid_batch_size=valid_batch_size)
             else:
                 self.attr_dataset = ClassificationGeneratorPatch(input_size=input_size,
                                                                  classes_to_use=classes_to_use,
@@ -96,7 +94,7 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def len(self, dataset):
         return self.attr_dataset.len(dataset)
 
-    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    def set_datasets(self, image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
         """Change the origin of the patches
 
         Args:

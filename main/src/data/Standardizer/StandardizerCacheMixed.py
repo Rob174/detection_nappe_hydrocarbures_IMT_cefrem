@@ -24,13 +24,13 @@ class StandardizerCacheMixed(BaseClass, AbstractStandardizer):
     @property
     def mean(self):
         return ((self.stats_seep_spill.mean / self.stats_other.n) + (
-                    self.stats_other.mean / (self.ratio * self.stats_seep_spill.n))) / \
+                self.stats_other.mean / (self.ratio * self.stats_seep_spill.n))) / \
                self.n * (self.stats_seep_spill.n * self.stats_other.n)
 
     @property
     def std(self):
         return ((self.stats_seep_spill.std / self.stats_other.n) + (
-                    self.stats_other.std / (self.ratio * self.stats_seep_spill.n))) / \
+                self.stats_other.std / (self.ratio * self.stats_seep_spill.n))) / \
                self.n * (self.stats_seep_spill.n * self.stats_other.n)
 
     @property
