@@ -10,6 +10,7 @@ from h5py import File
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationApplierImage import \
     AugmentationApplierImage
+from main.src.data.BatchMaker.BatchMaker import BatchMaker
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricFilteredCache import FabricFilteredCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
@@ -18,6 +19,7 @@ from main.src.data.GridMaker.GridMaker import GridMaker
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
 from main.src.data.LabelModifier.LabelModifier2 import LabelModifier2
+from main.src.data.LabelModifier.LabelModifierFactory import LabelModifierFactory
 from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.data.Generators.ClassificationGeneratorPatch import ClassificationGeneratorPatch
@@ -49,27 +51,29 @@ class ClassificationGeneratorCache(BaseClass):
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
                  tr_percent: float = 0.7, limit_num_images: int = None,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
-                 interval: int = 1):
+                 interval: int = 1,
+                 tr_batch_size: int = 10,
+                 valid_batch_size: int = 100
+                 ):
         print("Using ClassificationGeneratorCache")
         self.attr_standardization = True
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_limit_num_images = limit_num_images
         self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricFilteredCache()()
-        self.tr_keys = list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * tr_percent)]
-        if self.attr_limit_num_images is not None:
-            self.tr_keys = self.tr_keys[:self.attr_limit_num_images]
-        self.valid_keys = list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):]
+        self.datasets = {
+            "tr":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * (1-tr_percent)):][:self.attr_limit_num_images],
+            "valid":list(self.attr_image_dataset.keys())[:int(len(self.attr_image_dataset) * (1-tr_percent))],
+            "all":list(self.attr_image_dataset.keys())
+        }
         self.attr_global_name = "attr_dataset"
-        if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
-        elif label_modifier == EnumLabelModifier.LabelModifier1:
-            self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
-        elif label_modifier == EnumLabelModifier.LabelModifier2:
-            self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
-        else:
-            raise NotImplementedError(f"{label_modifier} is not implemented")
+        self.attr_tr_batch_maker = BatchMaker(batch_size=tr_batch_size,num_elems_gen=4)
+        self.attr_valid_batch_maker = BatchMaker(batch_size=valid_batch_size,num_elems_gen=4)
+        self.batch_makers = {
+            "tr":self.attr_tr_batch_maker,
+            "valid":self.attr_valid_batch_maker,
+            "all":BatchMaker(batch_size=1,num_elems_gen=4)
+        }
+        self.attr_label_modifier = LabelModifierFactory().create(label_modifier,self.attr_label_dataset.attr_mapping,classes_to_use)
 
         if other_class_adder == EnumClassPatchAdder.OtherClassPatchAdder:
             self.attr_other_class_adder = OtherClassPatchAdder(interval=interval)
@@ -92,9 +96,15 @@ class ClassificationGeneratorCache(BaseClass):
         self.attr_label_dataset = label_dataset
         self.dico_infos = dico_infos
     def __iter__(self, dataset="tr"):
-        return iter(self.generator())
+        if isinstance(dataset,list):
+            keys = dataset
+            batch_maker = self.batch_makers["all"]
+        else:
+            keys = self.datasets[dataset]
+            batch_maker = self.batch_makers[dataset]
+        return iter(batch_maker.batch(self.generator(keys)))
 
-    def generator(self, dataset="tr") -> Generator[Tuple[np.ndarray, np.ndarray, np.ndarray, str], None, None]:
+    def generator(self, images_available) -> Generator[Tuple[np.ndarray, np.ndarray, np.ndarray, str], None, None]:
         """Generator that generates data for the trainer
 
         Args:
@@ -107,7 +117,6 @@ class ClassificationGeneratorCache(BaseClass):
                    transformation_matrix:  the transformation matrix to transform the source image
                    item: str name of the source image
         """
-        images_available = self.tr_keys if dataset == "tr" else self.valid_keys
         random.shuffle(images_available)
         self.attr_patch_adder_callback.on_epoch_start()
         for id in images_available:

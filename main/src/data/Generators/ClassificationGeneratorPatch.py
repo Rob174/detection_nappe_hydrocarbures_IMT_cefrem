@@ -11,9 +11,11 @@ from h5py import File
 from main.FolderInfos import FolderInfos
 from main.src.data.Augmentation.Augmenters.Augmenter1 import Augmenter1
 from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
+from main.src.data.BatchMaker.BatchMaker import BatchMaker
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricPreprocessedCache import FabricPreprocessedCache
 from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.LabelModifier.LabelModifierFactory import LabelModifierFactory
 from main.src.data.LabelModifier.NoLabelModifier import NoLabelModifier
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.enums import EnumAugmenter
@@ -52,7 +54,8 @@ class ClassificationGeneratorPatch(BaseClass):
                  augmentations_img="none", augmenter_img: EnumAugmenter = EnumAugmenter.NoAugmenter,
                  augmentation_factor: int = 100, label_modifier: EnumLabelModifier = EnumLabelModifier.NoLabelModifier,
                  classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill),
-                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000):
+                 tr_percent=0.7, grid_size_px: int = 1000, threshold_margin:int = 1000,
+                 tr_batch_size: int = 10, valid_batch_size: int = 100):
         self.attr_name = self.__class__.__name__  # save the name of the class used for reproductibility purposes
         self.attr_global_name = "attr_dataset"
         self.attr_image_dataset, self.attr_label_dataset,self.dico_infos = FabricPreprocessedCache()()
@@ -65,19 +68,17 @@ class ClassificationGeneratorPatch(BaseClass):
             "valid":list(self.attr_image_dataset.keys())[int(len(self.attr_image_dataset) * tr_percent):],
             "all":list(self.attr_image_dataset.keys())
         }
+        self.attr_tr_batch_maker = BatchMaker(batch_size=tr_batch_size,num_elems_gen=4)
+        self.attr_valid_batch_maker = BatchMaker(batch_size=valid_batch_size,num_elems_gen=4)
+        self.batch_makers = {
+            "tr":self.attr_tr_batch_maker,
+            "valid":self.attr_valid_batch_maker,
+            "all":BatchMaker(batch_size=1,num_elems_gen=4)
+        }
         self.attr_global_name = "attr_dataset"
-        if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier(original_class_mapping=self.attr_label_dataset.attr_mapping)
-        elif label_modifier == EnumLabelModifier.LabelModifier0:
-            self.attr_label_modifier = LabelModifier0(class_mapping=self.attr_label_dataset.attr_mapping)
-        elif label_modifier == EnumLabelModifier.LabelModifier1:
-            self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
-                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
-        elif label_modifier == EnumLabelModifier.LabelModifier2:
-            self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
-                                                      original_class_mapping=self.attr_label_dataset.attr_mapping)
-        else:
-            raise NotImplementedError(f"{label_modifier} is not implemented")
+        self.attr_label_modifier = LabelModifierFactory().create(label_modifier, self.attr_label_dataset.attr_mapping,
+                                                                 classes_to_use)
+
         if balance == EnumBalance.NoBalance:
             self.attr_balance = BalanceNoBalance()
         elif balance == EnumBalance.BalanceClasses1:
@@ -121,9 +122,11 @@ class ClassificationGeneratorPatch(BaseClass):
     def __iter__(self, dataset: Union[EnumDataset,List[str]] = EnumDataset.Train):
         if isinstance(dataset,list):
             keys = dataset
+            batch_maker = self.batch_makers["all"]
         else:
             keys = self.datasets[dataset]
-        return iter(self.generator(keys))
+            batch_maker = self.batch_makers[dataset]
+        return iter(batch_maker.batch(self.generator(keys)))
 
     def generator(self, images_available):
         """

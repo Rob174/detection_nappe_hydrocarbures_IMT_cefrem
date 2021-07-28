@@ -28,7 +28,7 @@ class ProgressBar0(BaseClass, AbstractProgressBar):
 
         Args:
             loss:float, loss of the model
-            it_tr:it_tr, number of iterations of training elapsed
+            it_tr:attr_it_tr, number of iterations of training elapsed
             tr_batch_size:int to update the number of samples provided to the model
             **kwargs:
 

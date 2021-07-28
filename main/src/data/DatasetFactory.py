@@ -54,7 +54,10 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                  augmentation_factor=1, force_classifpatch=False,
                  other_class_adder: EnumClassPatchAdder = EnumClassPatchAdder.NoClassPatchAdder,
                  interval: int = 1,
-                 choose_dataset: Optional[str] = None
+                 choose_dataset: Optional[str] = None,
+                 tr_batch_size: int = 10,
+                 valid_batch_size: int = 100
+
                  ):
         self.attr_global_name = "data"
 
@@ -64,7 +67,8 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                     exclusion_policy == EnumPatchExcludePolicy.MarginMoreThan and exclusion_policy_threshold == 10
                     and grid_size == 1000 and not force_classifpatch or choose_dataset == "cache") and choose_dataset != "patch":
                 self.attr_dataset = ClassificationGeneratorCache(label_modifier=dataset_name, classes_to_use=classes_to_use,
-                                                                 other_class_adder=other_class_adder, interval=interval)
+                                                                 other_class_adder=other_class_adder, interval=interval,
+                                                                 tr_batch_size=tr_batch_size,valid_batch_size=valid_batch_size)
             else:
                 self.attr_dataset = ClassificationGeneratorPatch(input_size=input_size,
                                                                  classes_to_use=classes_to_use,
@@ -74,7 +78,9 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
                                                                  augmentation_factor=augmentation_factor,
                                                                  label_modifier=dataset_name,
                                                                  grid_size_px=grid_size,
-                                                                 threshold_margin=exclusion_policy_threshold
+                                                                 threshold_margin=exclusion_policy_threshold,
+                                                                 tr_batch_size=tr_batch_size,
+                                                                 valid_batch_size=valid_batch_size
                                                                  )
 
 

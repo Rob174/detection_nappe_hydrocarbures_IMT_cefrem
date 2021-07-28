@@ -3,24 +3,22 @@ import numpy as np
 import torch
 from typing import List
 
-from main.src.analysis.analysis.RGB_Overlay2 import RGB_Overlay2
 from main.src.data.DatasetFactory import DatasetFactory
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass
-from main.src.param_savers.saver0 import Saver0
 from main.src.training.AbstractCallback import AbstractCallback
+from main.src.training.IterationManager import IterationManager
+from main.src.training.ObservableTrainer import ObservableTrainer
 from main.src.training.TrValidSplit import trvalidsplit
 from main.src.training.confusion_matrix.ConfusionMatrixCallback import ConfusionMatrixCallback
 from main.src.training.early_stopping.AbstractEarlyStopping import AbstractEarlyStopping
 from main.src.enums import *
 from main.src.training.metrics.loss_factory import LossFactory
-from main.src.training.metrics.metrics_factory import MetricsFactory
-from main.src.training.optimizers_factory import OptimizersFactory
-from main.src.training.periodic_model_saver.AbstractModelSaver import AbstractModelSaver
+from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 from main.src.training.progress_bar.ProgressBarFactory import ProgressBarFactory
 
 
-class Trainer0(BaseClass):
+class Trainer0(BaseClass,ObservableTrainer):
     """Main trainer use for training purposes
 
     Args:
@@ -40,14 +38,11 @@ class Trainer0(BaseClass):
     def __init__(self, batch_size, num_epochs, tr_prct,
                  dataset: DatasetFactory,
                  model: ModelFactory,
-                 optimizer: OptimizersFactory,
-                 loss: LossFactory,
-                 metrics: MetricsFactory,
+                 loss: AbstractLoss,
+                 iteration_manager: IterationManager,
+                 callbacks: List[AbstractCallback],
                  early_stopping: AbstractEarlyStopping,
-                 model_saver: AbstractModelSaver,
-                 saver: Saver0,
                  eval_step: int,
-                 rgb_overlay: RGB_Overlay2,
                  debug: str="false"):
         """
 
@@ -59,35 +54,22 @@ class Trainer0(BaseClass):
             model: pytorch attr_model to train
             optimizer: optimizer factory
             loss: loss factory
-            metrics: metrics factory
             early_stopping: AbstractEarlyStopping to use
-            model_saver: AbstractModelSaver
-            saver: Saver0 object (see its documentation)
             eval_step: number of training batches between two validation steps
-            rgb_overlay: RGB_Overlay2, to build an overlay of the Generators on a sample
             debug: "false" or "true"  to store the predictions and the true values for the model in the json file
         """
-
+        super(Trainer0, self).__init__(callbacks)
+        self.attr_callbacks: List[AbstractCallback] = callbacks
         self.attr_debug = debug
         if debug == "true":
             self.attr_tr_vals_true = []
             self.attr_tr_vals_pred = []
-        self.attr_tr_batch_size = batch_size
-        self.attr_tr_size = tr_prct
-        self.attr_num_epochs = num_epochs
-        self.attr_eval_step = eval_step
-        self.attr_valid_batch_size = self.attr_tr_batch_size * self.attr_eval_step
-        self.attr_prefetch_factor = 2  # only value possible with hdf5 files currently
-        self.attr_save_step = self.attr_eval_step * 10
+        self.attr_iteration_manager = iteration_manager
 
         self.attr_dataset = dataset
-        self.attr_optimizer: OptimizersFactory = optimizer
-        self.attr_loss: LossFactory = loss
-        self.attr_metrics: MetricsFactory = metrics
-        self.saver = saver
+        self.attr_loss: AbstractLoss = loss
         self.attr_early_stopping: AbstractEarlyStopping = early_stopping
         self.attr_progress = ProgressBarFactory(self.attr_dataset.len("tr"), num_epochs=num_epochs)
-        self.attr_model_saver = model_saver
         self.attr_model = model
 
         # split the datasets into train and validation
@@ -96,104 +78,64 @@ class Trainer0(BaseClass):
         self.dataset_tr = dataset_tr  # there will be a total of 2 * num_workers samples prefetched across all workers
         self.dataset_valid = dataset_valid  # there will be a total of 2 * num_workers samples prefetched across all workers
 
-        self.attr_last_iter = -1
-        self.attr_last_epoch = -1
-        self.tr_batches = [[], []]
-        self.valid_batches = [[], []]
         self.attr_global_name = "trainer"
         self.saver(self).save()
-        self.attr_callbacks: List[AbstractCallback] = [
-            ConfusionMatrixCallback(self.attr_dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
-        ]
-        self.rgb_overlay = rgb_overlay
-
-    def add_to_batch_tr(self, input, output):
-        """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        self.tr_batches[0].append(input)
-        self.tr_batches[1].append(output)
-        if len(self.tr_batches[0]) == self.attr_tr_batch_size:
-            full_batch = (np.stack(self.tr_batches[0], axis=0), np.stack(self.tr_batches[1], axis=0))
-            self.tr_batches = [[], []]
-            return full_batch
-        else:
-            return None
-
-    def add_to_batch_valid(self, input, output):
-        """Add a sample to the current batch if it is not rejected and return the batch if it is full"""
-        self.valid_batches[0].append(input)
-        self.valid_batches[1].append(output)
-        if len(self.valid_batches[0]) == self.attr_valid_batch_size:
-            full_batch = (np.stack(self.valid_batches[0], axis=0), np.stack(self.valid_batches[1], axis=0))
-            self.valid_batches = [[], []]
-            return full_batch
-        else:
-            return None
 
     def __call__(self):
         return self.call()
+    def train(self,input_npy, output_npy, transformation_matrix, item,device):
+        self.attr_model.model.train()
+        self.attr_loss.zero_grad()
 
+        # forward + backward + optimize
+        input_gpu = torch.Tensor(input_npy).to(device)
+        prediction_gpu = self.attr_model.model(input_gpu)
+        del input_gpu
+        output_gpu = torch.Tensor(output_npy).float().to(device)
+        self.on_train_start(prediction_gpu, output_gpu)
+        del output_gpu
+
+        prediction_npy: np.ndarray = prediction_gpu.cpu().detach().numpy()
+        self.on_train_end(prediction_npy, output_npy)
+
+        # self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
+        #                                  attr_it_tr=attr_it_tr, img_processed=i,epoch=epoch)
+    def valid(self,input_npy, output_npy, transformation_matrix, item,device):
+        self.attr_model.model.eval()
+        with torch.no_grad():
+            input_gpu = torch.Tensor(input_npy).to(device)
+            prediction = self.attr_model.model(input_gpu)
+            del input_gpu
+            prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
+            self.on_valid_start(prediction_npy, output_npy)
+            self.on_valid_end(prediction_npy, output_npy)
+
+            # self.attr_loss(prediction, output_gpu, prediction_npy,output_npy, EnumDataset.Valid)
+        # self.attr_metrics(prediction_npy, output_npy, EnumDataset.Valid)
     def call(self):
         """Train the attr_model"""
         with self.attr_progress:
             dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.attr_model.model.to(device)
-            it_tr = 0
             it_val = 0
-            for epoch in range(self.attr_num_epochs):
-                for i, [input, output, transformation_matrix, item] in enumerate(self.dataset_tr):
-                    opt_tr_batch = self.add_to_batch_tr(input, output)
-                    if opt_tr_batch is not None:
-                        self.attr_model.model.train()
-                        it_tr += 1
-                        self.attr_last_iter = i
-                        self.attr_last_epoch = epoch
-
-                        input_npy, output_npy = opt_tr_batch
-                        input_gpu = torch.Tensor(input_npy).to(device)
-                        # zero the parameter gradients
-                        self.attr_optimizer.zero_grad()
-
-                        # forward + backward + optimize
-                        prediction_gpu = self.attr_model.model(input_gpu)
-                        del input_gpu
-                        prediction_npy = prediction_gpu.cpu().detach().numpy()
-                        output_gpu = torch.Tensor(output_npy).float().to(device)
-                        self.attr_loss(prediction_gpu, output_gpu, prediction_npy,output_npy,EnumDataset.Train)
-                        del output_gpu
-
-                        if self.attr_debug == "true":
-                            self.attr_tr_vals_true.append(output_npy.tolist())
-                            self.attr_tr_vals_pred.append(prediction_npy.tolist())
-                        self.attr_metrics(prediction_npy, output_npy, "tr")
-
-                        self.attr_progress.end_iteration(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], tr_batch_size=self.attr_tr_batch_size,
-                                                         it_tr=it_tr, img_processed=i,epoch=epoch)
-                        # Validation step
-                        if it_tr % self.attr_eval_step == 0:
-                            opt_valid_batch = None
-                            while opt_valid_batch is None:
-                                try:
-                                    input, output, transformation_matrix, item = next(dataset_valid_iter)
-                                except StopIteration:
-                                    # reinitialize data loader
-                                    dataset_valid_iter = iter(self.dataset_valid)
-                                    input, output, transformation_matrix, item = next(dataset_valid_iter)
-                                opt_valid_batch = self.add_to_batch_valid(input, output)
-                            it_val += 1
-                            input_npy, output_npy = opt_valid_batch
-                            self.attr_model.model.eval()
-                            with torch.no_grad():
-                                input_gpu = torch.Tensor(input_npy).to(device)
-                                prediction = self.attr_model.model(input_gpu)
-                                del input_gpu
-                                output_gpu = torch.Tensor(output_npy).float().to(device)
-                                prediction_npy: torch.Tensor = prediction.cpu().detach().numpy()
-                                self.attr_loss(prediction, output_gpu, prediction_npy,output_npy, EnumDataset.Valid)
-                            self.attr_metrics(prediction_npy, output_npy, EnumDataset.Valid)
-                            for callback in self.attr_callbacks:
-                                callback.on_valid_batch_end(prediction_npy,output_npy)
-                            self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
+            for epoch in range(self.attr_iteration_manager.attr_num_epochs):
+                self.on_epoch_start(epoch)
+                for it_tr, [input_npy, output_npy, transformation_matrix, item] in enumerate(self.dataset_tr):
+                    self.train(input_npy, output_npy, transformation_matrix, item,device)
+                    # Validation step
+                    if it_tr % self.attr_iteration_manager.attr_eval_step == 0:
+                        try:
+                            input_npy, output_npy, transformation_matrix, item = next(dataset_valid_iter)
+                        except StopIteration:
+                            # reinitialize data loader
+                            dataset_valid_iter = iter(self.dataset_valid)
+                            input_npy, output_npy, transformation_matrix, item = next(dataset_valid_iter)
+                        it_val += 1
+                        self.attr_iteration_manager.on_valid_start(epoch, it_val)
+                        self.valid(input_npy,output_npy,transformation_matrix,item,device)
+                        self.attr_model_saver.save_model_if_required(self.attr_model, epoch, i)
+                self.on_epoch_end(output_npy,prediction_npy,epoch,i)
                 self.attr_progress.end_epoch(loss=self.attr_loss.attr_loss_values[EnumDataset.Train][-1], epoch=epoch, img_processed=i)
                 self.attr_model_saver.save_model(self.attr_model, epoch, i)
                 self.saver(self).save()

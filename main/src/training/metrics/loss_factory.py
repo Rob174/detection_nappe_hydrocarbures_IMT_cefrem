@@ -1,8 +1,5 @@
 """Class managing possible losses to objects"""
-from typing import Optional, List, Dict
-
-import torch
-import numpy as np
+from typing import Optional
 
 from main.src.enums import *
 from main.src.param_savers.BaseClass import BaseClass
@@ -10,13 +7,14 @@ from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 from main.src.training.metrics.losses.BinaryCrossEntropy import BinaryCrossEntropy
 from main.src.training.metrics.losses.MSE import MSE
 from main.src.training.metrics.losses.MultiClassNonExclusivCrossEntropy import MultiClassNonExclusivCrossEntropy
-from main.src.training.optimizers_factory import OptimizersFactory
+from main.src.training.optimizers.optimizers.AbstractOptimizer import AbstractOptimizer
+from main.src.training.optimizers.optimizers_factory import OptimizersFactory
 
 
 class LossFactory(BaseClass):
     """Class managing possible losses to objects"""
     @staticmethod
-    def create(optimizer: OptimizersFactory, usage_type: EnumUsage, preference: Optional[EnumLoss] = None) -> AbstractLoss:
+    def create(optimizer: AbstractOptimizer, usage_type: EnumUsage, preference: Optional[EnumLoss] = None) -> AbstractLoss:
         """Create the loss required by the user
         Args:
             optimizer: optimizer to use
