@@ -6,8 +6,8 @@ from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 
 
 class BinaryCrossEntropy(BaseClass, AbstractLoss):
-    def __init__(self):
-        super(BinaryCrossEntropy, self).__init__()
+    def __init__(self,optimizer):
+        super(BinaryCrossEntropy, self).__init__(optimizer)
         self.attr_name = self.__class__.__name__
     def torch_compute(self, true_batch, pred_batch):
         return torch.nn.BCELoss()
