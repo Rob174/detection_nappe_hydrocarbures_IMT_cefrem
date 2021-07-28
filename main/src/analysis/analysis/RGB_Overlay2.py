@@ -18,9 +18,6 @@ matplotlib.use("agg")
 class RGB_Overlay2(AbstractCallback):
     def __init__(self, standardizer: AbstractStandardizer, model: ModelFactory, device: Optional = None):
         super(RGB_Overlay2, self).__init__()
-
-        with open(FolderInfos.base_filename + "parameters.json", "r") as fp:
-            self.parameters = json.load(fp)
         self.name_img = "027481_0319CB_0EB7"
         self.standardizer = standardizer
         self.model = model.model
