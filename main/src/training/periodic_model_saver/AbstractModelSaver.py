@@ -10,9 +10,10 @@ from main.src.training.AbstractCallback import AbstractCallback
 from main.src.training.metrics.AbstractMetric import AbstractMetric
 
 
-class AbstractModelSaver( ABC,AbstractCallback):
+class AbstractModelSaver(AbstractCallback):
     """Base class to build a model saver"""
     def __init__(self, metric_used: AbstractMetric,model: ModelFactory):
+        super(AbstractModelSaver, self).__init__()
         self.model = model
         self.metric_used = metric_used
         self.attr_metric_name = metric_used.name

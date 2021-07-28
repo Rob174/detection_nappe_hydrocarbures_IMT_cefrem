@@ -18,16 +18,13 @@ class TrainerGenerateCache(BaseClass):
 
     def __init__(self,
                  dataset,
-                 saver,
                  *args, **kwargs):
 
         self.dataset = dataset
-        self.saver = saver
 
         self.attr_last_iter = -1
         self.attr_last_epoch = -1
         self.attr_global_name = "trainer"
-        self.saver(self).save()
 
     def __call__(self, name: str):
         return self.call(name)
@@ -66,5 +63,3 @@ class TrainerGenerateCache(BaseClass):
         with open(FI.input_data_folder + name + "_img_infos.json", "w") as fp:
             json.dump(dico_info, fp)
 
-        self.saver(self.dataset)
-        self.saver(self).save()

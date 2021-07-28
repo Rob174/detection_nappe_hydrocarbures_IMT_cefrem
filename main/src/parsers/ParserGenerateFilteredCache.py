@@ -83,7 +83,7 @@ class ParserGenerateFilteredCache(BaseClass):
             },
             '-balance': {
                 "dest": 'balance',
-                "default": EnumBalance.BalanceClasses1,
+                "default": EnumBalance.BalanceClasses2,
                 "type": EnumBalance,
                 "help": "Indicate the policy to balance classes",
                 "choices": list(EnumBalance)

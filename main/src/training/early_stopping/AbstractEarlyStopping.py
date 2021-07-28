@@ -5,7 +5,7 @@ from main.src.training.AbstractCallback import AbstractCallback
 from main.src.training.metrics.AbstractMetric import AbstractMetric
 
 
-class AbstractEarlyStopping(ABC,AbstractCallback):
+class AbstractEarlyStopping(AbstractCallback):
     """Base class to build an early stopping algorithm
 
     Args:
@@ -13,6 +13,7 @@ class AbstractEarlyStopping(ABC,AbstractCallback):
         name_metric_chosen: str name of the metric chosen inside this metric manager
     """
     def __init__(self, metric: AbstractMetric):
+        super().__init__()
         self.epochs_metric_values = []
         self.metric: AbstractMetric = metric
         self.attr_name_metric = metric.name

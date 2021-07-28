@@ -9,10 +9,11 @@ from main.src.training.metrics.AbstractMetric import AbstractMetric
 from main.src.training.optimizers.optimizers.AbstractOptimizer import AbstractOptimizer
 
 
-class AbstractLoss(ABC, AbstractMetric, AbstractCallback):
+class AbstractLoss(AbstractMetric, AbstractCallback):
     """Base class to represent a loss"""
 
     def __init__(self, optimizer: AbstractOptimizer):
+        super().__init__()
         self.attr_optimizer = optimizer
         self.attr_values: Dict[str, List[float]] = {EnumDataset.Train: [], EnumDataset.Valid: []}
 

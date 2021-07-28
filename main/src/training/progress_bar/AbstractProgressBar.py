@@ -7,10 +7,11 @@ from main.src.training.IterationManager import IterationManager
 from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 
 
-class AbstractProgressBar(ABC, AbstractCallback):
+class AbstractProgressBar( AbstractCallback):
     """Base class to build a progressbar"""
 
     def __init__(self, iteration_manager: IterationManager, loss: AbstractLoss):
+        super().__init__()
         self.columns = [
             TextColumn("{task.fields[name]}", justify="right"),
             BarColumn(bar_width=None),

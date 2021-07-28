@@ -18,7 +18,7 @@ from main.src.training.periodic_model_saver.ModelSaver1 import ModelSaver1
 from main.src.data.Standardizer.NoStandardizer import NoStandardizer
 from main.src.parsers.ParserGenerateFilteredCache import ParserGenerateFilteredCache
 
-# from main.src.training.Trainers.TrainerGenerateCache import TrainerGenerateCache
+from main.src.training.Trainers.TrainerGenerateCache import TrainerGenerateCache
 from main.src.training.metrics.metrics_factory import MetricsFactory
 
 from main.src.training.metrics.loss_factory import LossFactory
@@ -67,7 +67,8 @@ if __name__ == "__main__":
     iteration_manager = IterationManager(
         valid_batch_size=arguments.batch_size * arguments.eval_step,
         train_batch_size=arguments.batch_size,
-        num_epochs=arguments.num_epochs
+        num_epochs=arguments.num_epochs,
+        eval_step=arguments.eval_step
     )
 
     num_classes = len(arguments.classes) if arguments.attr_dataset != EnumLabelModifier.LabelModifier2 else 1
@@ -91,7 +92,7 @@ if __name__ == "__main__":
     )
 
     confusion_matrix = ConfusionMatrixCallback(dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
-    trainer = Trainer0(
+    trainer = TrainerGenerateCache(
         dataset=dataset,
         model=model,
         loss=loss,
@@ -101,6 +102,5 @@ if __name__ == "__main__":
     )
     saver.set_target(trainer)
     print("start")
-    trainer()
+    trainer("filtered_cache_other")
     print("end")
-import torch
