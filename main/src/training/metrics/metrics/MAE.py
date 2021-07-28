@@ -14,7 +14,7 @@ class MAE(BaseClass, AbstractMetric):
     @staticmethod
     def parser(name: str) -> Optional[Any]:
         if re.match("^mae$", name):
-            return name
+            return name,
         return None
 
     def npy_compute(self, true_batch, pred_batch):

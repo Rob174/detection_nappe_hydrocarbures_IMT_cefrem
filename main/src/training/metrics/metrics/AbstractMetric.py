@@ -7,8 +7,7 @@ from main.src.training.AbstractCallback import AbstractCallback
 
 
 class AbstractMetric(abstractmetric.AbstractMetric, AbstractCallback):
-    def __init__(self, name: str, *args, **kwargs):
-        self.attr_name = name
+    def __init__(self, name):
         self.attr_values: Dict[str, List[float]] = {EnumDataset.Train: [], EnumDataset.Valid: []}
 
     @staticmethod
