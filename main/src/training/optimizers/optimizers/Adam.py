@@ -6,7 +6,7 @@ from main.src.training.optimizers.optimizers.AbstractOptimizer import AbstractOp
 
 class Adam(BaseClass, AbstractOptimizer):
     def __init__(self, model, **kwargs):
-        super(Adam, self).__init__(kwargs)
+        super(Adam, self).__init__(**kwargs)
         self.pytorch_optimizer = optim.Adam(model.model.parameters(), **kwargs)
 
     @property
