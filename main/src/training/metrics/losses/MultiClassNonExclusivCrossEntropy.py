@@ -6,6 +6,9 @@ from main.src.training.metrics.losses.AbstractLoss import AbstractLoss
 
 
 class MultiClassNonExclusivCrossEntropy(BaseClass, AbstractLoss):
+    def __init__(self):
+        super(MultiClassNonExclusivCrossEntropy, self).__init__()
+        self.attr_name = self.__class__.__name__
     def torch_compute(self, true_batch, pred_batch):
         return torch.mean(torch.sum(-torch.log(pred_batch + 1e-7) * true_batch, dim=1))
 
