@@ -11,14 +11,14 @@ class LabelModifierFactory:
     def create(self, label_modifier: EnumLabelModifier, class_mapping,
                classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill)):
         if label_modifier == EnumLabelModifier.NoLabelModifier:
-            self.attr_label_modifier = NoLabelModifier(original_class_mapping=class_mapping)
+            return NoLabelModifier(original_class_mapping=class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
-            self.attr_label_modifier = LabelModifier0(class_mapping=class_mapping)
+            return LabelModifier0(class_mapping=class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
-            self.attr_label_modifier = LabelModifier1(classes_to_use=classes_to_use,
+            return LabelModifier1(classes_to_use=classes_to_use,
                                                       original_class_mapping=class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier2:
-            self.attr_label_modifier = LabelModifier2(classes_to_use=classes_to_use,
+            return LabelModifier2(classes_to_use=classes_to_use,
                                                       original_class_mapping=class_mapping)
         else:
             raise NotImplementedError(f"{label_modifier} is not implemented")
