@@ -9,7 +9,7 @@ from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.AbstractCallback import AbstractCallback
 from main.src.training.IterationManager import IterationManager
 from main.src.training.ObservableTrainer import ObservableTrainer
-from main.src.training.TrValidSplit import trvalidsplit
+from main.src.training.DatasetsTools import trvalidsplit
 from main.src.training.confusion_matrix.ConfusionMatrixCallback import ConfusionMatrixCallback
 from main.src.training.early_stopping.AbstractEarlyStopping import AbstractEarlyStopping
 from main.src.enums import *
@@ -104,7 +104,6 @@ class Trainer0(BaseClass,ObservableTrainer):
     def call(self):
         """Train the attr_model"""
         with self.attr_progress:
-            dataset_valid_iter = iter(self.dataset_valid)
             device = torch.device("cuda")
             self.attr_model.model.to(device)
             it_val = 0
@@ -114,12 +113,7 @@ class Trainer0(BaseClass,ObservableTrainer):
                     self.train(input_npy, output_npy, transformation_matrix, item,device)
                     # Validation step
                     if it_tr % self.attr_iteration_manager.attr_eval_step == 0:
-                        try:
-                            input_npy, output_npy, transformation_matrix, item = next(dataset_valid_iter)
-                        except StopIteration:
-                            # reinitialize data loader
-                            dataset_valid_iter = iter(self.dataset_valid)
-                            input_npy, output_npy, transformation_matrix, item = next(dataset_valid_iter)
+                        input_npy, output_npy, transformation_matrix, item = self.dataset_valid.next()
                         it_val += 1
                         self.valid(input_npy,output_npy,transformation_matrix,item,device)
                 self.on_epoch_end()
