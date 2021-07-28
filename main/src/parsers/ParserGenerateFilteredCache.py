@@ -117,7 +117,7 @@ class ParserGenerateFilteredCache(BaseClass):
 
             '-augmentation_factor': {
                 "dest": 'augmentation_factor',
-                "default": 100,
+                "default": 1,
                 "type": int,
                 "help": "The number of times that the source image is augmented"
             },
