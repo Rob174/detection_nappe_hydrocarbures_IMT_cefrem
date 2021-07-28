@@ -14,7 +14,7 @@ class BatchMaker(BaseClass):
             for i, elem in enumerate(sample):
                 to_stack[i].append(elem)
 
-            if len(to_stack) == self.attr_batch_size:
+            if len(to_stack[0]) == self.attr_batch_size:
                 stacked_return = []
                 for list in to_stack:
                     if isinstance(list[0], np.ndarray):
