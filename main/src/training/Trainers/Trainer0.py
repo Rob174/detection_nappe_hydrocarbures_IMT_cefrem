@@ -51,12 +51,12 @@ class Trainer0(BaseClass, ObservableTrainer):
         """
         super(Trainer0, self).__init__(callbacks)
         self.attr_dataset = dataset
-        self.attr_loss: AbstractLoss = loss
+        self.loss: AbstractLoss = loss
         self.attr_progress = ProgressBarFactory.create(self.attr_dataset.len("tr"), iteration_manager,loss)
         callbacks.append(self.attr_progress)
         self.attr_callbacks: List[AbstractCallback] = callbacks
 
-        self.attr_iteration_manager = iteration_manager
+        self.iteration_manager = iteration_manager
 
         self.early_stopping: AbstractEarlyStopping = early_stopping
         self.attr_model = model
@@ -72,7 +72,7 @@ class Trainer0(BaseClass, ObservableTrainer):
 
     def train(self, input_npy, output_npy, transformation_matrix, item, device):
         self.attr_model.model.train()
-        self.attr_loss.zeros_grad()
+        self.loss.zeros_grad()
 
         # forward + backward + optimize
         input_gpu = torch.Tensor(input_npy).to(device)
@@ -102,12 +102,12 @@ class Trainer0(BaseClass, ObservableTrainer):
             self.attr_model.model.to(device)
             it_val = 0
             self.on_start()
-            for epoch in range(self.attr_iteration_manager.attr_num_epochs):
+            for epoch in range(self.iteration_manager.attr_num_epochs):
                 self.on_epoch_start(epoch)
                 for it_tr, [input_npy, output_npy, transformation_matrix, item] in enumerate(self.dataset_tr):
                     self.train(input_npy, output_npy, transformation_matrix, item, device)
                     # Validation step
-                    if it_tr % self.attr_iteration_manager.attr_eval_step == 0:
+                    if it_tr % self.iteration_manager.attr_eval_step == 0:
                         input_npy, output_npy, transformation_matrix, item = self.dataset_valid.next()
                         it_val += 1
                         self.valid(input_npy, output_npy, transformation_matrix, item, device)

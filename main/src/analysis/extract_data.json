@@ -1,11 +1,12 @@
 {
   "metadata": {
     "epoch": {
-      "access": "lambda dico:dico[\"trainer\"][\"attr_last_epoch\"]",
+      "access": "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][0][\"attr_last_epoch\"]",
       "default": "0"
     },
     "freeze": {
       "access": [
+
         "lambda dico:dico[\"trainer\"][\"attr_model\"][\"attr_freeze\"]",
         "lambda dico:dico[\"model\"][\"attr_freeze\"]"
       ],
@@ -22,7 +23,7 @@
         "lambda dico:dico[\"trainer\"][\"attr_dataset\"][\"attr_patch_creator\"][\"attr_exclusion_policy\"]",
         "lambda dico:dico[\"data\"][\"attr_patch_creator\"][\"attr_exclusion_policy\"]"
       ],
-      "default": "\"marginmorethan_1000\""
+      "default": "\"marginmorethan_10\""
     },
     "classes_to_use": {
       "access": [
@@ -55,6 +56,7 @@
     },
     "last_iter": {
       "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][0][\"attr_it_tr\"]",
         "lambda dico:dico[\"trainer\"][\"attr_last_iter\"]"
       ],
       "default": "0"
@@ -80,34 +82,16 @@
       ],
       "default": "None"
     },
-    "resizer_size": {
-      "access": [
-        "lambda dico:dico[\"trainer\"][\"attr_dataset\"][\"attr_dataset\"][\"attr_resizer\"][\"attr_out_size_w\"]",
-        "lambda dico:dico[\"data\"][\"attr_dataset\"][\"attr_resizer\"][\"attr_out_size_w\"]"
-      ],
-      "default": "256"
-    },
-    "length_dataset": {
-      "access": [
-        "lambda dico:dico[\"trainer\"][\"attr_dataset\"][\"attr_length_dataset\"]",
-        "lambda dico:dico[\"data\"][\"attr_length_dataset\"]"
-      ],
-      "default": "-1"
-    },
-    "prct_tr": {
-      "access": [
-        "lambda dico:dico[\"trainer\"][\"attr_tr_size\"]"
-      ],
-      "default": "0.7"
-    },
     "tr_batch_size": {
       "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][0][\"attr_tr_size\"]",
         "lambda dico:dico[\"trainer\"][\"attr_tr_batch_size\"]"
       ],
       "default": "10"
     },
     "valid_batch_size": {
       "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][0][\"attr_valid_size\"]",
         "lambda dico:dico[\"trainer\"][\"attr_valid_batch_size\"]"
       ],
       "default": "10"
@@ -128,13 +112,14 @@
     },
     "loss": {
       "access": [
-        "lambda dico:dico[\"trainer\"][\"attr_loss\"][\"attr_loss\"]",
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][1][\"name\"]",
         "lambda dico:dico[\"loss\"][\"attr_loss\"]"
       ],
       "default": "\"crossentropy\""
     },
     "optimizer_name": {
       "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][1][\"attr_optimizer\"][\"name\"]",
         "lambda dico:dico[\"trainer\"][\"attr_optimizer\"][\"attr_name\"]",
         "lambda dico:dico[\"optimizer\"][\"attr_name\"]"
       ],
@@ -142,6 +127,7 @@
     },
     "optimizer_lr": {
       "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][1][\"attr_optimizer\"][\"attr_arguments\"][\"lr\"]",
         "lambda dico:dico[\"trainer\"][\"attr_optimizer\"][\"attr_params\"][\"lr\"]",
         "lambda dico:dico[\"optimizer\"][\"attr_params\"][\"lr\"]"
       ],
@@ -149,6 +135,7 @@
     },
     "optimizer_eps": {
       "access": [
+        "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][1][\"attr_optimizer\"][\"attr_arguments\"][\"eps\"]",
         "lambda dico:dico[\"trainer\"][\"attr_optimizer\"][\"attr_params\"][\"eps\"]",
         "lambda dico:dico[\"optimizer\"][\"attr_params\"][\"eps\"]"
       ],
@@ -164,23 +151,25 @@
   },
   "metrics": {
     "accuracy_classification-0.25": [
-      "lambda dico:dico[\"trainer\"][\"attr_metrics\"][\"attr_list_metrics\"][\"accuracy_classification-0.25\"]",
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][2][\"attr_values\"]",
       "lambda dico:dico[\"metrics\"][\"attr_list_metrics\"][\"accuracy_classification-0.25\"]"
     ],
     "accuracy_classification-0.1": [
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][3][\"attr_values\"]",
       "lambda dico:dico[\"trainer\"][\"attr_metrics\"][\"attr_list_metrics\"][\"accuracy_classification-0.1\"]",
       "lambda dico:dico[\"metrics\"][\"attr_list_metrics\"][\"accuracy_classification-0.1\"]"
     ],
     "mae": [
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][4][\"attr_values\"]",
       "lambda dico:dico[\"trainer\"][\"attr_metrics\"][\"attr_list_metrics\"][\"mae\"]",
       "lambda dico:dico[\"metrics\"][\"attr_list_metrics\"][\"mae\"]"
     ],
     "loss": [
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][1][\"attr_values\"]",
       "lambda dico:dico[\"trainer\"][\"attr_loss\"][\"attr_loss_values\"]",
       "lambda dico:dico[\"trainer\"]"
     ],
     "error_threshold0.5": [
-      "lambda dico:dico[\"trainer\"][\"attr_metrics\"][\"attr_list_metrics\"][\"accuracy_threshold-0.5\"]"
     ]
   },
   "confusion_matrix": {

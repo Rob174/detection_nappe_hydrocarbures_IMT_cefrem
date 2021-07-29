@@ -79,7 +79,7 @@ if __name__ == "__main__":
     loss = LossFactory.create(usage_type=arguments.usage_type, preference=arguments.loss_preference,
                               optimizer=optimizer)
     metrics = MetricsFactory.create("accuracy_classification-0.25", "accuracy_classification-0.1", "mae",
-                                    "accuracy_threshold-0.5")
+                                    "error_threshold-0.5")
     model_saver = ModelSaver1(loss,model,iteration_manager)
     early_stopping = EarlyStopping(loss, patience=5)
     try:
