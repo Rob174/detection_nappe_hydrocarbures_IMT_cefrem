@@ -33,12 +33,12 @@ class AbstractLoss(AbstractMetric, AbstractCallback):
 
     def on_train_end(self, prediction_batch, true_batch):
         current_loss = self.npy_compute(true_batch, prediction_batch)
-        self.attr_values[EnumDataset.Train].append(current_loss)
+        self.attr_values[EnumDataset.Train].append(float(current_loss))
 
     def on_valid_start(self, prediction_batch, true_batch):
         """Evaluates the model on valid batches"""
         current_loss = self.npy_compute(true_batch, prediction_batch)
-        self.attr_values[EnumDataset.Valid].append(current_loss)
+        self.attr_values[EnumDataset.Valid].append(float(current_loss))
 
     def zeros_grad(self):
         self.attr_optimizer.zero_grad()

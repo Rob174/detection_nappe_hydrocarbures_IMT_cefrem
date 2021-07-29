@@ -23,12 +23,12 @@ class AbstractMetric(abstractmetric.AbstractMetric, AbstractCallback):
     def on_train_end(self, true_batch, pred_batch):
         """Compute and save the metric"""
         current = self.npy_compute(true_batch, pred_batch)
-        self.attr_values[EnumDataset.Train].append(current)
+        self.attr_values[EnumDataset.Train].append(float(current))
 
     def on_valid_start(self, true_batch, pred_batch):
         """Evaluates the model on valid batches"""
         current = self.npy_compute(true_batch, pred_batch)
-        self.attr_values[EnumDataset.Valid].append(current)
+        self.attr_values[EnumDataset.Valid].append(float(current))
 
     @property
     def values(self):
