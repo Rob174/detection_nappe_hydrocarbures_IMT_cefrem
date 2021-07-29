@@ -170,14 +170,15 @@
       "lambda dico:dico[\"trainer\"]"
     ],
     "error_threshold0.5": [
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][5][\"attr_values\"]"
     ]
   },
   "confusion_matrix": {
     "value": [
-      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][0][\"attr_confusion_matrix\"][\"attr_full_matrix\"]"
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][-1][\"attr_confusion_matrix\"][\"attr_full_matrix\"]"
     ],
     "names": [
-      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][0][\"attr_confusion_matrix\"][\"attr_class_names\"]"
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][-1][\"attr_confusion_matrix\"][\"attr_class_names\"]"
     ]
   }
 }

@@ -33,6 +33,6 @@ class ConfusionMatrixCallback(BaseClass,AbstractCallback):
         self.class_mappings = class_mappings
         self.class_names = class_names
         self.attr_confusion_matrix = ConfusionMatrix(class_mappings,class_names)
-    def on_valid_batch_end(self,prediction_batch,true_batch):
+    def on_valid_end(self,prediction_batch,true_batch):
         """Method to be called at each end of a validation step"""
         self.attr_confusion_matrix.update_matrix(prediction_batch,true_batch)
