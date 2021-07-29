@@ -60,7 +60,7 @@ if __name__ == "__main__":
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
                              interval=arguments.interval,
-                             choose_dataset="cache",
+                             choose_dataset="patch",
                              tr_batch_size=arguments.batch_size,
                              valid_batch_size=arguments.batch_size * arguments.eval_step
                              )
