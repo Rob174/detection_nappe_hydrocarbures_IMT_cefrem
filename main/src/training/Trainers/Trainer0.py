@@ -50,13 +50,13 @@ class Trainer0(BaseClass, ObservableTrainer):
             early_stopping: AbstractEarlyStopping to use
         """
         super(Trainer0, self).__init__(callbacks)
+        self.attr_dataset = dataset
         self.attr_progress = ProgressBarFactory.create(self.attr_dataset.len("tr"), iteration_manager)
         callbacks.append(self.attr_progress)
         self.attr_callbacks: List[AbstractCallback] = callbacks
 
         self.attr_iteration_manager = iteration_manager
 
-        self.attr_dataset = dataset
         self.attr_loss: AbstractLoss = loss
         self.early_stopping: AbstractEarlyStopping = early_stopping
         self.attr_model = model
