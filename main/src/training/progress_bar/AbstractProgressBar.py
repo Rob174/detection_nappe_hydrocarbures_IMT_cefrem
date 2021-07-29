@@ -50,13 +50,3 @@ class AbstractProgressBar( AbstractCallback):
     def __exit__(self, *args, **kwargs):
         """Context manager (with statement)"""
         return self.progress_bar.__exit__(*args, **kwargs)
-
-    @abstractmethod
-    def end_epoch(self, loss: int, epoch: int, **kwargs):
-        """Update method for the epoch progress bar"""
-        return NotImplementedError
-
-    @abstractmethod
-    def end_iteration(self, loss: float, status: int, **kargs):
-        """Update method for the iteration progressbar"""
-        return NotImplementedError
