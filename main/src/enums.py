@@ -58,6 +58,8 @@ class EnumBalance(str, Enum):
 
 class EnumLabelModifier(str, Enum):
     NoLabelModifier = "nolabelmodifier"
+    """keep the 2d annotation"""
+    LabelModifier0 = "labelmodifier0"
     """class other,seep,spill label"""
     LabelModifier1 = "labelmodifier1"
     """classes constructed to allow to choose classes to use"""
