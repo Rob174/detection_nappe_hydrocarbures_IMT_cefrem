@@ -51,7 +51,11 @@ class TrainerGenerateCache(BaseClass):
                     def __iter__(self):
                         return self.data.__iter__(self.dataset)
 
-                for i, [input, output, transformation_matrix, item] in enumerate(Wrapper(self.dataset, "all")):
+                for i, [input, output, transformation_matrix, [item]] in enumerate(Wrapper(self.dataset, ["027481_0319CB_0EB7"])):
+                    input = input[0,0,:,:]
+                    output = output[0]
+                    transformation_matrix = transformation_matrix[0]
+
                     dico_info[str(i)] = {"source_img": item, "transformation_matrix": transformation_matrix.tolist()}
                     cache_images.create_dataset(str(i), shape=input.shape, dtype='f', data=input)
                     cache_annotations.create_dataset(str(i), shape=output.shape, dtype='i', data=output)

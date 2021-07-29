@@ -8,6 +8,7 @@ import torch
 from h5py import File
 
 from main.FolderInfos import FolderInfos
+from main.src.data.Datasets.Fabrics.FabricPreprocessedCache import FabricPreprocessedCache
 from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.models.ModelFactory import ModelFactory
 from main.src.param_savers.BaseClass import BaseClass
@@ -37,9 +38,9 @@ class RGB_Overlay2(AbstractCallback,BaseClass):
         Returns: tuple, with  overlay_true,overlay_pred,original_img as np arrays
 
         """
-        with File(FolderInfos.input_data_folder + "images_preprocessed.hdf5", "r") as cache:
-            original_image = np.array(cache[name_img], dtype=np.float16)
-            original_shape = cache[name_img].shape  # radar image input (1 channel only)
+        images,annotations,infos = FabricPreprocessedCache()()
+        original_image = np.array(images.get(name_img), dtype=np.float16)
+        original_shape = original_image.shape  # radar image input (1 channel only)
 
         with File(FolderInfos.input_data_folder + "test_cache_image.hdf5", "r") as cache_img:
             with File(FolderInfos.input_data_folder + "test_cache_annotations.hdf5", "r") as cache_annotations:

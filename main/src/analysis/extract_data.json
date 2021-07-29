@@ -175,10 +175,10 @@
   },
   "confusion_matrix": {
     "value": [
-      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][-1][\"attr_confusion_matrix\"][\"attr_full_matrix\"]"
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][-2][\"attr_confusion_matrix\"][\"attr_full_matrix\"]"
     ],
     "names": [
-      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][-1][\"attr_confusion_matrix\"][\"attr_class_names\"]"
+      "lambda dico:dico[\"trainer\"][\"attr_callbacks\"][-2][\"attr_confusion_matrix\"][\"attr_class_names\"]"
     ]
   }
 }

@@ -103,7 +103,7 @@ class ParserGenerateFilteredCache(BaseClass):
             # Augmentations
             '-augmenter_img': {
                 "dest": 'augmenter_img',
-                "default": EnumAugmenter.Augmenter1,
+                "default": EnumAugmenter.NoAugmenter,
                 "type": EnumAugmenter,
                 "help": "Indicate which augmenter to use to apply transformations on source image",
                 "choices": list(EnumAugmenter)

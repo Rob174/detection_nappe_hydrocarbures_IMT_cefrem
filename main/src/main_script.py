@@ -36,7 +36,7 @@ import torch
 if __name__ == "__main__":
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + "parameters.json")
-    parser = ParserClassificationCache()
+    parser = ParserGenerateFilteredCache()
     saver(parser)
     arguments = parser()
     saver["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
@@ -93,15 +93,15 @@ if __name__ == "__main__":
     )
 
     confusion_matrix = ConfusionMatrixCallback(dataset.attr_dataset.attr_label_modifier.get_final_class_mapping())
-    trainer = Trainer0(
+    trainer = TrainerGenerateCache(
         dataset=dataset,
         model=model,
         loss=loss,
         early_stopping=early_stopping,
-        callbacks=[iteration_manager,loss,*metrics,saver,model_saver,early_stopping,rgb_overlay,confusion_matrix],
+        callbacks=[iteration_manager,loss,*metrics,saver,model_saver],#,early_stopping,rgb_overlay,confusion_matrix],
         iteration_manager=iteration_manager
     )
     saver.set_target(trainer)
     print("start")
-    trainer()
+    trainer("test_cache")
     print("end")
