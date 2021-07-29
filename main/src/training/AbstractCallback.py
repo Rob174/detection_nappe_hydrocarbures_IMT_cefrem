@@ -29,3 +29,5 @@ class AbstractCallback(ABC):
         """called when an epoch ends"""
     def on_end(self):
         """called when an epoch ends"""
+    def on_start(self):
+        """called before starting the training"""

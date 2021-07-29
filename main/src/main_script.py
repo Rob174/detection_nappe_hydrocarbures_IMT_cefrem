@@ -3,6 +3,7 @@
 import subprocess
 import sys
 
+from main.src.parsers.ParserClassificationCache import ParserClassificationCache
 from main.src.training.IterationManager import IterationManager
 from main.src.training.Trainers.Trainer0 import Trainer0
 from main.src.training.confusion_matrix.ConfusionMatrixCallback import ConfusionMatrixCallback
@@ -35,7 +36,7 @@ import torch
 if __name__ == "__main__":
     FolderInfos.init()
     saver = Saver0(FolderInfos.base_filename + "parameters.json")
-    parser = ParserGenerateFilteredCache()
+    parser = ParserClassificationCache()
     saver(parser)
     arguments = parser()
     saver["commit"] = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode("utf-8").strip()
@@ -59,7 +60,7 @@ if __name__ == "__main__":
                              augmentation_factor=arguments.augmentation_factor,
                              other_class_adder=arguments.other_class_adder,
                              interval=arguments.interval,
-                             choose_dataset="patch",
+                             choose_dataset="cache",
                              tr_batch_size=arguments.batch_size,
                              valid_batch_size=arguments.batch_size * arguments.eval_step
                              )

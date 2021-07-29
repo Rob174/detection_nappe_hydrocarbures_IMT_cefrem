@@ -92,9 +92,12 @@ class Saver0(AbstractCallback):
         """Save data to the json file specified in the constructor"""
         with open(self.outpath, "w") as fp:
             json.dump(self.data, fp, indent=4)
+    def on_start(self):
+        self.call(self.target)
+
     def on_valid_end(self, prediction_batch, true_batch):
         self.call(self.target)
 
-    def on_epoch_end(self, prediction_batch, true_batch):
+    def on_epoch_end(self):
         self.call(self.target)
 
