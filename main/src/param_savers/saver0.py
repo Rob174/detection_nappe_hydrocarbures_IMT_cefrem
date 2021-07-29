@@ -94,10 +94,12 @@ class Saver0(AbstractCallback):
             json.dump(self.data, fp, indent=4)
     def on_start(self):
         self.call(self.target)
+        self.save()
 
     def on_valid_end(self, prediction_batch, true_batch):
         self.call(self.target)
 
     def on_epoch_end(self):
         self.call(self.target)
+        self.save()
 
