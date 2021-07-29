@@ -16,7 +16,7 @@ class StandardizerCacheOther(BaseClass, AbstractStandardizer):
 
     def __init__(self):
         super().__init__()
-        with open(FolderInfos.input_data_folder + "filtered_cache_other_pixels_stats.json", "r") as fp:
+        with open(FolderInfos.input_data_folder + "filtered_cache_other"+FolderInfos.separator+"filtered_cache_other_pixels_stats.json", "r") as fp:
             self.stat_dico = json.load(fp)
 
     @property
