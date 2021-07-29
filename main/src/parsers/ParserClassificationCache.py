@@ -147,7 +147,7 @@ class ParserClassificationCache(BaseClass):
             # Training
             '-num_epochs': {
                 "dest": 'num_epochs',
-                "default": 10,
+                "default": 100,
                 "type": int,
                 "help": "Number of epochs / repetitions of the training attr_dataset"
             },
