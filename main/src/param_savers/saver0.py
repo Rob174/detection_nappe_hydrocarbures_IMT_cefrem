@@ -10,7 +10,7 @@ from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.AbstractCallback import AbstractCallback
 
 
-class Saver0(AbstractCallback):
+class Saver0(AbstractCallback,BaseClass):
     """Object used to automatically save attributes of classes beginning by attr_... recursively:
     if an object has an attr_ attribute and this attribute is a class inherited from the BaseClass, the saver will also scan attributes in this class
 
@@ -24,6 +24,7 @@ class Saver0(AbstractCallback):
 
         """
         super().__init__()
+        self.attr_name = self.__class__.__name__
         self.outpath = outpath
         self.data = {}
         self.target = target
