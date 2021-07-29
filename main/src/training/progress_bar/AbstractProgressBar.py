@@ -17,7 +17,7 @@ class AbstractProgressBar( AbstractCallback):
             BarColumn(bar_width=None),
             "[progress.percentage]{task.percentage:>3.1f}%",
             "•",
-            TextColumn("[bold blue]status_patience: {task.fields[status_patience]}", justify="right"),
+            TextColumn("[bold blue]status: {task.fields[status]}", justify="right"),
             "•",
             TextColumn("[bold blue]last_loss: {task.fields[loss]:.4e}", justify="right"),
             "•",
