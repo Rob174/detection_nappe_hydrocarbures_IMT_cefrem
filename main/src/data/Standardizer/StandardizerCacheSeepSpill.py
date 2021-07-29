@@ -16,7 +16,7 @@ class StandardizerCacheSeepSpill(BaseClass, AbstractStandardizer):
 
     def __init__(self):
         super().__init__()
-        with open(FolderInfos.input_data_folder +"filted_cache"+FolderInfos.separator+ "filtered_cache_pixels_stats.json", "r") as fp:
+        with open(FolderInfos.input_data_folder +"filtered_cache"+FolderInfos.separator+ "filtered_cache_pixels_stats.json", "r") as fp:
             self.stat_dico = json.load(fp)
 
     @property
