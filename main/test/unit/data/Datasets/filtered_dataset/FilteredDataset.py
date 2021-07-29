@@ -23,6 +23,13 @@ class MyTestCase(unittest.TestCase):
         random.shuffle(ids)
         for id in ids[:self.num_random_test]:
             self.assertEqual(images.get(id).shape,(self.image_size,self.image_size))
+    def test_shape_matrix(self):
+        images, annotations, informations = FabricFilteredCache()()
+        ids = images.keys()
+        random.shuffle(ids)
+        for id in ids[:self.num_random_test]:
+            self.assertEqual(np.array(informations[id]["transformation_matrix"]).shape,(3,3))
+
     def test_shape_annotations(self):
         images, annotations, informations = FabricFilteredCache()()
         ids = annotations.keys()
