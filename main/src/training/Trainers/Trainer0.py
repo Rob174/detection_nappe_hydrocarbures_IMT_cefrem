@@ -101,6 +101,7 @@ class Trainer0(BaseClass, ObservableTrainer):
             device = torch.device("cuda")
             self.attr_model.model.to(device)
             it_val = 0
+            self.on_start()
             for epoch in range(self.attr_iteration_manager.attr_num_epochs):
                 self.on_epoch_start(epoch)
                 for it_tr, [input_npy, output_npy, transformation_matrix, item] in enumerate(self.dataset_tr):

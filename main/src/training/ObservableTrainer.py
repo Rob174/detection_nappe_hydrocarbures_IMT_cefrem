@@ -37,3 +37,6 @@ class ObservableTrainer:
     def on_end(self):
         for callback in self.attr_callbacks:
             callback.on_end()
+    def on_start(self):
+        for callback in self.attr_callbacks:
+            callback.on_start()
