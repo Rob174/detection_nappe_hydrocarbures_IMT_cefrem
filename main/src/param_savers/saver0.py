@@ -48,7 +48,7 @@ class Saver0(AbstractCallback,BaseClass):
         if isinstance(object, BaseClass) is False:
             return object
         else:
-            dico_params = {}
+            dico_params = {"name":object.__class__.__name__}
             for attr, val in object.__dict__.items():
                 if attr[:4] == "attr":
                     dico_params[attr] = self.recursive_dict(val)
@@ -99,6 +99,7 @@ class Saver0(AbstractCallback,BaseClass):
 
     def on_valid_end(self, prediction_batch, true_batch):
         self.call(self.target)
+        self.save()
 
     def on_epoch_end(self):
         self.call(self.target)
