@@ -85,7 +85,8 @@ class ClassificationGeneratorPatch(BaseClass):
 
             else:
                 self.attr_augmenter = NoAugmenter(
-                                                  patch_size_before_final_resize=self.attr_grid_size_px,
+                                                  patch_size_before_final_resize=
+                                                  self.attr_grid_size_px,
                                                   patch_size_final_resize=input_size
                                                   )
         else:
@@ -144,16 +145,16 @@ class ClassificationGeneratorPatch(BaseClass):
                     # Create the Generators label with the proper technic
                     classification = self.attr_label_modifier.make_classification_label(annotations_patch)
                     balance_reject = self.attr_balance.filter(self.attr_label_modifier.get_initial_label())
-                    # if balance_reject is True:
-                    #     continue
+                    if balance_reject is True:
+                        continue
                     image_patch, transformation_matrix = self.attr_augmenter.transform_image(
                         image=image,
                         partial_transformation_matrix=partial_transformation_matrix,
                         patch_upper_left_corner_coords=patch_upper_left_corner_coords
                     )
                     reject = self.attr_check_margin_reject.check_reject(image_patch)
-                    # if reject is True:
-                    #     continue
+                    if reject is True:
+                        continue
                     # convert the image to rgb (as required by pytorch): not ncessary the best transformation as we multiply by 3 the amount of data
                     image_patch = np.stack((image_patch,) * 3, axis=0)
                     yield image_patch, classification, transformation_matrix, item
