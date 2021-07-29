@@ -72,7 +72,7 @@ class Trainer0(BaseClass, ObservableTrainer):
 
     def train(self, input_npy, output_npy, transformation_matrix, item, device):
         self.attr_model.model.train()
-        self.attr_loss.zero_grad()
+        self.attr_loss.zeros_grad()
 
         # forward + backward + optimize
         input_gpu = torch.Tensor(input_npy).to(device)
