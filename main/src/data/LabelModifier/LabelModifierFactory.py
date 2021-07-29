@@ -12,7 +12,7 @@ class LabelModifierFactory:
                classes_to_use: Tuple[EnumClasses] = (EnumClasses.Seep, EnumClasses.Spill)):
         if label_modifier == EnumLabelModifier.NoLabelModifier:
             return NoLabelModifier(original_class_mapping=class_mapping)
-        elif label_modifier == EnumLabelModifier.LabelModifier1:
+        elif label_modifier == EnumLabelModifier.LabelModifier0:
             return LabelModifier0(class_mapping=class_mapping)
         elif label_modifier == EnumLabelModifier.LabelModifier1:
             return LabelModifier1(classes_to_use=classes_to_use,
