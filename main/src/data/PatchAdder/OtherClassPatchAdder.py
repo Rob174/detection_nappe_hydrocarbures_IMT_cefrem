@@ -54,7 +54,7 @@ class OtherClassPatchAdder(BaseClass, AbstractClassAdder):
         if self.num_annotated_btwn == self.attr_interval:
             self.num_annotated_btwn = 0
             id = self.next_index()
-            patch = np.array(self.cache_img[id], dtype=np.float32)[0, :, :]
+            patch = np.array(self.cache_img[id], dtype=np.float32)
             annotation = np.zeros(patch.shape, dtype=np.float32)
             transformation_matrix = np.array(self.cache_infos[id]["transformation_matrix"])
             return patch, annotation, transformation_matrix, self.cache_infos[id]["source_img"]
