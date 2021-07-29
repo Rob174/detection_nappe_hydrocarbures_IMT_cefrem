@@ -169,7 +169,4 @@ class ClassificationGeneratorCache(BaseClass):
         return image_patch, classification, transformation_matrix
 
     def len(self, dataset) -> Optional[int]:
-        if dataset == "tr":
-            return len(self.tr_keys)
-        else:
-            return len(self.valid_keys)
+        return len(self.datasets[dataset])
