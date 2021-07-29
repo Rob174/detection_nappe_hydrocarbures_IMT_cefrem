@@ -98,7 +98,7 @@ if __name__ == "__main__":
         model=model,
         loss=loss,
         early_stopping=early_stopping,
-        callbacks=[iteration_manager,loss,metrics,saver,model_saver,early_stopping,rgb_overlay,confusion_matrix],
+        callbacks=[iteration_manager,loss,*metrics,saver,model_saver,early_stopping,rgb_overlay,confusion_matrix],
         iteration_manager=iteration_manager
     )
     saver.set_target(trainer)
