@@ -10,18 +10,20 @@ from h5py import File
 from main.FolderInfos import FolderInfos
 from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
 from main.src.models.ModelFactory import ModelFactory
+from main.src.param_savers.BaseClass import BaseClass
 from main.src.training.AbstractCallback import AbstractCallback
 
 matplotlib.use("agg")
 
 
-class RGB_Overlay2(AbstractCallback):
+class RGB_Overlay2(AbstractCallback,BaseClass):
     def __init__(self, standardizer: AbstractStandardizer, model: ModelFactory, device: Optional = None):
         super(RGB_Overlay2, self).__init__()
         self.name_img = "027481_0319CB_0EB7"
         self.standardizer = standardizer
         self.model = model.model
         self.device = device
+        self.attr_name = self.__class__.__name__
 
     def generate_overlay_matrices(self, name_img, threshold: float = 0.5):
         """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
