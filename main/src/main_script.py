@@ -81,7 +81,7 @@ if __name__ == "__main__":
     metrics = MetricsFactory.create("accuracy_classification-0.25", "accuracy_classification-0.1", "mae",
                                     "error_threshold-0.5")
     model_saver = ModelSaver1(loss,model,iteration_manager)
-    early_stopping = EarlyStopping(loss, patience=50)
+    early_stopping = EarlyStopping(loss, patience=25)
     try:
         standardizer = dataset.attr_dataset.attr_standardizer
     except AttributeError:
