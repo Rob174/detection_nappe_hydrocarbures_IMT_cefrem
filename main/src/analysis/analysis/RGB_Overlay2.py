@@ -28,7 +28,7 @@ class RGB_Overlay2(AbstractCallback,BaseClass):
         self.device = device
         self.attr_name = self.__class__.__name__
 
-    def generate_overlay_matrices(self, name_img, threshold: float = 0.5):
+    def generate_overlay_matrices(self, name_img, threshold: float = 0.5,name_output = ""):
         """In this function we will constitute patch after patch the overlay of the image filling true and prediction empty matrices with corresponding patches
 
         Args:
@@ -130,7 +130,7 @@ class RGB_Overlay2(AbstractCallback,BaseClass):
         plt.figure(2)
         plt.title(f"Overlay " + name)
         plt.imshow(np.array(overlay_pred * 255, dtype=np.uint8))
-        plt.savefig(FolderInfos.base_filename + f"rgb_overlay_{name}.png")
+        plt.savefig(FolderInfos.base_filename + f"rgb_overlay_{name}_{name_output}.png")
         del overlay_pred
 
     def normalize(self, image, min=None, max=None):
@@ -144,8 +144,8 @@ class RGB_Overlay2(AbstractCallback,BaseClass):
             return image / max
         return (image - min) / (max - min)
 
-    def __call__(self):
-        self.generate_overlay_matrices(self.name_img, threshold=0.5)
+    def __call__(self,name_output=""):
+        self.generate_overlay_matrices(self.name_img, threshold=0.5,name_output=name_output)
 
     def on_end(self):
         self.generate_overlay_matrices(self.name_img, threshold=0.5)
@@ -158,8 +158,11 @@ if __name__ == '__main__':
     import torch
     from main.FolderInfos import FolderInfos
 
-    id = "2021-07-29_23h56min55s"
-    path_pt_file = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-29_23h56min55s_\2021-07-29_23h56min55s__model_epoch-41_it-3510.pt"
+    id = "2021-07-30_14h58min52s"
+    path_pt_file = "C:\\Users\\robin\\Documents\\projets\\detection_nappe_hydrocarbures_IMT_cefrem\\data_out\\" + id+"_\\"
+    epoch = 27
+    iteration = 4510
+    path_pt_file += id+f"__model_epoch-{epoch}_it-{iteration}.pt"
     FolderInfos.init(with_id=id)
     model = ModelFactory(EnumModels.Resnet152, num_classes=2, freeze=EnumFreeze.NoFreeze)
     device = torch.device("cuda")
@@ -167,4 +170,4 @@ if __name__ == '__main__':
     model.model.eval()
     rgb_overlay = RGB_Overlay2(standardizer=StandardizerCacheMixed(interval=1),
                                model=model, device=device)
-    rgb_overlay()
+    rgb_overlay(name_output=f"epoch-{epoch}_it-{iteration}")
