@@ -26,4 +26,4 @@ class ErrorWithThreshold(BaseClass, AbstractMetric):
         new_pred[pred_batch <= self.attr_threshold] = 0.
         new_true[true_batch > self.attr_threshold] = 1.
         new_true[true_batch <= self.attr_threshold] = 0.
-        return np.sum(np.abs(new_pred - new_true))
+        return np.sum(np.clip(np.sum(np.abs(new_pred - new_true),axis=1),0,1))/len(new_pred)

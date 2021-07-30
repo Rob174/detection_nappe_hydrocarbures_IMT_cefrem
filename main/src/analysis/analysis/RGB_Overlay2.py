@@ -158,8 +158,8 @@ if __name__ == '__main__':
     import torch
     from main.FolderInfos import FolderInfos
 
-    id = "2021-07-29_18h25min17s"
-    path_pt_file = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-29_18h25min17s_\2021-07-29_18h25min17s__model_epoch-9_it-11510.pt"
+    id = "2021-07-29_23h56min55s"
+    path_pt_file = r"C:\Users\robin\Documents\projets\detection_nappe_hydrocarbures_IMT_cefrem\data_out\2021-07-29_23h56min55s_\2021-07-29_23h56min55s__model_epoch-41_it-3510.pt"
     FolderInfos.init(with_id=id)
     model = ModelFactory(EnumModels.Resnet152, num_classes=2, freeze=EnumFreeze.NoFreeze)
     device = torch.device("cuda")

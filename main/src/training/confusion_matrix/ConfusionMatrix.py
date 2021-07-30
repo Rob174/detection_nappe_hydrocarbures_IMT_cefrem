@@ -26,9 +26,9 @@ class ConfusionMatrix(BaseClass):
         """Function the apply a 0.5 threshold to the label"""
         new_image = np.copy(image)
         new_image[image > 0.5] = 1.
-        new_image[image < 0.5] = 0.
+        new_image[image <= 0.5] = 0.
         return new_image
-    def update_matrix(self,prediction,true):
+    def update_matrix(self,prediction_orig,true):
         """Creates the confusion matrix corresponding to the validation batch
 
         Args:
@@ -38,11 +38,11 @@ class ConfusionMatrix(BaseClass):
         Returns:
 
         """
-        prediction = self.apply_threshold(prediction)
+        prediction = self.apply_threshold(prediction_orig)
         self.matrix = np.zeros((self.num_matrix_classes,self.num_matrix_classes))
         self.tot_pred = np.zeros((self.num_matrix_classes,))
         self.tot_true = np.zeros((self.num_matrix_classes,))
-        for pred_value,true_value in zip(prediction,true):
+        for i,(pred_value,true_value) in enumerate(zip(prediction,true)):
             class_matrix_pred = "none"
             class_matrix_true = "none"
             for class_index,function_test in self.attr_class_mappings.items():
@@ -50,6 +50,8 @@ class ConfusionMatrix(BaseClass):
                     class_matrix_pred = class_index
                 if eval(function_test)(true_value):
                     class_matrix_true = class_index
+            if class_matrix_true==class_matrix_pred:
+                b=0
             if class_matrix_true == "none" or class_matrix_pred == "none":
                 raise Exception(f"One class at least has no index found with \nclass_matrix_true={class_matrix_true} and class_matrix_pred={class_matrix_pred}\n")
             self.matrix[class_matrix_pred,class_matrix_true] += 1
