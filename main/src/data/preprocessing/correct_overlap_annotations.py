@@ -1,6 +1,6 @@
 import json
 import re
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 import dbf
 import geopandas as gpd
@@ -12,7 +12,7 @@ from rasterio.transform import Affine, rowcol
 from main.FolderInfos import FolderInfos
 
 
-def get_annotations():
+def get_annotations(dbffile_path):
     """ Extract annotation from the dbf table
 
     Returns: tuple of dicts:
@@ -22,7 +22,6 @@ def get_annotations():
 
     """
     FolderInfos.init(test_without_data=True)
-    dbffile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
     annotations = {}
     name_to_annotations = {}
     with dbf.Table(dbffile_path) as table:  # Table containing the class and the index of the polygon
@@ -41,7 +40,7 @@ def get_annotations():
     return annotations, name_to_annotations
 
 
-def get_annotations_points(annotations, name_to_annotations):
+def get_annotations_points(shapefile_path,annotations, name_to_annotations):
     """
 
     Args:
@@ -55,7 +54,7 @@ def get_annotations_points(annotations, name_to_annotations):
 
     """
     ## Open the shapefile
-    shapefile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
+    # shapefile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
     shapefile = gpd.read_file(shapefile_path)
     with open(f"{FolderInfos.input_data_folder}images_informations_preprocessed.json", 'r') as fp:
         dico_informations = json.load(fp)
@@ -87,10 +86,29 @@ def get_annotations_points(annotations, name_to_annotations):
         annotations[id_shape]["points"] = liste_points_shape
     return annotations, name_to_annotations
 
+def get_points_of_geometry(shapefile_path,annotations):
+    shapefile = gpd.read_file(shapefile_path)
+    for i_shape, shape in enumerate(shapefile.geometry):
+        id_shape = shapefile.id[i_shape]
+        liste_points_shape: List[Optional[Tuple[int, int]]] = []  # will contain the list of point of this shape
+        elem = shape.boundary  # extract the boundary of the object shape (with other properties)
+        if elem.geom_type != "LineString":  # the polygon is defined by a group of lines defines the polygon : https://help.arcgis.com/en/geodatabase/10.0/sdk/arcsde/concepts/geometry/shapes/types.htm
+            # Utiliser le numéro de vertice pr éviter les croisements
+            for line in elem:  # Loop through lines of the "Multi" - LineString
+                coords = np.dstack(line.coords.xy).tolist()[0]  # get the list of points
+                for point in coords:  # Extract the point of the polygon
+                    liste_points_shape.append(tuple([*point]))
 
+        else:  # the polygon is defined one line which creates a closed shape
+            coords = np.dstack(elem.coords.xy).tolist()[0]
+            for point in coords:  # Extract the point of the polygon
+                liste_points_shape.append(tuple([*point]))
+        annotations[id_shape]["points"] = liste_points_shape
+    return annotations
 if __name__ == "__main__":
-
-    annotations, name_to_annotations = get_annotations_points(*get_annotations())
+    dbffile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.dbf"
+    shapefile_path = FolderInfos.input_data_folder + "originals" + FolderInfos.separator + "Hydrocarbures_liquides_Seeps_et_spills_WGS84.shp"
+    annotations, name_to_annotations = get_annotations_points(shapefile_path,*get_annotations(dbffile_path=dbffile_path))
 
     with File(f"{FolderInfos.input_data_folder}images_preprocessed.hdf5", "r") as images_hdf5:
         with File(f"{FolderInfos.input_data_folder}annotations_labels_preprocessed.hdf5",

@@ -158,10 +158,10 @@ if __name__ == '__main__':
     import torch
     from main.FolderInfos import FolderInfos
 
-    id = "2021-07-30_14h58min52s"
+    id = "2021-07-31_00h37min03s"
     path_pt_file = "C:\\Users\\robin\\Documents\\projets\\detection_nappe_hydrocarbures_IMT_cefrem\\data_out\\" + id+"_\\"
-    epoch = 30
-    iteration = 5010
+    epoch = 32
+    iteration = 12010
     path_pt_file += id+f"__model_epoch-{epoch}_it-{iteration}.pt"
     FolderInfos.init(with_id=id)
     model = ModelFactory(EnumModels.Resnet152, num_classes=2, freeze=EnumFreeze.NoFreeze)
