@@ -167,7 +167,7 @@ class ParserClassificationCache(BaseClass):
 
             '-lr': {
                 "dest": 'lr',
-                "default": 1e-5,
+                "default": 1e-4,
                 "type": float,
                 "help": "Learning rate of the optimizer"
             },
