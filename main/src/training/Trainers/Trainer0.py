@@ -114,4 +114,5 @@ class Trainer0(BaseClass, ObservableTrainer):
                 self.on_epoch_end()
                 if self.early_stopping.stop_training():
                     break
+
             self.on_end()

@@ -19,6 +19,7 @@ class LabelModifier0(AbstractLabelModifier, BaseClass):
 
         self.attr_name = self.__class__.__name__
         self.attr_class_mapping = class_mapping
+        self.attr_threshold = 16
 
     def get_final_class_mapping(self):
         return self.attr_class_mapping
@@ -34,11 +35,13 @@ class LabelModifier0(AbstractLabelModifier, BaseClass):
         """
 
         classification_label = np.zeros((len(self.attr_class_mapping),), dtype=np.float32)  # 0 ns
+        values_present,eff = np.unique(classification_label,return_counts=True)
         for value in self.attr_class_mapping.keys(Way.ORIGINAL_WAY):
             # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
             value = int(value)
+
             #  if the class is in the patch
-            if value in annotation:
+            if value in values_present and eff[values_present == value] > self.attr_threshold:
                 classification_label[value] = 1.
         self.initial_label = classification_label
         return classification_label

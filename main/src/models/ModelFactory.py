@@ -1,4 +1,5 @@
 """Object creating desired pytroch model and store it in the attr_model attribute"""
+import torch
 import torchvision.models as models
 from efficientnet_pytorch import EfficientNet
 
@@ -47,3 +48,5 @@ class ModelFactory(BaseClass):
 
     def __call__(self):
         return self.call()
+    def load_model(self,path: str):
+        self.model.load_state_dict(torch.load(path))
