@@ -19,7 +19,7 @@ class LabelModifier0(AbstractLabelModifier, BaseClass):
 
         self.attr_name = self.__class__.__name__
         self.attr_class_mapping = class_mapping
-        self.attr_threshold = 16
+        self.attr_threshold = 9
 
     def get_final_class_mapping(self):
         return self.attr_class_mapping
