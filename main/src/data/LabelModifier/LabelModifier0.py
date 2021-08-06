@@ -35,7 +35,7 @@ class LabelModifier0(AbstractLabelModifier, BaseClass):
         """
 
         classification_label = np.zeros((len(self.attr_class_mapping),), dtype=np.float32)  # 0 ns
-        values_present,eff = np.unique(classification_label,return_counts=True)
+        values_present,eff = np.unique(annotation,return_counts=True)
         for value in self.attr_class_mapping.keys(Way.ORIGINAL_WAY):
             # for each class of the original attr_dataset, we put a probability of presence of one if the class is in the patch
             value = int(value)
