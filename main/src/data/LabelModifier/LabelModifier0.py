@@ -41,7 +41,7 @@ class LabelModifier0(AbstractLabelModifier, BaseClass):
             value = int(value)
 
             #  if the class is in the patch
-            if value in values_present and eff[values_present == value] > self.attr_threshold:
+            if value in values_present and eff[values_present == value][0] > self.attr_threshold:
                 classification_label[value] = 1.
         self.initial_label = classification_label
         return classification_label
