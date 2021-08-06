@@ -10,8 +10,10 @@ from typing import Tuple, Dict
 
 from main.FolderInfos import FolderInfos as FI
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
+from main.src.data.Datasets.ColorExtractor.DicoColorExtractor import DicoColorExtractor
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.Datasets.PointDataset import PointDataset
+from main.src.data.Datasets.PointExtractor.PointExtractorMultiCategoryDict import PointExtractorMultiCategoryDict
 from main.src.data.TwoWayDict import TwoWayDict
 
 
@@ -35,8 +37,10 @@ class FabricPreprocessedCache:
             mapping=mapping)
         annotations = PointDataset(
             FI.input_data_folder + FI.separator + "preprocessed_cache" + FI.separator + "images_preprocessed_points.pkl",
-            mapping=mapping)
-        with open(f"{FI.input_data_folder}preprocessed_cache{FI.separator}images_informations_preprocessed.json",
-                  "r") as fp:
+            mapping=mapping,
+            color_extractor=DicoColorExtractor(mapping),
+            point_extractor=PointExtractorMultiCategoryDict()
+        )
+        with open(f"{FI.input_data_folder}preprocessed_cache{FI.separator}images_informations_preprocessed.json","r") as fp:
             informations = json.load(fp)
         return images, annotations, informations
