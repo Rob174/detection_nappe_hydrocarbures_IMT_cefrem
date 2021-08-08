@@ -1,5 +1,5 @@
 """Base class to build your own dataset"""
-from abc import ABC
+from abc import ABC,abstractmethod
 from typing import Any
 
 from main.src.data.TwoWayDict import TwoWayDict
@@ -15,7 +15,7 @@ class AbstractDataset(ABC):
     def dataset(self):
         """property to map to the dataset object mappping to the file (hdf5 object, ...)"""
         raise NotImplementedError
-
+    @abstractmethod
     def get(self, id: str) -> Any:
         """Get the object representing the array of id name
 
@@ -26,7 +26,7 @@ class AbstractDataset(ABC):
             Any, object representing the sample extracted from the dataset
 
         """
-
+    @abstractmethod
     def __len__(self):
         raise NotImplementedError
 
