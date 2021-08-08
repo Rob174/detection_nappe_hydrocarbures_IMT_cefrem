@@ -7,11 +7,12 @@
 import json
 from typing import Tuple, Dict
 
-from main.FolderInfos import FolderInfos as FI
+from main.FolderInfos import FolderInfos as FI, FolderInfos
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.ImageDataset import ImageDataset
 from main.src.data.Datasets.OneAnnotation import OneAnnotation
-from main.src.data.TwoWayDict import TwoWayDict
+from main.src.data.Datasets.PointDataset import PointDataset
+from main.src.data.TwoWayDict import TwoWayDict, Way
 
 
 class FabricFilteredCacheOther:
@@ -23,15 +24,23 @@ class FabricFilteredCacheOther:
 
     def __call__(self) -> Tuple[AbstractDataset, AbstractDataset, Dict]:
         """Creates the object representing this dataset"""
-        mapping = TwoWayDict(
+        seep_spill_mapping = TwoWayDict(
             {  # Formatted in the following way: src_index in cache, name, the position encode destination index
                 0: "other",
                 1: "seep",
-                2: "spill",
+                2: "spill"
+            })
+        global_mapping = TwoWayDict(
+            {
+                **seep_spill_mapping.attr_dico_one_way,
+                3:"earth"
             })
         images = ImageDataset(f"{FI.input_data_folder}filtered_cache_other{FI.separator}filtered_cache_other_images.hdf5",
-                              mapping=mapping)
-        annotations = OneAnnotation(annotation=0,keys=images.keys(),shape=(256,256),mapping=mapping)
+                              mapping=global_mapping)
+        annotations = PointDataset( # TODO : transform preprocessed earth annotations into filtered annotations
+            path_pkl=FolderInfos.input_data_folder+
+        )
+
         with open(f"{FI.input_data_folder}filtered_cache_other{FI.separator}filtered_cache_other_img_infos.json", "r") as fp:
             informations = json.load(fp)
         return images, annotations, informations
