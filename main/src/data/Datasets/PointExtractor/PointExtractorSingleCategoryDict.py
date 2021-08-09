@@ -2,6 +2,6 @@ from main.src.data.Datasets.PointExtractor.AbstractPointExtractor import Abstrac
 from main.src.data.preprocessing.point_shapes_to_file import EnumShapeCategories
 
 
-class PointExtractorMultiCategoryDict(AbstractPointExtractor):
+class PointExtractorSingleCategoryDict(AbstractPointExtractor):
     def extract(self,data):
-        return data[EnumShapeCategories.Points]
+        return data

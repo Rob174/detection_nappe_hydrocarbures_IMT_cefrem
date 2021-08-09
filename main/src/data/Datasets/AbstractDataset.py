@@ -35,6 +35,8 @@ class AbstractDataset(ABC):
 
     def values(self):
         return self.dataset.values()
+    def items(self):
+        return self.dataset.items()
 
     def __iter__(self):
         """Allow to use for loop on this object"""

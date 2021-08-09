@@ -5,6 +5,7 @@ from typing import List, Dict, Union
 
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.ColorExtractor.AbstractColorExtractor import AbstractColorExtractor
+from main.src.data.Datasets.DatasetOpener.AbstractOpener import AbstractOpener
 from main.src.data.Datasets.PointExtractor.AbstractPointExtractor import AbstractPointExtractor
 from main.src.data.TwoWayDict import TwoWayDict
 from main.src.data.preprocessing.point_shapes_to_file import EnumShapeCategories
@@ -14,17 +15,19 @@ from main.src.param_savers.BaseClass import BaseClass
 class PointDataset(BaseClass, AbstractDataset):
     """Fabrics access thanks to the images_preprocessed_points.pkl file containing points of annotations polygons"""
 
-    def __init__(self, path_pkl: str, mapping: TwoWayDict, color_extractor: AbstractColorExtractor,point_extractor: AbstractPointExtractor):
-        super(PointDataset, self).__init__(mapping)
-        self.attr_path = path_pkl
-        with open(path_pkl, "rb") as fp:
-            self._dataset = pickle.load(fp)
+    def __init__(self,
+                 color_extractor: AbstractColorExtractor,
+                 point_extractor: AbstractPointExtractor,
+                 opener: AbstractOpener
+                 ):
+        super(PointDataset, self).__init__(color_extractor.attr_mapping)
+        self.attr_opener = opener
         self.attr_color_extractor = color_extractor
         self.attr_point_extractor = point_extractor
 
     @property
     def dataset(self):
-        return self._dataset
+        return self.attr_opener.dataset
 
     def get(self, item: str) -> List[Dict[EnumShapeCategories, Union[str, List]]]:
         """Gives access to the data and can simultenaously perform augmentations to constitute the final augmented annotation

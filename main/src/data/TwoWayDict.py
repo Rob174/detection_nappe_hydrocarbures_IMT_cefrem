@@ -157,3 +157,5 @@ class TwoWayDict(BaseClass):
 
     def __len__(self):
         return len(list(self.attr_dico_one_way.keys()))
+    def __str__(self):
+        return str(self.attr_dico_one_way)
