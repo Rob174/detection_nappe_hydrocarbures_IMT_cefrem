@@ -2,7 +2,7 @@
 
 Object to build custom datasets.
 
-For image or vectors it is adviced to use hdf5 file. This type of datasets allow you to build a dataset using the [ImageDataset](./ImageDataset.html) object
+For image or vectors it is adviced to use hdf5 file. This type of datasets allow you to build a dataset using the [HDF5Dataset](./HDF5Dataset.html) object
 
 For annotations stored as polygons it is adviced to build a pickle file and to store inside a list with the folllowing structure:
 

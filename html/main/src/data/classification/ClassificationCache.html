@@ -39,7 +39,7 @@ from h5py import File
 from main.FolderInfos import FolderInfos
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Annotations.FabricFilteredCache import FabricFilteredCache
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.Datasets.PointDataset import PointDataset
 from main.src.data.LabelModifier.LabelModifier0 import LabelModifier0
 from main.src.data.LabelModifier.LabelModifier1 import LabelModifier1
@@ -104,11 +104,11 @@ class ClassificationGeneratorCache(BaseClass):
             self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
         self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
-    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    def set_datasets(self,image_dataset: HDF5Dataset, label_dataset: AbstractDataset, dico_infos: Dict):
         &#34;&#34;&#34;Change the origin of the patches
 
         Args:
-            image_dataset: ImageDataset
+            image_dataset: HDF5Dataset
             label_dataset: AbstractDataset Points or Images
             dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:
@@ -247,11 +247,11 @@ class ClassificationGeneratorCache(BaseClass):
             self.attr_other_class_adder = NoClassPatchAdder(interval=interval)
             self.attr_standardizer = StandardizerCacheSeepSpill()
         self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
-    def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    def set_datasets(self,image_dataset: HDF5Dataset, label_dataset: AbstractDataset, dico_infos: Dict):
         &#34;&#34;&#34;Change the origin of the patches
 
         Args:
-            image_dataset: ImageDataset
+            image_dataset: HDF5Dataset
             label_dataset: AbstractDataset Points or Images
             dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:
@@ -403,14 +403,14 @@ item: str name of the source image</dd>
 </details>
 </dd>
 <dt id="main.src.data.classification.ClassificationCache.ClassificationCache.set_datasets"><code class="name flex">
-<span>def <span class="ident">set_datasets</span></span>(<span>self, image_dataset: <a title="main.src.data.Datasets.ImageDataset.ImageDataset" href="../Datasets/ImageDataset.html#main.src.data.Datasets.ImageDataset.ImageDataset">ImageDataset</a>, label_dataset: <a title="main.src.data.Datasets.AbstractDataset.AbstractDataset" href="../Datasets/AbstractDataset.html#main.src.data.Datasets.AbstractDataset.AbstractDataset">AbstractDataset</a>, dico_infos: Dict)</span>
+<span>def <span class="ident">set_datasets</span></span>(<span>self, image_dataset: <a title="main.src.data.Datasets.HDF5Dataset.HDF5Dataset" href="../Datasets/ImageDataset.html#main.src.data.Datasets.ImageDataset.ImageDataset">HDF5Dataset</a>, label_dataset: <a title="main.src.data.Datasets.AbstractDataset.AbstractDataset" href="../Datasets/AbstractDataset.html#main.src.data.Datasets.AbstractDataset.AbstractDataset">AbstractDataset</a>, dico_infos: Dict)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Change the origin of the patches</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>image_dataset</code></strong></dt>
-<dd>ImageDataset</dd>
+<dd>HDF5Dataset</dd>
 <dt><strong><code>label_dataset</code></strong></dt>
 <dd>AbstractDataset Points or Images</dd>
 <dt><strong><code>dico_infos</code></strong></dt>
@@ -421,11 +421,11 @@ item: str name of the source image</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def set_datasets(self,image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+<pre><code class="python">def set_datasets(self,image_dataset: HDF5Dataset, label_dataset: AbstractDataset, dico_infos: Dict):
     &#34;&#34;&#34;Change the origin of the patches
 
     Args:
-        image_dataset: ImageDataset
+        image_dataset: HDF5Dataset
         label_dataset: AbstractDataset Points or Images
         dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
     Returns:

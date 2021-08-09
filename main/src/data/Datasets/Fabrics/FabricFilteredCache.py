@@ -9,7 +9,7 @@ from typing import Tuple, Dict
 
 from main.FolderInfos import FolderInfos as FI
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.TwoWayDict import TwoWayDict
 
 
@@ -28,10 +28,10 @@ class FabricFilteredCache:
                 1: "seep",
                 2: "spill",
             })
-        images = ImageDataset(f"{FI.input_data_folder}filtered_cache{FI.separator}filtered_cache_images.hdf5",
-                              mapping=mapping)
-        annotations = ImageDataset(f"{FI.input_data_folder}filtered_cache{FI.separator}filtered_cache_annotations.hdf5",
-                                   mapping=mapping)
+        images = HDF5Dataset(f"{FI.input_data_folder}filtered_cache{FI.separator}filtered_cache_images.hdf5",
+                             mapping=mapping)
+        annotations = HDF5Dataset(f"{FI.input_data_folder}filtered_cache{FI.separator}filtered_cache_annotations.hdf5",
+                                  mapping=mapping)
         with open(f"{FI.input_data_folder}filtered_cache{FI.separator}filtered_cache_img_infos.json", "r") as fp:
             informations = json.load(fp)
         return images, annotations, informations

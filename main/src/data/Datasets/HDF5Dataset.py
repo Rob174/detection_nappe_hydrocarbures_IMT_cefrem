@@ -7,7 +7,7 @@ from main.src.data.TwoWayDict import TwoWayDict
 from main.src.param_savers.BaseClass import BaseClass
 
 
-class ImageDataset(BaseClass, AbstractDataset):
+class HDF5Dataset(BaseClass, AbstractDataset):
     """A dataset to manage hdf5 files for 2d np.ndarrays"""
 
     def __init__(self, src_hdf5: str, mapping: TwoWayDict):

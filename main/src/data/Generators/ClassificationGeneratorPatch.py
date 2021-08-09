@@ -10,7 +10,7 @@ from main.src.data.Augmentation.Augmenters.NoAugmenter import NoAugmenter
 from main.src.data.BatchMaker.BatchMaker import BatchMaker
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricPreprocessedCache import FabricPreprocessedCache
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.LabelModifier.LabelModifierFactory import LabelModifierFactory
 from main.src.data.MarginCheck import MarginCheck
 from main.src.data.Standardizer.AbstractStandardizer import AbstractStandardizer
@@ -94,11 +94,11 @@ class ClassificationGeneratorPatch(BaseClass):
         # Cache to store between epochs rejected images if we have no image augmenter
         self.cache_img_id_rejected = []
 
-    def set_datasets(self, image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    def set_datasets(self, image_dataset: HDF5Dataset, label_dataset: AbstractDataset, dico_infos: Dict):
         """Change the origin of the patches
 
         Args:
-            image_dataset: ImageDataset
+            image_dataset: HDF5Dataset
             label_dataset: AbstractDataset Points or Images
             dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:

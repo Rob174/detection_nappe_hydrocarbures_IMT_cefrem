@@ -40,7 +40,7 @@ class PointDataset(BaseClass, AbstractDataset):
             segmentation_map, np.ndarray the segmentation map (the numpy array annotaiton)
         """
         polygons = []
-        for i, polygon in enumerate(self.dataset[item]):
+        for i, polygon in enumerate(self.attr_opener[item]):
             color_code = self.attr_color_extractor.extract(polygon)
             points = self.attr_point_extractor.extract(polygon)
             polygons.append({EnumShapeCategories.Label: color_code,

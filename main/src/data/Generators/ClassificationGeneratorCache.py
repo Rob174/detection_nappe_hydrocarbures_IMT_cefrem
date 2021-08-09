@@ -10,7 +10,7 @@ from main.src.data.Augmentation.Augmentations.AugmentationApplier.AugmentationAp
 from main.src.data.BatchMaker.BatchMaker import BatchMaker
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.Fabrics.FabricFilteredCache import FabricFilteredCache
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.GridMaker.GridMaker import GridMaker
 from main.src.data.LabelModifier.LabelModifierFactory import LabelModifierFactory
 from main.src.data.PatchAdder.NoClassPatchAdder import NoClassPatchAdder
@@ -74,11 +74,11 @@ class ClassificationGeneratorCache(BaseClass):
             self.attr_standardizer = StandardizerCacheSeepSpill()
         self.attr_patch_adder_callback = PatchAdderCallback(class_adders=[self.attr_other_class_adder])
 
-    def set_datasets(self, image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    def set_datasets(self, image_dataset: HDF5Dataset, label_dataset: AbstractDataset, dico_infos: Dict):
         """Change the origin of the patches
 
         Args:
-            image_dataset: ImageDataset
+            image_dataset: HDF5Dataset
             label_dataset: AbstractDataset Points or Images
             dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:

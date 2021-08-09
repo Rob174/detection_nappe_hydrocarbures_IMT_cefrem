@@ -4,7 +4,7 @@ from typing import Tuple, Dict
 
 from main.FolderInfos import FolderInfos as FI
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.Datasets.OneAnnotation import OneAnnotation
 from main.src.data.TwoWayDict import TwoWayDict
 
@@ -23,10 +23,10 @@ class FabricTestCache:
                 1: "seep",
                 2: "spill",
             })
-        images = ImageDataset(
+        images = HDF5Dataset(
             f"{FI.input_data_folder}test_cache{FI.separator}test_cache_images.hdf5",
             mapping=mapping)
-        annotations = ImageDataset(
+        annotations = HDF5Dataset(
             f"{FI.input_data_folder}test_cache{FI.separator}test_cache_annotations.hdf5",
             mapping=mapping)
         with open(

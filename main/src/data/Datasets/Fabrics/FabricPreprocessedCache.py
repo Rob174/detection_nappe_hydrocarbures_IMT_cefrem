@@ -13,8 +13,9 @@ from main.src.data.Datasets.AbstractDataset import AbstractDataset
 from main.src.data.Datasets.ColorExtractor.DicoColorExtractor import DicoColorExtractor
 from main.src.data.Datasets.ColorExtractor.LayerColorExtractor import LayerColorExtractor
 from main.src.data.Datasets.DatasetOpener.JSONOpener import JSONOpener
+from main.src.data.Datasets.DatasetOpener.OptimizedMemoryPointOpener import OptimizedMemoryPointOpener
 from main.src.data.Datasets.DatasetOpener.PickleOpener import PickleOpener
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.Datasets.MergedImageDataset import MergedImageDataset
 from main.src.data.Datasets.MergedPointDataset import MergedPointDataset
 from main.src.data.Datasets.PointDataset import PointDataset
@@ -38,9 +39,10 @@ class FabricPreprocessedCache:
                 1: "seep",
                 2: "spill",
             })
-        images = ImageDataset(
+        images = HDF5Dataset(
             f"{FI.input_data_folder + FI.separator}preprocessed_cache{FI.separator}images_preprocessed.hdf5",
-            mapping=mapping)
+            mapping=mapping
+        )
         annotations = PointDataset(
             color_extractor=DicoColorExtractor(mapping),
             point_extractor=PointExtractorMultiCategoryDict(),
@@ -54,8 +56,14 @@ class FabricPreprocessedCache:
         annotations_earth = PointDataset(
             color_extractor=LayerColorExtractor(mapping_earth,fixed_color_code="#030303"),
             point_extractor=PointExtractorSingleCategoryDict(),
-            opener=JSONOpener(FI.input_data_folder + FI.separator + "preprocessed_cache" + FI.separator + "world_earth_data.json")
+            opener=OptimizedMemoryPointOpener(
+                path_json=f"{FI.input_data_folder}preprocessed_cache{FI.separator}world_earth_data{FI.separator}world_earth_data_infos.json",
+                path_hdf5=f"{FI.input_data_folder}preprocessed_cache{FI.separator}world_earth_data{FI.separator}world_earth_data.hdf5"
+            )
         )
         annotations = MergedPointDataset(annotations, annotations_earth)
         informations = JSONOpener(f"{FI.input_data_folder}preprocessed_cache{FI.separator}images_informations_preprocessed.json").dataset
         return images, annotations, informations
+if __name__ == '__main__':
+    FI.init(test_without_data=True)
+    images, annotations, informations = FabricPreprocessedCache()()

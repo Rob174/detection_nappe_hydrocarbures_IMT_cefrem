@@ -9,7 +9,7 @@ from typing import Tuple, Dict
 
 from main.FolderInfos import FolderInfos as FI, FolderInfos
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.Datasets.OneAnnotation import OneAnnotation
 from main.src.data.Datasets.PointDataset import PointDataset
 from main.src.data.TwoWayDict import TwoWayDict, Way
@@ -35,8 +35,8 @@ class FabricFilteredCacheOther:
                 **seep_spill_mapping.attr_dico_one_way,
                 3:"earth"
             })
-        images = ImageDataset(f"{FI.input_data_folder}filtered_cache_other{FI.separator}filtered_cache_other_images.hdf5",
-                              mapping=global_mapping)
+        images = HDF5Dataset(f"{FI.input_data_folder}filtered_cache_other{FI.separator}filtered_cache_other_images.hdf5",
+                             mapping=global_mapping)
         annotations = PointDataset( # TODO : transform preprocessed earth annotations into filtered annotations
             path_pkl=FolderInfos.input_data_folder+
         )

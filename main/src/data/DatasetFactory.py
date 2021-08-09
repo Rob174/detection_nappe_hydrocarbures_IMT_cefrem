@@ -6,7 +6,7 @@ from typing import Tuple, Dict, Optional
 import torch
 
 from main.src.data.Datasets.AbstractDataset import AbstractDataset
-from main.src.data.Datasets.ImageDataset import ImageDataset
+from main.src.data.Datasets.HDF5Dataset import HDF5Dataset
 from main.src.data.Generators.ClassificationGeneratorCache import ClassificationGeneratorCache
 from main.src.data.Generators.ClassificationGeneratorPatch import ClassificationGeneratorPatch
 from main.src.enums import EnumAugmenter, EnumBalance, EnumLabelModifier, EnumClassPatchAdder, EnumUsage, EnumClasses, \
@@ -94,11 +94,11 @@ class DatasetFactory(BaseClass, torch.utils.data.IterableDataset):
     def len(self, dataset):
         return self.attr_dataset.len(dataset)
 
-    def set_datasets(self, image_dataset: ImageDataset, label_dataset: AbstractDataset, dico_infos: Dict):
+    def set_datasets(self, image_dataset: HDF5Dataset, label_dataset: AbstractDataset, dico_infos: Dict):
         """Change the origin of the patches
 
         Args:
-            image_dataset: ImageDataset
+            image_dataset: HDF5Dataset
             label_dataset: AbstractDataset Points or Images
             dico_infos: Dict, containing for each id of image the source image (under key source_img) and the transformation matrix (under key transformation_matrix) applied to get the patch
         Returns:
